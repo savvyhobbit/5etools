@@ -1,0 +1,19 @@
+{
+  "index": {
+    "artificer": "artificer.json",
+    "barbarian": "barbarian.json",
+    "bard": "bard.json",
+    "cleric": "cleric.json",
+    "druid": "druid.json",
+    "fighter": "fighter.json",
+    "monk": "monk.json",
+    "mystic": "mystic.json",
+    "paladin": "paladin.json",
+    "ranger": "ranger.json",
+    "rogue": "rogue.json",
+    "sidekick": "sidekick.json",
+    "sorcerer": "sorcerer.json",
+    "warlock": "warlock.json",
+    "wizard": "wizard.json"
+  }
+}
