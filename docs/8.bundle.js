@@ -86,7 +86,7 @@
           <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
         </template>
       </button>
-    `}}customElements.define("dnd-button",a)},124:function(t,e,i){"use strict";i.r(e);var s=i(7);i(50),i(49),i(72);const n=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
+    `}}customElements.define("dnd-button",a)},125:function(t,e,i){"use strict";i.r(e);var s=i(7);i(50),i(49),i(72);const n=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
   <template>
     <style include="lumo-field-button">
       :host {
