@@ -87,7 +87,7 @@ styleElement.innerHTML = `
       .logo {
         width: 32px;
         height: 32px;
-        background-image: url("../img/android-chrome-192x192.png");
+        background-image: url("./img/android-chrome-192x192.png");
         background-size: contain;
         background-position: 50%;
         background-repeat: no-repeat;
@@ -95,7 +95,7 @@ styleElement.innerHTML = `
         vertical-align: -9px;
       }
       .logo-white {
-        background-image: url("../img/logo-white-192x192.png");
+        background-image: url("./img/logo-white-192x192.png");
       }
       .nav-button {
         position: fixed;
