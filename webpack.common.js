@@ -58,6 +58,6 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "docs"),
-    publicPath: "/5etools"
+    publicPath: "/5etools/"
   }
 };
