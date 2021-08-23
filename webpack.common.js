@@ -45,18 +45,19 @@ module.exports = {
           to: "favicon.ico"
         },
         {
-          from: path.resolve(__dirname, "node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"),
-          to: "node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"
+          from: path.resolve(__dirname, "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"),
+          to: "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"
         },
-        // {
-        //   from: path.resolve(__dirname, "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map"),
-        //   to: "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map"
-        // }
+        {
+          from: path.resolve(__dirname, "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map"),
+          to: "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map"
+        }
       ]
     })
   ],
   output: {
     filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "docs")
+    path: path.resolve(__dirname, "docs"),
+    publicPath: "/5etools"
   }
 };

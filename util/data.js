@@ -2,6 +2,7 @@ import {cloneDeep} from "../js/utils.js";
 import Parser from "./Parser.js";
 
 let cache = {};
+const DATA_ROOT = './data/'
 
 /**
  * Returns model data object, serving the cached version if already requested.
@@ -56,7 +57,7 @@ function loadJSON(url) {
 };
 
 async function loadModelFromSingleJSON(modelId) {
-	const modelData = await loadJSON(`/data/${modelId}.json`);
+	const modelData = await loadJSON(`${DATA_ROOT}${modelId}.json`);
 	if (Array.isArray(modelData)) {
 		return modelData;
 	} else {
@@ -66,12 +67,12 @@ async function loadModelFromSingleJSON(modelId) {
 }
 
 async function loadModelFromIndex(modelId) {
-	const modelData = await loadJSON(`/data/${modelId}/index.json`);
+	const modelData = await loadJSON(`${DATA_ROOT}${modelId}/index.json`);
 	if (modelData.index) {
 		let promises = [];
 
 		for (let srcURL of Object.values(modelData.index)) {
-			promises.push(loadJSON(`/data/${modelId}/${srcURL}`));
+			promises.push(loadJSON(`${DATA_ROOT}${modelId}/${srcURL}`));
 		}
 		return Promise.all(promises).then(data => {
 			let allData = [];
@@ -187,8 +188,8 @@ export async function filterModel(modelId, selectorString, orOperand = false) {
 function loadAllMonsterData() {
 	const promises = [];
 
-	promises.push(loadJSON(`/data/bestiary.json`));
-	promises.push(loadJSON(`/data/legendarygroups.json`));
+	promises.push(loadJSON(`${DATA_ROOT}bestiary.json`));
+	promises.push(loadJSON(`${DATA_ROOT}legendarygroups.json`));
 
 	return Promise.all(promises).then(data => {
 		return parseLegendaryMonsters(data[0], data[1]);
@@ -234,9 +235,9 @@ async function loadRaceData() {
 function loadAllItemData() {
 	const promises = [];
 
-  promises.push(loadJSON("/data/items.json"));
-  promises.push(loadJSON("/data/basicitems.json"));
-	promises.push(loadJSON("/data/magicvariants.json"));
+  promises.push(loadJSON(`${DATA_ROOT}items.json`));
+  promises.push(loadJSON(`${DATA_ROOT}basicitems.json`));
+	promises.push(loadJSON(`${DATA_ROOT}magicvariants.json`));
 
   return Promise.all(promises).then((data) => {
 		return mergeItemsData(data[0], data[1], data[2]);
