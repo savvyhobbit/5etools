@@ -634,6 +634,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           fill: var(--mdc-theme-primary);
           width: 30px;
         }
+        .hit-dice__reset {
+          margin-top: auto;
+        }
 
         .basic-box {
           display: flex;
@@ -642,6 +645,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           padding: 4px 0;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
+          height: min-content;
         }
         .basic-box--short {
           height: fit-content;
@@ -720,7 +724,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             </div>
 
             <div class="basic-box basic-box--short speed">
-              <div class="basic-box__value">[[speed]]</div>
+              <div class="basic-box__value" inner-h-t-m-l=[[speed]]></div>
               <div class="basic-box__label">Speed</div>
             </div>
 

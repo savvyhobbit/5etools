@@ -252,7 +252,13 @@ class DndCharacterBuilderView extends PolymerElement {
         .tab-wrap {
           background-color: var(--mdc-theme-surface);
           border: 1px solid var(--mdc-theme-text-divider-on-background);
+          display: flex;
+          flex-direction: column;
         }
+        #tabTarget {
+          flex-grow: 1;
+        }
+
         .not-edit-mode .delete-char,
         .not-edit-mode .add-char {
           display: none;
@@ -283,13 +289,13 @@ class DndCharacterBuilderView extends PolymerElement {
             height: 64px
           }
           #tabs.fixed--bottom + .tab-wrap {
-            margin-bottom: 64px;
+            margin-bottom: 94px;
           }
           .character-builder--tabs-wrapper {
             margin: 0 -16px -90px;
           }
           .tab-wrap {
-            min-height: calc(100vh - 256px);
+            min-height: calc(var(--vh, 1vh) * 100 - 256px);
           }
         }
 

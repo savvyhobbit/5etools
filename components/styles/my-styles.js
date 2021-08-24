@@ -66,7 +66,7 @@ styleElement.innerHTML = `
         font-weight: bold;
       }
       body {
-        min-height: 100vh;
+        min-height: var(--vh, 1vh) * 100;
         display: flex;
         flex-direction: column;
         font-family: Roboto, sans-serif;
@@ -312,7 +312,7 @@ styleElement.innerHTML = `
         width: 100%;
       }
       .table--scroll {
-        max-height: calc(100vh - 297px);
+        max-height: calc(var(--vh, 1vh) * 100 - 297px);
         overflow-x: auto;
         overflow-y: auto;
         padding-top: 44px;
@@ -323,7 +323,7 @@ styleElement.innerHTML = `
       .table--scroll[view="feats"],
       .table--scroll[view="backgrounds"],
       .table--scroll[view="races"] {
-        max-height: calc(100vh - 315px);
+        max-height: calc(var(--vh, 1vh) * 100 - 315px);
       }
       .table--scroll .table-row--header {
         border-bottom: none;
@@ -1122,7 +1122,7 @@ styleElement.innerHTML = `
         font-weight: bold;
       }
       .dice-field-container #output {
-        max-height: calc(100vh - 340px);
+        max-height: calc(var(--vh, 1vh) * 100 - 340px);
         overflow-y: auto;
         width: 100%;
       }
@@ -1567,12 +1567,12 @@ styleElement.innerHTML = `
           height: 50px;
         }
         .table--scroll {
-          max-height: calc(100vh - 310px);
+          max-height: calc(var(--vh, 1vh) * 100 - 310px);
         }
         .table--scroll[view="feats"],
         .table--scroll[view="backgrounds"],
         .table--scroll[view="races"] {
-          max-height: calc(100vh - 325px);
+          max-height: calc(var(--vh, 1vh) * 100 - 325px);
         }
       }
       /* Tablet and up */
@@ -1651,13 +1651,13 @@ styleElement.innerHTML = `
           width: calc(100% / 5 - 34px);
         }
         .table--scroll {
-          max-height: calc(100vh - 345px);
+          max-height: calc(var(--vh, 1vh) * 100 - 345px);
           min-height: 404px;
         }
         .table--scroll[view="feats"],
         .table--scroll[view="backgrounds"],
         .table--scroll[view="races"] {
-          max-height: calc(100vh - 360px);
+          max-height: calc(var(--vh, 1vh) * 100 - 360px);
         }
         .table-wrap {
           max-width: 100%;
@@ -1706,7 +1706,7 @@ styleElement.innerHTML = `
           margin-top: 16px;
         }
         .dice-field-container #output {
-          max-height: calc(100vh - 340px);
+          max-height: calc(var(--vh, 1vh) * 100 - 340px);
         }
         .main.item-opened .class-icon {
           height: 64px;

@@ -1868,7 +1868,7 @@ styleElement.innerHTML = `
       }
 
       .mdc-dialog .mdc-dialog__surface {
-          max-height: calc(100vh - 32px)
+          max-height: calc(var(--vh, 1vh) * 100 - 32px)
       }
 
       .mdc-dialog .mdc-dialog__surface {
@@ -5345,7 +5345,7 @@ styleElement.innerHTML = `
           position: absolute;
           box-sizing: border-box;
           max-width: calc(100vw - 32px);
-          max-height: calc(100vh - 32px);
+          max-height: calc(var(--vh, 1vh) * 100 - 32px);
           margin: 0;
           padding: 0;
           -webkit-transform: scale(1);

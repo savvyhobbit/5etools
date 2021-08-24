@@ -1,7 +1,7 @@
 import { readRouteView, readRouteSelection } from "./routing";
 import { loadModel } from "./data";
 import { resolveHash } from './renderTable.js';
-import { entryTextSearch } from "../js/utils";
+import { entryTextSearch, util_capitalize } from "../js/utils";
 import Parser from "./Parser";
 
 import droll from "../lib/droll";
@@ -1255,7 +1255,15 @@ async function getCharacterSpeed(character = selectedCharacter) {
   let race = await getRaceReference(character);
 
   if (race && race.speed) {
-    return race.speed;
+    if (typeof race.speed === 'number') {
+      return race.speed;
+    } else {
+      let result = '';
+      Object.entries(race.speed).forEach((entry) => {
+        result += `${util_capitalize(entry[0])}: ${entry[1]}<br/>`
+      });
+      return result;
+    }
   }
   return '';
 }
