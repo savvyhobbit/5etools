@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{114:function(t,e,i){"use strict";var s=i(7),n=i(18),a=i(1),l=(i(78),i(37));class r extends s.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const t=this.value.map(t=>-1!==this.options.indexOf(t)?this.options.indexOf(t):this.options.findIndex(e=>e.name===t.name&&e.source===t.source)).filter(t=>-1!==t);this.listBox&&(this.listBox.selectedValues=t),this.multiValue=t.map(t=>{let e=this.options[t];return e.name?e.name:Object(a.util_capitalizeAll)(e)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.name?this.$.select.value=this.options.findIndex(t=>t.name===this.value.name||t===this.value.name)+"":this.$.select.value=this.options.findIndex(t=>t.name===this.value||t===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(l.b)(this.model)),this.$.select.renderer=(t,e)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",t=>{e.opened=!0;let i=null!==t.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!i&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let t=this.listBox.selectedValues.map(t=>this.options[t]);this.multiValue=t.map(t=>t.name?t.name:Object(a.util_capitalizeAll)(t)).join(", "),this.addCallback&&this.addCallback(t)},0)})),this.options&&this.options.length)for(let t=0;t<this.options.length;t++){const e=this.options[t],i=document.createElement("vaadin-item");e.name?(i.textContent=e.name,i.setAttribute("value",t)):(i.textContent=Object(a.util_capitalizeAll)(e),i.setAttribute("value",t)),this.listBox.appendChild(i)}t.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const t=this.$.select.value;if(t&&!this.choices){const e=this.options[t];this.addCallback?this.addCallback(e,this.model):Object(n.M)(void 0,e,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(t){return!!t}_label(t,e){if(t)return e?`${t} (${e})`:t}static get template(){return s.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{115:function(t,e,i){"use strict";var n=i(7),s=i(18),a=i(1),l=(i(79),i(38));class o extends n.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const t=this.value.map(t=>-1!==this.options.indexOf(t)?this.options.indexOf(t):this.options.findIndex(e=>e.name===t.name&&e.source===t.source)).filter(t=>-1!==t);this.listBox&&(this.listBox.selectedValues=t),this.multiValue=t.map(t=>{let e=this.options[t];return e.name?e.name:Object(a.util_capitalizeAll)(e)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(t=>t.name===this.value.name&&t.source===this.value.source||t===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(t=>t.name===this.value.name||t===this.value.name)+"":this.$.select.value=this.options.findIndex(t=>t.name===this.value||t===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(l.b)(this.model)),this.$.select.renderer=(t,e)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",t=>{e.opened=!0;let i=null!==t.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!i&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let t=this.listBox.selectedValues.map(t=>this.options[t]);this.multiValue=t.map(t=>t.name?t.name:Object(a.util_capitalizeAll)(t)).join(", "),this.addCallback&&this.addCallback(t)},0)})),this.options&&this.options.length)for(let t=0;t<this.options.length;t++){const e=this.options[t],i=document.createElement("vaadin-item");e.name?(i.textContent=e.name,i.setAttribute("value",t)):(i.textContent=Object(a.util_capitalizeAll)(e),i.setAttribute("value",t)),this.listBox.appendChild(i)}t.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const t=this.$.select.value;if(t&&!this.choices){const e=this.options[t];this.addCallback?this.addCallback(e,this.model):Object(s.N)(void 0,e,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(t){return!!t}_label(t,e){if(t)return e?`${t} (${e})`:t}static get template(){return n.b`
       <style>
         :host {
           display: inline-block;
@@ -21,7 +21,7 @@
           <span class="prefix">[[multiValue]]</span>
         </div>
       </vaadin-select>
-    `}}customElements.define("dnd-select-add",r)},115:function(t,e,i){"use strict";var s=i(7),n=i(68);i(75),i(108);class a extends s.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new n.a(this.$.button)},10)}_exists(t){return!!t}_styleStr(t,e){let i="";return t&&(i+=`background: ${t}; `),e&&(i+=`border: ${e}; `),i}_svgStyleStr(t,e){let i="";return t&&(i+=`fill: ${t}; `),e&&(i+=`stroke: ${e}; `),i}static get template(){return s.b`
+    `}}customElements.define("dnd-select-add",o)},116:function(t,e,i){"use strict";var n=i(7),s=i(68);i(76),i(109);class a extends n.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new s.a(this.$.button)},10)}_exists(t){return!!t}_styleStr(t,e){let i="";return t&&(i+=`background: ${t}; `),e&&(i+=`border: ${e}; `),i}_svgStyleStr(t,e){let i="";return t&&(i+=`fill: ${t}; `),e&&(i+=`stroke: ${e}; `),i}static get template(){return n.b`
       <style include="material-styles">
         .mdc-tab-scroller__scroll-area--scroll {
           overflow-x: auto;
@@ -86,7 +86,7 @@
           <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
         </template>
       </button>
-    `}}customElements.define("dnd-button",a)},125:function(t,e,i){"use strict";i.r(e);var s=i(7);i(50),i(49),i(72);const n=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
+    `}}customElements.define("dnd-button",a)},126:function(t,e,i){"use strict";i.r(e);var n=i(7);i(51),i(50),i(73);const s=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
   <template>
     <style include="lumo-field-button">
       :host {
@@ -127,19 +127,19 @@
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(n.content);i(79),i(29);var a=i(66),l=i(20);
+</dom-module>`;document.head.appendChild(s.content);i(80),i(29);var a=i(66),l=i(20);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-const r=document.createElement("template");let o;r.innerHTML='<dom-module id="vaadin-number-field-template">\n  <template>\n    <style>\n      :host([readonly]) [part$="button"] {\n        pointer-events: none;\n      }\n\n      [part="decrease-button"]::before {\n        content: "−";\n      }\n\n      [part="increase-button"]::before {\n        content: "+";\n      }\n\n      [part="decrease-button"],\n      [part="increase-button"] {\n        -webkit-user-select: none;\n        -moz-user-select: none;\n        -ms-user-select: none;\n        user-select: none;\n      }\n\n      /* Hide the native arrow icons */\n      [part="value"]::-webkit-outer-spin-button,\n      [part="value"]::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n      }\n\n      [part="value"] {\n        /* Older Firefox versions (v47.0) requires !important */\n        -moz-appearance: textfield !important;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] {\n        direction: ltr;\n      }\n\n      :host([dir="rtl"]) [part="value"]::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input)::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input)::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        text-align: left;\n      }\n    </style>\n\n    <div disabled$="[[!_allowed(-1, value, min, max, step)]]" part="decrease-button" on-click="_decreaseValue" on-touchend="_decreaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n\n    <div disabled$="[[!_allowed(1, value, min, max, step)]]" part="increase-button" on-click="_increaseValue" on-touchend="_increaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n  </template>\n\n  \n</dom-module>',document.head.appendChild(r.content);class d extends a.a{static get is(){return"vaadin-number-field"}static get version(){return"2.6.2"}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number,reflectToAttribute:!0,observer:"_minChanged"},max:{type:Number,reflectToAttribute:!0,observer:"_maxChanged"},step:{type:Number,value:1,observer:"_stepChanged"}}}ready(){super.ready(),this.__previousValidInput=this.value||"",this.inputElement.type="number",this.inputElement.addEventListener("change",this.__onInputChange.bind(this))}_decreaseButtonTouchend(t){t.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(t){t.preventDefault(),this._increaseValue()}static get template(){if(!o){o=super.template.cloneNode(!0);const t=l.a.import(this.is+"-template","template"),e=t.content.querySelector('[part="decrease-button"]'),i=t.content.querySelector('[part="increase-button"]'),s=t.content.querySelector("style"),n=o.content.querySelector('[part="input-field"]'),a=o.content.querySelector('[name="prefix"]');n.insertBefore(e,a),n.appendChild(i),o.content.appendChild(s)}return o}_createConstraintsObserver(){this._createMethodObserver("_constraintsChanged(required, minlength, maxlength, pattern, min, max, step)")}_constraintsChanged(t,e,i,s,n,a,l){if(!this.invalid)return;const r=t=>!t&&0!==t;r(n)&&r(a)?super._constraintsChanged(t,e,i,s):this.validate()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(t){if(this.disabled||this.readonly)return;let e=parseFloat(this.value);this.value?e<this.min?(t=0,e=this.min):e>this.max&&(t=0,e=this.max):0==this.min&&t<0||0==this.max&&t>0||0==this.max&&0==this.min?(t=0,e=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?e=0:this.min>0?(e=this.min,this.max<0&&t<0&&(e=this.max),t=0):this.max<0&&(e=this.max,t<0?t=0:this._getIncrement(1,e-this.step)>this.max?e-=2*this.step:e-=this.step);const i=this._getIncrement(t,e);this.value&&0!=t&&!this._incrementIsInsideTheLimits(t,e)||this._setValue(i)}_setValue(t){this.value=this.inputElement.value=String(parseFloat(t)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(t,e){let i=this.step||1,s=this.min||0;const n=Math.max(this._getMultiplier(e),this._getMultiplier(i),this._getMultiplier(s));i*=n,s*=n;const a=((e=Math.round(e*n))-s)%i;return t>0?(e-a+i)/n:t<0?(e-(a||i))/n:e/n}_getDecimalCount(t){const e=String(t),i=e.indexOf(".");return-1===i?1:e.length-i-1}_getMultiplier(t){if(!isNaN(t))return Math.pow(10,this._getDecimalCount(t))}_incrementIsInsideTheLimits(t,e){return t<0?null==this.min||this._getIncrement(t,e)>=this.min:t>0?null==this.max||this._getIncrement(t,e)<=this.max:this._getIncrement(t,e)<=this.max&&this._getIncrement(t,e)>=this.min}_allowed(t){const e=t*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(e,i)}_stepChanged(t){this.__validateByStep=this.__stepChangedCalled||null!==this.getAttribute("step"),this.inputElement.step=this.__validateByStep?t:"any",this.__stepChangedCalled=!0,this.setAttribute("step",t)}_minChanged(t){this.inputElement.min=t}_maxChanged(t){this.inputElement.max=t}_valueChanged(t,e){t&&isNaN(parseFloat(t))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,e)}_onKeyDown(t){38==t.keyCode?(t.preventDefault(),this._increaseValue()):40==t.keyCode&&(t.preventDefault(),this._decreaseValue()),super._onKeyDown(t)}__onInputChange(){this.validate()}checkValidity(){return void 0!==this.min||void 0!==this.max||this.__validateByStep?this.inputElement.checkValidity():super.checkValidity()}}window.customElements.define(d.is,d);
+const o=document.createElement("template");let r;o.innerHTML='<dom-module id="vaadin-number-field-template">\n  <template>\n    <style>\n      :host([readonly]) [part$="button"] {\n        pointer-events: none;\n      }\n\n      [part="decrease-button"]::before {\n        content: "−";\n      }\n\n      [part="increase-button"]::before {\n        content: "+";\n      }\n\n      [part="decrease-button"],\n      [part="increase-button"] {\n        -webkit-user-select: none;\n        -moz-user-select: none;\n        -ms-user-select: none;\n        user-select: none;\n      }\n\n      /* Hide the native arrow icons */\n      [part="value"]::-webkit-outer-spin-button,\n      [part="value"]::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n      }\n\n      [part="value"] {\n        /* Older Firefox versions (v47.0) requires !important */\n        -moz-appearance: textfield !important;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] {\n        direction: ltr;\n      }\n\n      :host([dir="rtl"]) [part="value"]::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input)::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input)::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        text-align: left;\n      }\n    </style>\n\n    <div disabled$="[[!_allowed(-1, value, min, max, step)]]" part="decrease-button" on-click="_decreaseValue" on-touchend="_decreaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n\n    <div disabled$="[[!_allowed(1, value, min, max, step)]]" part="increase-button" on-click="_increaseValue" on-touchend="_increaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n  </template>\n\n  \n</dom-module>',document.head.appendChild(o.content);class d extends a.a{static get is(){return"vaadin-number-field"}static get version(){return"2.6.2"}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number,reflectToAttribute:!0,observer:"_minChanged"},max:{type:Number,reflectToAttribute:!0,observer:"_maxChanged"},step:{type:Number,value:1,observer:"_stepChanged"}}}ready(){super.ready(),this.__previousValidInput=this.value||"",this.inputElement.type="number",this.inputElement.addEventListener("change",this.__onInputChange.bind(this))}_decreaseButtonTouchend(t){t.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(t){t.preventDefault(),this._increaseValue()}static get template(){if(!r){r=super.template.cloneNode(!0);const t=l.a.import(this.is+"-template","template"),e=t.content.querySelector('[part="decrease-button"]'),i=t.content.querySelector('[part="increase-button"]'),n=t.content.querySelector("style"),s=r.content.querySelector('[part="input-field"]'),a=r.content.querySelector('[name="prefix"]');s.insertBefore(e,a),s.appendChild(i),r.content.appendChild(n)}return r}_createConstraintsObserver(){this._createMethodObserver("_constraintsChanged(required, minlength, maxlength, pattern, min, max, step)")}_constraintsChanged(t,e,i,n,s,a,l){if(!this.invalid)return;const o=t=>!t&&0!==t;o(s)&&o(a)?super._constraintsChanged(t,e,i,n):this.validate()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(t){if(this.disabled||this.readonly)return;let e=parseFloat(this.value);this.value?e<this.min?(t=0,e=this.min):e>this.max&&(t=0,e=this.max):0==this.min&&t<0||0==this.max&&t>0||0==this.max&&0==this.min?(t=0,e=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?e=0:this.min>0?(e=this.min,this.max<0&&t<0&&(e=this.max),t=0):this.max<0&&(e=this.max,t<0?t=0:this._getIncrement(1,e-this.step)>this.max?e-=2*this.step:e-=this.step);const i=this._getIncrement(t,e);this.value&&0!=t&&!this._incrementIsInsideTheLimits(t,e)||this._setValue(i)}_setValue(t){this.value=this.inputElement.value=String(parseFloat(t)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(t,e){let i=this.step||1,n=this.min||0;const s=Math.max(this._getMultiplier(e),this._getMultiplier(i),this._getMultiplier(n));i*=s,n*=s;const a=((e=Math.round(e*s))-n)%i;return t>0?(e-a+i)/s:t<0?(e-(a||i))/s:e/s}_getDecimalCount(t){const e=String(t),i=e.indexOf(".");return-1===i?1:e.length-i-1}_getMultiplier(t){if(!isNaN(t))return Math.pow(10,this._getDecimalCount(t))}_incrementIsInsideTheLimits(t,e){return t<0?null==this.min||this._getIncrement(t,e)>=this.min:t>0?null==this.max||this._getIncrement(t,e)<=this.max:this._getIncrement(t,e)<=this.max&&this._getIncrement(t,e)>=this.min}_allowed(t){const e=t*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(e,i)}_stepChanged(t){this.__validateByStep=this.__stepChangedCalled||null!==this.getAttribute("step"),this.inputElement.step=this.__validateByStep?t:"any",this.__stepChangedCalled=!0,this.setAttribute("step",t)}_minChanged(t){this.inputElement.min=t}_maxChanged(t){this.inputElement.max=t}_valueChanged(t,e){t&&isNaN(parseFloat(t))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,e)}_onKeyDown(t){38==t.keyCode?(t.preventDefault(),this._increaseValue()):40==t.keyCode&&(t.preventDefault(),this._decreaseValue()),super._onKeyDown(t)}__onInputChange(){this.validate()}checkValidity(){return void 0!==this.min||void 0!==this.max||this.__validateByStep?this.inputElement.checkValidity():super.checkValidity()}}window.customElements.define(d.is,d);
 /**
 @license
 Copyright (c) 2019 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(c.content);class p extends d{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(!this.__hasOnlyDigits(t))return console.warn(`Trying to set invalid step size "${t}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d*$/.test(String(t))}}window.customElements.define(p.is,p);i(114),i(115),i(108);var h=i(18),u=i(107),b=i(1);class m extends s.a{static get properties(){return{str:{type:Number},dex:{type:Number},con:{type:Number},int:{type:Number},wis:{type:Number},cha:{type:Number},strAdj:{type:Number,value:0},dexAdj:{type:Number,value:0},conAdj:{type:Number,value:0},intAdj:{type:Number,value:0},wisAdj:{type:Number,value:0},chaAdj:{type:Number,value:0},attributeProfs:{type:String,value:""},saves:{type:Array,value:[]},classSkillProfOptions:{type:Object,value:{}},backgroundSkillProfOptions:{type:Object,value:[]},defaultBackgroundSkillProf:{type:String,value:""},raceAttributeOptions:{type:Object,value:[]},defaultRaceAttribute:{type:String,value:""},maxHP:{type:Number},tempHP:{type:Number,value:0},isEditMode:{type:Boolean,value:!1}}}static get observers(){return["updateCharAttr(str, dex, con, int, wis, cha)"]}updateCharAttr(t,e,i,s,n,a){t&&e&&i&&s&&n&&a&&Object(h.ib)({str:t,dex:e,con:i,int:s,wis:n,cha:a})}hpChangeHandler(t){this.$.hpField.focusElement.blur()}hpBlurHandler(t){const e=parseInt(this.$.hpField.value);Number.isNaN(e)?this.$.hpField.value=h.u:Object(h.Y)(e)}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=t=>{let e=t.detail.character;this.updateAttributesFromCharacter(e)},this.updateAttributesFromCharacter(Object(h.E)()),Object(h.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=t=>{this.isEditMode=t.detail.isEditMode},Object(u.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(u.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(h.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(u.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateAttributesFromCharacter(t){if(t&&t.attr){const e=t.attr;e.str===this.str&&e.dex===this.dex&&e.con===this.con&&e.int===this.int&&e.wis===this.wis&&e.cha===this.cha||this.setProperties({str:t.attr.str,dex:t.attr.dex,con:t.attr.con,int:t.attr.int,wis:t.attr.wis,cha:t.attr.cha}),this.saves=await Object(h.s)();let i=await Object(h.h)(),s=await Object(h.D)();s&&s.choose?(this.raceAttributeOptions=s.choose.from.map(t=>t.toUpperCase()),this.raceAttributeChoices=s.choose.count||1,this.raceAttributeSelections=t.raceAttributes):(this.raceAttributeOptions=void 0,this.raceAttributeChoices=void 0,this.raceAttributeSelections=void 0);let n=await Object(h.C)(s);this.defaultRaceAttribute=n.map(t=>{let e=t[0].toLowerCase(),i=t[1];return e.toUpperCase()+" "+Object(b.absInt)(i)}).join(", "),this.strAdj=i.str,this.dexAdj=i.dex,this.conAdj=i.con,this.intAdj=i.int,this.wisAdj=i.wis,this.chaAdj=i.cha,this.attributeProfs=(await Object(h.F)()).join(","),this.maxHP=await Object(h.B)(),this.currentHP=await Object(h.u)(),this.tempHP=await Object(h.J)(),this.hitDice=await Object(h.z)(),this.ac=await Object(h.l)(),this.initiative=await Object(h.n)(),this.speed=await Object(h.o)(),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_adjustString(t){return 0!==t&&void 0!==t?Object(b.absInt)(t):""}_total(t,e){let i=parseInt(t),s=parseInt(e);return i=isNaN(i)?0:i,s=isNaN(s)?0:s,i+s}_mod(t,e){return Object(b.absInt)(Math.floor((this._total(t,e)-10)/2))}_contains(t,e){return t.indexOf(e)>-1}_exists(){for(let t of arguments)if(t&&(t.constructor!==Object||Object.entries(t).length>0)&&(!Array.isArray(t)||t.length>0))return!0;return!1}_editModeClass(t){return t?"edit-mode":"not-edit-mode"}_tempHpStr(t){return t&&"number"==typeof t&&t>0?" + "+t:""}_toggleButtonField(t){const e=t.target.closest(".btn-field"),i=e.classList.contains("btn-field--open"),s=e.classList.contains("btn-field--temp"),n=e.querySelector("vaadin-integer-field"),a=e.querySelector("dnd-button");if(e.classList.toggle("btn-field--open"),a.classList.toggle("icon-only"),s)if(i){const t=parseInt(n.value);t&&(Object(h.c)(parseInt(this.tempHP)+t),n.value="")}else n.focus();else if(i){const t=parseInt(n.value);if(t){const i=e.classList.contains("btn-field--heal")?1:-1;Object(h.Y)(parseInt(this.currentHP)+i*t),n.value=""}}else n.focus()}_submitButtonField(t){"Enter"===t.key&&this._toggleButtonField(t)}_blurButtonField(t){this._toggleButtonField(t)}_useHitDice(t){const e=t.target.closest(".hit-dice__item");if(this.currentHP<this.maxHP){const t=e.dataset.className;console.error(t),Object(h.kb)(t)}else e.classList.add("hit-dice__item--error"),setTimeout(()=>{e.classList.remove("hit-dice__item--error")},500)}_strContains(t,e){return t.indexOf(e)>-1}_resetHitDice(t){Object(h.Q)()}_triggerShortRest(t){}_triggerLongRest(t){}static get template(){return s.b`
+const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(c.content);class p extends d{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(!this.__hasOnlyDigits(t))return console.warn(`Trying to set invalid step size "${t}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d*$/.test(String(t))}}window.customElements.define(p.is,p);i(115),i(116),i(109);var u=i(18),h=i(108),b=i(1),m=i(72);class v extends n.a{static get properties(){return{str:{type:Number},dex:{type:Number},con:{type:Number},int:{type:Number},wis:{type:Number},cha:{type:Number},strAdj:{type:Number,value:0},dexAdj:{type:Number,value:0},conAdj:{type:Number,value:0},intAdj:{type:Number,value:0},wisAdj:{type:Number,value:0},chaAdj:{type:Number,value:0},attributeProfs:{type:String,value:""},saves:{type:Array,value:[]},classSkillProfOptions:{type:Object,value:{}},backgroundSkillProfOptions:{type:Object,value:[]},defaultBackgroundSkillProf:{type:String,value:""},raceAttributeOptions:{type:Object,value:[]},defaultRaceAttribute:{type:String,value:""},maxHP:{type:Number},tempHP:{type:Number,value:0},isEditMode:{type:Boolean,value:!1},initiative:{type:String,value:""},customInitiative:{type:Boolean,value:!1},customInitiativeVal:{type:Number},customACVal:{type:Number}}}static get observers(){return["updateCharAttr(str, dex, con, int, wis, cha)","updateCustomInitiative(customInitiativeVal)","updateCustomAC(customACVal)"]}updateCharAttr(t,e,i,n,s,a){t&&e&&i&&n&&s&&a&&Object(u.nb)({str:t,dex:e,con:i,int:n,wis:s,cha:a})}updateCustomInitiative(t){void 0!==t&&""!==t&&Object(u.bb)(t)}updateCustomAC(t){void 0!==t&&""!==t&&Object(u.ab)(t)}hpChangeHandler(t){this.$.hpField.focusElement.blur()}hpBlurHandler(t){const e=parseInt(this.$.hpField.value);Number.isNaN(e)?this.$.hpField.value=u.v:Object(u.Z)(e)}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=t=>{let e=t.detail.character;this.updateAttributesFromCharacter(e)},this.updateAttributesFromCharacter(Object(u.F)()),Object(u.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=t=>{this.isEditMode=t.detail.isEditMode},Object(h.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(h.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(u.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(h.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateAttributesFromCharacter(t){if(t&&t.attr){const e=t.attr;e.str===this.str&&e.dex===this.dex&&e.con===this.con&&e.int===this.int&&e.wis===this.wis&&e.cha===this.cha||this.setProperties({str:t.attr.str,dex:t.attr.dex,con:t.attr.con,int:t.attr.int,wis:t.attr.wis,cha:t.attr.cha}),this.saves=await Object(u.t)();let i=await Object(u.h)(),n=await Object(u.E)();n&&n.choose?(this.raceAttributeOptions=n.choose.from.map(t=>t.toUpperCase()),this.raceAttributeChoices=n.choose.count||1,this.raceAttributeSelections=t.raceAttributes):(this.raceAttributeOptions=void 0,this.raceAttributeChoices=void 0,this.raceAttributeSelections=void 0);let s=await Object(u.D)(n);this.defaultRaceAttribute=s.map(t=>{let e=t[0].toLowerCase(),i=t[1];return e.toUpperCase()+" "+Object(b.absInt)(i)}).join(", "),this.strAdj=i.str,this.dexAdj=i.dex,this.conAdj=i.con,this.intAdj=i.int,this.wisAdj=i.wis,this.chaAdj=i.cha,this.attributeProfs=(await Object(u.G)()).join(","),this.maxHP=await Object(u.C)(),this.currentHP=await Object(u.v)(),this.tempHP=await Object(u.K)(),this.hitDice=await Object(u.A)(),this.customAC=!!t.customAC,this.customACVal=t.customACVal,this.ac=await Object(u.l)(),this.customInitiative=!!t.customInitiative,this.customInitiativeVal=t.customInitiativeVal,this.initiative=await Object(u.n)(),this.speed=await Object(u.p)(),this.proficiencyBonus=await Object(u.o)(),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_adjustString(t){return 0!==t&&void 0!==t?Object(b.absInt)(t):""}_total(t,e){let i=parseInt(t),n=parseInt(e);return i=isNaN(i)?0:i,n=isNaN(n)?0:n,i+n}_mod(t,e){return Object(b.absInt)(Math.floor((this._total(t,e)-10)/2))}_contains(t,e){return t.indexOf(e)>-1}_exists(){for(let t of arguments)if(t&&(t.constructor!==Object||Object.entries(t).length>0)&&(!Array.isArray(t)||t.length>0))return!0;return!1}_editModeClass(t){return t?"edit-mode":"not-edit-mode"}_tempHpStr(t){return t&&"number"==typeof t&&t>0?" + "+t:""}_toggleButtonField(t){const e=t.target.closest(".btn-field"),i=e.classList.contains("btn-field--open"),n=e.classList.contains("btn-field--temp"),s=e.querySelector("vaadin-integer-field"),a=e.querySelector("dnd-button");if(e.classList.toggle("btn-field--open"),a.classList.toggle("icon-only"),n)if(i){const t=parseInt(s.value);t&&(Object(u.c)(parseInt(this.tempHP)+t),s.value="")}else s.focus();else if(i){const t=parseInt(s.value);if(t){const i=e.classList.contains("btn-field--heal")?1:-1;Object(u.Z)(parseInt(this.currentHP)+i*t),s.value=""}}else s.focus()}_submitButtonField(t){"Enter"===t.key&&this._toggleButtonField(t)}_blurButtonField(t){this._toggleButtonField(t)}_useHitDice(t){const e=t.target.closest(".hit-dice__item");if(this.currentHP<this.maxHP){const t=e.dataset.className;Object(u.pb)(t)}else e.classList.add("hit-dice__item--error"),setTimeout(()=>{e.classList.remove("hit-dice__item--error")},500)}_strContains(t,e){return t.indexOf(e)>-1}_resetHitDice(t){Object(u.R)()}_roll(t){if(!this.isEditMode){const e=Object(b.findInPath)(".proficiency-item",t),i=Object(b.findInPath)(".stat-box",t),n=Object(b.findInPath)(".initiative",t);let s,a,l;if(e?(a=e.hasAttribute("enabled"),s=parseInt(e.closest(".attribute-wrap").querySelector(".stat-box__mod").innerText,10),l=e.innerText):i?(a=i.querySelector(".stat-box__save").hasAttribute("enabled"),s=parseInt(i.querySelector(".stat-box__mod").innerText,10),l=i.querySelector("vaadin-integer-field").label+" Save"):n&&(a=!1,s=this.customInitiative?this.customInitiativeVal:parseInt(this.initiative,10),l="Initiative"),l){let t="1d20";a&&(s+=this.proficiencyBonus),s>0?t+="+"+s:s<0&&(t+=s),Object(m.b)(l,t)}}}_swapCustomInitiative(t){Object(u.jb)()}_swapCustomAC(t){Object(u.ib)()}_plusMinus(t){if(t&&t>0)return"+"}_triggerShortRest(t){}_triggerLongRest(t){}static get template(){return n.b`
       <style include="material-styles">
         :host {
           display: block;
@@ -197,6 +197,7 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
           overflow: hidden;
           text-overflow: ellipsis;
           position: relative;
+          cursor: pointer;
         }
 
         .proficiency-item::before,
@@ -230,6 +231,7 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
 
         /* Stat Box */
         .stat-box {
+          cursor: pointer;
           position: relative;
           display: inline-flex;
           flex-direction: column;
@@ -452,8 +454,21 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
         }
         .basic-box__value {
           font-size: 18px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          text-align: center;
         }
-        
+
+        .custom-val__swap {
+          font-size: 10px;
+          margin: -4px 0 8px auto;
+          background-color: var(--lumo-contrast-10pct);
+          padding: 5px 5px 4px;
+          line-height: 1;
+          border-radius: 4px;
+          cursor: pointer;
+        }
 
         /* Rest Buttons */
         .rest-btn {
@@ -510,12 +525,34 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
             </div>
 
             <div class="basic-box basic-box--short ac">
-              <div class="basic-box__value">[[ac]]</div>
+              <div class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
+                  <span hidden$=[[customAC]]>Custom</span>
+                  <span hidden$=[[!customAC]]>Standard</span>
+                </div>
+
+                <div hidden$=[[!customAC]]>
+                  <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                </div>
+                <div hidden$=[[customAC]]>[[ac]]</div>
+              </div>
               <div class="basic-box__label">AC</div>
             </div>
 
-            <div class="basic-box basic-box--short initiative">
-              <div class="basic-box__value">[[initiative]]</div>
+            <div class="basic-box basic-box--short initiative" on-click="_roll">
+              <div class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
+                  <span hidden$=[[customInitiative]]>Custom</span>
+                  <span hidden$=[[!customInitiative]]>Standard</span>
+                </div>
+
+                <div hidden$=[[!customInitiative]]>
+                  <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                </div>
+                <div hidden$=[[customInitiative]]>[[initiative]]</div>
+              </div>
               <div class="basic-box__label">Initiative</div>
             </div>
 
@@ -536,7 +573,7 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
           <div class="stats">
             <!--  Attributes -->
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'str')]]"></div>
                 <div class="stat-box__mod">[[_mod(strAdj, str)]]</div>
                 <div class="stat-box__footer">
@@ -546,11 +583,11 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'athletics')]]">Athletics</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'athletics')]]">Athletics</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'dex')]]"></div>
                 <div class="stat-box__mod">[[_mod(dexAdj, dex)]]</div>
                 <div class="stat-box__footer">
@@ -560,13 +597,13 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'acrobatics')]]">Acrobatics</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'slight of hand')]]">Slight of Hand</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'stealth')]]">Stealth</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'acrobatics')]]">Acrobatics</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'stealth')]]">Stealth</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
                 <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
                 <div class="stat-box__footer">
@@ -580,7 +617,7 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
                 <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
                 <div class="stat-box__footer">
@@ -590,15 +627,15 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'arcana')]]">Arcana</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'history')]]">History</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'investigation')]]">Investigation</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'nature')]]">Nature</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'religion')]]">Religion</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'arcana')]]">Arcana</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'history')]]">History</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'investigation')]]">Investigation</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'nature')]]">Nature</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'religion')]]">Religion</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'wis')]]"></div>
                 <div class="stat-box__mod">[[_mod(wisAdj, wis)]]</div>
                 <div class="stat-box__footer">
@@ -608,15 +645,15 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'animal handling')]]">Animal Handling</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'insight')]]">Insight</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'medicine')]]">Medicine</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'perception')]]">Perception</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'survival')]]">Survival</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'animal handling')]]">Animal Handling</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'insight')]]">Insight</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'medicine')]]">Medicine</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'perception')]]">Perception</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'survival')]]">Survival</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'cha')]]"></div>
                 <div class="stat-box__mod">[[_mod(chaAdj, cha)]]</div>
                 <div class="stat-box__footer">
@@ -626,14 +663,14 @@ const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-i
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'deception')]]">Deception</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'intimidation')]]">Intimidation</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'performance')]]">Performance</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'persuasion')]]">Persuasion</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'deception')]]">Deception</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'intimidation')]]">Intimidation</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'performance')]]">Performance</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'persuasion')]]">Persuasion</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    `}}customElements.define("dnd-character-builder-attributes",m)}}]);
+    `}}customElements.define("dnd-character-builder-attributes",v)}}]);
 //# sourceMappingURL=8.bundle.js.map
