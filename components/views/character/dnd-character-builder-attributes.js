@@ -20,10 +20,16 @@ import {
   useHitDice,
   getCharacterAC,
   getCharacterInitiative,
-  getCharacterSpeed
+  getCharacterSpeed,
+  getCharacterProficiencyBonus,
+  toggleCustomInitiative,
+  setCustomInitiativeVal,
+  toggleCustomAC,
+  setCustomACVal
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { util_capitalizeAll, absInt } from "../../../js/utils";
+import { util_capitalizeAll, absInt, findInPath } from "../../../js/utils";
+import { rollDice } from "../../../util/roll";
 
 class DndCharacterBuilderAttributes extends PolymerElement {
   
@@ -110,17 +116,47 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       isEditMode: {
         type: Boolean,
         value: false
+      },
+      initiative: {
+        type: String,
+        value: ""
+      },
+      customInitiative: {
+        type: Boolean,
+        value: false
+      },
+      customInitiativeVal: {
+        type: Number
+      },
+      customACVal: {
+        type: Number
       }
     };
   }
 
   static get observers() {
-    return ["updateCharAttr(str, dex, con, int, wis, cha)"]
+    return [
+      "updateCharAttr(str, dex, con, int, wis, cha)",
+      "updateCustomInitiative(customInitiativeVal)",
+      "updateCustomAC(customACVal)"
+    ]
   }
 
   updateCharAttr(str, dex, con, int, wis, cha) {
     if (str && dex && con && int && wis && cha) {
       updateAttr({str, dex, con, int, wis, cha});
+    }
+  }
+
+  updateCustomInitiative(customInitiativeVal) {
+    if (customInitiativeVal !== undefined && customInitiativeVal !== "") {
+      setCustomInitiativeVal(customInitiativeVal);
+    }
+  }
+
+  updateCustomAC(customACVal) {
+    if (customACVal !== undefined && customACVal !== "") {
+      setCustomACVal(customACVal);
     }
   }
 
@@ -215,11 +251,17 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
       this.hitDice = await getHitDice();
 
+      this.customAC = !!character.customAC;
+      this.customACVal = character.customACVal;
       this.ac = await getCharacterAC();
 
+      this.customInitiative = !!character.customInitiative;
+      this.customInitiativeVal = character.customInitiativeVal;
       this.initiative = await getCharacterInitiative();
 
       this.speed = await getCharacterSpeed();
+
+      this.proficiencyBonus = await getCharacterProficiencyBonus();
 
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
@@ -315,7 +357,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     const element = e.target.closest('.hit-dice__item');
     if (this.currentHP < this.maxHP) {
       const className = element.dataset.className;
-      console.error(className);
       useHitDice(className);
     } else {
       // flash error
@@ -332,6 +373,61 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   _resetHitDice(e) {
     resetHitDice();
+  }
+
+  _roll(e) {
+    if (!this.isEditMode) {
+      const profEl = findInPath('.proficiency-item', e);
+      const attrEl = findInPath('.stat-box', e);
+      const initEl = findInPath('.initiative', e);
+      let mod, isProficient, name;
+
+      if (profEl) {
+        isProficient = profEl.hasAttribute('enabled');
+        mod = parseInt(profEl.closest('.attribute-wrap').querySelector('.stat-box__mod').innerText, 10);
+        name = profEl.innerText;
+
+      } else if (attrEl) {
+        isProficient = attrEl.querySelector('.stat-box__save').hasAttribute('enabled');
+        mod = parseInt(attrEl.querySelector('.stat-box__mod').innerText, 10);
+        name = attrEl.querySelector('vaadin-integer-field').label + ' Save';
+
+      } else if (initEl) {
+        isProficient = false;
+        mod = this.customInitiative ? this.customInitiativeVal : parseInt(this.initiative, 10);
+        name = "Initiative";
+      }
+
+      if (name) {
+        let rollForm = '1d20';
+  
+        if (isProficient) {
+          mod = mod + this.proficiencyBonus;
+        }
+        if (mod > 0) {
+          rollForm += `+${mod}`
+        } else if (mod < 0) {
+          rollForm += mod;
+        }
+        rollDice(name, rollForm);
+      }
+    }
+  }
+
+  _swapCustomInitiative(e) {
+    toggleCustomInitiative();
+  }
+
+  _swapCustomAC(e) {
+    toggleCustomAC();
+  }
+
+  _plusMinus(val) {
+    if (val) {
+      if (val > 0) { 
+        return "+";
+      }
+    }
   }
 
   _triggerShortRest(e) {
@@ -401,6 +497,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           overflow: hidden;
           text-overflow: ellipsis;
           position: relative;
+          cursor: pointer;
         }
 
         .proficiency-item::before,
@@ -434,6 +531,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
         /* Stat Box */
         .stat-box {
+          cursor: pointer;
           position: relative;
           display: inline-flex;
           flex-direction: column;
@@ -656,8 +754,21 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         }
         .basic-box__value {
           font-size: 18px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          text-align: center;
         }
-        
+
+        .custom-val__swap {
+          font-size: 10px;
+          margin: -4px 0 8px auto;
+          background-color: var(--lumo-contrast-10pct);
+          padding: 5px 5px 4px;
+          line-height: 1;
+          border-radius: 4px;
+          cursor: pointer;
+        }
 
         /* Rest Buttons */
         .rest-btn {
@@ -714,12 +825,34 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             </div>
 
             <div class="basic-box basic-box--short ac">
-              <div class="basic-box__value">[[ac]]</div>
+              <div class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
+                  <span hidden$=[[customAC]]>Custom</span>
+                  <span hidden$=[[!customAC]]>Standard</span>
+                </div>
+
+                <div hidden$=[[!customAC]]>
+                  <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                </div>
+                <div hidden$=[[customAC]]>[[ac]]</div>
+              </div>
               <div class="basic-box__label">AC</div>
             </div>
 
-            <div class="basic-box basic-box--short initiative">
-              <div class="basic-box__value">[[initiative]]</div>
+            <div class="basic-box basic-box--short initiative" on-click="_roll">
+              <div class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
+                  <span hidden$=[[customInitiative]]>Custom</span>
+                  <span hidden$=[[!customInitiative]]>Standard</span>
+                </div>
+
+                <div hidden$=[[!customInitiative]]>
+                  <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                </div>
+                <div hidden$=[[customInitiative]]>[[initiative]]</div>
+              </div>
               <div class="basic-box__label">Initiative</div>
             </div>
 
@@ -740,7 +873,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           <div class="stats">
             <!--  Attributes -->
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'str')]]"></div>
                 <div class="stat-box__mod">[[_mod(strAdj, str)]]</div>
                 <div class="stat-box__footer">
@@ -750,11 +883,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'athletics')]]">Athletics</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'athletics')]]">Athletics</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'dex')]]"></div>
                 <div class="stat-box__mod">[[_mod(dexAdj, dex)]]</div>
                 <div class="stat-box__footer">
@@ -764,13 +897,13 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'acrobatics')]]">Acrobatics</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'slight of hand')]]">Slight of Hand</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'stealth')]]">Stealth</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'acrobatics')]]">Acrobatics</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'stealth')]]">Stealth</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
                 <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
                 <div class="stat-box__footer">
@@ -784,7 +917,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
                 <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
                 <div class="stat-box__footer">
@@ -794,15 +927,15 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'arcana')]]">Arcana</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'history')]]">History</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'investigation')]]">Investigation</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'nature')]]">Nature</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'religion')]]">Religion</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'arcana')]]">Arcana</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'history')]]">History</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'investigation')]]">Investigation</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'nature')]]">Nature</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'religion')]]">Religion</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'wis')]]"></div>
                 <div class="stat-box__mod">[[_mod(wisAdj, wis)]]</div>
                 <div class="stat-box__footer">
@@ -812,15 +945,15 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'animal handling')]]">Animal Handling</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'insight')]]">Insight</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'medicine')]]">Medicine</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'perception')]]">Perception</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'survival')]]">Survival</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'animal handling')]]">Animal Handling</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'insight')]]">Insight</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'medicine')]]">Medicine</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'perception')]]">Perception</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'survival')]]">Survival</div>
               </div>
             </div>
             <div class="attribute-wrap">
-              <div class="stat-box">
+              <div class="stat-box" on-click="_roll">
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'cha')]]"></div>
                 <div class="stat-box__mod">[[_mod(chaAdj, cha)]]</div>
                 <div class="stat-box__footer">
@@ -830,10 +963,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'deception')]]">Deception</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'intimidation')]]">Intimidation</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'performance')]]">Performance</div>
-                <div class="proficiency-item" enabled$="[[_strContains(attributeProfs, 'persuasion')]]">Persuasion</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'deception')]]">Deception</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'intimidation')]]">Intimidation</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'performance')]]">Performance</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'persuasion')]]">Persuasion</div>
               </div>
             </div>
           </div>

@@ -36,8 +36,8 @@
               "intimidation",
               "investigation",
               "perception",
-              "persuassion",
-              "slight of hand",
+              "persuasion",
+              "sleight of hand",
               "survival",
               "stealth"
             ],
@@ -52,7 +52,7 @@
         "any one weapon (if proficient)",
         "(a) a {@item light crossbow|phb} and {@item crossbow bolts (20)|phb|20 bolts} or (b) any {@filter simple weapon|items|source=phb|category=basic|type=simple weapon}",
         "(a) {@item leather armor|phb} or (b) {@item hide armor|phb}",
-        "(a) a {@item burlar's pack|phb} or (b) an {@item explorer's pack|phb}"
+        "(a) a {@item burglar's pack|phb} or (b) an {@item explorer's pack|phb}"
       ],
       "goldAlternative": "{@dice 4d4×10|4d4 × 10|Starting Gold}"
     },

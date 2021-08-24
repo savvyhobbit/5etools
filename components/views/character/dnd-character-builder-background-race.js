@@ -73,8 +73,8 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
   }
 
   async updateFromCharacter(character) {
-    this.selectedBackground = character.background.name;
-    this.selectedRace = character.race.name;
+    this.selectedBackground = character.background;
+    this.selectedRace = character.race;
     // Skills from Background
     let backgroundSkills = await getBackgroundSkillProfOptions();
     if (backgroundSkills && backgroundSkills.choose) {

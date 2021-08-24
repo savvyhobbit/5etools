@@ -95,7 +95,9 @@ class DndSelectAdd extends PolymerElement {
       }
     } else {
       if (this.value && this.options) {
-        if (this.value.name) {
+        if (this.value.source) {
+          this.$.select.value = this.options.findIndex(i => { return i.name === this.value.name && i.source === this.value.source || i === this.value.name }) + "";
+        } else if (this.value.name) {
           this.$.select.value = this.options.findIndex(i => { return i.name === this.value.name || i === this.value.name }) + "";
         } else {
           this.$.select.value = this.options.findIndex(i => { return i.name === this.value || i === this.value }) + "";

@@ -9,6 +9,7 @@ import { jqEmpty } from "../../js/utils.js";
 import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
+import { rollEventChannel } from '../../util/roll.js';
 
 class DndCharacterBuilderView extends PolymerElement {
   static get properties() {
@@ -143,6 +144,18 @@ class DndCharacterBuilderView extends PolymerElement {
         }
       });
     }
+
+    this.rollHandler = (e) => {
+      const {name, roll, result} = e.detail;
+      const newRollEl = document.createElement('div');
+      newRollEl.classList.add('roll-result');
+      newRollEl.innerHTML = `${name}: ${result}`;
+      this.$.rollContainer.appendChild(newRollEl);
+      setTimeout(() => {
+        newRollEl.remove();
+      }, 3900);
+    }
+    rollEventChannel().addEventListener('roll', this.rollHandler);
   }
 
   disconnectedCallback() {
@@ -154,6 +167,7 @@ class DndCharacterBuilderView extends PolymerElement {
     getCharacterChannel().removeEventListener("character-selected", this.characterChangeHandler);
     this.$.name.removeEventListener("focus", this.nameFieldFocusHandler);
     getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
+    rollEventChannel().removeEventListener('roll', this.rollHandler);
   }
 
   updateView(el) {
@@ -233,6 +247,43 @@ class DndCharacterBuilderView extends PolymerElement {
           font-size: 13px;
           font-style: italic;
         }
+        .roll-container {
+          position: relative;
+        }
+        .roll-result {
+          animation-name: fadeOutUp;
+          animation-duration: 4s;
+          animation-timing-function: ease-in;
+          position: absolute;
+          top: -80px;
+          width: max-content;
+          right: 0;
+          font-weight: bold;
+          font-size: 20px;
+          color: var(--mdc-theme-secondary);
+          z-index: 1000;
+        }
+
+        @media(min-width: 921px) {
+          .roll-result {
+            top: calc(var(--vh, 1vh) * 100 - 300px);
+            right: 50px;
+          }
+        }
+
+        @keyframes fadeOutUp {
+          0% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(calc(var(--vh, 1vh) * -20));
+          }
+        }
 
         .thumb-menu {
           position: fixed;
@@ -295,7 +346,7 @@ class DndCharacterBuilderView extends PolymerElement {
             margin: 0 -16px -90px;
           }
           .tab-wrap {
-            min-height: calc(var(--vh, 1vh) * 100 - 256px);
+            min-height: calc(var(--vh, 1vh) * 100 - 250px);
           }
         }
 
@@ -322,6 +373,7 @@ class DndCharacterBuilderView extends PolymerElement {
             </div>
 
             <div class="thumb-menu">
+              <div class="roll-container" id="rollContainer"></div>
               <button class="thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" id="editBtn" on-click="toggleEditMode">edit</button>
             </div>
           </div>

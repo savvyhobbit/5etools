@@ -1,10 +1,11 @@
 import { readRouteView, readRouteSelection } from "./routing";
 import { loadModel } from "./data";
 import { resolveHash } from './renderTable.js';
-import { entryTextSearch, util_capitalize } from "../js/utils";
+import { entryTextSearch, util_capitalize, getProfBonus } from "../js/utils";
 import Parser from "./Parser";
 
 import droll from "../lib/droll";
+import { emitRoll } from "./roll";
 
 let schema = {
   name: '',
@@ -377,7 +378,11 @@ async function getTypeReference(type, char = selectedCharacter) {
 
   if (char && char[feature] && char[feature].name) {
     let data = await loadModel(type);
-    return resolveHash(data, char[feature].name);
+    if (char[feature].source) {
+      return resolveHash(data, `${char[feature].name}_${char[feature].source}`);
+    } else {
+      return resolveHash(data, char[feature].name);
+    }
   }
 }
 
@@ -996,8 +1001,11 @@ async function useHitDice(className, character = selectedCharacter) {
       const classRef = (await getClassReferences(character))[className];
       const hitDie = classRef.hd.faces;
       const conMod = await getAttributeModifier('con');
-      const rollTotal = droll.roll('1d' + hitDie).total;
-      const newCurrentHp = character.currentHp + rollTotal + conMod;
+      const rollForm = `1d${hitDie}+${conMod}`;
+      const roll = droll.roll(rollForm);
+      const rollTotal = roll.total;
+      emitRoll("Hit Dice", rollForm, roll);
+      const newCurrentHp = character.currentHp + rollTotal;
       setCurrentHp(newCurrentHp);
       character.hitDice[className] = character.hitDice[className] - 1;
       saveCharacter(character);
@@ -1243,12 +1251,44 @@ async function getCharacterAC(character = selectedCharacter) {
   return ac;
 }
 
+function toggleCustomAC(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customAC = toggle;
+  } else {
+    toggleCustomAC(!character.customAC, character);
+    saveCharacter(character);
+  }
+}
+
+function setCustomACVal(customACVal, character = selectedCharacter) {
+  character.customACVal = customACVal;
+  saveCharacter(character);
+}
+
 async function getCharacterInitiative(character = selectedCharacter) {
   if (character) {
-    const dexMod = await getAttributeModifier('dex', character);
-    return dexMod > 0 ? `+${dexMod}` : dexMod;
+    if (character.customInitiative) {
+      return character.customInitiativeVal > 0 ? `+${character.customInitiativeVal}` : character.customInitiativeVal;
+    } else {
+      const dexMod = await getAttributeModifier('dex', character);
+      return dexMod > 0 ? `+${dexMod}` : dexMod;
+    }
   }
   return '';
+}
+
+function toggleCustomInitiative(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customInitiative = toggle;
+  } else {
+    toggleCustomInitiative(!character.customInitiative, character);
+    saveCharacter(character);
+  }
+}
+
+function setCustomInitiativeVal(customInitiativeVal, character = selectedCharacter) {
+  character.customInitiativeVal = customInitiativeVal;
+  saveCharacter(character);
 }
 
 async function getCharacterSpeed(character = selectedCharacter) {
@@ -1266,6 +1306,13 @@ async function getCharacterSpeed(character = selectedCharacter) {
     }
   }
   return '';
+}
+
+function getCharacterProficiencyBonus(character = selectedCharacter) {
+  if (character && character.levels) {
+    return getProfBonus(character.levels.length);
+  }
+  return 0;
 }
 
 export {
@@ -1340,6 +1387,11 @@ export {
   getWeaponItems,
   getArmorItems,
   getCharacterAC,
+  toggleCustomAC,
+  setCustomACVal,
   getCharacterSpeed,
-  getCharacterInitiative
+  getCharacterInitiative,
+  toggleCustomInitiative,
+  setCustomInitiativeVal,
+  getCharacterProficiencyBonus,
 };
