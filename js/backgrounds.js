@@ -19,7 +19,11 @@ const stats_wrapper = `
 	</div>`;
 
 function renderSelection(curbg, rootEl, allBgs) {
-  rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
+  if (rootEl.querySelector(".selection-wrapper")) {
+    rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
+  } else {
+    rootEl.innerHTML = stats_wrapper;
+  }
   const source = curbg.source;
   const sourceAbv = Parser.sourceJsonToAbv(source);
   const sourceFull = Parser.sourceJsonToFull(source);

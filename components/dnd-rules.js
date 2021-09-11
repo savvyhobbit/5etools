@@ -147,7 +147,7 @@ class DndRules extends PolymerElement {
 
       <div class="rules-wrapper" hidden$="[[_exists(selectedRule)]]">
         <template is="dom-repeat" items="[[contentsOrder]]" as="category">
-          <div class="collapse collapse--left-arrow">
+          <div class="collapse collapse--left-arrow open">
             <div class="collapse-toggle">
               <div class="mdc-list-item rule-title mdc-theme--on-surface">
                 [[category.title]]

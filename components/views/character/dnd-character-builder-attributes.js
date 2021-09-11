@@ -617,18 +617,16 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .stat-box--hp .btn-field:not(:last-child) {
           margin-bottom: 0px
         }
-        @media(min-width: 381px) {
-          .stat-box__side {
-            max-width: 80px;
-            margin: 0 8px 0 0;
-          }
-          .stat-box--hp .btn-field {
-            margin-top: 0;
-            width: 100%;
-          }
-          .stat-box--hp .btn-field:not(:last-child) {
-            margin-bottom: 12px
-          }
+        .stat-box__side {
+          max-width: 80px;
+          margin: 0 8px 0 0;
+        }
+        .stat-box--hp .btn-field {
+          margin-top: 0;
+          width: 100%;
+        }
+        .stat-box--hp .btn-field:not(:last-child) {
+          margin-bottom: 12px
         }
         
 
@@ -758,6 +756,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           display: flex;
           flex-direction: column;
           text-align: center;
+        }
+        .initiative {
+          cursor: pointer;
         }
 
         .custom-val__swap {

@@ -828,6 +828,9 @@ styleElement.innerHTML = `
       .collapse-toggle.mdc-list-item {
         height: 46px;
       }
+      .collapse-toggle:hover {
+        color: var(--mdc-theme-secondary);
+      }
       .collapse .collapse-list {
         height: auto;
         transition: margin-top 235ms cubic-bezier(.4,0,.2,1);
@@ -836,6 +839,9 @@ styleElement.innerHTML = `
         margin-top: 0px;
         height: auto;
         transition: margin-top 235ms cubic-bezier(.4,0,.2,1);
+      }
+      .collapse .collapse-list.no-transition {
+        transition: none !important;
       }
 
       /* Rules page content */

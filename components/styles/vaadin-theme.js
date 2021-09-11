@@ -161,6 +161,12 @@ registerStyles('vaadin-integer-field', css`
     :host([theme="hp"]) {
       padding: 0;
       margin: -16px 8px 8px;
+      width: 6em;
+    }
+    @media(min-width: 390px) {
+      :host([theme="hp"]) {
+        width: 8em;
+      }
     }
     :host([theme="hp"]) [part="decrease-button"],
     :host([theme="hp"]) [part="increase-button"] {

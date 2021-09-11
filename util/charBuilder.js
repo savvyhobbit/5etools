@@ -6,7 +6,9 @@ import Parser from "./Parser";
 
 import droll from "../lib/droll";
 import { emitRoll } from "./roll";
+import EntryRenderer from "./entryrender";
 
+const renderer = new EntryRenderer();
 let schema = {
   name: '',
   attr: {
@@ -397,6 +399,11 @@ async function getRaceReference(char = selectedCharacter) {
 async function getFeatReference(featId) {
   let featsData = await loadModel("feats");
   return resolveHash(featsData, featId);
+}
+
+async function getSpellReference(spellId) {
+  let spellsData = await loadModel("spells");
+  return resolveHash(spellsData, spellId);
 }
 
 async function getClassSaves(char = selectedCharacter) {
@@ -1315,6 +1322,51 @@ function getCharacterProficiencyBonus(character = selectedCharacter) {
   return 0;
 }
 
+function getCustomRolls(character = selectedCharacter) {
+  if (character && character.customRolls) {
+    return character.customRolls;
+  }
+  return [];
+}
+
+function addCustomRoll(roll, character = selectedCharacter) {
+  if (character) {
+    if (!character.customRolls) {
+      character.customRolls = [];
+    }
+    character.customRolls.push(roll);
+    saveCharacter(character);
+  }
+}
+
+
+async function getItemRolls(character = selectedCharacter) {
+
+}
+
+async function getSpellRolls(character = selectedCharacter) {
+  const preparedCantrips = character.preparedCantrips || [];
+  const preparedSpells = character.preparedSpells || [];
+  const spellRolls = [];
+
+  for (const spell of [...preparedCantrips, ...preparedSpells]) {
+    const spellRef = await getSpellReference(spell.name + '_' + spell.source);
+    const renderStack = []
+    renderer.recursiveEntryRender({type: "entries", entries: spellRef.entries}, renderStack, 1);
+    const render = renderStack.join(' ');
+
+    render.split('@damage').forEach((str, index) => {
+      if (index === 0 ) {
+        return undefined;
+      }
+      const roll = str.substring(0, str.indexOf("}")).trim();
+
+      spellRolls.push({ roll });
+    });
+  }
+  return spellRolls;
+}
+
 export {
   addCharacter,
   addFeature,
@@ -1348,6 +1400,7 @@ export {
   initSelectedCharacter,
   getClassReferences,
   getBackgroundReference,
+  getRaceReference,
   getClassLevelGroups,
   getClassString,
   getClassSaves,
@@ -1394,4 +1447,8 @@ export {
   toggleCustomInitiative,
   setCustomInitiativeVal,
   getCharacterProficiencyBonus,
+  getCustomRolls,
+  addCustomRoll,
+  getSpellRolls,
+  getItemRolls
 };

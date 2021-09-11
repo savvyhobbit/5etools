@@ -8,9 +8,13 @@ import {
   getBackgroundSkillProfOptions,
   getBackgroundSkillProfDefaults,
   setBackgroundSkillProficiencies,
+  getBackgroundReference,
+  getRaceReference,
 } from "../../../util/charBuilder";
+import { renderSelection as renderRace  } from "../../../js/races";
+import { renderSelection as renderBackground } from "../../../js/backgrounds";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { util_capitalizeAll, absInt } from "../../../js/utils"; 
+import { util_capitalizeAll, absInt, initCollapseToggles } from "../../../js/utils"; 
 
 class DndCharacterBuilderBackgroundRace extends PolymerElement {
   
@@ -43,6 +47,14 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
       isEditMode: {
         type: Boolean,
         value: false
+      },
+      backgroundName: {
+        type: String,
+        value: ''
+      },
+      raceName: {
+        type: String,
+        value: ''
       }
     };
   }
@@ -74,7 +86,9 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
   async updateFromCharacter(character) {
     this.selectedBackground = character.background;
+    this.backgroundName = this.selectedBackground.name;
     this.selectedRace = character.race;
+    this.raceName = this.selectedRace.name;
     // Skills from Background
     let backgroundSkills = await getBackgroundSkillProfOptions();
     if (backgroundSkills && backgroundSkills.choose) {
@@ -107,6 +121,18 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           mod = e[1];
         return attribute.toUpperCase() + ' ' + absInt(mod);
       }).join(', ');
+
+    const backgroundRef = await getBackgroundReference();
+    if (backgroundRef) {
+      renderBackground(backgroundRef, this.$.backgroundDetails)
+    }
+
+    const raceRef = await getRaceReference();
+    if (raceRef) {
+      renderRace(raceRef, this.$.raceDetails)
+    }
+
+    initCollapseToggles(this.shadowRoot);
     
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
   }
@@ -134,7 +160,8 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
   static get template() {
     return html`
-      <style>
+      <style include="material-styles my-styles">
+        body {}
         :host {
           display: block;
           padding: 14px;
@@ -182,6 +209,31 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
             margin-bottom: 0;
           }
         }
+
+        h2 {
+          display: block;
+          font-size: 1.5em;
+          margin-block-start: 0.83em;
+          margin-block-end: 0.83em;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
+          font-weight: bold;
+        }
+
+        h3 {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+        .details-container  {
+          background: var(--lumo-contrast-10pct);
+          padding: 14px;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+        .stats-wrapper.margin-bottom_large {
+          margin-bottom: 0px !important;
+        }
       </style>
 
       <div class="col-wrap">
@@ -193,6 +245,20 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           <div hidden$="[[!_exists(defaultRaceAttribute)]]" class="default-selection">Default Attributes: <span>[[defaultRaceAttribute]]</span></div>
           <dnd-select-add hidden$="[[!_exists(raceAttributeOptions)]]" choices="[[raceAttributeChoices]]" placeholder="<Choose Attribute>" label="Choosen Attribute(s)"
             options="[[raceAttributeOptions]]" value="[[raceAttributeSelections]]" add-callback="[[_raceAttributeAddCallback]]"></dnd-select-add>
+
+          <div class="collapse collapse--left-arrow" hidden$="[[!raceName]]">
+            <div class="collapse-toggle">
+              <div class="mdc-list-item stat-name">Race Details</div>
+            </div>
+            <div class="collapse-wrapper">
+              <div class="details-container collapse-list">
+                <h3>[[raceName]]</h3>
+                <div class="details" id="raceDetails">
+                  [[raceDetails]]
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="row-wrap">
@@ -203,6 +269,20 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           <div hidden$="[[!_exists(defaultBackgroundSkillProf)]]" class="default-selection">Default Skills: <span>[[defaultBackgroundSkillProf]]</span></div>
           <dnd-select-add hidden$="[[!_exists(backgroundSkillProfOptions)]]" choices="[[backgroundSkillProfChoices]]" placeholder="<Choose Skills>" label="Choosen Skill(s)" disabled$="[[!isEditMode]]"
             options="[[backgroundSkillProfOptions]]" value="[[backgroundSkillProfSelections]]" add-callback="[[_backgroundSkillAddCallback]]"></dnd-select-add>
+          
+          <div class="collapse collapse--left-arrow" hidden$="[[!backgroundName]]">
+            <div class="collapse-toggle">
+              <div class="mdc-list-item stat-name">Background Details</div>
+            </div>
+            <div class="collapse-wrapper">
+              <div class="details-container collapse-list">
+                <h3>[[backgroundName]]</h3>
+                <div class="details" id="backgroundDetails">
+                  [[backgroundDetails]]
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;

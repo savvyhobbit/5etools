@@ -30,12 +30,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         type: Object,
         value: undefined
       },
-      heightByRows: {
-        type: Boolean,
-        value: () => {
-          return window.innerWidth < 900;
-        }
-      },
       noContentMessage: {
         type: Boolean,
         value: false
@@ -749,7 +743,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
         <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
 
-        <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows$="[[heightByRows]]">
+        <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows>
           <vaadin-grid-column flex-grow="1">
             <template>
               <div class="row">

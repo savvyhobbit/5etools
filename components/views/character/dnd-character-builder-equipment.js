@@ -198,12 +198,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   async _setItemEquiped(e) {
     e.preventDefault();
     e.stopPropagation();
-    let id = e.model.__data.item && e.model.__data.item.id ? e.model.__data.item.id : undefined;
-    let isEquiped = e.model.__data.item && e.model.__data.item.isEquiped ? e.model.__data.item.isEquiped : false;
+    let itemModel = e.model.__data.item;
+    let id = itemModel ? itemModel.id : undefined;
+    let isEquiped = itemModel ? itemModel.isEquiped : false;
     
     if (isEquiped) {
       toggleItemEquiped(id);
-    } else if (await canEquipItem(e.model.__data.item)) {
+    } else if (await canEquipItem(itemModel)) {
       toggleItemEquiped(id);
     } else {
       let checkbox = e.target.querySelector('vaadin-checkbox')
@@ -214,12 +215,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   async _setItemAttuned(e) {
     e.preventDefault();
     e.stopPropagation();
-    let id = e.model.__data.item && e.model.__data.item.id ? e.model.__data.item.id : undefined;
-    let isAttuned = e.model.__data.item && e.model.__data.item.isAttuned ? e.model.__data.item.isAttuned : false;
+    let itemModel = e.model.__data.item;
+    let id = itemModel ? itemModel.id : undefined;
+    let isAttuned = itemModel ? itemModel.isAttuned : false;
 
     if (isAttuned) {
       toggleItemAttuned(id);
-    } else if (await canAttuneItem(e.model.__data.item)) {
+    } else if (await canAttuneItem(itemModel)) {
       toggleItemAttuned(id);
     } else {
       let checkbox = e.target.querySelector('vaadin-checkbox')
@@ -299,6 +301,10 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           min-width: 0;
           display: flex;
           flex-direction: column;
+          cursor: pointer;
+        }
+        .item-wrap__name-wrap:hover {
+          color: var(--mdc-theme-secondary);
         }
         .item-wrap__name {
           font-weight: bold;

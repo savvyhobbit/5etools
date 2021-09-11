@@ -60,6 +60,7 @@ class DndCharacterBuilderView extends PolymerElement {
     
     this.tabs = [
       { label: "", icon: "favorite", viewId: "attributes" },
+      { label: "", icon: "casino", viewId: "rolls" },
       { label: "", icon: "class", viewId: "class" },
       { label: "", icon: "face", viewId: "background-race" },
       { label: "", icon: "flash_on", viewId: "spells" },

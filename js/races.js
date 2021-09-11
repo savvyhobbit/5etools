@@ -13,7 +13,11 @@ const stats_wrapper = `
 	</div>`;
 
 function renderSelection(race, rootEl) {
-  rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
+  if (rootEl.querySelector(".selection-wrapper")) {
+    rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
+  } else {
+    rootEl.innerHTML = stats_wrapper;
+  }
   const sourceEl = rootEl.querySelector(".stats-wrapper .source");
   sourceEl.classList.add(`source${race.source}`);
   sourceEl.setAttribute("title", Parser.sourceJsonToFull(race.source));

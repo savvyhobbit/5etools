@@ -907,16 +907,29 @@ function initCollapseToggles(rootEl) {
 		let collapse = toggle.parentElement,
 			list = collapse.querySelector(".collapse-list");
 
-		list.style["margin-top"] = "-" + jqHeight(list) + "px";
+		if (!collapse.classList.contains('collapse--init')) {
+			collapse.classList.add('collapse--init')
+			setTimeout(() => {
+				list.classList.add('no-transition');
+				if (!collapse.classList.contains("open")) {
+					list.style["margin-top"] = "-" + list.getBoundingClientRect().height + "px";
+				} else {
+					list.style["margin-top"] = "0px";
+				}
+				setTimeout(() => {
+					list.classList.remove('no-transition');
+				}, 300);
+			}, 1);
 
-		toggle.addEventListener("click", e => {
-			if (collapse.classList.contains("open")) {
-				list.style["margin-top"] = "-" + jqHeight(list) + "px";
-			} else {
-				list.style["margin-top"] = "0px";
-			}
-			collapse.classList.toggle("open");
-		});
+			toggle.addEventListener("click", e => {
+				if (collapse.classList.contains("open")) {
+					list.style["margin-top"] = "-" + list.getBoundingClientRect().height + "px";
+				} else {
+					list.style["margin-top"] = "0px";
+				}
+				collapse.classList.toggle("open");
+			});
+		}
 	}
 }
 
