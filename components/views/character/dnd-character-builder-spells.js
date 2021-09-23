@@ -425,10 +425,23 @@ class DndCharacterBuilderSpells extends PolymerElement {
           // Changing spell slots for multiclass rules
           const hasCantrips = newSpellDisplay[0].level === 0;
           if (isMulticlass > 0) {
-            const multiclassSlotsArray = this.multiclassSlotsDef[multiclassLevel];
+            const multiclassSlotsArray = this.multiclassSlotsDef[multiclassLevel + 1];
 
-            for (let i = (hasCantrips ? 1 : 0); i < newSpellDisplay.length; i++) {
-              newSpellDisplay[i].spellSlots = multiclassSlotsArray[i - (hasCantrips ? 1 : 0)];
+            for (let i = (hasCantrips ? 1 : 0); i < multiclassSlotsArray.length; i++) {
+              const spellSlots =  multiclassSlotsArray[i - (hasCantrips ? 1 : 0)];
+              if (newSpellDisplay[i]) {
+                newSpellDisplay[i].spellSlots = spellSlots;
+              } else {
+                newSpellDisplay.push({
+                  children: [],
+                  currentSlots: getSpellSlots(i + 1 - (hasCantrips ? 1 : 0)),
+                  hasChildren: false,
+                  id: "level",
+                  isWarlock: false,
+                  level: i,
+                  spellSlots
+                });
+              }
             }
           }
 
