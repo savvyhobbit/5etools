@@ -1329,12 +1329,29 @@ function getCustomRolls(character = selectedCharacter) {
   return [];
 }
 
-function addCustomRoll(roll, character = selectedCharacter) {
+function setCustomRoll(roll, index, character = selectedCharacter) {
   if (character) {
     if (!character.customRolls) {
       character.customRolls = [];
     }
-    character.customRolls.push(roll);
+    if (index !== undefined) {
+      if (character.customRolls.length > index) {
+        character.customRolls[index] = roll;
+      }
+    } else {
+      character.customRolls.push(roll);
+    }
+    saveCharacter(character);
+  }
+}
+
+function removeCustomRoll(index, character = selectedCharacter) {
+  if (character && character.customRolls  && character.customRolls.length > index) {
+    if (character.customRolls.length === 0 && index === 0) {
+      character.customRolls = [];
+    } else {
+      character.customRolls.splice(index, 1);
+    }
     saveCharacter(character);
   }
 }
@@ -1448,7 +1465,8 @@ export {
   setCustomInitiativeVal,
   getCharacterProficiencyBonus,
   getCustomRolls,
-  addCustomRoll,
+  setCustomRoll,
+  removeCustomRoll,
   getSpellRolls,
   getItemRolls
 };
