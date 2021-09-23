@@ -1,17 +1,16 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[22],{94:function(e,s,l){"use strict";l.r(s);var i=l(7);l(63),l(70),l(107);class d extends i.a{static get template(){return i.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[22],{94:function(e,s,i){"use strict";i.r(s);var t=i(7);i(63),i(70),i(107);class l extends t.a{static get template(){return t.b`
       <style include="material-styles my-styles"></style>
 
       <dnd-selection-list
         enable-hash-routing
-        model-id="psionics"
+        model-id="items"
         columns='[
           {"id":"name","label":"Name"},
-          {"id":"source","label":"Source"}, 
-          {"id":"psy-type","label":"Type"},
-          {"id":"psy-order","label":"Order","cssClass":"hidden-mobile-down"},
-          {"id":"psy-mode-list","label":"Mode List","cssClass":"hidden"}
+          {"id":"item-type","label":"Type"}, 
+          {"id":"source","label":"Source","cssClass":"hidden-mobile-down"},
+          {"id":"item-rarity","label":"Rarity","cssClass":"hidden-mobile-down"}
         ]'
       >
       </dnd-selection-list>
-    `}}customElements.define("dnd-psionics-view",d)}}]);
+    `}}customElements.define("dnd-items-view",l)}}]);
 //# sourceMappingURL=22.bundle.js.map

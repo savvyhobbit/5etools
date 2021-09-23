@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{106:function(e,t,s){"use strict";var i=s(1),a=s(0),l=s(5);function n(){this.wrapperTag="div",this.baseUrl="",this.setWrapperTag=function(e){this.wrapperTag=e},this.setBaseUrl=function(e){this.baseUrl=e},this.recursiveEntryRender=function(e,t,s,o,c,r){if(s=null==s?"section"===e.type?-1:0:s,o=null==o?null:o,c=null==c?null:c,(r=null!=r&&r)&&d(),"object"==typeof e){switch(void 0===e.type||"section"===e.type?"entries":e.type){case"entries":u(this,!0);break;case"options":!function(t){e.entries&&(e.entries=e.entries.sort((e,t)=>e.name&&t.name?Object(i.ascSort)(e.name,t.name):e.name?-1:t.name?1:0),u(t,!1))}(this);break;case"list":if(e.items){t.push(`<ul ${e.style?`class="${e.style}"`:""}>`);for(let l=0;l<e.items.length;l++)this.recursiveEntryRender(e.items[l],t,s+1,`<li ${Object(i.isNonstandardSource)(e.items[l].source)?`class="${a.i}"`:""}>`,"</li>");t.push("</ul>")}break;case"table":!function(i){t.push("<table class='table'>"),void 0!==e.caption&&t.push(`<caption>${e.caption}</caption>`);if(t.push("<thead>"),t.push("<tr class='table-row table-row--header'>"),e.colLabels)for(let s=0;s<e.colLabels.length;++s)t.push(`<th ${a(s)}>${e.colLabels[s]}</th>`);t.push("</tr>"),t.push("</thead>"),t.push("<tbody>");for(let a=0;a<e.rows.length;++a){t.push("<tr class='table-row'>");for(let n=0;n<e.rows[a].length;++n)t.push(`<td ${l(n)}>`),i.recursiveEntryRender(e.rows[a][n],t,s+1),t.push("</td>");t.push("</tr>")}function a(t){return void 0===e.colStyles||t>=e.colStyles.length?"class='table-cell'":`class="table-cell ${e.colStyles[t]}"`}function l(t){return void 0!==e.rowStyles?void 0===e.rowStyles||t>=e.rowStyles.length?"class='table-cell'":`class="table-cell ${e.rowStyles[t]}"`:a(t)}t.push("</tbody>"),t.push("</table>")}(this);break;case"invocation":!function(e){u(e,!0)}(this);break;case"patron":!function(e){u(e,!1)}(this);break;case"abilityDc":d(),t.push(`<span class='spell-ability'><span>${e.name} save DC</span> = 8 + your proficiency bonus + your ${Object(i.utils_makeAttChoose)(e.attributes)}</span>`),h();break;case"abilityAttackMod":null!==o&&t.push(o),t.push(`<span class='spell-ability'><span>${e.name} attack modifier</span> = your proficiency bonus + your ${Object(i.utils_makeAttChoose)(e.attributes)}</span>`),null!==c&&t.push(c);break;case"inline":if(e.entries)for(let i=0;i<e.entries.length;i++)this.recursiveEntryRender(e.entries[i],t,s);break;case"bonus":t.push((e.value<0?"":"+")+e.value);break;case"bonusSpeed":t.push((e.value<0?"":"+")+e.value+"ft.");break;case"dice":t.push(n.getEntryDice(e));break;case"link":!function(e,s){let a;if("internal"===s.href.type){if(a=`${e.baseUrl}${s.href.path}#`,void 0!==s.href.hash&&(a+=s.href.hash,void 0!==s.href.subhashes))for(let e=0;e<s.href.subhashes.length;e++){const t=s.href.subhashes[e];a+=`,${Object(i.encodeForHash)(t.key)}:${Object(i.encodeForHash)(t.value)}`}}else"external"===s.href.type&&(a=s.href.url);t.push(`<a href='${a}'>${s.text}</a>`)}(this,e);break;case"item":t.push(`<li><b>${e.name}: </b>`),this.recursiveEntryRender(e.entry,t,s),t.push("</li>");break;case"print":t.push(p(e.entry))}}else"string"==typeof e?(d(),p(this),h()):(d(),t.push(e),h());function d(){null!==o&&t.push(o)}function h(){null!==c&&t.push(c)}function u(o,c){const r=s>=2,d=c?s+1:s,h=function(){const t=[];Object(i.isNonstandardSource)(e.source)&&t.push(a.i);r&&void 0!==e.name?t.push(n.HEAD_2):t.push(-1===s?n.HEAD_NEG_1:0===s?n.HEAD_0:n.HEAD_1);"invocation"!==e.type&&"patron"!==e.type||void 0===e.subclass||t.push(a.j);return t.length>0?`class="${t.join(" ")}"`:""}(),u=function(){let t="";if("invocation"===e.type||"patron"===e.type){const s=e.source?`title="Source: ${l.a.sourceJsonToFull(e.source)}"`:"";t=void 0!==e.subclass?`${a.f}="${e.subclass.name}" ${a.g}="${e.subclass.source}" ${s}`:`${a.f}="${n.DATA_NONE}" ${a.g}="${n.DATA_NONE}" ${s}`}return t}(),p=e.prerequisite?`<span class="prerequisite">Prerequisite: ${e.prerequisite}</span>`:"",m=void 0!==e.name?`<span class="stat-name">${e.name}${Object(i.isNonstandardSource)(e.source)?" (UA)":""}${r?".":""}</span> `:"";if(e.entries||e.name){if(t.push(`<${o.wrapperTag} ${u} ${h}>${m}${p}`),e.entries)for(let s=0;s<e.entries.length;s++)o.recursiveEntryRender(e.entries[s],t,d,"<p>","</p>");t.push(`</${o.wrapperTag}>`)}}function p(o){const c=function(){let t,s,i=0,a=!1;const l=[];let n="";for(let o=0;o<e.length;++o)switch(t=e.charAt(o),s=o<e.length-1?e.charAt(o+1):null,t){case"{":"@"===s?i++>0?n+=t:(l.push(n),a=!1,n=""):n+=t;break;case"}":0==--i?(l.push(n),n=""):n+=t;break;default:n+=t}n.length>0&&l.push(n);return l}();for(let e=0;e<c.length;e++){const d=c[e];if(null!=d&&""!==d)if("@"===d.charAt(0)){const[e,c]=[(r=d).substr(0,r.indexOf(" ")),r.substr(r.indexOf(" ")+1)];if("@bold"===e||"@b"===e||"@italic"===e||"@i"===e||"@skill"===e||"@action"===e)switch(e){case"@b":case"@bold":t.push("<b>"),o.recursiveEntryRender(c,t,s),t.push("</b>");break;case"@i":case"@italic":t.push("<i>"),o.recursiveEntryRender(c,t,s),t.push("</i>");break;case"@action":t.push(`<span title="${l.a.actionToExplanation(c)}" class="explanation">${c}</span>`);break;case"@skill":t.push(`<span title="${l.a.skillToExplanation(c)}" class="explanation">${c}</span>`)}else{const[l,r,d,...h]=c.split("|"),u=`${l}${r?`${a.n}${r}`:""}`,p={type:"link",href:{type:"internal",path:"",hash:Object(i.encodeForHash)(u)},text:d||l};switch(e){case"@spell":r||(p.href.hash+=a.n+a.hb),p.href.hash="/spells/"+p.href.hash,o.recursiveEntryRender(p,t,s);break;case"@item":r||(p.href.hash+=a.n+a.T),p.href.hash="/items/"+p.href.hash,o.recursiveEntryRender(p,t,s);break;case"@condition":r||(p.href.hash+=a.n+a.hb),p.href.hash="/conditions/"+p.href.hash,o.recursiveEntryRender(p,t,s);break;case"@class":const e=n.RE_INLINE_CLASS.exec(c);e&&(p.href.hash=e[1].trim(),p.href.subhashes=[{key:"sub",value:e[2].trim()+"~phb"}]),r||(p.href.hash+=a.n+a.hb),p.href.hash="/classes/"+p.href.hash,o.recursiveEntryRender(p,t,s);break;case"@creature":r||(p.href.hash+=a.n+a.cb),p.href.hash="/bestiary/"+p.href.hash,o.recursiveEntryRender(p,t,s);break;case"@filter":t.push(l);break;case"@damage":case"@dice":case"@book":t.push(l);break;case"@5etools":r.indexOf(".")>-1?p.href.hash="/"+r.substring(0,r.indexOf(".")):p.href.hash="/"+r,o.recursiveEntryRender(p,t,s)}}}else t.push(d)}var r}r&&h()}}n.getEntryDice=function(e){let t;if(e.number&&e.faces)t=String(e.number)+"d"+e.faces;else if(e.toRoll&&e.toRoll.length){for(let s of e.toRoll)t=String(s.number)+"d"+s.faces+" + ";t=t.substring(0,t.length-3)}return"undefined"!=typeof droll&&!0===e.rollable?`<span class='roller unselectable' onclick="if (this.rolled) { this.innerHTML = this.innerHTML.split('=')[0].trim()+' = '+droll.roll('${t}').total; } else { this.rolled = true; this.innerHTML += ' = '+droll.roll('${t}').total; }">${t}</span>`:t},n.RE_INLINE_CLASS=/(.*?) \((.*?)\)/,n.HEAD_NEG_1="statsBlockSectionHead",n.HEAD_0="statsBlockHead",n.HEAD_1="statsBlockSubHead",n.HEAD_2="statsInlineHead",n.DATA_NONE="data-none",t.a=n},115:function(e,t,s){"use strict";var i=s(7),a=s(18),l=s(1),n=(s(79),s(38));class o extends i.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(l.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(n.b)(this.model)),this.$.select.renderer=(e,t)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",e=>{t.opened=!0;let s=null!==e.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!s&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(l.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],s=document.createElement("vaadin-item");t.name?(s.textContent=t.name,s.setAttribute("value",e)):(s.textContent=Object(l.util_capitalizeAll)(t),s.setAttribute("value",e)),this.listBox.appendChild(s)}e.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(a.N)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t){if(e)return t?`${e} (${t})`:e}static get template(){return i.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{117:function(t,e,i){"use strict";var n=i(7),s=i(18),a=i(1),l=(i(80),i(32));class o extends n.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const t=this.value.map(t=>-1!==this.options.indexOf(t)?this.options.indexOf(t):this.options.findIndex(e=>e.name===t.name&&e.source===t.source)).filter(t=>-1!==t);this.listBox&&(this.listBox.selectedValues=t),this.multiValue=t.map(t=>{let e=this.options[t];return e.name?e.name:Object(a.util_capitalizeAll)(e)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(t=>t.name===this.value.name&&t.source===this.value.source||t===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(t=>t.name===this.value.name||t===this.value.name)+"":this.$.select.value=this.options.findIndex(t=>t.name===this.value||t===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(l.b)(this.model)),this.$.select.renderer=(t,e)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",t=>{e.opened=!0;let i=null!==t.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!i&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let t=this.listBox.selectedValues.map(t=>this.options[t]);this.multiValue=t.map(t=>t.name?t.name:Object(a.util_capitalizeAll)(t)).join(", "),this.addCallback&&this.addCallback(t)},0)})),this.options&&this.options.length)for(let t=0;t<this.options.length;t++){const e=this.options[t],i=document.createElement("vaadin-item");e.name?(i.textContent=e.name,i.setAttribute("value",t)):(i.textContent=Object(a.util_capitalizeAll)(e),i.setAttribute("value",t)),this.listBox.appendChild(i)}t.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const t=this.$.select.value;if(t&&!this.choices){const e=this.options[t];this.addCallback?this.addCallback(e,this.model):Object(s.O)(void 0,e,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(t){return!!t}_label(t,e){if(t)return e?`${t} (${e})`:t}static get template(){return n.b`
       <style>
         :host {
           display: inline-block;
@@ -21,7 +21,7 @@
           <span class="prefix">[[multiValue]]</span>
         </div>
       </vaadin-select>
-    `}}customElements.define("dnd-select-add",o)},116:function(e,t,s){"use strict";var i=s(7),a=s(68);s(76),s(109);class l extends i.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new a.a(this.$.button)},10)}_exists(e){return!!e}_styleStr(e,t){let s="";return e&&(s+=`background: ${e}; `),t&&(s+=`border: ${t}; `),s}_svgStyleStr(e,t){let s="";return e&&(s+=`fill: ${e}; `),t&&(s+=`stroke: ${t}; `),s}static get template(){return i.b`
+    `}}customElements.define("dnd-select-add",o)},118:function(t,e,i){"use strict";var n=i(7),s=i(68);i(77),i(109);class a extends n.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new s.a(this.$.button)},10)}_exists(t){return!!t}_styleStr(t,e){let i="";return t&&(i+=`background: ${t}; `),e&&(i+=`border: ${e}; `),i}_svgStyleStr(t,e){let i="";return t&&(i+=`fill: ${t}; `),e&&(i+=`stroke: ${e}; `),i}static get template(){return n.b`
       <style include="material-styles">
         .mdc-tab-scroller__scroll-area--scroll {
           overflow-x: auto;
@@ -86,197 +86,265 @@
           <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
         </template>
       </button>
-    `}}customElements.define("dnd-button",l)},129:function(e,t,s){"use strict";s.r(t);var i=s(7),a=s(27),l=s(18);s(118),s(115),s(121),s(116);class n extends i.a{static get properties(){return{levelIndex:{type:Number},checked:{type:Boolean,value:!1},selectedFeat:{type:Object},selectedAbility1:{type:String,value:""},selectedAbility2:{type:String,value:""},featHasAttributeChoice:{type:Boolean,value:!1},featAttributeSelection:{type:String,value:""},featAttributeOptions:{type:Array,value:[]},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}constructor(){super(),this.attributeOptions=["STR","DEX","CON","INT","WIS","CHA"]}connectedCallback(){super.connectedCallback(),this.switchChangeHandler=e=>{this.checked=e.detail.checked,this._genASICallback()()},this.addEventListener("switch-change",this.switchChangeHandler),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.F)()),Object(l.m)().addEventListener("character-selected",this.characterChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("switch-change",this.switchChangeHandler),Object(l.m)().removeEventListener("character-selected",this.characterChangeHandler)}async updateFromCharacter(e){const{asi:t,index:s}=await Object(l.f)(this.levelIndex,e);if(this.featHasAttributeChoice=!1,t){if(this.selectedFeat=t.feat,this.selectedAbility1=t.ability1,this.selectedAbility2=t.ability2,this.checked=t.isFeat,t.isFeat&&t.feat&&t.feat.name&&t.feat.source){const s=`${t.feat.name}_${t.feat.source}`,i=await Object(l.w)(s);i.ability&&i.ability.length&&i.ability[0].choose&&(this.featHasAttributeChoice=!0,this.featAttributeOptions=i.ability[0].choose.from.map(e=>e.toUpperCase()),this.featAttributeSelection=e.featAttributeSelections&&e.featAttributeSelections[s]?e.featAttributeSelections[s]:"")}}else this.selectedFeat={name:"",source:""},this.selectedAbility1="",this.selectedAbility2="",this.checked=!1;this.asiIndex=s}_genASICallback(e){return t=>{Object(l.U)({feat:"feat"===e?{name:t.name,source:t.source}:this.selectedFeat,ability1:"ability1"===e?t:this.selectedAbility1,ability2:"ability2"===e?t:this.selectedAbility2,isFeat:this.checked},this.asiIndex)}}_genFeatAbilityCallback(){return e=>{if(this.selectedFeat&&this.selectedFeat.name&&this.selectedFeat.source){const t=`${this.selectedFeat.name}_${this.selectedFeat.source}`;Object(l.cb)(t,e)}}}_disableLabel(e){return e?"Feat":"ASI"}static get template(){return i.b`
-      <style>
+    `}}customElements.define("dnd-button",a)},128:function(t,e,i){"use strict";i.r(e);var n=i(7);i(51),i(50),i(74);const s=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
+  <template>
+    <style include="lumo-field-button">
+      :host {
+        width: 8em;
+      }
+
+      :host([has-controls]:not([theme~="align-right"])) [part="value"] {
+        text-align: center;
+      }
+
+      [part="decrease-button"][disabled],
+      [part="increase-button"][disabled] {
+        opacity: 0.2;
+      }
+
+      :host([has-controls]) [part="input-field"] {
+        padding: 0;
+      }
+
+      [part="decrease-button"],
+      [part="increase-button"] {
+        cursor: pointer;
+        font-size: var(--lumo-icon-size-s);
+        width: 1.6em;
+        height: 1.6em;
+      }
+
+      [part="decrease-button"]::before,
+      [part="increase-button"]::before {
+        margin-top: 0.2em;
+      }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"]) [part="value"],
+      :host([dir="rtl"]) [part="input-field"] ::slotted(input) {
+        --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
+      }
+    </style>
+  </template>
+</dom-module>`;document.head.appendChild(s.content);i(81),i(30);var a=i(66),l=i(20);
+/**
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+*/
+const o=document.createElement("template");let r;o.innerHTML='<dom-module id="vaadin-number-field-template">\n  <template>\n    <style>\n      :host([readonly]) [part$="button"] {\n        pointer-events: none;\n      }\n\n      [part="decrease-button"]::before {\n        content: "−";\n      }\n\n      [part="increase-button"]::before {\n        content: "+";\n      }\n\n      [part="decrease-button"],\n      [part="increase-button"] {\n        -webkit-user-select: none;\n        -moz-user-select: none;\n        -ms-user-select: none;\n        user-select: none;\n      }\n\n      /* Hide the native arrow icons */\n      [part="value"]::-webkit-outer-spin-button,\n      [part="value"]::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n      }\n\n      [part="value"] {\n        /* Older Firefox versions (v47.0) requires !important */\n        -moz-appearance: textfield !important;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] {\n        direction: ltr;\n      }\n\n      :host([dir="rtl"]) [part="value"]::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input)::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input)::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        text-align: left;\n      }\n    </style>\n\n    <div disabled$="[[!_allowed(-1, value, min, max, step)]]" part="decrease-button" on-click="_decreaseValue" on-touchend="_decreaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n\n    <div disabled$="[[!_allowed(1, value, min, max, step)]]" part="increase-button" on-click="_increaseValue" on-touchend="_increaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n  </template>\n\n  \n</dom-module>',document.head.appendChild(o.content);class d extends a.a{static get is(){return"vaadin-number-field"}static get version(){return"2.6.2"}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number,reflectToAttribute:!0,observer:"_minChanged"},max:{type:Number,reflectToAttribute:!0,observer:"_maxChanged"},step:{type:Number,value:1,observer:"_stepChanged"}}}ready(){super.ready(),this.__previousValidInput=this.value||"",this.inputElement.type="number",this.inputElement.addEventListener("change",this.__onInputChange.bind(this))}_decreaseButtonTouchend(t){t.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(t){t.preventDefault(),this._increaseValue()}static get template(){if(!r){r=super.template.cloneNode(!0);const t=l.a.import(this.is+"-template","template"),e=t.content.querySelector('[part="decrease-button"]'),i=t.content.querySelector('[part="increase-button"]'),n=t.content.querySelector("style"),s=r.content.querySelector('[part="input-field"]'),a=r.content.querySelector('[name="prefix"]');s.insertBefore(e,a),s.appendChild(i),r.content.appendChild(n)}return r}_createConstraintsObserver(){this._createMethodObserver("_constraintsChanged(required, minlength, maxlength, pattern, min, max, step)")}_constraintsChanged(t,e,i,n,s,a,l){if(!this.invalid)return;const o=t=>!t&&0!==t;o(s)&&o(a)?super._constraintsChanged(t,e,i,n):this.validate()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(t){if(this.disabled||this.readonly)return;let e=parseFloat(this.value);this.value?e<this.min?(t=0,e=this.min):e>this.max&&(t=0,e=this.max):0==this.min&&t<0||0==this.max&&t>0||0==this.max&&0==this.min?(t=0,e=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?e=0:this.min>0?(e=this.min,this.max<0&&t<0&&(e=this.max),t=0):this.max<0&&(e=this.max,t<0?t=0:this._getIncrement(1,e-this.step)>this.max?e-=2*this.step:e-=this.step);const i=this._getIncrement(t,e);this.value&&0!=t&&!this._incrementIsInsideTheLimits(t,e)||this._setValue(i)}_setValue(t){this.value=this.inputElement.value=String(parseFloat(t)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(t,e){let i=this.step||1,n=this.min||0;const s=Math.max(this._getMultiplier(e),this._getMultiplier(i),this._getMultiplier(n));i*=s,n*=s;const a=((e=Math.round(e*s))-n)%i;return t>0?(e-a+i)/s:t<0?(e-(a||i))/s:e/s}_getDecimalCount(t){const e=String(t),i=e.indexOf(".");return-1===i?1:e.length-i-1}_getMultiplier(t){if(!isNaN(t))return Math.pow(10,this._getDecimalCount(t))}_incrementIsInsideTheLimits(t,e){return t<0?null==this.min||this._getIncrement(t,e)>=this.min:t>0?null==this.max||this._getIncrement(t,e)<=this.max:this._getIncrement(t,e)<=this.max&&this._getIncrement(t,e)>=this.min}_allowed(t){const e=t*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(e,i)}_stepChanged(t){this.__validateByStep=this.__stepChangedCalled||null!==this.getAttribute("step"),this.inputElement.step=this.__validateByStep?t:"any",this.__stepChangedCalled=!0,this.setAttribute("step",t)}_minChanged(t){this.inputElement.min=t}_maxChanged(t){this.inputElement.max=t}_valueChanged(t,e){t&&isNaN(parseFloat(t))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,e)}_onKeyDown(t){38==t.keyCode?(t.preventDefault(),this._increaseValue()):40==t.keyCode&&(t.preventDefault(),this._decreaseValue()),super._onKeyDown(t)}__onInputChange(){this.validate()}checkValidity(){return void 0!==this.min||void 0!==this.max||this.__validateByStep?this.inputElement.checkValidity():super.checkValidity()}}window.customElements.define(d.is,d);
+/**
+@license
+Copyright (c) 2019 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+*/
+const c=document.createElement("template");c.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(c.content);class p extends d{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(!this.__hasOnlyDigits(t))return console.warn(`Trying to set invalid step size "${t}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d*$/.test(String(t))}}window.customElements.define(p.is,p);i(117),i(118),i(109);var u=i(18),h=i(108),b=i(1),m=i(73);class v extends n.a{static get properties(){return{str:{type:Number},dex:{type:Number},con:{type:Number},int:{type:Number},wis:{type:Number},cha:{type:Number},strAdj:{type:Number,value:0},dexAdj:{type:Number,value:0},conAdj:{type:Number,value:0},intAdj:{type:Number,value:0},wisAdj:{type:Number,value:0},chaAdj:{type:Number,value:0},attributeProfs:{type:String,value:""},saves:{type:Array,value:[]},classSkillProfOptions:{type:Object,value:{}},backgroundSkillProfOptions:{type:Object,value:[]},defaultBackgroundSkillProf:{type:String,value:""},raceAttributeOptions:{type:Object,value:[]},defaultRaceAttribute:{type:String,value:""},maxHP:{type:Number},tempHP:{type:Number,value:0},isEditMode:{type:Boolean,value:!1},initiative:{type:String,value:""},customInitiative:{type:Boolean,value:!1},customInitiativeVal:{type:Number},customACVal:{type:Number}}}static get observers(){return["updateCharAttr(str, dex, con, int, wis, cha)","updateCustomInitiative(customInitiativeVal)","updateCustomAC(customACVal)"]}updateCharAttr(t,e,i,n,s,a){t&&e&&i&&n&&s&&a&&Object(u.qb)({str:t,dex:e,con:i,int:n,wis:s,cha:a})}updateCustomInitiative(t){void 0!==t&&""!==t&&Object(u.db)(t)}updateCustomAC(t){void 0!==t&&""!==t&&Object(u.cb)(t)}hpChangeHandler(t){this.$.hpField.focusElement.blur()}hpBlurHandler(t){const e=parseInt(this.$.hpField.value);Number.isNaN(e)?this.$.hpField.value=u.v:Object(u.bb)(e)}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=t=>{let e=t.detail.character;this.updateAttributesFromCharacter(e)},this.updateAttributesFromCharacter(Object(u.G)()),Object(u.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=t=>{this.isEditMode=t.detail.isEditMode},Object(h.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(h.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(u.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(h.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateAttributesFromCharacter(t){if(t&&t.attr){const e=t.attr;e.str===this.str&&e.dex===this.dex&&e.con===this.con&&e.int===this.int&&e.wis===this.wis&&e.cha===this.cha||this.setProperties({str:t.attr.str,dex:t.attr.dex,con:t.attr.con,int:t.attr.int,wis:t.attr.wis,cha:t.attr.cha}),this.saves=await Object(u.t)();let i=await Object(u.h)(),n=await Object(u.E)();n&&n.choose?(this.raceAttributeOptions=n.choose.from.map(t=>t.toUpperCase()),this.raceAttributeChoices=n.choose.count||1,this.raceAttributeSelections=t.raceAttributes):(this.raceAttributeOptions=void 0,this.raceAttributeChoices=void 0,this.raceAttributeSelections=void 0);let s=await Object(u.D)(n);this.defaultRaceAttribute=s.map(t=>{let e=t[0].toLowerCase(),i=t[1];return e.toUpperCase()+" "+Object(b.absInt)(i)}).join(", "),this.strAdj=i.str,this.dexAdj=i.dex,this.conAdj=i.con,this.intAdj=i.int,this.wisAdj=i.wis,this.chaAdj=i.cha,this.attributeProfs=(await Object(u.H)()).join(","),this.maxHP=await Object(u.C)(),this.currentHP=await Object(u.v)(),this.tempHP=await Object(u.L)(),this.hitDice=await Object(u.A)(),this.customAC=!!t.customAC,this.customACVal=t.customACVal,this.ac=await Object(u.l)(),this.customInitiative=!!t.customInitiative,this.customInitiativeVal=t.customInitiativeVal,this.initiative=await Object(u.n)(),this.speed=await Object(u.p)(),this.proficiencyBonus=await Object(u.o)(),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_adjustString(t){return 0!==t&&void 0!==t?Object(b.absInt)(t):""}_total(t,e){let i=parseInt(t),n=parseInt(e);return i=isNaN(i)?0:i,n=isNaN(n)?0:n,i+n}_mod(t,e){return Object(b.absInt)(Math.floor((this._total(t,e)-10)/2))}_contains(t,e){return t.indexOf(e)>-1}_exists(){for(let t of arguments)if(t&&(t.constructor!==Object||Object.entries(t).length>0)&&(!Array.isArray(t)||t.length>0))return!0;return!1}_editModeClass(t){return t?"edit-mode":"not-edit-mode"}_tempHpStr(t){return t&&"number"==typeof t&&t>0?" + "+t:""}_toggleButtonField(t){const e=t.target.closest(".btn-field"),i=e.classList.contains("btn-field--open"),n=e.classList.contains("btn-field--temp"),s=e.querySelector("vaadin-integer-field"),a=e.querySelector("dnd-button");if(e.classList.toggle("btn-field--open"),a.classList.toggle("icon-only"),n)if(i){const t=parseInt(s.value);t&&(Object(u.c)(parseInt(this.tempHP)+t),s.value="")}else s.focus();else if(i){const t=parseInt(s.value);if(t){const i=e.classList.contains("btn-field--heal")?1:-1;Object(u.bb)(parseInt(this.currentHP)+i*t),s.value=""}}else s.focus()}_submitButtonField(t){"Enter"===t.key&&this._toggleButtonField(t)}_blurButtonField(t){this._toggleButtonField(t)}_useHitDice(t){const e=t.target.closest(".hit-dice__item");if(this.currentHP<this.maxHP){const t=e.dataset.className;Object(u.sb)(t)}else e.classList.add("hit-dice__item--error"),setTimeout(()=>{e.classList.remove("hit-dice__item--error")},500)}_strContains(t,e){return t.indexOf(e)>-1}_resetHitDice(t){Object(u.T)()}_roll(t){if(!this.isEditMode){const e=Object(b.findInPath)(".proficiency-item",t),i=Object(b.findInPath)(".stat-box",t),n=Object(b.findInPath)(".initiative",t);let s,a,l;if(e?(a=e.hasAttribute("enabled"),s=parseInt(e.closest(".attribute-wrap").querySelector(".stat-box__mod").innerText,10),l=e.innerText):i?(a=i.querySelector(".stat-box__save").hasAttribute("enabled"),s=parseInt(i.querySelector(".stat-box__mod").innerText,10),l=i.querySelector("vaadin-integer-field").label+" Save"):n&&(a=!1,s=this.customInitiative?this.customInitiativeVal:parseInt(this.initiative,10),l="Initiative"),l){let t="1d20";a&&(s+=this.proficiencyBonus),s>0?t+="+"+s:s<0&&(t+=s),Object(m.b)(l,t)}}}_swapCustomInitiative(t){Object(u.mb)()}_swapCustomAC(t){Object(u.lb)()}_plusMinus(t){if(t&&t>0)return"+"}_triggerShortRest(t){}_triggerLongRest(t){}static get template(){return n.b`
+      <style include="material-styles">
         :host {
+          display: block;
+          padding: 14px;
+        }
+
+        [hidden] {
+          visibility: hidden;
+        }
+
+        .wrap {
           display: flex;
           flex-direction: column;
-          max-width: 192px;
-        }
-        [hidden] {
-          display: none !important;
-        }
-        .abilities {
-          display: flex;
-          flex-wrap: wrap;
-        }
-        .abilities dnd-select-add {
-          width: calc(50% - 8px);
-        }
-        dnd-select-add + dnd-select-add {
-          margin-left: 16px;
-        }
-        dnd-select-add {
-          display: block;
-        }
-        .disable-label {
-          font-size: 14px;
-          font-weight: 500;
-          color: var(--mdc-theme-primary);
-        }
-      </style>
-
-      <div class="disable-label" hidden$="[[!disabled]]">[[_disableLabel(checked)]]</div>
-      <dnd-switch initial-value=[[checked]] label="ASI" secondary-label="Feat" disabled$="[[disabled]]" hidden$="[[disabled]]"></dnd-switch>
-      <div class="abilities" hidden$=[[checked]]>
-        <dnd-select-add add-callback="[[_genASICallback('ability1')]]" value="[[selectedAbility1]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
-        <dnd-select-add add-callback="[[_genASICallback('ability2')]]" value="[[selectedAbility2]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
-      </div>
-      <div hidden$=[[!checked]]>
-        <dnd-select-add add-callback="[[_genASICallback('feat')]]" model="feats" value="[[selectedFeat.name]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
-      </div>
-      <div hidden$=[[!featHasAttributeChoice]]>
-        <dnd-select-add test add-callback="[[_genFeatAbilityCallback()]]" value="[[featAttributeSelection]]" options="[[featAttributeOptions]]" placeholder="<Choose Attribute>" disabled$="[[disabled]]"></dnd-select-add>
-      </div>
-    `}}customElements.define("dnd-asi-select",n);s(109);var o=s(1);const c={"artificer(ua)":{class:{2:{name:"Wonderous Invention",count:1,options:["{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},5:{name:"Wonderous Invention",count:1,options:["{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},10:{name:"Wonderous Invention",count:1,options:["{@item Bag of beans}","{@item chime of opening}","{@item decanter of endless water}","{@item eyes of minute seeing}","{@item folding boat}","{@item Heward's handy haversack}","{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},15:{name:"Wonderous Invention",count:1,options:["{@item Boots of striding and springing}","{@item bracers of archery}","{@item brooch of shielding}","{@item broom of flying}","{@item hat of disguise}","{@item slippers of spider climbing}","{@item Bag of beans}","{@item chime of opening}","{@item decanter of endless water}","{@item eyes of minute seeing}","{@item folding boat}","{@item Heward's handy haversack}","{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},20:{name:"Wonderous Invention",count:1,options:["{@item Eyes of the eagle}","{@item gem of brightness}","{@item gloves of missile snaring}","{@item gloves of swimming and climbing}","{@item ring of jumping}","{@item ring of mind shielding}","{@item wings of flying}","{@item Boots of striding and springing}","{@item bracers of archery}","{@item brooch of shielding}","{@item broom of flying}","{@item hat of disguise}","{@item slippers of spider climbing}","{@item Bag of beans}","{@item chime of opening}","{@item decanter of endless water}","{@item eyes of minute seeing}","{@item folding boat}","{@item Heward's handy haversack}","{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]}}},"artificer (revisited)":{class:{2:{name:"Infuse Item",count:3,type:"featureType=ai|source=UAArtificerRevisited"},4:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},7:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},11:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},15:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},19:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"}}},artificer:{class:{2:{name:"Infuse Item",count:4,type:"featureType=ai|source=ERLW"},6:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"},10:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"},14:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"},18:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"}}},barbarian:{subclasses:{"Path of the Totem Warrior":{3:{name:"Totem Spirit",count:1,options:["Bear","Eagle","Elk","Wolf","Tiger"]},6:{name:"Aspect of the Beast",count:1,options:["Bear","Eagle","Elk",{name:"Tiger",options:["athletics","acrobatics","stealth","survival"],choose:2,type:"proficiency"},"Wolf"]},14:{name:"Totemic Attunement",count:1,options:["Bear","Eagle","Elk","Tiger","Wolf"]}}}},bard:{subclasses:{"College of Swords":{3:{name:"Fighting Style",count:1,type:"fs:b"}}}},paladin:{class:{2:{name:"Fighting Style",type:"fs:p",count:1}}},sorcerer:{class:{3:{name:"Metamagic",type:"mm",count:2},10:{name:"Metamagic",type:"mm",count:1},17:{name:"Metamagic",type:"mm",count:1}},subclasses:{"Divine Soul":{1:[{name:"Divine Magic Affinity",options:["Good (Cure Wounds)","Evil (Inflict Wounds)","Law (Bless)","Chaos (Bane)","Neutrality (Protection From Good and Evil"],count:1}]}}}};var r=s(106),d=(s(76),s(75),s(108)),h=s(38);class u extends(Object(a.a)(i.a)){static get properties(){return{levels:{type:Array,value:[]},classes:{type:Object},subclasses:{type:Object,value:void 0},heightByRows:{type:Boolean,value:()=>window.innerWidth<900},noContentMessage:{type:Boolean,value:!1},isEditMode:{type:Boolean,value:!1}}}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.F)()),Object(l.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.classGrid.notifyResize()},Object(d.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(d.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(l.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(d.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready();const e=new r.a;setTimeout(()=>{const t=this.$.classGrid;let s;t.rowDetailsRenderer=((t,s,i)=>{let a=[],l=this._getClassLevelFeatures(this.levels,i.index,this.classes,this.subclasses);if(l&&l.length){t.firstElementChild||(t.innerHTML='<div class="details" id="stats"></div>');for(let t of l)e.recursiveEntryRender(t,a,0,void 0,!0);const s=t.querySelector(".details");Object(o.jqEmpty)(s),s.innerHTML=a.join("")}}).bind(this),t.addEventListener("grid-dragstart",(function(e){s=e.detail.draggedItems[0],t.dropMode="between"})),t.addEventListener("grid-dragend",(function(e){s=t.dropMode=null})),t.addEventListener("grid-drop",(function(e){const i=e.detail.dropTargetItem;if(s&&s!==i){const a=t.items.filter((function(e){return e!==s})),n=a.indexOf(i)+("below"===e.detail.dropLocation?1:0);a.splice(n,0,s),Object(l.X)(a)}}))},0)}async updateFromCharacter(e){if(e&&e.levels&&e.levels.length){this.noContentMessage=!1,this.character=e,this.classes=await Object(l.s)(e),this.subclasses=JSON.parse(JSON.stringify(e.subclasses)),this.classChoices=await this._findLevelChoices(e,this.classes),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0})),this.levels=e.levels;const t=[];for(let s=0;s<e.levels.length;s++)t.push(await Object(l.y)(s));this.hitDiceMaxes=t,this.$.classGrid.clearCache()}else this.noContentMessage=!0,this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0})),this.$.classGrid.clearCache()}_getClassLevelFeatures(e,t,s,i){if(s&&e[t]&&i){const a=e[t].name,l=s[a];if(l){const s=l.classFeatures;let n=-1,c=-1;if(e.length>=t+1){for(let i=0;i<=t;i++)if(e[i].name===a){n++;const e=s[n];if(e){e.find(e=>e.gainSubclassFeature)&&c++}}const r=s[n];if(r){if(r.some(e=>e.gainSubclassFeature)&&i&&i[a]&&l.subclasses&&l.subclasses.length){const e=l.subclasses.find(e=>i[a].name===e.name);if(e.subclassFeatures[c])return e.subclassFeatures[c].map(e=>(e.isSubclass=!0,e)),[...r].concat(e.subclassFeatures[c])}return r.filter(e=>{const t=Object(o.getEntryName)(e);return"Proficiency Versatility"!==t&&"Martial Versatility"!==t})}}}}}_getClassLevelFeatureStringArray(e,t,s,i){if(e&&void 0!==t&&s&&i){const a=this._getClassLevelFeatures(e,t,s,i);if(a)return a.map(e=>({name:Object(o.getEntryName)(e),isSubclass:e.isSubclass}))}}_level(e){return e+1}_deleteLevel(e){let t=e.model.__data.index;this.levels.splice(t,1),Object(l.X)(this.levels)}_expandDetails(e){let t=e.model.__data.item,s=this.$.classGrid.detailsOpenedItems.indexOf(t)>-1;for(let e of this.$.classGrid.detailsOpenedItems)this.$.classGrid.closeItemDetails(e);s?this.$.classGrid.closeItemDetails(t):this.$.classGrid.openItemDetails(t),this.$.classGrid.notifyResize()}async _findLevelChoices(e,t){const s=[];if(e&&e.levels&&e.levels.length)for(let i=0;i<e.levels.length;i++)s.push(await this._findChoices(e,t,i));return s}async _findChoices(e,t,s){if(t&&e.levels&&e.levels.length&&e.levels.length>s){let i=e.levels,a=e.subclasses,n=i[s].name,o=t[n];if(o){let r=[],d=0,u=Object(l.J)(o);for(let e=0;e<=s;e++){i[e].name===n&&d++}void 0!==u&&d===u&&r.push({id:"subclass",from:o.subclasses,selections:e.subclasses[n]});let p=this._getClassLevelFeatures(i,s,t,a);if(p&&p.length&&p.find(e=>"Ability Score Improvement"===e.name)&&r.push({id:"asi"}),0===s){const t=o.startingProficiencies.skills[0].choose;r.push({id:"profs",count:t.count,from:t.from,selections:e.classSkillProficiencies})}if(d){const e=c[n.toLowerCase()];if(e&&e.class&&e.class[d]){const t=[].concat(e.class[d]);for(const e of t)if(e.options)r.push({id:"classFeature",name:e.name,from:e.options,count:e.count>1?e.count:void 0,class:n.toLowerCase(),feature:e.name,level:d,selections:Object(l.q)(n.toLowerCase(),d,e.name)});else if(e.type){const t=await Object(h.a)("features",e.type);r.push({id:"classFeature",name:e.name,from:t,count:e.count>1?e.count:void 0,class:n.toLowerCase(),feature:e.name,level:d,selections:Object(l.q)(n.toLowerCase(),d,e.name)})}}if(e&&e.subclasses&&a[n]&&e.subclasses[a[n].name]&&e.subclasses[a[n].name][d]){const t=[].concat(e.subclasses[a[n].name][d]);for(const e of t)if(e.options)r.push({id:"subclassFeature",name:e.name,from:e.options,count:e.count>1?e.count:void 0,class:n.toLowerCase(),subclass:a[n],feature:e.name,level:d,selections:Object(l.I)(n.toLowerCase(),a[n].name.toLowerCase(),d,e.name)});else if(e.type){const t=await Object(h.a)("features",e.type);r.push({id:"subclassFeature",name:e.name,from:t,count:e.count>1?e.count:void 0,class:n.toLowerCase(),subclass:a[n],feature:e.name,level:d,selections:Object(l.I)(n.toLowerCase(),a[n].name.toLowerCase(),d,e.name)})}}}return r}}return[]}_equal(e,t){return e===t}_genSubclassCallback(e){return t=>{Object(l.O)(void 0,e.name,t)}}_genSubclassOptions(e){return this.classes[e.name].subclasses}_getSubclassSelection(e,t){return t[e.name]}_classFeatureOptionAddCallback(e,t,s){return i=>{let a;a=Array.isArray(i)?i.map(e=>e.name?{name:e.name,source:e.source}:e):i.name?{name:i.name,source:i.source}:i,Object(l.W)(e,t,s,a)}}_subclassFeatureOptionAddCallback(e,t,s,i){return a=>{let n;n=Array.isArray(a)?a.map(e=>e.name?{...e}:e):a.name?{...a}:a,Object(l.gb)(e,t.name.toLowerCase(),s,i,n)}}_indexOfLevel(e,t){return t.indexOf(e)}_isMobile(){return window.innerWidth<921}_objArray(e){return Object.values(e)}_atIndex(e,t){return e?e[t]:null}_svgFromClass(e){return e?e.replace(/(\s|\(|\))/g,""):""}_addClassLevel(e){Object(l.N)(void 0,e.model.item,"classes")}_classSkillAddCallback(e){Object(l.Y)(e)}_levelHp(e,t){return Object(l.z)(e,t+1)}_editModeClass(e){return e?"edit-mode":"not-edit-mode"}_toggleHpField(e){const t=e.target.closest(".btn-field"),s=t.classList.contains("btn-field--open"),i=t.querySelector("vaadin-integer-field"),a=parseInt(t.dataset.level)+1,n=t.dataset.className,o=parseInt(t.dataset.max);if(s){const e=parseInt(i.value);e&&e<=o&&e>0?(Object(l.db)(n,a,e),i.value="",t.classList.toggle("btn-field--open")):(t.classList.add("btn-field--error"),setTimeout(()=>{t.classList.remove("btn-field--error")},500))}else t.classList.toggle("btn-field--open"),i.focus()}_levelHitDice(e,t){if(t&&void 0!==e&&t[e])return t[e]}static get template(){return i.b`
-      <style include="material-styles my-styles">
-        .something {
-          display: block;
-        }
-        #stats {
-          margin-top: 16px;
-          line-height: 1.9;
-        }
-        .details {
-          padding: 0 24px;
-        }
-
-        #classGrid {
-          margin-bottom: 144px;
-        }
-
-        .not-edit-mode .heading-wrap {
-          display: none;
-        }
-
-        .heading-wrap {
-          display: flex;
           justify-content: space-between;
-          margin: 22px 14px 5px;
-          align-items: center;
         }
-
-        .not-edit-mode .button-wrap {
-          display: none;
-        }
-
-        .button-wrap {
+        .stats {
           display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          padding: 10px;
+          flex-direction: column;
+          min-width: 0;
         }
-        .button-wrap > * {
-          margin: 4px;
+        .attribute-wrap {
+          display: flex;
+          flex-direction: row;
+          min-width: 0;
+        }
+        .health-wrap {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          min-width: 0;
+          flex-shrink: 0;
+          justify-content: space-between;
+          margin-bottom: 16px;      
+        }
+        .health-wrap > div {
+          width: calc(33% - 8px);
+          max-width: 120px;
+        }
+        .health-wrap > * {
+          margin-bottom: 16px;
         }
 
-        .row {
+
+        /* Proficiencies */
+        .proficiencies {
+          margin-left: 8px;
+          line-height: 1.4;
+          min-width: 0;
           position: relative;
+          top: -2px;
         }
-        .row:after {
-          content: "";
-          display: table;
-          clear: both;
-        }
-
-        .open-details {
-          cursor: pointer;
-          display: flex;
-          align-items: flex-start;
-          flex-wrap: wrap;
-        }
-        .open-details:hover {
-          color: var(--mdc-theme-secondary);
-        }
-
-        .level-col {
-          width: calc(100% - 70px);
-          text-overflow: ellipsis;
+        .proficiency-item {
+          font-size: 14px;
           white-space: nowrap;
           overflow: hidden;
-          flex-shrink: 0;
-          padding: 6px 0;
-        }
-        .level-col__level {
-          margin-right: 10px;
-          font-size: 20px;
-          font-weight: bold;
-        }
-        .level-col__image-wrap {
-          width: 30px;
+          text-overflow: ellipsis;
           position: relative;
-          height: 21px;
+          cursor: pointer;
+        }
+
+        .proficiency-item::before,
+        .proficiency-item[expertise]::after {
+          content: '';
+          display: inline-block;
+          height: 10px;
+          width: 10px;
+          border: 1px solid var(--mdc-theme-primary);
+          border-radius: 50%;
+          background-color: transparent;
+          margin-right: 8px;
+          position: relative;
+          top: 1px;
+          box-shadow: 0px 0px 10px -4px rgba(0,0,0,0.75);
+        }
+        .proficiency-item[expertise]::after {
+          position: absolute;
+          left: 10px;
+          top: 5px;
+          margin-right: 0;
+          background-color: var(--mdc-theme-primary);
+        }
+        .proficiency-item[expertise]::before {
+          margin-right: 14px;
+        }
+        .proficiency-item[enabled]::before {
+          background-color: var(--mdc-theme-primary);
+        }
+
+
+        /* Stat Box */
+        .stat-box {
+          cursor: pointer;
+          position: relative;
+          display: inline-flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background: var(--lumo-contrast-10pct);
+          border-radius: 4px;
+        }
+        .stat-box:not(:last-child) {
+          margin-bottom:16px;
+        }
+        .stat-box__save {
+          position: absolute;
+          height: 12px;
+          width: 12px;
+          border: 2px solid var(--mdc-theme-primary);
+          border-radius: 50%;
+          top: -8px;
+          background-color: #33383C;
+          display: none;
+        }
+        .stat-box__save[enabled] {
+          background-color: var(--mdc-theme-primary);
+          display: block;
+        }
+        .stat-box__mod {
+          font-size: 32px;
+          font-weight: normal;
+          margin: 8px 8px 2px;
+          line-height: 1;
+          position: relative;
+          left: 1px;
+        }
+        .stat-box__footer {
           display: inline-block;
         }
-        .level-col__image {
-          width: 30px;
-          height: 30px;
-          display: block;
-          position: absolute;
-          top: -1px;
+        .stat-box__adj {
+          position: relative;
+          right: 0px;
         }
-        .level-col__class {
-          font-size: 20px;
-          font-weight: bold;
+        .not-edit-mode .stat-box__adj {
+          right: 15px;
+          color: var(--lumo-body-text-color);
+          -webkit-text-fill-color: var(--lumo-body-text-color);
         }
-
-        .features-col {
-          white-space: normal;
-          margin: 0;
+        .stat-box__side {
           padding: 8px 0;
-          width: 100%;
-          font-size: 15px;
-        }
-        .class-feature:not(:last-of-type)::after {
-          content: ', ';
-        }
-        .class-feature[subclass] {
-          color: var(--mdc-theme-secondary);
         }
 
-        .choices-col {
-          display: flex;
-          float: left;
+        /* Stat Box HP  */
+        .stat-box--hp {
+          width: calc(66% - 2px) !important;
+          max-width: 236px !important;
+          flex-direction: row;
+          min-width: 160px;
+          justify-content: space-between;
           flex-wrap: wrap;
+          height: fit-content;
         }
-        .choices-col__choice {
-          margin-right: 16px;
+        .stat-box__total {
+          font-size: 14px;
         }
-        .choices-col__subclass-choice {
-          display: block;
+        .stat-box--hp .stat-box__adj--hp {
+          position: absolute;
+          bottom: -10px;
+          right: 5px;
+          font-size: 16px;
+        }
+        .stat-box--hp .stat-box__footer {
+          width: 100%;
+        }
+        .stat-box__side {
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+            margin: 8px;
+        }
+        .stat-box--hp .btn-field {
+          margin-top: 12px;
+          width: auto;
         }
 
-        .delete-col {
-          position: absolute;
-          right: -8px;
-          top: 4px;
+        .stat-box--hp .btn-field:not(:last-child) {
+          margin-bottom: 0px
         }
-        .delete-btn {
-          height: 24px;
-          width: 24px;
-          font-size: 18px;
-          padding: 0;
+        .stat-box__side {
+          max-width: 80px;
+          margin: 0 8px 0 0;
         }
-        .delete-btn:hover {
-          color: var(--mdc-theme-secondary);
+        .stat-box--hp .btn-field {
+          margin-top: 0;
+          width: 100%;
         }
-        .not-edit-mode .delete-btn {
-          display: none;
+        .stat-box--hp .btn-field:not(:last-child) {
+          margin-bottom: 12px
         }
         
 
+
+
+
+        /* Button Field */
         .btn-field {
           display: inline-flex;
           flex-direction: row;
           flex-wrap: nowrap;
-          margin-bottom: 16px;
-          width: 80px;
+          width: 100%;
           height: 36px;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
         }
-        .btn-field--error {
-          background: var(--lumo-error-color-50pct);
+        .btn-field:not(:last-child){
+          margin-bottom: 12px;
         }
         .btn-field__btn {
           display: block;
@@ -285,163 +353,325 @@
         .btn-field__input {
           display: none;
         }
-        .btn-field--open .btn-field__btn {
-          width: 40px;
-        }
-        .btn-field__btn-label-text {
-          position: relative;
-          left: 4px;
-          bottom: 2px;
-        }
-        .btn-field--open .btn-field__btn-label-text {
+        .btn-field .btn-field__btn-label {
           display: none;
+        }
+        .btn-field--open .btn-field__btn {
+          width: calc(100% - 50px);
+        }
+        .btn-field--open .btn-field__btn-label {
+          width: 0;
+          overflow: hidden;
         }
         .btn-field--open .btn-field__input {
           display: block;
-          width: 40px;
+          width: 50px;
           margin-top: -40px;
         }
-        .btn-field--open .btn-field__btn-label {
-          margin-left: -20px;
+        .btn-field--heal.btn-field--open .btn-field__btn-label {
+          margin-left: -8px;
         }
         .btn-field vaadin-integer-field {
           --lumo-contrast-10pct: transparent;
         }
-
-
-        .hp-col {
-          position: absolute;
-          right: 22px;
-          top: 8px;
+        .btn-field__btn-label--temp,
+        .btn-field__btn-label--damage {
+          font-size: 12px;
         }
-        .not-edit-mode .hp-col {
-          right: 0px;
+        .btn-field--heal dnd-button {
+          --mdc-theme-primary: #83f675;
         }
-        .hp-col .material-icons {
-          font-size: 16px;
-          position: relative;
-          top: 1px;
-          margin-right: 2px;
+        .btn-field--dmg dnd-button {
+          --mdc-theme-primary: #f83c42;
         }
-        .hp-col__non-edit {
-          display: block;
-        }
-        .edit-mode .hp-col__non-edit {
-          display: none;
-        }
-        .hp-col__edit {
-          display: none;
-        }
-        .edit-mode .hp-col__edit {
-          display: inline-flex;
+        .btn-field--temp dnd-button {
+          --mdc-theme-primary: #2069c9;
         }
 
-        .details {
+
+        /* Hit Dice */
+        .hit-dice {
+          display: flex;
+          flex-direction: column;
+          border-radius: 4px;
+          padding: 6px 0 0;
+          background: var(--lumo-contrast-10pct);
+          margin-bottom: 16px;
+        }
+        .hit-dice__heading {
+          display: inline-block;
+          text-align: center;
+          margin-bottom: 8px;
+          color: var(--mdc-theme-primary);
+          text-transform: uppercase;
           font-size: 14px;
-          width: calc(100% - 30px);
-          margin: 0 auto 13px !important;
+        }
+        .hit-dice__item {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+        }
+        .hit-dice__item dnd-button {
+          width: 100%;
+        }
+        .hit-dice__item--error dnd-button {
+          --mdc-theme-primary: var(--lumo-error-color-50pct);
+        }
+        .hit-dice__item-label {
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          padding: 4px 0 0;
+        }
+        .hit-dice__item-label dnd-svg {
+          stroke: var(--mdc-theme-on-primary);
+          fill: var(--mdc-theme-primary);
+          width: 30px;
+        }
+        .hit-dice__reset {
+          margin-top: auto;
+        }
+
+        .basic-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 4px 0;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
-          white-space: pre-line;
-          padding: 14px 14px 1px;
+          height: min-content;
         }
-
-        .details#stats p {
-          line-height: 1.5;
+        .basic-box--short {
+          height: fit-content;
         }
-
-        @media(min-width: 921px) {
-          .features-col {
-            margin: 0 30px 0 12px;
-            width: unset;
-            font-size: 16px;
-          }
-          #classGrid {
-            margin-bottom: 0;
-          }
-        }
-
-        .no-content-message {
-          padding: 20px;
+        .basic-box__label {
+          color: var(--mdc-theme-primary);
           font-size: 14px;
-          font-style: italic;
+        }
+        .basic-box__value {
+          font-size: 18px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          text-align: center;
+        }
+        .initiative {
+          cursor: pointer;
+        }
+
+        .custom-val__swap {
+          font-size: 10px;
+          margin: -4px 0 8px auto;
+          background-color: var(--lumo-contrast-10pct);
+          padding: 5px 5px 4px;
+          line-height: 1;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        /* Rest Buttons */
+        .rest-btn {
+          margin-bottom: 16px;
         }
       </style>
 
       <div class$="[[_editModeClass(isEditMode)]]">
-        <div class="heading-wrap">
-          <dnd-select-add model="classes" placeholder="Add a Class"></dnd-select-add>
-        </div>
-        <div class="button-wrap">
-          <template is="dom-repeat" items="[[_objArray(classes)]]">
-            <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
-          </template>
-        </div>
-
-        <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
-
-        <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows$="[[heightByRows]]">
-          <vaadin-grid-column flex-grow="1">
-            <template>
-              <div class="row">
-                <div class="open-details" on-click="_expandDetails">
-                  <div class="level-col">
-                    <span class="level-col__level">[[_level(index)]]</span>
-                    <span class="level-col__image-wrap" ><dnd-svg class="level-col__image" default-color id="[[_svgFromClass(item.name)]]"></dnd-svg></span>
-                    <span class="level-col__class">[[item.name]]</span>
-                  </div>
-
-                  <div class="features-col">
-                    <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses)]]">
-                      <span class="class-feature" subclass$="[[item.isSubclass]]">[[item.name]]</span>
-                    </template>
-                  </div>
+        <div class="wrap">
+          <div class="health-wrap">
+            <!-- Hit Points -->
+            <div class="stat-box stat-box--hp">
+              <vaadin-integer-field id="hpField" theme="hp" value={{currentHP}} on-change="hpBlurHandler" on-blur="hpChangeHandler" min="0" max="[[maxHP]]" has-controls label="Hit Points">
+                <span class="stat-box__adj--hp" slot="suffix">/ [[maxHP]] [[_tempHpStr(tempHP)]]</span>
+              </vaadin-integer-field>
+              <div class="stat-box__side">
+                <!--  Healing / Damage -->
+                <div class="btn-field btn-field--heal">
+                    <dnd-button icon="favorite" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
+                    <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
+                      <span slot="prefix">+</span>
+                    </vaadin-integer-field>
                 </div>
-
-                <div class="choices-col">
-                  <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
-                    <div class="choices-col__choice">
-                      <template is="dom-if" if="[[_equal(choice.id, 'subclass')]]">
-                        <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
-                        <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'profs')]]">
-                        <dnd-select-add choices="[[choice.count]]" label="Skill Proficiency" placeholder="<Choose Skills>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classSkillAddCallback]]"></dnd-select-add>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
-                        <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'subclassFeature')]]">
-                        <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
-                      </template>
-                    </div>
-                  </template>
+                <div class="btn-field btn-field--dmg">
+                    <dnd-button svg="swords" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
+                    <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
+                      <span slot="prefix">-</span>
+                    </vaadin-integer-field>
                 </div>
-
-                <div class="hp-col">
-                  <div class="hp-col__non-edit"><span class="material-icons" aria-hidden="true">favorite</span> [[_levelHp(item.name, index)]]</div>
-
-                  <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
-                    <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
-                      <span class="btn-field__btn-label" slot="label"><span class="material-icons" aria-hidden="true">favorite</span><span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span></span>
-                    </dnd-button>
-                    <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]" ></vaadin-integer-field>
-                  </div>
-                </div>
-
-                <div class="delete-col">
-                  <button class="mdc-icon-button material-icons delete-btn" on-click="_deleteLevel">close</button>
+                <div class="btn-field btn-field--temp">
+                    <dnd-button svg="paladin" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
+                    <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
+                      <span slot="prefix">+</span>
+                    </vaadin-integer-field>
                 </div>
               </div>
-            </template>
-          </vaadin-grid-column>
-        </vaadin-grid>
+            </div>
+
+
+            <!--  Hit Dice -->
+            <div class="hit-dice">
+              <div class="hit-dice__heading">Hit Dice</div>
+              <template is="dom-repeat" items="[[hitDice]]">
+                <div class="hit-dice__item" data-class-name$="[[item.className]]">
+                  <dnd-button on-click="_useHitDice">
+                    <div class="hit-dice__item-label" slot="label">
+                      <dnd-svg id="[[item.die]]"></dnd-svg>
+                      <div class="hit-dice__count">[[item.current]] / [[item.total]]</div>
+                    </div>
+                  </dnd-button>
+                </div>
+              </template>
+              <dnd-button class="hit-dice__reset" label="Reset" on-click="_resetHitDice"></dnd-button>
+            </div>
+
+            <div class="basic-box basic-box--short ac">
+              <div class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
+                  <span hidden$=[[customAC]]>Custom</span>
+                  <span hidden$=[[!customAC]]>Standard</span>
+                </div>
+
+                <div hidden$=[[!customAC]]>
+                  <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                </div>
+                <div hidden$=[[customAC]]>[[ac]]</div>
+              </div>
+              <div class="basic-box__label">AC</div>
+            </div>
+
+            <div class="basic-box basic-box--short initiative" on-click="_roll">
+              <div class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
+                  <span hidden$=[[customInitiative]]>Custom</span>
+                  <span hidden$=[[!customInitiative]]>Standard</span>
+                </div>
+
+                <div hidden$=[[!customInitiative]]>
+                  <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                </div>
+                <div hidden$=[[customInitiative]]>[[initiative]]</div>
+              </div>
+              <div class="basic-box__label">Initiative</div>
+            </div>
+
+            <div class="basic-box basic-box--short speed">
+              <div class="basic-box__value" inner-h-t-m-l=[[speed]]></div>
+              <div class="basic-box__label">Speed</div>
+            </div>
+
+            <!--  Short Rest -->
+            <!-- <dnd-button icon="watch" class="rest-btn rest-btn--short" background="var(--lumo-contrast-10pct)" label="Short" on-click="_triggerShortRest"></dnd-button> -->
+
+            <!--  Long Rest -->
+            <!-- <dnd-button icon="watch_later" class="rest-btn rest-btn--long" background="var(--lumo-contrast-10pct)" label="Long" on-click="_triggerLongRest"></dnd-button> -->
+
+            
+          </div>
+
+          <div class="stats">
+            <!--  Attributes -->
+            <div class="attribute-wrap">
+              <div class="stat-box" on-click="_roll">
+                <div class="stat-box__save" enabled$="[[_contains(saves, 'str')]]"></div>
+                <div class="stat-box__mod">[[_mod(strAdj, str)]]</div>
+                <div class="stat-box__footer">
+                  <vaadin-integer-field theme="mini" value={{str}} min="1" max="20" has-controls label="Strength" disabled$="[[!isEditMode]]">
+                    <span class="stat-box__adj" slot="suffix">[[_adjustString(strAdj)]]</span>
+                  </vaadin-integer-field>
+                </div>
+              </div>
+              <div class="proficiencies">
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'athletics')]]">Athletics</div>
+              </div>
+            </div>
+            <div class="attribute-wrap">
+              <div class="stat-box" on-click="_roll">
+                <div class="stat-box__save" enabled$="[[_contains(saves, 'dex')]]"></div>
+                <div class="stat-box__mod">[[_mod(dexAdj, dex)]]</div>
+                <div class="stat-box__footer">
+                  <vaadin-integer-field theme="mini" value={{dex}} min="1" max="20" has-controls label="Dexterity" disabled$="[[!isEditMode]]">
+                    <span class="stat-box__adj" slot="suffix">[[_adjustString(dexAdj)]]</span>
+                  </vaadin-integer-field>
+                </div>
+              </div>
+              <div class="proficiencies">
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'acrobatics')]]">Acrobatics</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'stealth')]]">Stealth</div>
+              </div>
+            </div>
+            <div class="attribute-wrap">
+              <div class="stat-box" on-click="_roll">
+                <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
+                <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
+                <div class="stat-box__footer">
+                  <vaadin-integer-field theme="mini" value={{con}} min="1" max="20" has-controls label="Constitution" disabled$="[[!isEditMode]]">
+                    <span class="stat-box__adj" slot="suffix">[[_adjustString(conAdj)]]</span>
+                  </vaadin-integer-field>
+                </div>
+              </div>
+              <div class="proficiencies">
+              
+              </div>
+            </div>
+            <div class="attribute-wrap">
+              <div class="stat-box" on-click="_roll">
+                <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
+                <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
+                <div class="stat-box__footer">
+                  <vaadin-integer-field theme="mini" value={{int}} min="1" max="20" has-controls label="Intellegence" disabled$="[[!isEditMode]]">
+                    <span class="stat-box__adj" slot="suffix">[[_adjustString(intAdj)]]</span>
+                  </vaadin-integer-field>
+                </div>
+              </div>
+              <div class="proficiencies">
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'arcana')]]">Arcana</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'history')]]">History</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'investigation')]]">Investigation</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'nature')]]">Nature</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'religion')]]">Religion</div>
+              </div>
+            </div>
+            <div class="attribute-wrap">
+              <div class="stat-box" on-click="_roll">
+                <div class="stat-box__save" enabled$="[[_contains(saves, 'wis')]]"></div>
+                <div class="stat-box__mod">[[_mod(wisAdj, wis)]]</div>
+                <div class="stat-box__footer">
+                  <vaadin-integer-field theme="mini" value={{wis}} min="1" max="20" has-controls label="Wisdom" disabled$="[[!isEditMode]]">
+                    <span class="stat-box__adj" slot="suffix">[[_adjustString(wisAdj)]]</span>
+                  </vaadin-integer-field>
+                </div>
+              </div>
+              <div class="proficiencies">
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'animal handling')]]">Animal Handling</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'insight')]]">Insight</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'medicine')]]">Medicine</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'perception')]]">Perception</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'survival')]]">Survival</div>
+              </div>
+            </div>
+            <div class="attribute-wrap">
+              <div class="stat-box" on-click="_roll">
+                <div class="stat-box__save" enabled$="[[_contains(saves, 'cha')]]"></div>
+                <div class="stat-box__mod">[[_mod(chaAdj, cha)]]</div>
+                <div class="stat-box__footer">
+                  <vaadin-integer-field theme="mini" value={{cha}} min="1" max="20" has-controls label="Charisma" disabled$="[[!isEditMode]]">
+                    <span class="stat-box__adj" slot="suffix">[[_adjustString(chaAdj)]]</span>
+                  </vaadin-integer-field>
+                </div>
+              </div>
+              <div class="proficiencies">
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'deception')]]">Deception</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'intimidation')]]">Intimidation</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'performance')]]">Performance</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'persuasion')]]">Persuasion</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    `}}customElements.define("dnd-character-builder-class",u)}}]);
+    `}}customElements.define("dnd-character-builder-attributes",v)}}]);
 //# sourceMappingURL=5.bundle.js.map
