@@ -1,0 +1,692 @@
+ [
+  {
+    "name": "Pirate",
+    "source": "HomebrewPirateClass",
+    "page": 1,
+    "hd": {
+      "number": 1,
+      "faces": 8
+    },
+    "proficiency": [
+      "dex",
+      "cha"
+    ],
+    "startingProficiencies": {
+      "armor": [
+        "light",
+        "medium"
+      ],
+      "weapons": [
+        "simple",
+        "nets",
+        "rapiers",
+        "scimitars"
+      ],
+      "tools": [
+        "Navigator's tools",
+        "Vehicles (water)"
+      ],
+      "skills": [
+        {
+          "choose": {
+            "from": [
+              "acrobatics",
+              "athletics",
+              "deception",
+              "intimidation",
+              "investigation",
+              "perception",
+              "persuasion",
+              "sleight of hand",
+              "survival",
+              "stealth"
+            ],
+            "count": 3
+          }
+        }
+      ]
+    },
+    "startingEquipment": {
+      "additionalFromBackground": true,
+      "default": [
+        "any one weapon (if proficient)",
+        "(a) a {@item light crossbow|phb} and {@item crossbow bolts (20)|phb|20 bolts} or (b) any {@filter simple weapon|items|source=phb|category=basic|type=simple weapon}",
+        "(a) {@item leather armor|phb} or (b) {@item hide armor|phb}",
+        "(a) a {@item burglar's pack|phb} or (b) an {@item explorer's pack|phb}"
+      ],
+      "goldAlternative": "{@dice 4d4×10|4d4 × 10|Starting Gold}"
+    },
+    "classTableGroups": [
+      {
+        "colLabels": [
+          "Tenacity Points",
+          "Crew Size"
+        ],
+        "rows": [
+          [
+            "—",
+            "—"
+          ],
+          [
+            2,
+            "—"
+          ],
+          [
+            3,
+            "—"
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            4
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            9,
+            5
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            11,
+            5
+          ],
+          [
+            12,
+            5
+          ],
+          [
+            13,
+            6
+          ],
+          [
+            14,
+            6
+          ],
+          [
+            15,
+            6
+          ],
+          [
+            16,
+            6
+          ],
+          [
+            17,
+            7
+          ],
+          [
+            18,
+            7
+          ],
+          [
+            19,
+            7
+          ],
+          [
+            20,
+            "Unlimited"
+          ]
+        ]
+      }
+    ],
+    "classFeatures": [
+      [
+        {
+          "name": "Pirate's Poise",
+          "entries": [
+            "At 1st level, you've learned to keep your wits about you to be ready for anything. You gain a bonus to initiative rolls equal to your Charisma modifier (minimum of 1)."
+          ]
+        },
+        {
+          "name": "Seaworthy",
+          "entries": [
+            "At 1st level, you have acquired skills necessary for traversing the seas. Swimming no longer costs you extra movement provided that you are not wearing armor, and you suffer no penalties when fighting in water while using ranged weapons.",
+            "When you reach 6th level, you gain this benefit even while wearing armor, and you gain a climbing speed equal to your walking speed."
+          ]
+        },
+        {
+          "name": "Signature Weapon",
+          "entries": [
+            "Also at 1st level, you have acquired an affinity for a particular weapon. Choose any one weapon. You gain proficiency with that weapon, and you also gain the following benefits:",
+            {
+              "type": "list",
+              "items": [
+                "You have advantage on Dexterity checks made to carry and conceal the weapon on your person.",
+                "Once per turn when you hit with an attack with your signature weapon, you can roll 1d4 and add the number rolled to the damage roll. The die rolled increases in size as you gain levels in this class, becoming a d6 at 5th level, a d8 at 11th level, and a d10 at 17th level."
+              ]
+            },
+            "When you gain a level in this class, you can change your signature weapon from your current selected weapon to another."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Parley",
+          "entries": [
+            "At 2nd level, you can attempt to enact a temporary halt to hostilities in order to discuss terms. As an action, you can speak a phrase up to 10 words that are coded to a creature that can understand you causing it to make a Wisdom saving throw (DC = 8 + your proficiency bonus + your Charisma modifier). On a failed save, the creature becomes negotiable.",
+            "While negotiable, the creature is no longer hostile towards you and your allies (if it was before you used this feature), though it may still be wary. The creature becomes nonnegotiable when you fail a Charisma check to influence it, after 1 minute, or anytime it or one of its allies is harmed or subject to an action it would view as hostile.",
+            "Once the effect ends, or if the creature succeeds on its initial saving throw against this effect, you can't use this feature on that creature again until you finish a long rest."
+          ]
+        },
+        {
+          "name": "Tenacity",
+          "entries": [
+            "Also at 2nd level, your determination and persistence in the face of action and danger allows you to employ a variety of gambits fueled by your tenacity. This tenacity is represented by a number of tenacity points, and your pirate level determines the maximum number of tenacity points you have, as shown in the Tenacity Points column of the Pirate table.",
+            "You can spend these tenacity points to perform a number of special abilities. You start knowing the abilities listed below: Brush Aside, Gangway, Heave Ho, Hornswaggle, and No Quarter. You gain more abilities that you can spend tenacity points on as you gain levels in this class.",
+            {
+              "type": "entries",
+              "name": "Brush Aside",
+              "entries": [
+                "When you take damage, you can spend 1 tenacity point as a reaction to reduce the damage by an amount equal to 1d8 plus half your pirate level."
+              ]
+            },
+            {
+              "type": "entries",
+              "name": "Gangway",
+              "entries": [
+                "When you would be subject to an attack of opportunity, you can use your reaction to spend 1 tenacity point. If you do, the attack is made at disadvantage and until the end of your turn, you can move through creature's spaces unimpeded."
+              ]
+            },
+            {
+              "type": "entries",
+              "name": "Heave Ho",
+              "entries": [
+                "When you make a Strength (Athletics) check, you can spend 1 tenacity point and gain advantage on the ability check."
+              ]
+            },
+            {
+              "type": "entries",
+              "name": "Hornswaggle",
+              "entries": [
+                "When you make a Charisma check, you can spend 1 tenacity point. If you do, you add double your proficiency bonus to the check, instead of your normal proficiency bonus."
+              ]
+            },
+            {
+              "type": "entries",
+              "name": "No Quarter",
+              "entries": [
+                "Once per turn when you would make an attack roll and miss, you can spend 1 tenacity point to roll again, taking the higher result."
+              ]
+            },
+            "You regain half of your expended tenacity points on a short rest, and all on a long rest.",
+            "Additionally, you regain 1 tenacity point when you succeed on a saving throw against a harmful effect or an effect that would charm or frighten you. Harmful effects include, but are not limited to: banishment, curses, diseases, dragon's breath, petrification, or poisoned."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Reputation",
+          "entries": [
+            "At 3rd level, you have garnered recognition for your style and personal flair for battle and piracy, known as your Reputation. The available Reputations are Buccaneer, Gunner, Raider, and Tidecaller, all of which are detailed at the end of the class description. Your Reputation choice grants you features at 3rd level and again at 7th, 11th, and 15th level."
+          ],
+          "gainSubclassFeature": true
+        }
+      ],
+      [
+        {
+          "name": "Ability Score Improvement",
+          "entries": [
+            "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Crew",
+          "entries": [
+            "By 5th level, you have acquired enough of a reputation that you can enlist others to join your crew. When you finish a long rest, you can choose to recruit willing creatures to join your crew. A creature must understand you to join your crew. You are always considered a member of your own crew. You can have have a number of other members of your crew as shown on the Crewmates column of the Pirate table.",
+            "Once per turn, when another member of your crew that is within 30 feet of you hits with an attack, it can roll the die from your Signature Weapon feature and add the result to the damage roll. If the attack would target more than one creature, the additional damage is applied to only one target of the attack.",
+            "Additionally, you can use an action to remove a creature that you can see from your crew."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Sea Legs",
+          "entries": [
+            "By 6th level, you can handle the roughest of seas and travels. You have advantage on Strength and Dexterity saving throws made against effects that would knock you prone or move you against your will. Additionally, if you fail a saving throw against being pushed or pulled, you can choose to move only half as far."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Reputation feature",
+          "entries": [
+            "At 7th level, you gain another feature from your Reputation."
+          ],
+          "gainSubclassFeature": true
+        }
+      ],
+      [
+        {
+          "name": "Ability Score Improvement",
+          "entries": [
+            "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Proficiency Versatility",
+          "entries": [
+            "{@i 12th-level feature (enhances Ability Score Improvement)}",
+            "When you gain the Ability Score Improvement feature from your class, you can also replace one of your skill proficiencies with a skill proficiency offered by your class at 1st level (the proficiency you replace needn't be from the class).",
+            "This change represents one of your skills atrophying as you focus on a different skill."
+          ],
+          "source": "UAClassFeatureVariants",
+          "page": 1
+        }
+      ],
+      [
+        {
+          "name": "Tenacious Crew",
+          "entries": [
+            "At 9th level, your tenacity rubs off on those closest to you. When you finish a long rest, you can choose an ability you know that requires at least 1 tenacity point. Until you use this feature to choose a different ability, a member of your crew can spend spend one or more tenacity points from your pool of points to use that ability, so long as you have enough tenacity points and are willing, and that member is able to see or hear you.",
+            "You can choose one additional ability that requires at least 1 tenacity point at 13th level, and then again at 18th level."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Sailor's Response",
+          "entries": [
+            "By 10th level, your time at sea has conditioned you to be at the ready for any situation that comes your way. You can take the Ready action as a bonus action on each of your turns. When you do so, until the start of your next turn you can take the readied action in response to the trigger you described without consuming your reaction."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Reputation feature",
+          "entries": [
+            "At 11th level, you gain another feature from your Reputation."
+          ],
+          "gainSubclassFeature": true
+        }
+      ],
+      [
+        {
+          "name": "Ability Score Improvement",
+          "entries": [
+            "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+          ]
+        },
+        {
+          "name": "Proficiency Versatility",
+          "entries": [
+            "{@i 12th-level feature (enhances Ability Score Improvement)}",
+            "When you gain the Ability Score Improvement feature from your class, you can also replace one of your skill proficiencies with a skill proficiency offered by your class at 1st level (the proficiency you replace needn't be from the class).",
+            "This change represents one of your skills atrophying as you focus on a different skill."
+          ],
+          "source": "UAClassFeatureVariants",
+          "page": 1
+        }
+      ],
+      [],
+      [
+        {
+          "name": "Unvrivaled Tenacity",
+          "entries": [
+            "By 14th level, your tenacity in the face of insurmountable odds has become a thing of legend. When a feature would allow you to regain at least 1 tenacity point, you regain one additional tenacity point."
+          ]
+        }
+      ],
+      [
+        {
+          "name": "Reputation feature",
+          "entries": [
+            "At 15th level, you gain another feature from your Reputation."
+          ],
+          "gainSubclassFeature": true
+        }
+      ],
+      [
+        {
+          "name": "Ability Score Improvement",
+          "entries": [
+            "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Proficiency Versatility",
+          "entries": [
+            "{@i 16th-level feature (enhances Ability Score Improvement)}",
+            "When you gain the Ability Score Improvement feature from your class, you can also replace one of your skill proficiencies with a skill proficiency offered by your class at 1st level (the proficiency you replace needn't be from the class).",
+            "This change represents one of your skills atrophying as you focus on a different skill."
+          ],
+          "source": "UAClassFeatureVariants",
+          "page": 1
+        }
+      ],
+      [],
+      [],
+      [
+        {
+          "name": "Ability Score Improvement",
+          "entries": [
+            "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Proficiency Versatility",
+          "entries": [
+            "{@i 19th-level feature (enhances Ability Score Improvement)}",
+            "When you gain the Ability Score Improvement feature from your class, you can also replace one of your skill proficiencies with a skill proficiency offered by your class at 1st level (the proficiency you replace needn't be from the class).",
+            "This change represents one of your skills atrophying as you focus on a different skill."
+          ],
+          "source": "UAClassFeatureVariants",
+          "page": 1
+        }
+      ],
+      [
+        {
+          "name": "Captain",
+          "entries": [
+            "By 20th level, your reputation has achieved a legendary status, your name now whispered in both awe and fear. Your Charisma score increases by 4, and your maximum for this score is now 24.",
+            "Additionally, when another member of your crew within 60 feet of you succeeds on a death saving throw or is stabilized, it regains 1 hit point."
+          ]
+        }
+      ]
+    ],
+
+    "subclassTitle": "Reputation",
+    "subclasses": [
+      {
+        "name": "Buccaneer",
+        "shortName": "Buccaneer",
+        "source": "HomebrewPirateClass",
+        "page": 5,
+        "subclassFeatures": [
+          [
+            {
+              "name": "Buccaneer",
+              "entries": [
+                "Pirates who earn a reputation as a buccaneer are recognized for their daring and reckless gambits and stunts, able to face challenges with insurmountable odds stacked against them yet make it through to the other side. These pirates are often gamblers and heavy risk takers, seeing life as but a series of fleeting moments strung together by circumstance.",
+                "Yvarran buccaneers can be found in almost every pirate crew that sails the seas. Some of these pirates claim that their luck and success is influenced by nothing save for chance, while some attribute their success to deals made with fiends or Serivic Kane.",
+                {
+                  "type": "entries",
+                  "name": "Gambit",
+                  "entries": [
+                    "By 3rd level, a life of piracy has taught you that sometimes you have to take risks and test your luck to come out on top. Testing your luck is referred to as your gambit, and might involve your character rolling dice, drawing cards, or placing a bet.",
+                    "As a bonus action, roll 5d6. If two or more of the dice you rolled match, you gain a bonus as described on the Gambit table on the following page. When a benefit refers to the number rolled, it refers to a matching number rolled on two or more dice; you can gain the benefits of multiple matching sets at a time. For example, if you roll three 2s and two 4s, you would gain both the Pair benefit with 4s and the Three of a kind benefit with 2s.",
+                    {
+                      "type": "table",
+                      "colLabels": [
+                        "Dice Result",
+                        "Gambit Benefit"
+                      ],
+                      "colStyles": [
+                        "col-6 text-center",
+                        "col-6 text-center"
+                      ],
+                      "rows": [
+                        ["No Matches", "You regain one use of this feature."],
+                        ["Pair", "Your speed increases by the number rolled × 5 feet."],
+                        ["Three of a Kind", "Roll d8s equal to the number rolled and gain temporary hit points equal to the total."],
+                        ["Four of a Kind", "You gain a bonus to your AC and all saving throws equal to the number rolled until the end of your next turn."],
+                        ["Five of a Kind", "You regain 5 expended tenacity points and have a +5 bonus to attack rolls until the end of your turn."]
+                      ]
+                    },
+                    "Unless stated otherwise, any benefits you gain from your gambit lasts for 1 minute. This feature ends early if you are incapacitated, reduced to 0 hit points, or if you use this feature again.",
+                    "You can use this feature a number of times equal to your Charisma modifier (a minimum of once). You regain any expended uses when you finish a long rest."
+                  ]
+                },
+                {
+                  "type": "entries",
+                  "name": "Tenacious Luck",
+                  "entries": [
+                    "Also at 3rd level, your drive is replenished when the odds turn sharply for or against you. When you roll a d20 for an ability check and roll a 1 or 20 on the die, you regain 1 tenacity point."
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Turn the Tide",
+                  "entries": [
+                    "At 7th level, you gain additional uses of your tenacity:",
+                    {
+                      "type": "entries",
+                      "name": "Old Salt",
+                      "entries": [
+                        "When you would make an ability check, attack roll, or saving throw with disadvantage, you can spend 2 tenacity points to cancel that disadvantage. Additionally, if a creature would make an attack roll against you or make an ability check contested by you with advantage, you can spend 2 tenacity points to cancel that advantage."
+                      ]
+                    },
+                    {
+                      "type": "entries",
+                      "name": "Wind At Our Backs",
+                      "entries": [
+                        "After rolling for your Gambit feature, you can spend up to 3 tenacity points; for each point spent, choose one die and add or subtract 1 from the result."
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Share The Luck",
+                  "entries": [
+                    "By 11th level, luck is always on the side of your crew. When one member of your crew makes an ability check, you can use your reaction to grant a bonus to the check equal to your Charisma modifier. You must choose to grant this bonus before the creature rolls the die."
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Legendary Fortune",
+                  "entries": [
+                    "By 15th level, you can overcome the greatest of odds. If you fail a saving throw, you can choose to succeed instead, taking no damage if the effect would deal damage on a successful save. Once you have used this feature, you can’t do so again until you finish a long rest."
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+
+      {
+        "name": "Gunner",
+        "shortName": "Gunner",
+        "source": "HomebrewPirateClass",
+        "page": 5,
+        "subclassFeatures": [
+          [
+            {
+              "name": "Gunner",
+              "entries": [ 
+                "Pirates who develop a keen affinity for ranged combat earn a reputation as a gunner, becoming a valuable asset to any crew. Their skills with these newer weapons allows them to ignore some of their penalties, use them with greater ease, and have insight and knowledge to cannons and ballistae.",
+                "The technological advancements of both the nations of Kleiber and Hrothland has resulted in the increasing presence of cannons and flintlock firearms throughout the more industrial nations of Yvarra. As a result, it wasn't long before firearms became coveted by pirates. They cross the Yvarran seas to seek out ammunition and firearms when they can, and many consider black powder to be more valuable than gold.",
+                {
+                  "type": "entries",
+                  "name": "Gunsmith",
+                  "entries": [
+                    "At 3rd level, you gain proficiency with tinker's tools.",
+                    "Additionally, your marksmanship skills make you an incredible shot. Your ranged weapon attacks score a critical hit on a roll of 19 or 20."
+                  ]
+                },
+                {
+                  "type": "entries",
+                  "name": "Tenacious Mark",
+                  "entries": [
+                    "Also at 3rd level, your adrenaline surges when you land a perfect shot. When you score a critical hit with a ranged weapon attack, you regain 1 tenacity point."
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Deadeye",
+                  "entries": [
+                    "At 7th level, you gain additional uses of your tenacity:",
+                    {
+                      "type": "entries",
+                      "name": "Brutal Shot",
+                      "entries": [
+                        "When you hit with a ranged weapon attack, you can spend 2 tenacity points to deal one extra die of its damage."
+                      ]
+                    },
+                    {
+                      "type": "entries",
+                      "name": "Lookout",
+                      "entries": [
+                        "You can spend 1 tenacity point to take the Search action as a bonus action."
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Crack Shot",
+                  "entries": [
+                    "By 11th level, your shots carry the weight of your tenacity. You can add your Charisma modifier to the damage rolls you make using ranged weapons."
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Master of Arms",
+                  "entries": [
+                    "At 15th level, you can fire a shot that appears to defy all logic and reason. When you make an attack using a ranged weapon, you can choose to give yourself a bonus to both the attack and damage roll you make. This bonus equals your pirate level.", 
+                    "Once you have used this feature, you can't do so again until you finish a long rest."
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+
+      {
+        "name": "Raider",
+        "shortName": "Raider",
+        "source": "HomebrewPirateClass",
+        "page": 5,
+        "subclassFeatures": [
+          [
+            {
+              "name": "Raider",
+              "entries": [ 
+                "Among the seas, no pirate is more feared than a raider. These pirates employ brutal tactics and display a fierce persona in battle, relying on fear and vicious strikes to win the day. It is these pirates that are often at the center of one's mind when they think about piracy, and raiders use their reputation to their advantage.",
+                "Raiders in Yvarra often hail from the far eastern shores of Drachensvjor, Ulvrand, and Vanhamaa, or along the coasts of Antria, Cospin, and Sossia. Their viciousness and unyielding tenacity have earned them a reputation as being the last kind of pirate anyone ever wants to meet in battle, be it on shore or at sea.",
+                {
+                  "type": "entries",
+                  "name": "Hang the Jib",
+                  "entries": [
+                    "Starting at 3rd level, a jeer or scowl can send chills into your foes. You can use your Parley as a bonus action, though the creature you target doesn't need to understand you. When you do so, a creature becomes frightened of you for 1 minute instead of becoming negotiable. If the creature ends its turn in a location where it doesn’t have line of sight to you, the creature can make a Wisdom saving throw, ending the condition on a success. Once a creature succeeds on its saving throw, it is immune to this feature for 8 hours."
+                  ]
+                },
+                {
+                  "type": "entries",
+                  "name": "Tenacious Wrath",
+                  "entries": [
+                    "Also at 3rd level, you enter battle with an unmatched and frightening fury. In the first round of combat, you have advantage on attack rolls against any creature that hasn't taken a turn yet.",
+                    "Additionally, your fury is fueled by a tireless determination. Once per turn when you reduce a hostile creature to 0 hit points, you regain 1 tenacity point."
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Sea Reaver",
+                  "entries": [
+                    "At 7th level, you gain additional uses of your tenacity:",
+                    {
+                      "type": "entries",
+                      "name": "Plunderer's Eye",
+                      "entries": [
+                        "When you make a Wisdom (Perception) check, you can spend 1 tenacity point to gain advantage on the check."
+                      ]
+                    },
+                    {
+                      "type": "entries",
+                      "name": "Rampage",
+                      "entries": [
+                        "As a bonus action, you can spend 2 tenacity points to make a weapon attack."
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Ferocity",
+                  "entries": [
+                    "By 11th level, your strikes are fueled by fury and onslaught. You can add your Charisma modifier to the damage rolls you make using melee weapons."
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "entries": [
+                {
+                  "type": "entries",
+                  "name": "Raider's Assault",
+                  "entries": [
+                    "By 15th level, you can unleash a wave of devastation. When you make a weapon attack against a target, you can make an additional number of weapon attacks against the same target equal to your Charisma modifier (minimum of 1).", 
+                    "Once you have used this feature, you can't do so again until you finish a long rest."
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      }
+    ]
+  }
+]
