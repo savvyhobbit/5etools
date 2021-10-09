@@ -180,4 +180,5 @@ export const
   PS_PREFIX_SHORT = "PS: ",
   UA_PREFIX = "Unearthed Arcana: ",
   UA_PREFIX_SHORT = "UA: ",
-  PP3_SUFFIX = " (3pp)";
+  PP3_SUFFIX = " (3pp)",
+  DAMAGE_TYPES = ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Radiant', 'Slashing', 'Thunder'];

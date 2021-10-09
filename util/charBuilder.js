@@ -1337,9 +1337,9 @@ function setCustomRoll(roll, index, character = selectedCharacter) {
     if (index !== undefined) {
       if (character.customRolls.length > index) {
         character.customRolls[index] = roll;
+      } else {
+        character.customRolls.push(roll);
       }
-    } else {
-      character.customRolls.push(roll);
     }
     saveCharacter(character);
   }
@@ -1356,6 +1356,16 @@ function removeCustomRoll(index, character = selectedCharacter) {
   }
 }
 
+function removeCustomRollDamage(rollIndex, damageIndex, character = selectedCharacter) {
+  if (character && character.customRolls && character.customRolls.length > rollIndex && character.customRolls[rollIndex].damages.length > damageIndex) {
+    if (character.customRolls[rollIndex].damages.length === 0 && damageIndex === 0) {
+      character.customRolls[rollIndex].damages = [];
+    } else {
+      character.customRolls[rollIndex].damages.splice(damageIndex, 1);
+    }
+    saveCharacter(character);
+  }
+}
 
 async function getItemRolls(character = selectedCharacter) {
 
@@ -1467,6 +1477,7 @@ export {
   getCustomRolls,
   setCustomRoll,
   removeCustomRoll,
+  removeCustomRollDamage,
   getSpellRolls,
   getItemRolls
 };

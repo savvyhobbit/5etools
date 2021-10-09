@@ -1,17 +1,17 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import "@polymer/polymer/lib/elements/dom-repeat.js";
-import { findInPath } from "../../../js/utils";
+import "@vaadin/vaadin-checkbox";
+import { cloneDeep, findInPath } from "../../../js/utils";
 import {
   getCharacterChannel,
   getSelectedCharacter,
-  getCustomRolls,
-  getSpellRolls,
-  getItemRolls,
   setCustomRoll,
-  removeCustomRoll
+  removeCustomRoll,
+  removeCustomRollDamage
 } from "../../../util/charBuilder";
+import { DAMAGE_TYPES } from "../../../util/consts";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { rollDice } from "../../../util/roll";
+import { rollDice, rollHit } from "../../../util/roll";
 
 class DndCharacterBuilderRolls extends PolymerElement {
   
@@ -20,12 +20,17 @@ class DndCharacterBuilderRolls extends PolymerElement {
       isEditMode: {
         type: Boolean,
         value: false
+      },
+      customRolls: {
+        type: Array
       }
     };
   }
   
   connectedCallback() {
     super.connectedCallback();
+
+    this.damageTypes = DAMAGE_TYPES;
     
     this.characterChangeHandler = (e) => {
       let character = e.detail.character;
@@ -50,13 +55,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
   }
   
   async updateFromCharacter(character) {
-    //this.customRolls = getCustom(character);
-    this.customRolls = character.customRolls || [];
-
-    //this.itemRolls = await getItemRolls();
-
-    //this.spellRolls = await getSpellRolls();
-
+    this.customRolls = cloneDeep(character.customRolls) || [];
 
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
   }
@@ -77,8 +76,8 @@ class DndCharacterBuilderRolls extends PolymerElement {
   _makeRoll(e) {
     if (!this.isEditMode) {
       let rollModel = e.model.__data.item;
-      if (rollModel.toHit) {
-        rollDice(`${rollModel.name} (to hit)`, `1d20${this.__abs(rollModel.toHit)}`);
+      if (!rollModel.noHitRoll) {
+        rollHit(`${rollModel.name} (to hit)`, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked);
       }
       rollModel.damages.forEach((damage, index) => {
         setTimeout(() =>{
@@ -92,21 +91,18 @@ class DndCharacterBuilderRolls extends PolymerElement {
     const rollEl = findInPath('.roll', e);
     const rollIndexAttr = rollEl.getAttribute('index');
     const rollIndex = parseInt(rollIndexAttr, 10);
-    
     setCustomRoll(this.customRolls[rollIndex], rollIndex);
   }
 
   _addRoll() {
-    const newRoll = {name: "", toHit: 0, damages: [ {roll: '', type: ''} ]};
-    this.push('customRolls', newRoll);
-    setCustomRoll(newRoll, this.customRolls.length - 1);
+    const newRoll = {name: "<no name>", toHit: 0, noHitRoll: false, damages: [ {roll: '', type: ''} ]};
+    setCustomRoll(newRoll, this.customRolls.length);
   }
 
   _removeRoll(e) {
     const rollEl = findInPath('.roll', e);
     const rollIndexAttr = rollEl.getAttribute('index');
     const rollIndex = parseInt(rollIndexAttr, 10);
-    this.splice('customRolls', rollIndex, 1);
     removeCustomRoll(rollIndex);
   }
 
@@ -115,10 +111,34 @@ class DndCharacterBuilderRolls extends PolymerElement {
     const rollIndexAttr = rollEl.getAttribute('index');
     const rollIndex = parseInt(rollIndexAttr, 10);
     const curRoll = this.customRolls[rollIndex];
-
-    curRoll.damages.push({roll: '', type: ''})
-    this.splice('customRolls', rollIndex, 1, curRoll);
+    curRoll.damages.push({roll: '', type: ''});
     setCustomRoll(curRoll, rollIndex);
+  }
+
+  _removeDamage(e) {
+    const rollEl = findInPath('.roll', e);
+    const rollIndexAttr = rollEl.getAttribute('index');
+    const rollIndex = parseInt(rollIndexAttr, 10);
+    const rollDamageEl = findInPath('.roll__damage', e);
+    const rollDamageIndexAttr = rollDamageEl.getAttribute('index');
+    const rollDamageIndex = parseInt(rollDamageIndexAttr, 10);
+    removeCustomRollDamage(rollIndex, rollDamageIndex);
+  }
+
+  _or(a, b) {
+    return a || b;
+  }
+
+  _orNot(a, b){
+    return a || !b;
+  }
+
+  _modChange(e) {
+    if (e.currentTarget.id === 'advMod') {
+      this.$.disadvMod.checked = false;
+    } else {
+      this.$.advMod.checked = false;
+    }
   }
   
   static get template() {
@@ -137,6 +157,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
         display: flex; 
         justify-content: space-between;
         flex-wrap: wrap;
+        margin-bottom: 56px;
       }
       .row-wrap {
         width: 100%;
@@ -146,26 +167,60 @@ class DndCharacterBuilderRolls extends PolymerElement {
         margin-bottom: 24px;
       }
 
+      .rolls__add-button {
+        margin-bottom: 16px;
+        display: inline-flex;
+      }
+
       .roll {
         display: flex;
         flex-direction: column;
         cursor: pointer;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 16px;
+        background: var(--lumo-contrast-10pct);
+        height: min-content;
       }
+
+      @media(min-width: 921px) {
+        :host {
+          padding-right: 0px;
+        }
+        .roll {
+          max-width: 380px;
+          margin-right: 16px;
+        }
+        .rolls {
+          display: flex;
+          flex-wrap: wrap;
+        }
+      }
+
       .roll-header {
         display: flex;
         justify-content: space-between;
       }
       .roll-header dnd-button {
-        margin-top: 36px;
+        margin-top: 20px;
+      }
+      .roll-header vaadin-text-field {
+        padding-top: 0;
       }
       h3 {
-        margin-bottom: 4px;
+        margin: 4px 0;
       }
       .roll__to-hit {
-        margin-right: 10px;
+        display: flex;
       }
+      .roll__to-hit dnd-switch {
+        margin: 0 auto;
+        padding: 26px 20px 27px;
+      }
+
       .roll-footer {
         display: flex;
+        flex-direction: column;
       }
       .roll__damages {
         display: flex;
@@ -174,11 +229,49 @@ class DndCharacterBuilderRolls extends PolymerElement {
       .roll__damage {
         display: flex;
       }
+      .roll__damage vaadin-text-field,
+      .roll__damage vaadin-select {
+        max-width: 100%;
+      }
+      .roll__damage-roll--edit,
+      .roll__damage-type--edit {
+        width: calc(50% - 40px);
+      }
+      .roll__damage-roll--edit {
+        margin-right: 16px;
+      }
+      .roll__damage-remove {
+        margin: auto 16px 4px;
+      }
+
+      .rolls__toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .rolls__toolbar h4 {
+        width: 100%;
+        margin: 0;
+      }
+      .rolls__toolbar-reset-mods {
+        display: inline-flex;
+      }
     </style>
     
     <div class="col-wrap">
       <div class="row-wrap">
         <h2>Rolls</h2>
+
+
+        <dnd-button hidden$="[[!isEditMode]]" on-click="_addRoll" label="Add Roll" icon="add" class="rolls__add-button"></dnd-button>
+        <div hidden$="[[isEditMode]]" class="rolls__toolbar">
+          <h4>Roll Modifiers:</h4>
+          <div>
+            <vaadin-checkbox id='advMod' on-change="_modChange">Advantage</vaadin-checkbox>
+            <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
+          </div>
+        </div>
 
         <div class="rolls rolls--custom">
 
@@ -192,20 +285,30 @@ class DndCharacterBuilderRolls extends PolymerElement {
 
               <div class="roll-footer">
                 <div class="roll__to-hit">
-                  <span hidden$="[[isEditMode]]">to hit: <span>[[__abs(item.toHit)]]</span></span>
-                  <vaadin-integer-field hidden$="[[!isEditMode]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
+                  <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
+                  <vaadin-integer-field hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
+                  <dnd-switch hidden$="[[!isEditMode]]" label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
                 </div>
 
                 <div class="roll__damages">
                   <template is="dom-repeat" items="[[item.damages]]" as="damage">
-                    <div class="roll__damage">
+                    <div class="roll__damage" index$="[[index]]">
+                      <dnd-button hidden$="[[!isEditMode]]" on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
                       <span class="roll__damage-roll" hidden$="[[isEditMode]]" >[[damage.roll]]</span>
                       <div class="roll__damage-roll--edit" hidden$="[[!isEditMode]]">
                         <vaadin-text-field value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
                       </div>
-                      <span class="roll__damage-type" hidden$="[[isEditMode]]" >[[damage.type]]</span>
+                      <span class="roll__damage-type" hidden$="[[isEditMode]]">&nbsp;[[damage.type]] damage</span>
                       <div class="roll__damage-type--edit" hidden$="[[!isEditMode]]">
-                        <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type"></vaadin-select>
+                        <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
+                          <template>
+                            <vaadin-list-box>
+                              <template is="dom-repeat" items="[[damageTypes]]">
+                                <vaadin-item>[[item]]</vaadin-item>
+                              </template>
+                            </vaadin-list-box>
+                          </template>
+                        </vaadin-select>
                       </div>
                     </div>
                   </template>
@@ -214,8 +317,6 @@ class DndCharacterBuilderRolls extends PolymerElement {
               </div>
             </div>
           </template>
-
-          <dnd-button hidden$="[[!isEditMode]]" on-click="_addRoll" label="Add Roll" icon="add"></dnd-button>
         </div>
 
       </div>

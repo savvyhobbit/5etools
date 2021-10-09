@@ -13,7 +13,8 @@ class DndSwitch extends PolymerElement {
       checked: {
         type: Boolean,
         value: false,
-        reflectToAttribute: true
+        reflectToAttribute: true,
+        notify: true
       },
       label: {
         type: String,
@@ -79,7 +80,10 @@ class DndSwitch extends PolymerElement {
     return html`
       <style include="material-styles">
         :host {
-          display: inline-block;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
         }
         :host([checked]) label.secondary {
           color: var(--mdc-theme-primary);
@@ -101,12 +105,12 @@ class DndSwitch extends PolymerElement {
         }
       </style>
       
-      <label for="swich">[[label]]</label>
+      <label for="switch">[[label]]</label>
       <div class$="[[_switchClasses(disabled)]]">
         <div class="mdc-switch__track"></div>
         <div class="mdc-switch__thumb-underlay">
           <div class="mdc-switch__thumb">
-            <input type="checkbox" id="swich" class="mdc-switch__native-control" role="switch" disabled$="[[disabled]]" />
+            <input type="checkbox" id="switch" class="mdc-switch__native-control" role="switch" disabled$="[[disabled]]" />
           </div>
         </div>
       </div>

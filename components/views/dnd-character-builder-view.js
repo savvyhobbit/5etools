@@ -6,7 +6,7 @@ import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-switch";
 import { jqEmpty } from "../../js/utils.js";
-import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter } from '../../util/charBuilder.js';
+import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
 import { rollEventChannel } from '../../util/roll.js';
@@ -58,14 +58,7 @@ class DndCharacterBuilderView extends PolymerElement {
     //   { label: "Equipment", icon: "local_grocery_store", viewId: "equipment" },
     // ]
     
-    this.tabs = [
-      { label: "", icon: "favorite", viewId: "attributes" },
-      { label: "", icon: "casino", viewId: "rolls" },
-      { label: "", icon: "class", viewId: "class" },
-      { label: "", icon: "face", viewId: "background-race" },
-      { label: "", icon: "flash_on", viewId: "spells" },
-      { label: "", icon: "local_grocery_store", viewId: "equipment" },
-    ]
+    this.tabs = this.defaultTabs();
   }
 
   connectedCallback() {
@@ -186,6 +179,27 @@ class DndCharacterBuilderView extends PolymerElement {
     this.classLevel = getClassString(character);
     this.background = getFeatureString("backgrounds", character, true);
     this.race = getFeatureString("races", character, true);
+  }
+
+  defaultTabs() {
+    return [
+      { label: "", icon: "favorite", viewId: "attributes" },
+      { label: "", icon: "flash_on", viewId: "spells" },
+      { label: "", icon: "local_grocery_store", viewId: "equipment" },
+      { label: "", icon: "casino", viewId: "rolls" },
+      { label: "", icon: "class", viewId: "class" },
+      { label: "", icon: "face", viewId: "background-race" },
+    ]
+  }
+
+  nonCasterTabs() {
+    return [
+      { label: "", icon: "favorite", viewId: "attributes" },
+      { label: "", icon: "local_grocery_store", viewId: "equipment" },
+      { label: "", icon: "casino", viewId: "rolls" },
+      { label: "", icon: "class", viewId: "class" },
+      { label: "", icon: "face", viewId: "background-race" },
+    ]
   }
 
   newCharacter() {
