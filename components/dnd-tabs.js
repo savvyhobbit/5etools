@@ -19,18 +19,20 @@ class DndTabs extends PolymerElement {
 
   tabsChanged() {
     if (this.tabs.length) {
+      if (this.tabBar) {
+        this.$.tabs.removeEventListener("MDCTabBar:activated", this.handleTabChange);
+      }
       // Allow tabs to be rendered
       setTimeout(() => {
         this.tabBar = new MDCTabBar(this.$.tabs);
-        this.$.tabs.addEventListener("MDCTabBar:activated", (e) => {
-          this.handleTabChange(e.detail.index);
-        });
+        this.$.tabs.addEventListener("MDCTabBar:activated", this.handleTabChange);
         this.tabBar.activateTab(this.initialSelectedIndex);
       }, 0);
     }
   }
 
-  handleTabChange(index) {
+  handleTabChange(e) {
+    const index = e.detail.index;
     this.dispatchEvent(new CustomEvent("tabChange",  {
       bubbles: true,
       composed: true,

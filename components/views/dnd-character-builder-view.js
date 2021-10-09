@@ -140,6 +140,7 @@ class DndCharacterBuilderView extends PolymerElement {
     }
 
     this.rollHandler = (e) => {
+      // Display Rolls
       const {name, roll, result} = e.detail;
       const newRollEl = document.createElement('div');
       newRollEl.classList.add('roll-result');
@@ -174,11 +175,35 @@ class DndCharacterBuilderView extends PolymerElement {
     });
   }
 
-  setStateFromCharacter(character) {
+  async setStateFromCharacter(character) {
     this.characterName = character.name;
     this.classLevel = getClassString(character);
     this.background = getFeatureString("backgrounds", character, true);
     this.race = getFeatureString("races", character, true);
+
+    // Set Tabs order based on tab order
+    let isNonCaster = true;
+    if (character) {
+      const classRefs = await getClassReferences(character),
+        classLevels = getClassLevelGroups(character);
+
+      for (const [ className, level ] of Object.entries(classLevels)) {
+        const classRef = classRefs[className];
+
+        if (classRef.casterProgression) {
+          isNonCaster = false;
+        }
+      }
+    }
+
+    if (this.wasNonCaster !== isNonCaster) {
+      this.wasNonCaster = isNonCaster;
+      if (isNonCaster) {
+        this.tabs = this.nonCasterTabs();
+      } else {
+        this.tabs = this.defaultTabs();
+      }
+    }
   }
 
   defaultTabs() {

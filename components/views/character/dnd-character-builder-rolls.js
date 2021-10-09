@@ -55,7 +55,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
   }
   
   async updateFromCharacter(character) {
-    this.customRolls = cloneDeep(character.customRolls) || [];
+    this.customRolls = character.customRolls ? cloneDeep(character.customRolls) : [];
 
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
   }
