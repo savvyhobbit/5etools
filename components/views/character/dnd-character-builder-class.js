@@ -585,9 +585,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
         .features-col {
           white-space: normal;
+          width: calc(100% - 70px);
           margin: 0;
           padding: 8px 0;
-          width: 100%;
           font-size: 15px;
         }
         .class-feature:not(:last-of-type)::after {
@@ -612,7 +612,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .delete-col {
           position: absolute;
           right: -8px;
-          top: 4px;
+          bottom: 0;
         }
         .delete-btn {
           height: 24px;
@@ -674,7 +674,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
         .hp-col {
           position: absolute;
-          right: 22px;
+          right: 0;
           top: 8px;
         }
         .not-edit-mode .hp-col {
@@ -683,8 +683,8 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .hp-col .material-icons {
           font-size: 16px;
           position: relative;
-          top: 1px;
-          margin-right: 2px;
+          margin-right: 8px;
+          top: 3px;
         }
         .hp-col__non-edit {
           display: block;
@@ -788,18 +788,17 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                 </div>
 
                 <div class="hp-col">
-                  <div class="hp-col__non-edit"><span class="material-icons" aria-hidden="true">favorite</span> [[_levelHp(item.name, index)]]</div>
-
+                  <div class="hp-col__non-edit">HP Roll: <span class="material-icons" aria-hidden="true">favorite</span> [[_levelHp(item.name, index)]]</div>
                   <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
                     <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
                       <span class="btn-field__btn-label" slot="label"><span class="material-icons" aria-hidden="true">favorite</span><span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span></span>
                     </dnd-button>
-                    <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]" ></vaadin-integer-field>
+                    <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]"></vaadin-integer-field>
                   </div>
                 </div>
 
                 <div class="delete-col">
-                  <button class="mdc-icon-button material-icons delete-btn" on-click="_deleteLevel">close</button>
+                  <dnd-button class="delete-btn link" label="Delete" icon="close" on-click="_deleteLevel"></dnd-button>
                 </div>
               </div>
             </template>

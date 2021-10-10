@@ -95,7 +95,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
   }
 
   _addRoll() {
-    const newRoll = {name: "<no name>", toHit: 0, noHitRoll: false, damages: [ {roll: '', type: ''} ]};
+    const newRoll = {name: "", toHit: 0, noHitRoll: false, damages: [ {roll: '', type: ''} ]};
     setCustomRoll(newRoll, this.customRolls.length);
   }
 
@@ -131,6 +131,10 @@ class DndCharacterBuilderRolls extends PolymerElement {
 
   _orNot(a, b){
     return a || !b;
+  }
+
+  _isTruthy(a) {
+    return !!a;
   }
 
   _modChange(e) {
@@ -257,6 +261,10 @@ class DndCharacterBuilderRolls extends PolymerElement {
       .rolls__toolbar-reset-mods {
         display: inline-flex;
       }
+      .roll__add-damage {
+        width: min-content;
+        margin: 8px auto 0;
+      }
     </style>
     
     <div class="col-wrap">
@@ -278,7 +286,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
           <template is="dom-repeat" items="[[customRolls]]">
             <div class="roll" on-click="_makeRoll" index$="[[index]]">
               <div class="roll-header">
-                <h3 hidden$="[[isEditMode]]">[[item.name]]</h3>
+                <h3 hidden$="[[isEditMode]]">[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
                 <vaadin-text-field hidden$="[[!isEditMode]]" value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
                 <dnd-button hidden$="[[!isEditMode]]" label="Remove" icon="remove" on-click="_removeRoll"></dnd-button>
               </div>
@@ -312,7 +320,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
                       </div>
                     </div>
                   </template>
-                  <dnd-button hidden$="[[!isEditMode]]" on-click="_addDamage" label="Add Damage" icon="add"></dnd-button>
+                  <dnd-button hidden$="[[!isEditMode]]" on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
                 </div>
               </div>
             </div>

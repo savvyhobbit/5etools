@@ -109,12 +109,15 @@ class DndButton extends PolymerElement {
           flex-shrink: 0;
           flex-grow: 0;
         }
+
+        
         :host(.btn-field__btn) dnd-svg {
           padding-left: 0;
         }
         :host(.btn-field__btn) i {
           margin-left: 0;
         }
+
         :host(.icon-only) dnd-svg {
           margin-left: -24px;
           padding-left: 0;
@@ -122,6 +125,22 @@ class DndButton extends PolymerElement {
         :host(.icon-only) i {
           margin-left: -18px;
           padding-left: 0;
+        }
+
+        :host(.link) .mdc-button__label {
+          text-transform: none;
+          color: var(--lumo-body-text-color);
+          letter-spacing: normal;
+        }
+        :host(.link) i {
+          color: var(--lumo-body-text-color);
+        }
+        :host(.link) button:hover::before {
+          background: none;
+        }
+        :host(.link) button:hover i,
+        :host(.link) button:hover .mdc-button__label {
+          color: var(--mdc-theme-secondary);
         }
       </style>
       <button id="button" class="mdc-button" style$="[[_styleStr(background, border)]]">
