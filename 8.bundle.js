@@ -1,126 +1,12 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{114:function(e,t,a){"use strict";a.r(t),a.d(t,"renderSelection",(function(){return o}));var i=a(71),r=a(5),s=a(1);const n=new i.a;function o(e,t,a){(t.querySelector(".selection-wrapper")||t).innerHTML='\n\t<div class="stats-wrapper margin-bottom_large">\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="type"></span><span class="rarity"></span>\n\t\t\t<span class="attunement"></span>\n\t\t</div>\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="value"></span><span class="weight"></span>\n\t\t</div>\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="damage"></span>\n\t\t\t<span class="damageType"></span>\n\t\t\t<span class="properties"></span>\n\t\t</div>\n\t\t<div class="text"></div>\n\t\t<div class="margin-bottom_small">Source: <span class="source"></span></div>\n\t</div>';const i=e.source,o=r.a.sourceJsonToFull(i);t.querySelector(".stats-wrapper .source").innerHTML=`${o}, page ${e.page}`,t.querySelector(".stats-wrapper .value").innerHTML=e.value?e.value+(e.weight?", ":""):"",t.querySelector(".stats-wrapper .weight").innerHTML=e.weight?e.weight+(1==e.weight?" lb.":" lbs."):"",t.querySelector(".stats-wrapper .rarity").innerHTML=(e.tier?", "+e.tier:"")+(e.rarity?", "+e.rarity:""),t.querySelector(".stats-wrapper .attunement").innerHTML=e.reqAttune?e.reqAttune:"",t.querySelector(".stats-wrapper .type").innerHTML=e.typeText,t.querySelector(".stats-wrapper .damage").innerHTML="",t.querySelector(".stats-wrapper .damageType").innerHTML="";const d=e.type||"";if(e.weaponCategory)e.dmg1&&(t.querySelector(".stats-wrapper .damage").innerHTML=Object(s.utils_makeRoller)(e.dmg1)),e.dmgType&&(t.querySelector(".stats-wrapper .damageType").innerHTML=r.a.dmgTypeToFull(e.dmgType));else if("LA"===d||"MA"===d||"HA"===d)t.querySelector(".stats-wrapper .damage").innerHTML="AC "+e.ac+("LA"===d?" + Dex":"MA"===d?" + Dex (max 2)":"");else if("S"===d)t.querySelector(".stats-wrapper .damage").innerHTML="AC +"+e.ac;else if("MNT"===d||"VEH"===d){const a=e.speed,i=e.carryingcapacity;a&&t.querySelector(".stats-wrapper .damage").append("Speed="+a),a&&i&&t.querySelector(".stats-wrapper .damage").append("MNT"===d?", ":"<br>"),i&&(t.querySelector(".stats-wrapper .damage").append("Carrying Capacity="+i),-1===i.indexOf("ton")&&-1===i.indexOf("passenger")&&t.querySelector(".stats-wrapper .damage").append(1==i?" lb.":" lbs."))}if(t.querySelector(".stats-wrapper .properties").innerHTML="",e.property){const a=e.property.split(",");for(let i=0;i<a.length;i++){const r=a[i];let n=window.itemPropertyList[r].name;"V"===r&&(n=`${n} (${Object(s.utils_makeRoller)(e.dmg2)})`),"T"!==r&&"A"!==r&&"AF"!==r||(n=`${n} (${e.range}ft.)`),"RLD"===r&&(n=`${n} (${e.reload} shots)`),n=(i>0?", ":e.dmg1?"- ":"")+n,t.querySelector(".stats-wrapper .properties").append(n)}}const l={type:"entries",entries:e.entries},c=[];n.recursiveEntryRender(l,c,1),t.querySelector(".stats-wrapper .text").innerHTML=Object(s.utils_makeRoller)(c.join("")).split(e.name.toLowerCase()).join("<i>"+e.name.toLowerCase()+"</i>"),a&&t.querySelector(".margin-bottom_small").remove()}},119:function(e,t,a){"use strict";a(111),a(110)},129:function(e,t,a){"use strict";a.r(t);var i=a(7),r=a(18),s=a(71),n=a(108),o=a(1),d=a(114),l=(a(119),a(120),a(44),a(13));const c=l.a`<dom-module id="lumo-grid-sorter" theme-for="vaadin-grid-sorter">
-  <template>
-    <style>
-      :host {
-        justify-content: flex-start;
-        align-items: baseline;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      [part="content"] {
-        display: inline-block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      [part="indicators"] {
-        margin-left: var(--lumo-space-s);
-      }
-
-      :host(:not([direction])) [part="indicators"]::before {
-        opacity: 0.2;
-      }
-
-      :host([direction]) {
-        color: var(--lumo-primary-text-color);
-      }
-
-      [part="order"] {
-        font-size: var(--lumo-font-size-xxs);
-        line-height: 1;
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) [part="indicators"] {
-        margin-right: var(--lumo-space-s);
-        margin-left: 0;
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(c.content);a(72),a(30);var p=a(19),A=a(41);
-/**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-const m=document.createElement("template");m.innerHTML="<custom-style>\n  <style>\n    @font-face {\n      font-family: 'vaadin-grid-sorter-icons';\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQwAA0AAAAABuwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAEFAAAABkAAAAcfep+mUdERUYAAAP4AAAAHAAAAB4AJwAOT1MvMgAAAZgAAAA/AAAAYA8TBPpjbWFwAAAB7AAAAFUAAAFeF1fZ4mdhc3AAAAPwAAAACAAAAAgAAAAQZ2x5ZgAAAlgAAABcAAAAnMvguMloZWFkAAABMAAAAC8AAAA2C5Ap72hoZWEAAAFgAAAAHQAAACQGbQPHaG10eAAAAdgAAAAUAAAAHAoAAABsb2NhAAACRAAAABIAAAASAIwAYG1heHAAAAGAAAAAFgAAACAACwAKbmFtZQAAArQAAAECAAACZxWCgKhwb3N0AAADuAAAADUAAABZCrApUXicY2BkYGAA4rDECVrx/DZfGbhZGEDgyqNPOxH0/wNMq5kPALkcDEwgUQBWRA0dAHicY2BkYGA+8P8AAwMLAwgwrWZgZEAFbABY4QM8AAAAeJxjYGRgYOAAQiYGEICQSAAAAi8AFgAAeJxjYGY6yziBgZWBgWkm0xkGBoZ+CM34msGYkZMBFTAKoAkwODAwvmRiPvD/AIMDMxCD1CDJKjAwAgBktQsXAHicY2GAAMZQCM0EwqshbAALxAEKeJxjYGBgZoBgGQZGBhCIAPIYwXwWBhsgzcXAwcAEhIwMCi+Z/v/9/x+sSuElA4T9/4k4K1gHFwMMMILMY2QDYmaoABOQYGJABUA7WBiGNwAAJd4NIQAAAAAAAAAACAAIABAAGAAmAEAATgAAeJyNjLENgDAMBP9tIURJwQCMQccSZgk2i5fIYBDAidJjycXr7x5EPwE2wY8si7jmyBNXGo/bNBerxJNrpxhbO3/fEFpx8ZICpV+ghxJ74fAMe+h7Ox14AbrsHB14nK2QQWrDMBRER4mTkhQK3ZRQKOgCNk7oGQqhhEIX2WSlWEI1BAlkJ5CDdNsj5Ey9Rncdi38ES+jzNJo/HwTgATcoDEthhY3wBHc4CE+pfwsX5F/hGe7Vo/AcK/UhvMSz+mGXKhZU6pww8ISz3oWn1BvhgnwTnuEJf8Jz1OpFeIlX9YULDLdFi4ASHolkSR0iuYdjLak1vAequBhj21D61Nqyi6l3qWybGPjySbPHGScGJl6dP58MYcQRI0bts7mjebBqrFENH7t3qWtj0OuqHnXcW7b0HOTZFnKryRGW2hFX1m0O2vEM3opNMfTau+CS6Z3Vx6veNnEXY6jwDxhsc2gAAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSrpYEBlIbxjQDrzgsuAAAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKyoz1cD0o087YTQATOcIewAAAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n</custom-style>",document.head.appendChild(m.content);class h extends(Object(p.a)(Object(A.a)(i.a))){static get template(){return l.a`
-    <style>
-      :host {
-        display: inline-flex;
-        cursor: pointer;
-        max-width: 100%;
-      }
-
-      [part="content"] {
-        flex: 1 1 auto;
-      }
-
-      [part="indicators"] {
-        position: relative;
-        align-self: center;
-        flex: none;
-      }
-
-      [part="order"] {
-        display: inline;
-        vertical-align: super;
-      }
-
-      [part="indicators"]::before {
-        font-family: 'vaadin-grid-sorter-icons';
-        display: inline-block;
-      }
-
-      :host(:not([direction])) [part="indicators"]::before {
-        content: "\\e901";
-      }
-
-      :host([direction=asc]) [part="indicators"]::before {
-        content: "\\e900";
-      }
-
-      :host([direction=desc]) [part="indicators"]::before {
-        content: "\\e902";
-      }
-    </style>
-
-    <div part="content">
-      <slot></slot>
-    </div>
-    <div part="indicators">
-      <span part="order">[[_getDisplayOrder(_order)]]</span>
-    </div>
-`}static get is(){return"vaadin-grid-sorter"}static get properties(){return{path:String,direction:{type:String,reflectToAttribute:!0,notify:!0,value:null},_order:{type:Number,value:null},_isConnected:{type:Boolean,value:!1}}}static get observers(){return["_pathOrDirectionChanged(path, direction, _isConnected)","_directionOrOrderChanged(direction, _order)"]}ready(){super.ready(),this.addEventListener("click",this._onClick.bind(this))}connectedCallback(){super.connectedCallback(),this._isConnected=!0}disconnectedCallback(){super.disconnectedCallback(),this._isConnected=!1}_pathOrDirectionChanged(e,t,a){void 0!==e&&void 0!==t&&void 0!==a&&a&&this.dispatchEvent(new CustomEvent("sorter-changed",{bubbles:!0,composed:!0}))}_getDisplayOrder(e){return null===e?"":e+1}_onClick(e){const t=this.getRootNode().activeElement;this!==t&&this.contains(t)||(e.preventDefault(),"asc"===this.direction?this.direction="desc":"desc"===this.direction?this.direction=null:this.direction="asc")}_directionOrOrderChanged(e,t){void 0!==e&&void 0!==t&&(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)&&this.root&&this.root.querySelectorAll("*").forEach((function(e){e.style["-webkit-backface-visibility"]="visible",e.style["-webkit-backface-visibility"]=""})))}}customElements.define(h.is,h);var u=a(126);
-/**
-@license
-Copyright (c) 2018 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/class g extends u.a{static get template(){return l.a`
-    <template class="header" id="headerTemplate">
-      <vaadin-grid-sorter path="[[path]]" direction="{{direction}}">[[_getHeader(header, path)]]</vaadin-grid-sorter>
-    </template>
-`}static get is(){return"vaadin-grid-sort-column"}static get properties(){return{path:String,direction:{type:String,notify:!0}}}_prepareHeaderTemplate(){const e=this._prepareTemplatizer(this.$.headerTemplate);return e.templatizer.dataHost=this,e}_getHeader(e,t){return e||this._generateHeader(t)}}customElements.define(g.is,g);class w extends i.a{static get properties(){return{classEquipment:{type:String},inventory:{type:Array},hasClass:{type:Boolean,value:!1},hasBackground:{type:Boolean,value:!1},isEditMode:{type:Boolean,value:!1}}}constructor(){super(),this.renderer=new s.a}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(r.G)()),Object(r.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(r.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready(),setTimeout(()=>{this.$.grid.rowDetailsRenderer=((e,t,a)=>{e.firstElementChild||(e.innerHTML='<div class="details" id="stats"></div>');const i=e.querySelector(".details");Object(o.jqEmpty)(i),Object(d.renderSelection)(a.item,i,!0)}).bind(this)},0)}async updateFromCharacter(e){if(this.hasClass=!1,this.hasBackground=!1,this.$.backgroundEquipment.innerHTML="",this.$.classEquipment.innerHTML="",e){const t=await Object(r.B)(e);let a;if(e.levels&&e.levels.length>0){a=(await Object(r.s)())[e.levels[0].name],this.hasClass=!0,this.$.classEquipment.innerHTML=this.parseClassEquipment(a.startingEquipment)}else this.$.classEquipment.innerHTML="";if(!a||a.startingEquipment.additionalFromBackground){const e=await Object(r.i)();if(e){if(this.hasBackground=!0,this.$.backgroundEquipment.innerHTML=this.parseBackgroundEquipment(e.entries),e.entries){Object(o.entrySearch)("Equipment",e.entries)}}else this.$.backgroundEquipment.innerHTML=""}else this.$.backgroundEquipment.innerHTML="";this.inventory=t,this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}parseClassEquipment(e){if(e){return`${e.additionalFromBackground?"<p>You start with the following items, plus anything provided by your background.</p>":""}${0===e.default.length?"":`<ul><li>${e.default.map(e=>this.renderStr(e)).join("</li><li>")}</ul>`}${void 0===e.goldAlternative?"":`<p>Alternatively, you may start with ${this.renderStr(e.goldAlternative)} gp to buy your own equipment.</p>`}`}}parseBackgroundEquipment(e){if(e){const t=Object(o.entrySearch)("Equipment",e);return`<p>${this.renderStr(t.entry)}</p>`}}renderStr(e){let t=[];return this.renderer.recursiveEntryRender(e,t,0),t.join(" ")}_expandDetails(e){let t=e.model.__data.item,a=this.$.grid.detailsOpenedItems.indexOf(t)>-1;for(let e of this.$.grid.detailsOpenedItems)this.$.grid.closeItemDetails(e);a?this.$.grid.closeItemDetails(t):this.$.grid.openItemDetails(t),this.$.grid.notifyResize()}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){let t=e.model.__data.item&&void 0!==e.model.__data.item.id?e.model.__data.item.id:void 0;Object(r.R)(t)}async _setItemEquiped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,a=t?t.id:void 0;if(!!t&&t.isEquiped)Object(r.ob)(a);else if(await Object(r.e)(t))Object(r.ob)(a);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,a=t?t.id:void 0;if(!!t&&t.isAttuned)Object(r.nb)(a);else if(await Object(r.d)(t))Object(r.nb)(a);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}static get template(){return i.b`
-      <style include="material-styles"></style>
-      <style>
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{113:function(e,t,s){"use strict";s.r(t),s.d(t,"renderSelection",(function(){return c}));var a=s(1),i=s(5);const r=new(s(71).a),l='\n\t<div class="stats-wrapper margin-bottom_large">\n\t\t<div class="source margin-bottom_small"></div>\n\t\t<div class="stats margin-bottom_small"></div>\n\t\t<div class="table-container collapse collapse--left-arrow disabled">\n\t\t\t<div class="collapse-toggle">\n\t\t\t\t<div class="mdc-list-item stat-name">Suggested Characteristics</div>\n\t\t\t</div>\n\t\t\t<div class="collapse-wrapper">\n\t\t\t\t<div class="collapse-list"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>';function c(e,t,s){t.querySelector(".selection-wrapper")?t.querySelector(".selection-wrapper").innerHTML=l:t.innerHTML=l;const c=e.source,o=i.a.sourceJsonToAbv(c),d=i.a.sourceJsonToFull(c),n=t.querySelector(".stats-wrapper .source");n.classList.add("source"+o),n.setAttribute("title",d),n.innerHTML=o;const p=e.entries;if(p.length)for(let e=p.length-1;e>=0;e--){let s=p[e],i=[];r.recursiveEntryRender(s,i,0);let l=i.join(" ");if("Suggested Characteristics"===s.name){t.querySelector(".stats-wrapper .table-container").classList.remove("disabled");const e=t.querySelector(".stats-wrapper .table-container .collapse-list"),s=Object(a.parseHTML)(l);s.querySelector(".stat-name").remove(),Object(a.jqPrepend)(e,s)}else{const e=t.querySelector(".stats-wrapper .stats");Object(a.jqPrepend)(e,Object(a.parseHTML)(l))}}window.setTimeout(()=>{let e=t.querySelector(".stats-wrapper .table-container .collapse-list");e.style["margin-top"]="-"+Object(a.jqHeight)(e)+"px"},0)}},116:function(e,t,s){"use strict";s.r(t),s.d(t,"renderSelection",(function(){return o}));var a=s(1),i=s(71),r=s(5),l=s(64);const c='\n\t<div class="stats-wrapper margin-bottom_large">\n\t\t<div class="source margin-bottom_small"></div>\n\t\t<div class="size margin-bottom_small"></div>\n\t\t<div class="ability margin-bottom_small"></div>\n\t\t<div class="speed margin-bottom_small"></div>\n\t\t<div class="stats"></div>\n\t</div>';function o(e,t){t.querySelector(".selection-wrapper")?t.querySelector(".selection-wrapper").innerHTML=c:t.innerHTML=c;const s=t.querySelector(".stats-wrapper .source");s.classList.add("source"+e.source),s.setAttribute("title",r.a.sourceJsonToFull(e.source)),s.innerHTML=""+r.a.sourceJsonToAbv(e.source);const o=r.a.sizeAbvToFull(e.size);t.querySelector(".stats-wrapper .size").innerHTML=o,""===o&&(t.querySelector(".stats-wrapper .size").style.display="none");const d=Object(l.c)(e.ability);let n;t.querySelector(".stats-wrapper .ability").innerHTML=d,e.speed&&(e.speed.walk?(n=e.speed.walk+" ft.",e.speed.climb&&(n+=`, climb ${e.speed.climb} ft.`),e.speed.fly&&(n+=`, fly ${e.speed.fly} ft.`)):n=e.speed+("Varies"===e.speed?"":" ft. ")),t.querySelector(".stats-wrapper .speed").innerHTML=n,""===n&&(t.querySelector(".stats-wrapper .speed").style.display="none");const p=e.trait;if(p){let e="<div class='stat-item'>";for(let t=0;t<p.length;++t){const s=`<span class='stat-name'>${p[t].name}.</span> `;e+=Object(a.utils_combineText)(p[t].text,"p",s)}e+="</div>",t.querySelector(".stats-wrapper .stats").innerHTML=e}else if(e.entries){const s=[],a={type:"entries",entries:e.entries};(new i.a).recursiveEntryRender(a,s,1,"<div class='renderer-output'>","</div>",!0),t.querySelector(".stats-wrapper .stats").innerHTML=s.join("")}}},124:function(e,t,s){"use strict";s.r(t);var a=s(7),i=s(18),r=s(116),l=s(113),c=s(109),o=s(1);class d extends a.a{static get properties(){return{selectedBackground:{type:String,value:""},backgroundSkillProfOptions:{type:Object,value:[]},defaultBackgroundSkillProf:{type:String,value:""},selectedRace:{type:String,value:""},raceAttributeOptions:{type:Object,value:[]},defaultRaceAttribute:{type:String,value:""},isEditMode:{type:Boolean,value:!1},backgroundName:{type:String,value:""},raceName:{type:String,value:""}}}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(i.G)()),Object(i.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(c.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(c.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(i.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(c.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateFromCharacter(e){this.selectedBackground=e.background,this.backgroundName=this.selectedBackground.name,this.selectedRace=e.race,this.raceName=this.selectedRace.name;let t=await Object(i.k)();t&&t.choose?(this.backgroundSkillProfOptions=t.choose.from,this.backgroundSkillProfChoices=t.choose.count||1,this.backgroundSkillProfSelections=e.backgroundSkillProficiencies):(this.backgroundSkillProfOptions=void 0,this.backgroundSkillProfChoices=void 0,this.backgroundSkillProfSelections=void 0);let s=await Object(i.j)(t);this.defaultBackgroundSkillProf=s.map(e=>Object(o.util_capitalizeAll)(e)).join(", ");let a=await Object(i.E)();a&&a.choose?(this.raceAttributeOptions=a.choose.from.map(e=>e.toUpperCase()),this.raceAttributeChoices=a.choose.count||1,this.raceAttributeSelections=e.raceAttributes):(this.raceAttributeOptions=void 0,this.raceAttributeChoices=void 0,this.raceAttributeSelections=void 0);let c=await Object(i.D)(a);this.defaultRaceAttribute=c.map(e=>{let t=e[0].toLowerCase(),s=e[1];return t.toUpperCase()+" "+Object(o.absInt)(s)}).join(", ");const d=await Object(i.i)();d&&Object(l.renderSelection)(d,this.$.backgroundDetails);const n=await Object(i.F)();n&&Object(r.renderSelection)(n,this.$.raceDetails),Object(o.initCollapseToggles)(this.shadowRoot),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}_backgroundSkillAddCallback(e){Object(i.Y)(e)}_raceAttributeAddCallback(e){Object(i.ib)(e)}_showEmpty(e,t){return!e&&!t}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}static get template(){return a.b`
+      <style include="material-styles my-styles">
+        body {}
         :host {
           display: block;
           padding: 14px;
         }
         [hidden] {
           display: none !important;
-        }
-        a {
-          color: var(--mdc-theme-secondary);
-        }
-
-        .heading {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
         }
 
         .col-wrap {
@@ -132,7 +18,7 @@ This program is available under Apache License Version 2.0, available at https:/
         .row-wrap {
           width: 100%;
         }
-        .row-wrap:not(:last-child) {
+        .row-wrap:first-child {
           margin-bottom: 24px;
         }
 
@@ -140,134 +26,18 @@ This program is available under Apache License Version 2.0, available at https:/
           margin-bottom: 10px;
         }
 
-        .no-content {
+        .default-selection {
           font-size: 14px;
-          font-style: italic;
+          margin-bottom: 0 !important;
         }
 
-        .item-wrap {
-          display: flex;
-          flex-wrap: nowrap;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: flex-start;
-          padding: 10px 6px;
-          min-height: 28px;
-        }
-        .item-wrap__name-wrap {
-          flex-basis: 100%;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          cursor: pointer;
-        }
-        .item-wrap__name-wrap:hover {
-          color: var(--mdc-theme-secondary);
-        }
-        .item-wrap__name {
-          font-weight: bold;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        .item-wrap__type {
-          font-style: italic;
-          font-size: 12px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        .item-wrap__close {
-          font-size: 14px;
-          margin-top: 6px;
-          cursor: pointer;
-        }
-        .item-wrap__checkboxes {
-          display: flex;
-          flex-direction: column;
-          width: 80px;
-          flex-grow: 0;
-          flex-shrink: 0;
-        }
-        .item-wrap__checkboxes > span {
-          cursor: pointer;
-        }
-        vaadin-checkbox {
-          pointer-events: none;
-          font-size: 13px;
-        }
-        vaadin-checkbox.flash-error {
-          color: var(--mdc-theme-error);
-          transition: color 0.2s ease-out;
-          --lumo-contrast-20pct: var(--mdc-theme-error);
-        }
-        vaadin-checkbox.transition-bg {
-          transition: color 0.2s ease-in;
+        .default-selection span {
+          color: var(--mdc-theme-secondary)
         }
 
-        .details {
+        .missing-text {
+          font-style: italic;
           font-size: 14px;
-          width: calc(100% - 30px);
-          margin: 0 auto 13px !important;
-          background: var(--lumo-contrast-10pct);
-          border-radius: 4px;
-          padding: 14px;
-        }
-        #stats {
-          margin-top: 24px;
-          font-size: 12px;
-        }
-        #stats p {
-          margin-top: 4px;
-          margin-bottom: 16px;
-        }
-        #stats .table {
-          margin-bottom: 24px;
-          border-radius: 4px;
-          box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
-        }
-        #stats .subclass-feature .stat-name {
-          color: var(--mdc-theme-primary, '#6200ee');
-        }
-        #stats .statsBlockHead .stat-name {
-          display: block;
-          font-size: 1.6rem;
-          font-weight: normal;
-          line-height: 1.2;
-        }
-        #stats .statsBlockSubHead .stat-name {
-          font-size: 1.2rem;
-          font-weight: normal;
-        }
-        #stats .statsInlineHead {
-          margin-bottom: 16px;
-        }
-        #stats .statsInlineHead .stat-name {
-          font-size: .8rem;
-          font-weight: bold;
-          display: inline;
-        }
-        #stats .statsInlineHead .stat-name + p {
-          display: inline;
-        }
-        #stats .spell-ability {
-          margin: 0 24px;
-          display: block;
-        }
-        #stats .subclass-feature,
-        #stats .class-feature {
-          padding-top: 24px;
-          border-top: 1px solid var(--mdc-theme-text-divider-on-background, 'rgba(0, 0, 0, 0.12)');
-        }
-        #stats a {
-          color: var(--mdc-theme-secondary, '#018786') !important;
-        }
-        #stats ul {
-          padding-left: 24px;
-          list-style: disc;
-        }
-        #stats ul li {
-          margin-bottom: 8px;
         }
 
         @media(min-width: 921px) {
@@ -278,49 +48,81 @@ This program is available under Apache License Version 2.0, available at https:/
             margin-bottom: 0;
           }
         }
+
+        h2 {
+          display: block;
+          font-size: 1.5em;
+          margin-block-start: 0.83em;
+          margin-block-end: 0.83em;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
+          font-weight: bold;
+        }
+
+        h3 {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+        .details-container  {
+          background: var(--lumo-contrast-10pct);
+          padding: 14px;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+        .stats-wrapper.margin-bottom_large {
+          margin-bottom: 0px !important;
+        }
       </style>
 
       <div class="col-wrap">
-
         <div class="row-wrap">
-          <div class="heading">
-            <h2>Inventory</h2>
-            <a class="mdc-icon-button material-icons" href="#/items">launch</a>
-          </div>
-          <vaadin-grid id="grid" items="[[inventory]]" theme="no-border no-row-borders no-row-padding" >
-            <vaadin-grid-sort-column path="typeText" header="Type">
-              <template>
-                <div class="item-wrap">
-                  <div class="item-wrap__name-wrap" on-click="_expandDetails">
-                    <span class="item-wrap__name">[[item.name]]</span>
-                    <span class="item-wrap__type">[[item.typeText]]</span>
-                  </div>
-                  <div class="item-wrap__checkboxes">
-                    <span on-click="_setItemEquiped">
-                      <vaadin-checkbox checked="[[item.isEquiped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
-                    </span>
-                    <span on-click="_setItemAttuned">
-                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>
-                    </span>
-                  </div>
-                  <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
+          <h2>Race</h2>
+          <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
+          <div class="missing-text" hidden$="[[_exists(raceAttributeOptions, defaultRaceAttribute)]]">Select Race to add Attribute Bonuses</div>
+          <div hidden$="[[!_exists(raceAttributeOptions, defaultRaceAttribute)]]">Attribute Bonuses from Race:</div>
+          <div hidden$="[[!_exists(defaultRaceAttribute)]]" class="default-selection">Default Attributes: <span>[[defaultRaceAttribute]]</span></div>
+          <dnd-select-add hidden$="[[!_exists(raceAttributeOptions)]]" choices="[[raceAttributeChoices]]" placeholder="<Choose Attribute>" label="Choosen Attribute(s)"
+            options="[[raceAttributeOptions]]" value="[[raceAttributeSelections]]" add-callback="[[_raceAttributeAddCallback]]"></dnd-select-add>
+
+          <div class="collapse collapse--left-arrow" hidden$="[[!raceName]]">
+            <div class="collapse-toggle">
+              <div class="mdc-list-item stat-name">Race Details</div>
+            </div>
+            <div class="collapse-wrapper">
+              <div class="details-container collapse-list">
+                <h3>[[raceName]]</h3>
+                <div class="details" id="raceDetails">
+                  [[raceDetails]]
                 </div>
-              </template>
-            </vaadin-grid-sort-column>
-          </vaadin-grid>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="row-wrap">
-          <h2>From Class</h2>
-          <span class="no-content" hidden$=[[hasClass]]>Select a class to see equipment</span>
-          <div id="classEquipment"></div>
-        </div>
-
-        <div class="row-wrap">
-          <h2>From Background</h2>
-          <span class="no-content" hidden$=[[hasBackground]]>Select a background to see equipment</span>
-          <div id="backgroundEquipment"></div>
+          <h2>Background</h2>
+          <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
+          <div class="missing-text" hidden$="[[_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Select Background to add Skill Proficiencies</div>
+          <div hidden$="[[!_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Skill Proficiencies from Background:</div>
+          <div hidden$="[[!_exists(defaultBackgroundSkillProf)]]" class="default-selection">Default Skills: <span>[[defaultBackgroundSkillProf]]</span></div>
+          <dnd-select-add hidden$="[[!_exists(backgroundSkillProfOptions)]]" choices="[[backgroundSkillProfChoices]]" placeholder="<Choose Skills>" label="Choosen Skill(s)" disabled$="[[!isEditMode]]"
+            options="[[backgroundSkillProfOptions]]" value="[[backgroundSkillProfSelections]]" add-callback="[[_backgroundSkillAddCallback]]"></dnd-select-add>
+          
+          <div class="collapse collapse--left-arrow" hidden$="[[!backgroundName]]">
+            <div class="collapse-toggle">
+              <div class="mdc-list-item stat-name">Background Details</div>
+            </div>
+            <div class="collapse-wrapper">
+              <div class="details-container collapse-list">
+                <h3>[[backgroundName]]</h3>
+                <div class="details" id="backgroundDetails">
+                  [[backgroundDetails]]
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    `}}customElements.define("dnd-character-builder-equipment",w)}}]);
+    `}}customElements.define("dnd-character-builder-background-race",d)}}]);
 //# sourceMappingURL=8.bundle.js.map
