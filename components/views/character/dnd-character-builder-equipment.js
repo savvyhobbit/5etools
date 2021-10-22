@@ -1,53 +1,40 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import { 
-  getCharacterChannel, 
-  getSelectedCharacter, 
-  getClassReferences, 
-  getBackgroundReference, 
-  getItems, 
-  removeItem, 
-  canAttuneItem, 
-  canEquipItem, 
-  toggleItemEquiped, 
-  toggleItemAttuned 
+  getCharacterChannel,
+  getSelectedCharacter,
+  getItems,
+  removeItem,
+  canAttuneItem,
+  canEquipItem,
+  toggleItemEquiped,
+  toggleItemAttuned,
+  setItem,
+  spliceItems,
+  isChildItem
 } from "../../../util/charBuilder";
-import EntryRenderer from '../../../util/entryrender.js'
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { jqEmpty, entrySearch } from "../../../js/utils";
-import { renderSelection } from "../../../js/items";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-grid";
-import "@vaadin/vaadin-grid/vaadin-grid-sort-column";
+import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
+import "@vaadin/vaadin-grid/vaadin-grid-column";
+import "./dnd-character-builder-equipment-item-detail";
+import { cloneDeep } from "../../../js/utils";
 
 class DndCharacterBuilderEquipment extends PolymerElement {
   
   static get properties() {
     return {
-      classEquipment: {
-        type: String,
-      },
       inventory: {
         type: Array
-      },
-      hasClass: {
-        type: Boolean,
-        value: false
-      },
-      hasBackground: {
-        type: Boolean,
-        value: false
       },
       isEditMode: {
         type: Boolean,
         value: false
+      },
+      character: {
+        type: Object,
       }
     };
-  }
-
-  constructor() {
-    super();
-    
-    this.renderer = new EntryRenderer();
   }
 
   connectedCallback() {
@@ -81,84 +68,117 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     setTimeout(() => {
       const grid = this.$.grid;
 
+      // Define Row Details
       grid.rowDetailsRenderer = ((root, grid, rowData) => {
         if (!root.firstElementChild) {
           root.innerHTML =
-          '<div class="details" id="stats"></div>';
+          `<div class="details" id="stats">
+            <dnd-character-builder-equipment-item-detail></dnd-character-builder-equipment-item-detail>
+          </div>`;
         }
-        const deets = root.querySelector('.details');
-        jqEmpty(deets);
-        renderSelection(rowData.item, deets, true);
+        const detailEl = root.querySelector('dnd-character-builder-equipment-item-detail');
+        detailEl.item = rowData.item;
+      }).bind(this);
+
+      // Add Drag and Drop
+      let draggedItem;
+
+      grid.addEventListener('grid-dragstart', function(e) {
+        draggedItem = e.detail.draggedItems[0];
+        grid.dropMode = 'on-top-or-between';
+      });
+
+      grid.addEventListener('grid-dragend', function(e) {
+        draggedItem = grid.dropMode = null;
+      });
+
+      grid.addEventListener('grid-drop', (e) => {
+        const dropTargetItem = e.detail.dropTargetItem;
+        if (draggedItem && draggedItem !== dropTargetItem) {
+
+          // Prevent loops
+          const isChild = isChildItem(draggedItem, dropTargetItem.uniqueId);
+          if (draggedItem.container && isChild) {
+            return;
+          }
+
+          // Dropping into container
+          if (e.detail.dropLocation === 'on-top') {
+            if (dropTargetItem.container) {
+              if (dropTargetItem.storedItem && dropTargetItem.storedItem.children) {
+                // Add child item
+                dropTargetItem.storedItem.children.push(draggedItem.storedItem);
+                setItem(dropTargetItem, undefined, true);
+                // Remove original
+                draggedItem.storedItemREF.uniqueId = -1;
+                removeItem(-1);
+              }
+              return;
+            }
+          }
+
+          // Re-ordering items, default action if 'on-top' of non-container
+          if (this.inventory) {
+            let parentItem;
+            let currentLevel = this.inventory;
+            let currentLevelIndex = 0;
+            const addIndexes = `${dropTargetItem.id}`.split('_').map(index => parseInt(index, 10));
+
+            for (; currentLevelIndex < addIndexes.length - 1; currentLevelIndex ++) {
+              let addIndex = addIndexes[currentLevelIndex];
+              parentItem = currentLevel[addIndex];
+
+              if (parentItem && parentItem.storedItem && parentItem.storedItem.children) {
+                currentLevel = parentItem.storedItem.children
+              } else {
+                console.error('reorder failed, parent not a container', dropTargetItem.id, parentItem);
+                return;
+              }
+            }
+
+            // Adjust final add index for dropLocation 'below' or 'above'
+            let finalAddIndex = addIndexes[addIndexes.length - 1];
+            if (e.detail.dropLocation === 'below') {
+              finalAddIndex++;
+            }
+
+            if (parentItem) {
+              // Add child item
+              currentLevel.splice(finalAddIndex, 0, draggedItem.storedItem);
+              setItem(parentItem, undefined, true);
+            } else {
+              // Add top-level item
+              spliceItems(finalAddIndex, draggedItem.storedItem);
+            }
+
+            // Remove original item
+            draggedItem.storedItemREF.uniqueId = -1;
+            removeItem(-1);
+          }
+        }
+      });
+
+      // Set Data Provider
+      grid.dataProvider = ((params, callback) => {
+        const startIndex = params.page * params.pageSize;
+        let children = params.parentItem ? params.parentItem.children : this.inventory;
+        if (children && children.length) {
+          const page = children.slice(startIndex, startIndex + params.pageSize);
+          callback(page, children.length);
+        }
       }).bind(this);
     }, 0);
+    
   }
 
   async updateFromCharacter(character) {
-    this.hasClass = false;
-    this.hasBackground = false;
-    this.$.backgroundEquipment.innerHTML = "";
-    this.$.classEquipment.innerHTML = "";
     if (character) {
-      const inventory = await getItems(character);
-
-      let firstClass;
-      if (character.levels && character.levels.length > 0) {
-        const classRefs = await getClassReferences();
-        firstClass = classRefs[character.levels[0].name];
-        this.hasClass = true;
-        // todo Build inventory from class starting.
-        this.$.classEquipment.innerHTML = this.parseClassEquipment(firstClass.startingEquipment);
-      } else {
-        this.$.classEquipment.innerHTML = "";
-      }
-
-      if (!firstClass || firstClass.startingEquipment.additionalFromBackground) {
-        const background = await getBackgroundReference();
-        if (background) {
-          this.hasBackground = true;
-          this.$.backgroundEquipment.innerHTML = this.parseBackgroundEquipment(background.entries)
-          if (background.entries) {
-            const equipmentEntry = entrySearch("Equipment", background.entries);
-            // todo Build inventory from background starting.
-          }
-        } else {
-          this.$.backgroundEquipment.innerHTML = "";
-        }
-      } else {
-        this.$.backgroundEquipment.innerHTML = "";
-      }
-
-      this.inventory = inventory;
+      this.character = character;
+      this.inventory = await getItems(character);
+      console.error('inventory:', this.inventory);
+      this.$.grid.clearCache();
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
-  }
-
-  parseClassEquipment(classEquip) {
-    if (classEquip) {
-      const fromBackground = classEquip.additionalFromBackground
-        ? "<p>You start with the following items, plus anything provided by your background.</p>"
-        : "";
-      const defList = classEquip.default.length === 0 ? "" : `<ul><li>${classEquip.default.map(i => this.renderStr(i)).join("</li><li>")}</ul>`;
-      const goldAlt =
-        classEquip.goldAlternative === undefined
-          ? ""
-          : `<p>Alternatively, you may start with ${this.renderStr(classEquip.goldAlternative)} gp to buy your own equipment.</p>`;
-      return `${fromBackground}${defList}${goldAlt}`;
-    }
-  }
-
-  parseBackgroundEquipment(backgroundEntries) {
-    if (backgroundEntries) {
-      const equipmentEntry = entrySearch("Equipment", backgroundEntries);
-      const renderedEquipment = this.renderStr(equipmentEntry.entry);
-      return `<p>${renderedEquipment}</p>`;
-    }
-  }
-
-  renderStr(string) {
-    let renderStack = []
-    this.renderer.recursiveEntryRender(string, renderStack, 0);
-    return renderStack.join(" ");
   }
 
   _expandDetails(e) {
@@ -191,8 +211,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   }
 
   _deleteItem(e) {
-    let id = e.model.__data.item && e.model.__data.item.id !== undefined ? e.model.__data.item.id : undefined;
-    removeItem(id);
+    let uniqueId = e.model.__data.item && e.model.__data.item.uniqueId !== undefined ? e.model.__data.item.uniqueId : undefined;
+    removeItem(uniqueId);
   }
 
   async _setItemEquiped(e) {
@@ -241,6 +261,29 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       }
     }
     return false;
+  }
+  
+  _itemWrapTypeClassname(fromBackground, fromClass) {
+    let className = 'item-wrap__type ';
+    if (fromBackground) {
+      className += 'item-wrap__type--fromBackground'
+    }
+    if (fromClass) {
+      className += 'item-wrap__type--fromClass'
+    }
+    return className;
+  }
+  
+  _itemWrapNameClassname(isEdited) {
+    let className = 'item-wrap__name '
+    if (isEdited) {
+      className += 'item-wrap__name--edited'
+    }
+    return className;
+  }
+
+  _noRarity(rarity) {
+    return !rarity || rarity === 'None';
   }
 
   static get template() {
@@ -311,6 +354,28 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          position: relative;
+        }
+        .item-wrap__name--edited {
+          padding-right: 58px;
+        }
+        .item-wrap__edited,
+        .item-wrap__from {
+          background-color: var(--mdc-theme-text-disabled-on-background);
+          color: var(--mdc-theme-on-secondary);
+          border: none;
+          border-radius: 4px;
+          outline: none;
+          display: inline-block;
+          justify-content: center;
+          white-space: normal;
+          font-size: 10px;
+          padding: 1px 4px;
+          margin-right: 4px;
+          font-style: italic;
+        }
+        .item-wrap__edited {
+          top: 3px;
         }
         .item-wrap__type {
           font-style: italic;
@@ -318,6 +383,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          position: relative;
+        }
+        .item-wrap__type--fromBackground {
+          padding-right: 38px;
+        }
+        .item-wrap__type--fromClass {
+          padding-right: 50px;
         }
         .item-wrap__close {
           font-size: 14px;
@@ -330,6 +402,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           width: 80px;
           flex-grow: 0;
           flex-shrink: 0;
+          margin-left: auto;
         }
         .item-wrap__checkboxes > span {
           cursor: pointer;
@@ -429,14 +502,22 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             <h2>Inventory</h2>
             <a class="mdc-icon-button material-icons" href="#/items">launch</a>
           </div>
-          <vaadin-grid id="grid" items="[[inventory]]" theme="no-border no-row-borders no-row-padding" >
-            <vaadin-grid-sort-column path="typeText" header="Type">
+          <vaadin-grid id="grid" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
+            <vaadin-grid-column>
               <template>
                 <div class="item-wrap">
-                  <div class="item-wrap__name-wrap" on-click="_expandDetails">
-                    <span class="item-wrap__name">[[item.name]]</span>
-                    <span class="item-wrap__type">[[item.typeText]]</span>
-                  </div>
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}">
+                    <div class="item-wrap__name-wrap">
+                      <span class$="[[_itemWrapNameClassname(item.isEdited)]]" on-click="_expandDetails">[[item.name]]
+                        <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
+                      </span>
+                      <span class$="[[_itemWrapTypeClassname(item.fromBackground, item.fromClass)]]">
+                        <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
+                        <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
+                        <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
+                      </span>
+                    </div>
+                  </vaadin-grid-tree-toggle>
                   <div class="item-wrap__checkboxes">
                     <span on-click="_setItemEquiped">
                       <vaadin-checkbox checked="[[item.isEquiped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
@@ -448,20 +529,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                   <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
                 </div>
               </template>
-            </vaadin-grid-sort-column>
+            </vaadin-grid-column>
           </vaadin-grid>
-        </div>
-
-        <div class="row-wrap">
-          <h2>From Class</h2>
-          <span class="no-content" hidden$=[[hasClass]]>Select a class to see equipment</span>
-          <div id="classEquipment"></div>
-        </div>
-
-        <div class="row-wrap">
-          <h2>From Background</h2>
-          <span class="no-content" hidden$=[[hasBackground]]>Select a background to see equipment</span>
-          <div id="backgroundEquipment"></div>
         </div>
       </div>
     `;

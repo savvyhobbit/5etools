@@ -1,7 +1,7 @@
 import { readRouteView, readRouteSelection } from "./routing";
 import { loadModel } from "./data";
 import { resolveHash } from './renderTable.js';
-import { entryTextSearch, util_capitalize, getProfBonus } from "../js/utils";
+import { entryTextSearch, util_capitalize, getProfBonus, entrySearch, util_capitalizeAll, cloneDeep } from "../js/utils";
 import Parser from "./Parser";
 
 import droll from "../lib/droll";
@@ -32,7 +32,8 @@ let schema = {
   featAttributeSelections: {},
   preparedSpells: {},
   preparedCantrips: {},
-  hp: {}
+  hp: {},
+  items: []
 }
 
 const channel = document.createElement('div');
@@ -150,6 +151,7 @@ function selectCharacterFromIndex(index) {
 
   if (characters[index]) {
     selectedCharacter = characters[index];
+    console.log('selected character', selectedCharacter);
     makeDefault(selectedCharacter);
   } else {
     selectedCharacter = undefined;
@@ -199,7 +201,7 @@ function mergeFeature(character = selectedCharacter, selectedItem, type) {
     mergeClass(character, selectedItem);
 
   } else if (type==="items") { 
-    addItem(selectedItem, true, false, character);
+    addItem(selectedItem, true, character);
     return;
 
   } else {
@@ -219,6 +221,10 @@ function mergeFeature(character = selectedCharacter, selectedItem, type) {
     character[featureKey].source = selectedItem.source;
     character[featureKey].id = selectedItem.name + '_' + selectedItem.source;
     character[featureKey].choices = findChoices(selectedItem);
+
+    if (type === "backgrounds") {
+      setItemsFromBackground(character);
+    }
   }
   saveCharacter(character);
 }
@@ -241,6 +247,9 @@ function mergeClass(character, selectedItem) {
     });
   }
   updateLevelHP(character, selectedItem);
+  if (character.levels.length === 1) {
+    setItemsFromClass(character);
+  }
 }
 
 function mergeSubclass(character = selectedCharacter, className, subclass) {
@@ -1065,63 +1074,124 @@ function setHpRoll(className, level, roll, character = selectedCharacter) {
   }
 }
 
-function addItem(item, isFromRef = false, isCopy = false, character = selectedCharacter) {
+function addItem(item, isFromRef = false, character = selectedCharacter) {
   if (!character.items) {
     character.items = [];
   }
 
+  if (!character.itemCounter) {
+    character.itemCounter = 0;
+  }
+
   if (isFromRef) {
-    character.items.push({
-      itemRef: true,
-      source: item.source,
-      name: item.name
-    });
-  } else {
-    if (isCopy) {
-      item.isCopy = true;
+    if (item.type !== 'GV') {
+      character.items.push({
+        uniqueId: character.itemCounter++,
+        itemRef: {
+          source: item.source,
+          name: item.name
+        }
+      });
     }
-    character.items.push(item);
+  } else {
+    character.items.push({ ...item, uniqueId: character.itemCounter++});
   }
   
   saveCharacter(character);
 }
 
-async function getItems(character = selectedCharacter) {
+function spliceItems(index, item, character = selectedCharacter) {
+  if (character && character.items) {
+    if (character.items.length > index) {
+      character.items.splice(index, 0, item);
+    } else {
+      character.items.push(item);
+    }
+    saveCharacter(character);
+  }
+} 
+
+function setItem(item, character = selectedCharacter, skipEdited = false) {
+  if (character && character.items && item.id !== undefined) {
+    let currentLevel = character.items;
+    const indexes = (item.id + '').split('_');
+    for (let i = 0; i < indexes.length - 1; i ++) {
+      const index = indexes[i];
+      if (currentLevel[index] && currentLevel[index].children) {
+        currentLevel = currentLevel[index].children
+      } else {
+        console.error('Item Set failed', item.id, character.items);
+        return;
+      }
+    }
+    const lastIndex = parseInt(indexes[indexes.length - 1], 10);
+    if (currentLevel.length > lastIndex) {
+      currentLevel[lastIndex] = { ...item.storedItem, isEdited: !skipEdited };
+    }
+    saveCharacter(character);
+  }
+}
+
+async function getItems(character = selectedCharacter, isFlat = false) {
   let resultItems = [];
   if (character && character.items && character.items.length) {
-    
-    const itemRefs = await loadModel('items');
-    resultItems = character.items.map((itemFromChar, index) => {
-      if (itemFromChar.itemRef) {
-        const { isAttuned, isEquiped } = itemFromChar;
-        const itemRef = itemRefs.find(item => item.source === itemFromChar.source && itemFromChar.name === item.name);
-        const isShieldInherited = getIsShieldInherited(itemRef);
-        const newItem = {
-          ...itemRef,
-          id: index,
-          type: isShieldInherited ? 'S' : itemRef.type,
-          isAttuned,
-          isEquiped,
-          canEquip: itemRef.armor || itemRef.weaponCategory || itemRef.type === 'S' || isShieldInherited
-        };
-        newItem.typeText = getItemType(newItem);
-        return newItem;
-
-      } else {
-        const isShieldInherited = getIsShieldInherited(itemFromChar);
-        const newItem = {
-          ...itemFromChar,
-          id: index,
-          type: itemFromChar.requires && itemFromChar.requires.type === 'S' ? 'S' : itemFromChar.type,
-          canEquip: itemFromChar.armor || itemFromChar.weaponCategory || itemFromChar.type === 'S' || isShieldInherited
-        };
-        newItem.typeText = getItemType(newItem);
-        return newItem;
-      }
-    });
-    resultItems = resultItems.filter((item) => item.type !== 'GV');
+    for (let index = 0; index < character.items.length; index ++) {
+      const storedItem = character.items[index];
+      const parsedItem = await parseItem(storedItem, index);
+      resultItems.push(parsedItem);
+    }
+    resultItems = resultItems.filter(item => !!item && item.type !== 'GV');
   }
   return resultItems;
+}
+
+async function parseItem(storedItem, index) {
+  let newItem = {};
+
+  const itemRefs = await loadModel('items');
+
+  // Find the itemRef if item is based on one in the data model
+  if (storedItem.itemRef) {
+    const itemRef = itemRefs.find(item => item.source.toLowerCase() === storedItem.itemRef.source.toLowerCase() && item.name.toLowerCase() === storedItem.itemRef.name.toLowerCase());
+    if (itemRef) {
+      newItem = { ...itemRef };
+    } else {
+      newItem = { name: storedItem.itemRef.name, lookupFailed: true };
+    }
+  }
+
+  if (storedItem.name === '') {
+    delete storedItem.name;
+  }
+
+  // Item reference props are overwritten by storedItem props
+  newItem = {
+    ...newItem,
+    ...storedItem,
+    storedItem: cloneDeep(storedItem),
+    storedItemREF: storedItem
+  };
+
+  const isShieldInherited = getIsShieldInherited(newItem);
+  newItem = {
+    ...newItem,
+    id: index,
+    type: isShieldInherited ? 'S' : newItem.type,
+    canEquip: newItem.armor || newItem.weaponCategory || newItem.type === 'S' || isShieldInherited,
+    typeText: getItemType(newItem)
+  };
+  if (newItem.container) {
+    if (!newItem.children) {
+      newItem.children = [];
+      newItem.storedItem.children = [];
+    }
+    for (let childIndex = 0; childIndex < newItem.children.length; childIndex ++) {
+      const storedChildItem = newItem.children[childIndex];
+      const parsedItem = await parseItem(storedChildItem, `${index}_${childIndex}`);
+      newItem.children[childIndex] = parsedItem;
+    }
+  }
+  return newItem;
 }
 
 function getIsShieldInherited(item) {
@@ -1138,9 +1208,24 @@ function getItemType(item) {
   return type.join(", ");
 }
 
-function removeItem(index, character = selectedCharacter) {
-  if (character && character.items && index !== undefined && character.items.length > index) {
-    character.items.splice(index, 1)
+function removeItem(id, character = selectedCharacter) {
+  if (character && character.items && id !== undefined) {
+    
+    const checkItem = (item, id) => {
+      const list = item.length ? item : item.children ? item.children : undefined;
+      if (list) {
+        const foundIndex = list.findIndex((child) => child.uniqueId === id);
+
+        if (foundIndex > -1) {
+          list.splice(foundIndex, 1);
+        } else {
+          list.forEach(child => checkItem(child, id));
+        }
+      }
+    }
+
+    checkItem(character.items, id);
+
     saveCharacter(character);
   }
 }
@@ -1162,7 +1247,7 @@ function toggleItemAttuned(index, character = selectedCharacter) {
 async function canEquipItem(thisItem, character = selectedCharacter) {
   if (character && character.items) {
     if (thisItem.canEquip) {
-      const items = await getItems();
+      const items = await getItems(character, true);
       const anyEquipedArmor = items.some((item) => item.isEquiped && item.armor && item.id !== thisItem.id);
       const anyEquipedShield = items.some((item) => item.type === 'S' && item.isEquiped && item.id !== thisItem.id);
       return (thisItem.armor && !anyEquipedArmor) || (thisItem.type === 'S' && !anyEquipedShield) || (!thisItem.armor && thisItem.type !== 'S');
@@ -1175,7 +1260,7 @@ async function canAttuneItem(thisItem, character = selectedCharacter) {
   if (character && character.items) {
     let canEquip = await canEquipItem(thisItem, character);
     if (thisItem.reqAttune && (!thisItem.canEquip || (thisItem.canEquip && canEquip && thisItem.isEquiped))) {
-      const items = await getItems();
+      const items = await getItems(character, true);
       const allAttuned = items.filter((item) => item.isAttuned && item.reqAttune).length >= 3;
       return !allAttuned;
     }
@@ -1184,20 +1269,133 @@ async function canAttuneItem(thisItem, character = selectedCharacter) {
 }
 
 async function getWeaponItems(character = selectedCharacter) {
-  const items = await getItems(character);
+  const items = await getItems(character, true);
 
   return items.filter(item => !!item.weaponCategory)
 }
 
 async function getArmorItems(character = selectedCharacter) {
-  const items = await getItems(character);
+  const items = await getItems(character, true);
 
   return items.filter(item => !!item.armor)
 }
 
+async function setItemsFromBackground(character = selectedCharacter) {
+  if (character.items) {
+    character.items = character.items.filter((item) => {
+      return !item.fromBackground;
+    });
+  } else {
+    character.items = [];
+  }
+
+  let background = await getBackgroundReference(character);
+  const equipmentEntry = entrySearch("Equipment", background.entries);
+
+  if (equipmentEntry) {
+    let equipmentString = equipmentEntry.entry;
+    if (equipmentString.indexOf('.') > -1) {
+      equipmentString = equipmentString.substring(0, equipmentString.indexOf('.'));
+    }
+    equipmentString.split(',').forEach((itemStr) => {
+      let itemStrTrimmed = itemStr.trim();
+      if (itemStrTrimmed.startsWith('and')) {
+        itemStrTrimmed = itemStrTrimmed.substring(3).trim();
+      }
+      if (itemStrTrimmed.indexOf('@item') > -1) {
+        itemStrTrimmed.split('@item').forEach((itemFunc, index) => {
+          if (index === 0) {
+            return;
+          }
+          const itemParams = itemFunc.substring(0, itemFunc.indexOf('}')).split('|');
+          console.error('background items', itemParams, itemStrTrimmed);
+          const newItem = { 
+            itemRef: {
+              name: itemParams[0].trim(),
+              source: itemParams[1].trim()
+            },
+            fromBackground: true
+          };
+
+          addItem(newItem, false, character);
+        });
+      } else {
+        addItem({ name: util_capitalizeAll(itemStrTrimmed), fromBackground: true }, false, character);
+      }
+    });
+  }
+}
+
+async function setItemsFromClass(character = selectedCharacter) {
+  if (character.items) {
+    character.items = character.items.filter((item) => {
+      return !item.fromClass;
+    });
+  } else {
+    character.items = [];
+  }
+
+  if (character.levels && character.levels.length) {
+    let classReferences = await getClassReferences(character),
+      firstClassName = character.levels[0].name;
+
+    if (firstClassName && classReferences[firstClassName]) {
+      const firstClass = classReferences[firstClassName];
+      const startingEquipment = firstClass.startingEquipment.default
+
+      if (startingEquipment) {
+        startingEquipment.forEach((equipmentString) => {
+          equipmentString.split(',').forEach((itemStr) => {
+            let itemStrTrimmed = itemStr.trim();
+            if (itemStrTrimmed.startsWith('and')) {
+              itemStrTrimmed = itemStrTrimmed.substring(3).trim();
+            }
+            if (itemStrTrimmed.indexOf('@item') > -1) {
+              itemStrTrimmed.split('@item').forEach((itemFunc, index) => {
+                if (index === 0) {
+                  return;
+                }
+                const itemParams = itemFunc.substring(0, itemFunc.indexOf('}')).split('|');
+                console.error('class items', itemParams, itemStrTrimmed);
+                const newItem = {
+                  itemRef: {
+                    name: itemParams[0].trim(),
+                    source: itemParams[1].trim()
+                  },
+                  fromClass: true
+                };
+      
+                addItem(newItem, false, character);
+              });
+            } else {
+              addItem({ name: util_capitalizeAll(itemStrTrimmed), fromClass: true }, false, character);
+            }
+          });
+        });
+      }
+    }
+  }
+}
+
+function isChildItem(potentialParent, uniqueId) {
+  if (potentialParent.uniqueId === uniqueId) {
+    return true;
+  }
+  if (potentialParent.children) {
+    let result;
+    for (let child of potentialParent.children) {
+      result = isChildItem(child, uniqueId);
+      if (result) {
+        break;
+      }
+    }
+    return result;
+  }
+}
+
 async function getCharacterAC(character = selectedCharacter) {
   let ac = 10;
-  const items = await getItems(character);
+  const items = await getItems(character, true);
   const dexMod = await getAttributeModifier('dex', character);
   const equipedArmor = items.find(item => item.isEquiped && item.armor);
   const equipedShield = items.find(item => item.type === 'S' && item.isEquiped);
@@ -1458,6 +1656,8 @@ export {
   getHPDiceForLevel,
   setHpRoll,
   addItem,
+  setItem,
+  spliceItems,
   getItems,
   removeItem,
   toggleItemEquiped,
@@ -1466,6 +1666,7 @@ export {
   canAttuneItem,
   getWeaponItems,
   getArmorItems,
+  isChildItem,
   getCharacterAC,
   toggleCustomAC,
   setCustomACVal,

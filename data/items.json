@@ -1496,6 +1496,7 @@
 		"weight": "5",
 		"source": "PHB",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"A backpack can hold one cubic foot or 30 pounds of gear. You can also strap items, such as a bedroll or a coil of rope, to the outside of a backpack."
 		]
@@ -1583,6 +1584,7 @@
 		"rarity": "Very Rare",
 		"source": "DMG",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"This bag superficially resembles a {@item bag of holding|dmg} but is a feeding orifice for a gigantic extradimensional creature. Turning the bag inside out closes the orifice.",
 			"The extradimensional creature attached to the bag can sense whatever is placed inside the bag. Animal or vegetable matter placed wholly in the bag is devoured and lost forever. When part of a living creature is placed in the bag, as happens when someone reaches inside it, there is a 50 percent chance that the creature is pulled inside the bag. A creature inside the bag can use its action to try to escape with a successful DC 15 Strength check. Another creature can use its action to reach into the bag to pull a creature out, doing so with a successful DC 20 Strength check (provided it isn't pulled inside the bag first). Any creature that starts its turn inside the bag is devoured, its body destroyed.",
@@ -1598,6 +1600,7 @@
 		"rarity": "Uncommon",
 		"source": "DMG",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 15 pounds, regardless of its contents. Retrieving an item from the bag requires an action.",
 			"If the bag is overloaded, pierced, or torn, it ruptures and is destroyed, and its contents are scattered in the Astral Plane. If the bag is turned inside out, its contents spill forth, unharmed, but the bag must be put right before it can be used again. Breathing creatures inside the bag can survive up to a number of minutes equal to 10 divided by the number of creatures (minimum 1 minute), after which time they begin to suffocate.",
@@ -1841,6 +1844,7 @@
 		"weight": "70",
 		"source": "PHB",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"A barrel can hold 40 gallons of liquid or 4 cubic feet of solids."
 		]
@@ -2556,6 +2560,7 @@
 		"weight": "44.5",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -3028,6 +3033,7 @@
 		"weight": "2",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"A component pouch is a small, watertight leather belt pouch that has compartments to hold all the material components and other special items you need to cast your spells, except for those components that have a specific cost (as indicated in a spell's description)."
 		]
@@ -3104,6 +3110,7 @@
 		"weight": "1",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"This wooden case can hold up to twenty crossbow bolts."
 		]
@@ -3782,6 +3789,7 @@
 		"weight": "36",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -3936,6 +3944,7 @@
 		"weight": "61.5",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -4184,6 +4193,7 @@
 		"weight": "38",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -4232,6 +4242,7 @@
 		"weight": "59",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -5050,6 +5061,7 @@
 		"rarity": "Rare",
 		"source": "DMG",
 		"page": "174",
+		"container": true,
 		"entries": [
 			"This backpack has a central pouch and two side pouches, each of which is an extradimensional space. Each side pouch can hold up to 20 pounds of material, not exceeding a volume of 2 cubic feet. The large central pouch can hold up to 8 cubic feet or 80 pounds of material. The backpack always weighs 5 pounds, regardless of its contents.",
 			"Placing an object in the haversack follows the normal rules for interacting with objects. Retrieving an item from the haversack requires you to use an action. When you reach into the haversack for a specific item, the item is always magically on top.",
@@ -6243,6 +6255,7 @@
 		"weight": "1",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"This cylindrical leather case can hold up to ten rolled-up sheets of paper or five rolled-up sheets of parchment."
 		]
@@ -6366,6 +6379,7 @@
 		"weight": "48.5",
 		"source": "CoS",
 		"page": "209",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -7528,6 +7542,7 @@
 		"weight": "1",
 		"source": "PHB",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"A cloth or leather pouch can hold up to 20 sling bullets or 50 blowgun needles, among other things. A compartmentalized pouch for holding spell components is called a component pouch. A pouch can hold up to \u2155 cubic foot or 6 pounds of gear."
 		]
@@ -7540,6 +7555,7 @@
 		"weight": "24",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -7651,6 +7667,7 @@
 		"weight": "1",
 		"source": "PHB",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"A quiver can hold up to 20 arrows."
 		]
@@ -7663,6 +7680,7 @@
 		"rarity": "Uncommon",
 		"source": "DMG",
 		"page": "189",
+		"container": true,
 		"entries": [
 			"Each of the quiver's three compartments connects to an extradimensional space that allows the quiver to hold numerous items while never weighing more than 2 pounds. The shortest compartment can hold up to sixty arrows, bolts, or similar objects. The midsize compartment holds up to eighteen javelins or similar objects. The longest compartment holds up to six long objects, such as bows, quarterstaffs, or spears.",
 			"You can draw any item the quiver contains as if doing so from a regular quiver or scabbard."
@@ -8645,6 +8663,7 @@
 		"weight": "0.5",
 		"source": "PHB",
 		"page": "153",
+		"container": true,
 		"entries": [
 			"A sack can hold up to 1 cubic foot or 30 pounds of gear."
 		]
@@ -8707,6 +8726,7 @@
 		"weight": "10",
 		"source": "PHB",
 		"page": "151",
+		"container": true,
 		"entries": [
 			"Includes:",
 			{
@@ -12266,6 +12286,7 @@
 		"value": "10gp",
 		"weight": "25",
 		"source": "PHB",
+		"container": true,
 		"page": "157"
 	},
 	{

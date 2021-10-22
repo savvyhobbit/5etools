@@ -21,7 +21,8 @@ import {
   uppercaseFirst,
   getFromPath,
   decodeForHash,
-  encodeForHash
+  encodeForHash,
+  getItemTypes
 } from "../js/utils.js";
 import { parse_abilityShort, parse_abilityCollection } from "../util/ability.js";
 import {
@@ -288,12 +289,7 @@ function renderTable(data, rootEl, columns) {
             typeFilter.metric = "_fTypes";
             filters[col.id] = typeFilter;
           }
-          const type = [];
-          if (curItem.wondrous) type.push("Wondrous Item");
-          if (curItem.technology) type.push(curItem.technology);
-          if (curItem.age) type.push(curItem.age);
-          if (curItem.weaponCategory) type.push(curItem.weaponCategory + " Weapon");
-          if (curItem.type) type.push(Parser.itemTypeToAbv(curItem.type));
+          const type = getItemTypes(curItem);
           curItem.typeText = type.join(", "); // for loadhash to use
           curItem._fTypes = type;
           type.forEach(t => filters[col.id].addIfAbsent(t));

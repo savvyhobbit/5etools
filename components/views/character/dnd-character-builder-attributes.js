@@ -757,7 +757,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           flex-direction: column;
           text-align: center;
         }
-        .initiative {
+        .not-edit-mode .initiative {
           cursor: pointer;
         }
 
@@ -828,8 +828,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             <div class="basic-box basic-box--short ac">
               <div class="basic-box__value">
                 <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
-                  <span hidden$=[[customAC]]>Custom</span>
-                  <span hidden$=[[!customAC]]>Standard</span>
+                  <span hidden$=[[customAC]]>Standard</span>
+                  <span hidden$=[[!customAC]]>Custom</span>
                 </div>
 
                 <div hidden$=[[!customAC]]>
@@ -844,8 +844,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             <div class="basic-box basic-box--short initiative" on-click="_roll">
               <div class="basic-box__value">
                 <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
-                  <span hidden$=[[customInitiative]]>Custom</span>
-                  <span hidden$=[[!customInitiative]]>Standard</span>
+                  <span hidden$=[[customInitiative]]>Standard</span>
+                  <span hidden$=[[!customInitiative]]>Custom</span>
                 </div>
 
                 <div hidden$=[[!customInitiative]]>

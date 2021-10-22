@@ -12,8 +12,6 @@ import "@vaadin/vaadin-text-field";
 
 // todo:
 // compute spell slots for multiclassing, warlock ++
-// add DC / Spell Hit Mod / Spells Prepared to top
-// Make grid non-heightByRows, fix resizing issues, use detail toggle for spells
 
 class DndCharacterBuilderSpells extends PolymerElement {
   
@@ -50,6 +48,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
       }
       this.expandAll();
       this.$.grid.clearCache();
+      setTimeout(() => {
+        this.expandAll();
+      }, 10);
     } else {
       if (this.oldExpanded) {
         this.$.grid.expandedItems = this.oldExpanded;
@@ -144,6 +145,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
     return false;
   }
 
+  clearFilterStr() {
+    this.filterStr = '';
+  }
+
   expandAll() {
     this.$.grid.expandedItems = this.findExpandables(this.spellDisplay);
   }
@@ -155,7 +160,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
     const children = node.length ? node : node.children;
     if (children && children.length) {
       for (let child of children) {
-        return this.findExpandables(child, array);
+        this.findExpandables(child, array);
       }
     }
     return array;
@@ -1075,7 +1080,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         </div>
 
         <div class="filter">
-          <vaadin-text-field value="{{filterStr}}" placeholder='Filter'></vaadin-text-field>
+          <vaadin-text-field clear-button-visible value="{{filterStr}}" placeholder='Filter'></vaadin-text-field>
         </div>
       </div>
 

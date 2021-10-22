@@ -983,6 +983,20 @@ function entryTextSearch(searchStr, entries) {
 	}
 }
 
+function getItemTypes(curItem) {
+	const type = [];
+	if (curItem.wondrous) type.push("Wondrous Item");
+	if (curItem.technology) type.push(curItem.technology);
+	if (curItem.age) type.push(curItem.age);
+	if (curItem.weaponCategory) type.push(curItem.weaponCategory + " Weapon");
+	if (curItem.type) type.push(Parser.itemTypeToAbv(curItem.type));
+	return type;
+}
+
+function getItemTypeText(curItem) {
+	return getItemTypes(curItem).join(',');
+}
+
 export {
   throttle,
   debounce,
@@ -1058,5 +1072,7 @@ export {
 	absInt,
 	entrySearch,
 	getProfBonus,
-	entryTextSearch
+	entryTextSearch,
+	getItemTypes,
+	getItemTypeText,
 };
