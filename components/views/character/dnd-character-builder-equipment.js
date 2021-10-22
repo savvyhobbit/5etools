@@ -6,7 +6,7 @@ import {
   removeItem,
   canAttuneItem,
   canEquipItem,
-  toggleItemEquiped,
+  toggleItemEquipped,
   toggleItemAttuned,
   setItem,
   spliceItems,
@@ -18,7 +18,6 @@ import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "@vaadin/vaadin-grid/vaadin-grid-column";
 import "./dnd-character-builder-equipment-item-detail";
-import { cloneDeep } from "../../../js/utils";
 
 class DndCharacterBuilderEquipment extends PolymerElement {
   
@@ -50,6 +49,11 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
     this.editModeHandler = (e) => {
       this.isEditMode = e.detail.isEditMode;
+      if (this.$.grid) {
+        setTimeout(() => {
+          this.$.grid.notifyResize();
+        }, 0);
+      }
     }
     getEditModeChannel().addEventListener('editModeChange', this.editModeHandler);
     this.isEditMode = isEditMode();
@@ -102,6 +106,9 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             return;
           }
 
+          const removeId = draggedItem.storedItem.uniqueId;
+          draggedItem.storedItem.uniqueId = this.character.itemCounter ++;
+
           // Dropping into container
           if (e.detail.dropLocation === 'on-top') {
             if (dropTargetItem.container) {
@@ -110,8 +117,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                 dropTargetItem.storedItem.children.push(draggedItem.storedItem);
                 setItem(dropTargetItem, undefined, true);
                 // Remove original
-                draggedItem.storedItemREF.uniqueId = -1;
-                removeItem(-1);
+                removeItem(removeId);
               }
               return;
             }
@@ -119,41 +125,24 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
           // Re-ordering items, default action if 'on-top' of non-container
           if (this.inventory) {
-            let parentItem;
-            let currentLevel = this.inventory;
-            let currentLevelIndex = 0;
-            const addIndexes = `${dropTargetItem.id}`.split('_').map(index => parseInt(index, 10));
-
-            for (; currentLevelIndex < addIndexes.length - 1; currentLevelIndex ++) {
-              let addIndex = addIndexes[currentLevelIndex];
-              parentItem = currentLevel[addIndex];
-
-              if (parentItem && parentItem.storedItem && parentItem.storedItem.children) {
-                currentLevel = parentItem.storedItem.children
-              } else {
-                console.error('reorder failed, parent not a container', dropTargetItem.id, parentItem);
-                return;
-              }
-            }
-
             // Adjust final add index for dropLocation 'below' or 'above'
-            let finalAddIndex = addIndexes[addIndexes.length - 1];
+            const dropTargetId = `${dropTargetItem.id}`;
+            let finalAddIndex = parseInt(dropTargetId.substring(dropTargetId.lastIndexOf('_')), 10);
             if (e.detail.dropLocation === 'below') {
               finalAddIndex++;
             }
 
-            if (parentItem) {
+            if (dropTargetItem.parentItemREF) {
               // Add child item
-              currentLevel.splice(finalAddIndex, 0, draggedItem.storedItem);
-              setItem(parentItem, undefined, true);
+              dropTargetItem.parentItemREF.storedItem.children.splice(finalAddIndex, 0, draggedItem.storedItem);
+              setItem(dropTargetItem.parentItemREF, undefined, true);
             } else {
               // Add top-level item
               spliceItems(finalAddIndex, draggedItem.storedItem);
             }
 
             // Remove original item
-            draggedItem.storedItemREF.uniqueId = -1;
-            removeItem(-1);
+            removeItem(removeId);
           }
         }
       });
@@ -215,17 +204,17 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     removeItem(uniqueId);
   }
 
-  async _setItemEquiped(e) {
+  async _setItemEquipped(e) {
     e.preventDefault();
     e.stopPropagation();
     let itemModel = e.model.__data.item;
-    let id = itemModel ? itemModel.id : undefined;
-    let isEquiped = itemModel ? itemModel.isEquiped : false;
+    let uniqueId = itemModel ? itemModel.uniqueId : undefined;
+    let isEquipped = itemModel ? itemModel.isEquipped : false;
     
-    if (isEquiped) {
-      toggleItemEquiped(id);
+    if (isEquipped) {
+      toggleItemEquipped(uniqueId);
     } else if (await canEquipItem(itemModel)) {
-      toggleItemEquiped(id);
+      toggleItemEquipped(uniqueId);
     } else {
       let checkbox = e.target.querySelector('vaadin-checkbox')
       this._flashCheckbox(checkbox)
@@ -236,13 +225,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     e.preventDefault();
     e.stopPropagation();
     let itemModel = e.model.__data.item;
-    let id = itemModel ? itemModel.id : undefined;
+    let uniqueId = itemModel ? itemModel.uniqueId : undefined;
     let isAttuned = itemModel ? itemModel.isAttuned : false;
 
     if (isAttuned) {
-      toggleItemAttuned(id);
+      toggleItemAttuned(uniqueId);
     } else if (await canAttuneItem(itemModel)) {
-      toggleItemAttuned(id);
+      toggleItemAttuned(uniqueId);
     } else {
       let checkbox = e.target.querySelector('vaadin-checkbox')
       this._flashCheckbox(checkbox)
@@ -506,21 +495,20 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap">
-                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}">
-                    <div class="item-wrap__name-wrap">
-                      <span class$="[[_itemWrapNameClassname(item.isEdited)]]" on-click="_expandDetails">[[item.name]]
-                        <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
-                      </span>
-                      <span class$="[[_itemWrapTypeClassname(item.fromBackground, item.fromClass)]]">
-                        <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
-                        <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
-                        <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
-                      </span>
-                    </div>
-                  </vaadin-grid-tree-toggle>
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}"></vaadin-grid-tree-toggle>
+                  <div class="item-wrap__name-wrap">
+                    <span class$="[[_itemWrapNameClassname(item.isEdited)]]" on-click="_expandDetails">[[item.name]]
+                      <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
+                    </span>
+                    <span class$="[[_itemWrapTypeClassname(item.fromBackground, item.fromClass)]]">
+                      <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
+                      <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
+                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
+                    </span>
+                  </div>
                   <div class="item-wrap__checkboxes">
-                    <span on-click="_setItemEquiped">
-                      <vaadin-checkbox checked="[[item.isEquiped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
+                    <span on-click="_setItemEquipped">
+                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
                     </span>
                     <span on-click="_setItemAttuned">
                       <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>

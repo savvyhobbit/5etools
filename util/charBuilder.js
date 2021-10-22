@@ -1141,11 +1141,14 @@ async function getItems(character = selectedCharacter, isFlat = false) {
       resultItems.push(parsedItem);
     }
     resultItems = resultItems.filter(item => !!item && item.type !== 'GV');
+    if (isFlat) {
+      resultItems = flattenItems(resultItems);
+    }
   }
   return resultItems;
 }
 
-async function parseItem(storedItem, index) {
+async function parseItem(storedItem, index, parentItem) {
   let newItem = {};
 
   const itemRefs = await loadModel('items');
@@ -1167,10 +1170,14 @@ async function parseItem(storedItem, index) {
   // Item reference props are overwritten by storedItem props
   newItem = {
     ...newItem,
-    ...storedItem,
+    ...cloneDeep(storedItem),
     storedItem: cloneDeep(storedItem),
     storedItemREF: storedItem
   };
+
+  if (parentItem) {
+    newItem.parentItemREF = parentItem;
+  }
 
   const isShieldInherited = getIsShieldInherited(newItem);
   newItem = {
@@ -1187,7 +1194,7 @@ async function parseItem(storedItem, index) {
     }
     for (let childIndex = 0; childIndex < newItem.children.length; childIndex ++) {
       const storedChildItem = newItem.children[childIndex];
-      const parsedItem = await parseItem(storedChildItem, `${index}_${childIndex}`);
+      const parsedItem = await parseItem(storedChildItem, `${index}_${childIndex}`, newItem);
       newItem.children[childIndex] = parsedItem;
     }
   }
@@ -1230,16 +1237,48 @@ function removeItem(id, character = selectedCharacter) {
   }
 }
 
-function toggleItemEquiped(index, character = selectedCharacter) {
-  if (character && character.items && index !== undefined && character.items.length > index) {
-    character.items[index].isEquiped = !character.items[index].isEquiped;
+function flattenItems(items, resultsArray = []) {
+  if (items.length) {
+    resultsArray = resultsArray.concat(items);
+
+    for(let item of items) {
+      if (item.children) {
+        resultsArray = flattenItems(item.children, resultsArray);
+      }
+    }
+  }
+  return resultsArray;
+}
+
+function getItemAtId(item, id) {
+  const list = item.length ? item : item.children;
+  if (item.uniqueId === id) {
+    return item;
+  }
+  let result;
+  if (list && list.length) {
+    for (let child of list) {
+      result = getItemAtId(child, id);
+      if (result) {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+function toggleItemEquipped(id, character = selectedCharacter) {
+  if (character && character.items) {
+    const item = getItemAtId(character.items, id);
+    item.isEquipped = !item.isEquipped;
     saveCharacter(character);
   }
 }
 
-function toggleItemAttuned(index, character = selectedCharacter) {
-  if (character && character.items && index !== undefined && character.items.length > index) {
-    character.items[index].isAttuned = !character.items[index].isAttuned;
+function toggleItemAttuned(id, character = selectedCharacter) {
+  if (character && character.items) {
+    const item = getItemAtId(character.items, id);
+    item.isAttuned = !item.isAttuned;
     saveCharacter(character);
   }
 }
@@ -1248,9 +1287,9 @@ async function canEquipItem(thisItem, character = selectedCharacter) {
   if (character && character.items) {
     if (thisItem.canEquip) {
       const items = await getItems(character, true);
-      const anyEquipedArmor = items.some((item) => item.isEquiped && item.armor && item.id !== thisItem.id);
-      const anyEquipedShield = items.some((item) => item.type === 'S' && item.isEquiped && item.id !== thisItem.id);
-      return (thisItem.armor && !anyEquipedArmor) || (thisItem.type === 'S' && !anyEquipedShield) || (!thisItem.armor && thisItem.type !== 'S');
+      const anyEquippedArmor = items.some((item) => item.isEquipped && item.armor && item.id !== thisItem.id);
+      const anyEquippedShield = items.some((item) => item.type === 'S' && item.isEquipped && item.id !== thisItem.id);
+      return (thisItem.armor && !anyEquippedArmor) || (thisItem.type === 'S' && !anyEquippedShield) || (!thisItem.armor && thisItem.type !== 'S');
     }
   }
   return false;
@@ -1259,7 +1298,7 @@ async function canEquipItem(thisItem, character = selectedCharacter) {
 async function canAttuneItem(thisItem, character = selectedCharacter) {
   if (character && character.items) {
     let canEquip = await canEquipItem(thisItem, character);
-    if (thisItem.reqAttune && (!thisItem.canEquip || (thisItem.canEquip && canEquip && thisItem.isEquiped))) {
+    if (thisItem.reqAttune && (!thisItem.canEquip || (thisItem.canEquip && canEquip && thisItem.isEquipped))) {
       const items = await getItems(character, true);
       const allAttuned = items.filter((item) => item.isAttuned && item.reqAttune).length >= 3;
       return !allAttuned;
@@ -1397,10 +1436,10 @@ async function getCharacterAC(character = selectedCharacter) {
   let ac = 10;
   const items = await getItems(character, true);
   const dexMod = await getAttributeModifier('dex', character);
-  const equipedArmor = items.find(item => item.isEquiped && item.armor);
-  const equipedShield = items.find(item => item.type === 'S' && item.isEquiped);
+  const equipedArmor = items.find(item => item.isEquipped && item.armor);
+  const equipedShield = items.find(item => item.type === 'S' && item.isEquipped);
   const anyACItems = items.filter(item => {
-    return ((item.canEquip && item.isEquiped) || !item.canEquip) && ((item.reqAttune && item.isAttuned) || !item.reqAttune) && entryTextSearch('bonus to AC', item.entries);
+    return ((item.canEquip && item.isEquipped) || !item.canEquip) && ((item.reqAttune && item.isAttuned) || !item.reqAttune) && entryTextSearch('bonus to AC', item.entries);
   });
 
   if (equipedArmor) {
@@ -1660,7 +1699,7 @@ export {
   spliceItems,
   getItems,
   removeItem,
-  toggleItemEquiped,
+  toggleItemEquipped,
   toggleItemAttuned,
   canEquipItem,
   canAttuneItem,
