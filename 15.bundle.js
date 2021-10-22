@@ -1,16 +1,15 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{88:function(e,s,t){"use strict";t.r(s);var l=t(7);t(63),t(70),t(79),t(107);class i extends l.a{static get template(){return l.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{88:function(e,s,i){"use strict";i.r(s);var n=i(7);i(63),i(70),i(108);class l extends n.a{static get template(){return n.b`
       <style include="material-styles my-styles"></style>
-      
+
       <dnd-selection-list
         enable-hash-routing
-        model-id="bestiary"
+        model-id="backgrounds"
         columns='[
           {"id":"name","label":"Name"},
-          {"id":"source","label":"Source"}, 
-          {"id":"monster-type","label":"Type"},
-          {"id":"cr","label":"CR"}
+          {"id":"source","label":"Source","cssClass":"hidden-mobile-down"},
+          {"id":"proficiencies","label":"Proficiencies"}
         ]'
       >
       </dnd-selection-list>
-    `}}customElements.define("dnd-bestiary-view",i)}}]);
+    `}}customElements.define("dnd-backgrounds-view",l)}}]);
 //# sourceMappingURL=15.bundle.js.map

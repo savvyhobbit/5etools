@@ -1,414 +1,585 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{108:function(e,t,a){"use strict";var i=a(7),o=a(53),d=a(19),n=a(54),l=a(43),r=a(13);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[5,11],{113:function(e,t,a){"use strict";a.r(t),a.d(t,"renderSelection",(function(){return s}));var i=a(71),r=a(5),n=a(1);const o=new i.a;function s(e,t,a){(t.querySelector(".selection-wrapper")||t).innerHTML='\n\t<div class="stats-wrapper margin-bottom_large">\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="type"></span><span class="rarity"></span>\n\t\t\t<span class="attunement"></span>\n\t\t</div>\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="value"></span><span class="weight"></span>\n\t\t</div>\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="damage"></span>\n\t\t\t<span class="damageType"></span>\n\t\t\t<span class="properties"></span>\n\t\t</div>\n\t\t<div class="text"></div>\n\t\t<div class="margin-bottom_small">Source: <span class="source"></span></div>\n\t</div>';const i=e.source,s=r.a.sourceJsonToFull(i);t.querySelector(".stats-wrapper .source").innerHTML=`${s}, page ${e.page}`,t.querySelector(".stats-wrapper .value").innerHTML=e.value?e.value+(e.weight?", ":""):"",t.querySelector(".stats-wrapper .weight").innerHTML=e.weight?e.weight+(1==e.weight?" lb.":" lbs."):"",t.querySelector(".stats-wrapper .rarity").innerHTML=(e.tier?", "+e.tier:"")+(e.rarity?", "+e.rarity:""),t.querySelector(".stats-wrapper .attunement").innerHTML=e.reqAttune?e.reqAttune:"",t.querySelector(".stats-wrapper .type").innerHTML=e.typeText,t.querySelector(".stats-wrapper .damage").innerHTML="",t.querySelector(".stats-wrapper .damageType").innerHTML="";const d=e.type||"";if(e.weaponCategory)e.dmg1&&(t.querySelector(".stats-wrapper .damage").innerHTML=Object(n.utils_makeRoller)(e.dmg1)),e.dmgType&&(t.querySelector(".stats-wrapper .damageType").innerHTML=r.a.dmgTypeToFull(e.dmgType));else if("LA"===d||"MA"===d||"HA"===d)t.querySelector(".stats-wrapper .damage").innerHTML="AC "+e.ac+("LA"===d?" + Dex":"MA"===d?" + Dex (max 2)":"");else if("S"===d)t.querySelector(".stats-wrapper .damage").innerHTML="AC +"+e.ac;else if("MNT"===d||"VEH"===d){const a=e.speed,i=e.carryingcapacity;a&&t.querySelector(".stats-wrapper .damage").append("Speed="+a),a&&i&&t.querySelector(".stats-wrapper .damage").append("MNT"===d?", ":"<br>"),i&&(t.querySelector(".stats-wrapper .damage").append("Carrying Capacity="+i),-1===i.indexOf("ton")&&-1===i.indexOf("passenger")&&t.querySelector(".stats-wrapper .damage").append(1==i?" lb.":" lbs."))}if(t.querySelector(".stats-wrapper .properties").innerHTML="",e.property){const a=e.property.split(",");for(let i=0;i<a.length;i++){const r=a[i];let o=window.itemPropertyList[r].name;"V"===r&&(o=`${o} (${Object(n.utils_makeRoller)(e.dmg2)})`),"T"!==r&&"A"!==r&&"AF"!==r||(o=`${o} (${e.range}ft.)`),"RLD"===r&&(o=`${o} (${e.reload} shots)`),o=(i>0?", ":e.dmg1?"- ":"")+o,t.querySelector(".stats-wrapper .properties").append(o)}}const l={type:"entries",entries:e.entries},c=[];o.recursiveEntryRender(l,c,1),t.querySelector(".stats-wrapper .text").innerHTML=Object(n.utils_makeRoller)(c.join("")).split(e.name.toLowerCase()).join("<i>"+e.name.toLowerCase()+"</i>"),a&&t.querySelector(".margin-bottom_small").remove()}},114:function(e,t,a){"use strict";a(77)},115:function(e,t,a){"use strict";a(112),a(110)},116:function(e,t,a){"use strict";a.r(t);var i=a(7),r=a(17),n=a(109),o=a(113),s=(a(114),a(45),a(50),a(51),a(13));const d=s.a`<dom-module id="lumo-text-area" theme-for="vaadin-text-area">
+  <template>
+    <style include="lumo-text-field">
+      [part="input-field"],
+      [part="input-field"] ::slotted(textarea) {
+        /* Equal to the implicit padding in vaadin-text-field */
+        padding-top: calc((var(--lumo-text-field-size) - 1em * var(--lumo-line-height-s)) / 2);
+        padding-bottom: calc((var(--lumo-text-field-size) - 1em * var(--lumo-line-height-s)) / 2);
+        height: auto;
+        box-sizing: border-box;
+        transition: background-color 0.1s;
+        line-height: var(--lumo-line-height-s);
+      }
+
+      :host(:not([readonly])) [part="input-field"]::after {
+        display: none;
+      }
+
+      :host([readonly]) [part="input-field"] {
+        border: 1px dashed var(--lumo-contrast-30pct);
+      }
+
+      :host([readonly]) [part="input-field"]::after {
+        border: none;
+      }
+
+      :host(:hover:not([readonly]):not([focused])) [part="input-field"] {
+        background-color: var(--lumo-contrast-20pct);
+      }
+
+      @media (pointer: coarse) {
+        :host(:hover:not([readonly]):not([focused])) [part="input-field"] {
+          background-color: var(--lumo-contrast-10pct);
+        }
+
+        :host(:active:not([readonly]):not([focused])) [part="input-field"] {
+          background-color: var(--lumo-contrast-20pct);
+        }
+      }
+
+      [part="value"],
+      [part="input-field"] ::slotted(textarea) {
+        line-height: inherit;
+        --_lumo-text-field-overflow-mask-image: none;
+      }
+
+      /* Vertically align icon prefix/suffix with the first line of text */
+      [part="input-field"] ::slotted(iron-icon) {
+        margin-top: calc((var(--lumo-icon-size-m) - 1em * var(--lumo-line-height-s)) / -2);
+      }
+
+      [part="input-field"] [part="value"],
+      [part="input-field"] ::slotted(textarea) {
+        white-space: pre-wrap; /* override \`nowrap\` from <vaadin-text-field> */
+        align-self: stretch; /* override \`baseline\` from <vaadin-text-field> */
+      }
+    </style>
+  </template>
+</dom-module>`;document.head.appendChild(d.content);a(77);var l=a(75),c=a(41),p=a(19);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-class s extends(Object(l.a)(Object(n.a)(Object(d.a)(Object(o.a)(i.a))))){static get template(){return r.a`
+class m extends(Object(c.a)(Object(l.a)(Object(p.a)(i.a)))){static get template(){return s.a`
+    <style include="vaadin-text-field-shared-styles">
+      .vaadin-text-area-container {
+        flex: auto;
+        max-height: inherit; /* MSIE 11 */
+        min-height: inherit; /* MSIE 11 */
+      }
+
+      /* The label and the error message should neither grow nor shrink. */
+      [part="label"],
+      [part="error-message"] {
+        flex: none;
+      }
+
+      [part="input-field"] {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      [part="value"] {
+        resize: none;
+      }
+
+      [part="value"],
+      [part="input-field"] ::slotted(*) {
+        align-self: flex-start;
+      }
+
+      @keyframes vaadin-text-area-appear {
+        to {
+          opacity: 1;
+        }
+      }
+
+      :host {
+        animation: 1ms vaadin-text-area-appear;
+      }
+    </style>
+
+    <div class="vaadin-text-area-container">
+
+      <label part="label" on-click="focus" id="[[_labelId]]">[[label]]</label>
+
+      <div part="input-field" id="[[_inputId]]">
+
+        <slot name="prefix"></slot>
+
+        <slot name="textarea">
+          <textarea part="value"></textarea>
+        </slot>
+
+        <div part="clear-button" id="clearButton" role="button" aria-label\$="[[i18n.clear]]"></div>
+        <slot name="suffix"></slot>
+
+      </div>
+
+      <div part="error-message" id="[[_errorId]]" aria-live="assertive" aria-hidden\$="[[_getErrorMessageAriaHidden(invalid, errorMessage, _errorId)]]">[[errorMessage]]</div>
+
+    </div>
+`}static get is(){return"vaadin-text-area"}static get version(){return"2.6.2"}static get observers(){return["_textAreaValueChanged(value)"]}ready(){super.ready(),this._updateHeight(),this.addEventListener("animationend",this._onAnimationEnd)}_onAnimationEnd(e){0===e.animationName.indexOf("vaadin-text-area-appear")&&this._updateHeight()}get _slottedTagName(){return"textarea"}_textAreaValueChanged(e){this._updateHeight()}_updateHeight(){const e=this.root.querySelector("[part=input-field]"),t=e.scrollTop,a=this.inputElement,i=getComputedStyle(a).width,r=this.value?this.value.length:0;this._oldValueLength>=r&&(a.style.maxWidth=i,a.style.height="auto",e.style.display="block"),this._oldValueLength=r;const n=a.scrollHeight;n>a.clientHeight&&(a.style.height=n+"px"),a.style.removeProperty("max-width"),e.style.removeProperty("display"),e.scrollTop=t,this._dispatchIronResizeEventIfNeeded("InputHeight",n)}}customElements.define(m.is,m);class h extends i.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},hasRenderedOutput:{type:Boolean,value:!1},item:{type:Object},storedItem:{type:Object},itemType:{type:String,value:""}}}static get observers(){return["_itemChanged(item)"]}constructor(){super(),this.itemTypes=["Armor","Simple Weapon","Martial Weapon","Shield","Wondrous Item","Adventuring Gear","Container"]}_itemChanged(){console.error("itemDetail:",this.item),this.item.storedItem&&(this.storedItem=this.item.storedItem),this.item.itemRef&&!this.item.lookupFailed?(this.hasRenderedOutput=!0,Object(o.renderSelection)(this.item,this.$.renderedOutput,!0)):this.hasRenderedOutput=!1,this.itemType=this._getItemType()}_getItemType(){if(this.item){if(this.item.armor)return"Armor";if("Simple"===this.item.weaponCategory)return"Simple Weapon";if("Martial"===this.item.weaponCategory)return"Martial Weapon";if("S"===this.item.type)return"Shield";if(this.item.container)return"Container";if("G"===this.item.type)return"Adventuring Gear"}return""}_selectItemType(){const e=this.$.typeSelect.value;switch(this.storedItem.armor=!1,this.storedItem.weaponCategory=void 0,this.storedItem.wondrous=!1,e){case"Armor":this.storedItem.armor=!0;break;case"Simple Weapon":this.storedItem.weaponCategory="Simple";break;case"Martial Weapon":this.storedItem.weaponCategory="Martial";break;case"Shield":this.storedItem.type="S";break;case"Wondrous":this.storedItem.wondrous=!0;break;case"Adventuring Gear":this.storedItem.type="G";break;case"Container":this.storedItem.container=!0}Object(r.jb)(this.item)}connectedCallback(){super.connectedCallback(),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}_updateItem(){Object(r.jb)(this.item)}_or(...e){for(let t of e)if(t)return!0;return!1}static get template(){return i.b`
+      <style include="material-styles"></style>
+      <style>
+        :host {}
+        [hidden] {
+          display: none !important;
+        }
+
+        .edit__name {
+          width: 100%;
+        }
+        .edit__notes {
+          width: 100%;
+          min-height: 200px;
+        }        
+
+        @media(min-width: 921px) {
+        }
+      </style>
+
+      <div>
+        <div hidden$="[[isEditMode]]">
+          <div hidden$="[[!hasRenderedOutput]]">
+            <h2>[[item.name]]</h4>
+            <div>[[item.notes]]</div>
+            <div id="renderedOutput"></div>
+          </div>
+
+          <div hidden$="[[hasRenderedOutput]]">
+            <h2>[[item.name]]</h4>
+            <div>[[item.notes]]</div>
+          </div>
+        </div>
+
+        <div hidden$="[[!isEditMode]]">
+          <vaadin-text-field class="edit__name" value="{{storedItem.name}}" label="Name" on-change="_updateItem"></vaadin-text-field>
+          
+          <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Item Type" >
+            <template>
+              <vaadin-list-box>
+                <template is="dom-repeat" items="[[itemTypes]]">
+                  <vaadin-item>[[item]]</vaadin-item>
+                </template>
+              </vaadin-list-box>
+            </template>
+          </vaadin-select>
+
+          <vaadin-checkbox checked="{{item.reqAttune}}" on-change="_updateItem">Requires Attunement?</vaadin-checkbox>
+
+          <vaadin-text-area class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
+        </div>
+        
+      </div>
+    `}}customElements.define("dnd-character-builder-equipment-item-detail",h)},124:function(e,t,a){"use strict";a(45),a(39);var i=a(13);const r=i.a`<dom-module id="lumo-grid-tree-toggle" theme-for="vaadin-grid-tree-toggle">
+  <template>
     <style>
       :host {
+        --vaadin-grid-tree-toggle-level-offset: 2em;
+        align-items: center;
+        vertical-align: middle;
+        margin-left: calc(var(--lumo-space-s) * -1);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :host(:not([leaf])) {
+        cursor: default;
+      }
+
+      [part="toggle"] {
         display: inline-block;
+        font-size: 1.5em;
+        line-height: 1;
+        width: 1em;
+        height: 1em;
+        text-align: center;
+        color: var(--lumo-contrast-50pct);
+        /* Increase touch target area */
+        padding: calc(1em / 3);
+        margin: calc(1em / -3);
+      }
+
+      :host(:not([dir="rtl"])) [part="toggle"] {
+        margin-right: 0;
+      }
+
+      @media (hover: hover) {
+        :host(:hover) [part="toggle"] {
+          color: var(--lumo-contrast-80pct);
+        }
+      }
+
+      [part="toggle"]::before {
+        font-family: "lumo-icons";
+        display: inline-block;
+        height: 100%;
+      }
+
+      :host(:not([expanded])) [part="toggle"]::before {
+        content: var(--lumo-icons-angle-right);
+      }
+
+      :host([expanded]) [part="toggle"]::before {
+        content: var(--lumo-icons-angle-right);
+        transform: rotate(90deg);
+      }
+
+      /* Experimental support for hierarchy connectors, using an unsupported selector */
+      :host([theme~="connectors"]) #level-spacer {
+        position: relative;
+        z-index: -1;
+        font-size: 1em;
+        height: 1.5em;
+      }
+
+      :host([theme~="connectors"]) #level-spacer::before {
+        display: block;
+        content: "";
+        margin-top: calc(var(--lumo-space-m) * -1);
+        height: calc(var(--lumo-space-m) + 3em);
+        background-image: linear-gradient(to right, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
+        background-size: var(--vaadin-grid-tree-toggle-level-offset) var(--vaadin-grid-tree-toggle-level-offset);
+        background-position: calc(var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px) 0;
+      }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"]) {
+        margin-left: 0;
+        margin-right: calc(var(--lumo-space-s) * -1);
+      }
+
+      :host([dir="rtl"]) [part="toggle"] {
+        margin-left: 0;
+      }
+
+      :host([dir="rtl"][expanded]) [part="toggle"]::before {
+        transform: rotate(-90deg);
+      }
+
+      :host([dir="rtl"][theme~="connectors"]) #level-spacer::before {
+        background-image: linear-gradient(to left, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
+        background-position: calc(100% - (var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px)) 0;
+      }
+
+      :host([dir="rtl"]:not([expanded])) [part="toggle"]::before,
+      :host([dir="rtl"][expanded]) [part="toggle"]::before {
+        content: var(--lumo-icons-angle-left);
+      }
+    </style>
+  </template>
+</dom-module>`;document.head.appendChild(r.content);var n=a(7),o=(a(31),a(15)),s=a(19),d=a(43),l=a(10);
+/**
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+*/
+const c=document.createElement("template");c.innerHTML="<custom-style>\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n</custom-style>",document.head.appendChild(c.content);class p extends(Object(s.a)(Object(d.a)(n.a))){static get template(){return i.a`
+    <style>
+      :host {
+        display: inline-flex;
+        align-items: baseline;
+
+        /* CSS API for :host */
+        --vaadin-grid-tree-toggle-level-offset: 1em;
+
+        /*
+          ShadyCSS seems to polyfill :dir(rtl) only for :host, thus using
+          a host custom CSS property for ltr/rtl toggle icon choice.
+         */
+        ---collapsed-icon: "\\e7be\\00a0";
+      }
+
+      :host(:dir(rtl)) {
+        ---collapsed-icon: "\\e7bd\\00a0";
       }
 
       :host([hidden]) {
         display: none !important;
       }
 
-      label {
-        display: inline-flex;
-        align-items: baseline;
-        outline: none;
+      :host(:not([leaf])) {
+        cursor: pointer;
       }
 
-      [part="checkbox"] {
-        position: relative;
-        display: inline-block;
+      #level-spacer,
+      [part="toggle"] {
         flex: none;
       }
 
-      input[type="checkbox"] {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: inherit;
-        margin: 0;
-      }
-
-      :host([disabled]) {
-        -webkit-tap-highlight-color: transparent;
-      }
-    </style>
-
-    <label>
-      <span part="checkbox">
-        <input type="checkbox" checked="{{checked::change}}" disabled\$="[[disabled]]" indeterminate="{{indeterminate::change}}" role="presentation" tabindex="-1">
-      </span>
-
-      <span part="label">
-        <slot></slot>
-      </span>
-    </label>
-`}static get is(){return"vaadin-checkbox"}static get version(){return"2.5.0"}static get properties(){return{checked:{type:Boolean,value:!1,notify:!0,observer:"_checkedChanged",reflectToAttribute:!0},indeterminate:{type:Boolean,notify:!0,observer:"_indeterminateChanged",reflectToAttribute:!0,value:!1},value:{type:String,value:"on"},_nativeCheckbox:{type:Object}}}constructor(){super(),this.name}get name(){return this.checked?this._storedName:""}set name(e){this._storedName=e}ready(){super.ready(),this.setAttribute("role","checkbox"),this._nativeCheckbox=this.shadowRoot.querySelector('input[type="checkbox"]'),this.addEventListener("click",this._handleClick.bind(this)),this._addActiveListeners();const e=this.getAttribute("name");e&&(this.name=e),this.shadowRoot.querySelector('[part~="label"]').querySelector("slot").addEventListener("slotchange",this._updateLabelAttribute.bind(this)),this._updateLabelAttribute()}_updateLabelAttribute(){const e=this.shadowRoot.querySelector('[part~="label"]'),t=e.firstElementChild.assignedNodes();this._isAssignedNodesEmpty(t)?e.setAttribute("empty",""):e.removeAttribute("empty")}_isAssignedNodesEmpty(e){return 0===e.length||1==e.length&&e[0].nodeType==Node.TEXT_NODE&&""===e[0].textContent.trim()}_checkedChanged(e){this.indeterminate?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",Boolean(e))}_indeterminateChanged(e){e?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",this.checked)}_addActiveListeners(){this._addEventListenerToNode(this,"down",e=>{this.__interactionsAllowed(e)&&this.setAttribute("active","")}),this._addEventListenerToNode(this,"up",()=>this.removeAttribute("active")),this.addEventListener("keydown",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this.setAttribute("active",""))}),this.addEventListener("keyup",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this._toggleChecked(),this.removeAttribute("active"),this.indeterminate&&(this.indeterminate=!1))})}get focusElement(){return this.shadowRoot.querySelector("input")}__interactionsAllowed(e){return!this.disabled&&"a"!==e.target.localName}_handleClick(e){this.__interactionsAllowed(e)&&(this.indeterminate?(this.indeterminate=!1,e.preventDefault(),this._toggleChecked()):e.composedPath()[0]!==this._nativeCheckbox&&(e.preventDefault(),this._toggleChecked()))}_toggleChecked(){this.checked=!this.checked,this.dispatchEvent(new CustomEvent("change",{composed:!1,bubbles:!0}))}}customElements.define(s.is,s)},111:function(e,t,a){"use strict";a(45),a(30);const i=a(13).a`<dom-module id="lumo-checkbox" theme-for="vaadin-checkbox">
-  <template>
-    <style include="lumo-checkbox-style lumo-checkbox-effects">
-      /* IE11 only */
-      ::-ms-backdrop,
-      [part="checkbox"] {
-        line-height: 1;
-      }
-    </style>
-  </template>
-</dom-module><dom-module id="lumo-checkbox-style">
-  <template>
-    <style>
-      :host {
-        -webkit-tap-highlight-color: transparent;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        cursor: default;
-        outline: none;
-      }
-
-      [part="label"]:not([empty]) {
-        margin: 0.1875em 0.875em 0.1875em 0.375em;
-      }
-
-      [part="checkbox"] {
-        width: calc(1em + 2px);
-        height: calc(1em + 2px);
-        margin: 0.1875em;
-        position: relative;
-        border-radius: var(--lumo-border-radius-s);
-        background-color: var(--lumo-contrast-20pct);
-        transition: transform 0.2s cubic-bezier(.12, .32, .54, 2), background-color 0.15s;
-        pointer-events: none;
-        line-height: 1.2;
-      }
-
-      :host([indeterminate]) [part="checkbox"],
-      :host([checked]) [part="checkbox"] {
-        background-color: var(--lumo-primary-color);
-      }
-
-      /* Needed to align the checkbox nicely on the baseline */
-      [part="checkbox"]::before {
-        content: "\\2003";
-      }
-
-      /* Checkmark */
-      [part="checkbox"]::after {
-        content: "";
+      #level-spacer {
         display: inline-block;
-        width: 0;
-        height: 0;
-        border: 0 solid var(--lumo-primary-contrast-color);
-        border-width: 0.1875em 0 0 0.1875em;
-        box-sizing: border-box;
-        transform-origin: 0 0;
-        position: absolute;
-        top: 0.8125em;
-        left: 0.5em;
-        transform: scale(0.55) rotate(-135deg);
-        opacity: 0;
+        width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
       }
 
-      :host([checked]) [part="checkbox"]::after {
-        opacity: 1;
-        width: 0.625em;
-        height: 1.0625em;
+      [part="toggle"]::before {
+        font-family: "vaadin-grid-tree-icons";
+        line-height: 1em; /* make icon font metrics not affect baseline */
       }
 
-      /* Indeterminate checkmark */
-
-      :host([indeterminate]) [part="checkbox"]::after {
-        transform: none;
-        opacity: 1;
-        top: 45%;
-        height: 10%;
-        left: 22%;
-        right: 22%;
-        width: auto;
-        border: 0;
-        background-color: var(--lumo-primary-contrast-color);
-        transition: opacity 0.25s;
+      :host(:not([expanded])) [part="toggle"]::before {
+        content: var(---collapsed-icon);
       }
 
-      /* Focus ring */
-
-      :host([focus-ring]) [part="checkbox"] {
-        box-shadow: 0 0 0 3px var(--lumo-primary-color-50pct);
+      :host([expanded]) [part="toggle"]::before {
+        content: "\\e7bc\\00a0"; /* icon glyph + single non-breaking space */
       }
 
-      /* Disabled */
-
-      :host([disabled]) {
-        pointer-events: none;
-        color: var(--lumo-disabled-text-color);
-      }
-
-      :host([disabled]) [part="label"] ::slotted(*) {
-        color: inherit;
-      }
-
-      :host([disabled]) [part="checkbox"] {
-        background-color: var(--lumo-contrast-10pct);
-      }
-
-      :host([disabled]) [part="checkbox"]::after {
-        border-color: var(--lumo-contrast-30pct);
-      }
-
-      :host([indeterminate][disabled]) [part="checkbox"]::after {
-        background-color: var(--lumo-contrast-30pct);
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) [part="label"]:not([empty]) {
-        margin: 0.1875em 0.375em 0.1875em 0.875em;
+      :host([leaf]) [part="toggle"] {
+        visibility: hidden;
       }
     </style>
-  </template>
-</dom-module><dom-module id="lumo-checkbox-effects">
-  <template>
-    <style>
-      /* Transition the checkmark if activated with the mouse (disabled for grid select-all this way) */
-      :host(:hover) [part="checkbox"]::after {
-        transition: width 0.1s, height 0.25s;
-      }
 
-      /* Used for activation "halo" */
-      [part="checkbox"]::before {
-        color: transparent;
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        border-radius: inherit;
-        background-color: inherit;
-        transform: scale(1.4);
-        opacity: 0;
-        transition: transform 0.1s, opacity 0.8s;
-      }
-
-      /* Hover */
-
-      :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
-        background-color: var(--lumo-contrast-30pct);
-      }
-
-      /* Disable hover for touch devices */
-      @media (pointer: coarse) {
-        :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
-          background-color: var(--lumo-contrast-20pct);
-        }
-      }
-
-      /* Active */
-
-      :host([active]) [part="checkbox"] {
-        transform: scale(0.9);
-        transition-duration: 0.05s;
-      }
-
-      :host([active][checked]) [part="checkbox"] {
-        transform: scale(1.1);
-      }
-
-      :host([active]:not([checked])) [part="checkbox"]::before {
-        transition-duration: 0.01s, 0.01s;
-        transform: scale(0);
-        opacity: 0.4;
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(i.content);a(108)},112:function(e,t,a){"use strict";a(111),a(108)},127:function(e,t,a){"use strict";a.r(t);var i=a(7),o=(a(76),a(112),a(1)),d=a(18),n=a(0),l=a(109),r=a(73);class s extends i.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},customRolls:{type:Array}}}connectedCallback(){super.connectedCallback(),this.damageTypes=n.k,this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(d.G)()),Object(d.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(l.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(l.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(d.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(l.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateFromCharacter(e){this.customRolls=e.customRolls?Object(o.cloneDeep)(e.customRolls):[],this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}__exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}__abs(e){return e>=0?"+"+e:e}_makeRoll(e){if(!this.isEditMode){let t=e.model.__data.item;t.noHitRoll||Object(r.d)(t.name+" (to hit)",t.toHit,this.$.advMod.checked,this.$.disadvMod.checked),t.damages.forEach((e,a)=>{setTimeout(()=>{Object(r.b)(`${t.name} (${e.type} damage)`,e.roll)},300*(a+1))})}}_rollChangeHandler(e){const t=Object(o.findInPath)(".roll",e).getAttribute("index"),a=parseInt(t,10);Object(d.fb)(this.customRolls[a],a)}_addRoll(){Object(d.fb)({name:"",toHit:0,noHitRoll:!1,damages:[{roll:"",type:""}]},this.customRolls.length)}_removeRoll(e){const t=Object(o.findInPath)(".roll",e).getAttribute("index"),a=parseInt(t,10);Object(d.Q)(a)}_addDamage(e){const t=Object(o.findInPath)(".roll",e).getAttribute("index"),a=parseInt(t,10),i=this.customRolls[a];i.damages.push({roll:"",type:""}),Object(d.fb)(i,a)}_removeDamage(e){const t=Object(o.findInPath)(".roll",e).getAttribute("index"),a=parseInt(t,10),i=Object(o.findInPath)(".roll__damage",e).getAttribute("index"),n=parseInt(i,10);Object(d.R)(a,n)}_or(e,t){return e||t}_orNot(e,t){return e||!t}_isTruthy(e){return!!e}_modChange(e){"advMod"===e.currentTarget.id?this.$.disadvMod.checked=!1:this.$.advMod.checked=!1}static get template(){return i.b`
-    <style include="material-styles">
-      body {}
-      :host {
-        display: block;
-        padding: 14px;
-      }
-      [hidden] {
-        display: none !important;
-      }
-      
-      .col-wrap {
-        display: flex; 
-        justify-content: space-between;
-        flex-wrap: wrap;
-        margin-bottom: 56px;
-      }
-      .row-wrap {
-        width: 100%;
-      }
-
-      h2 {
-        margin-bottom: 24px;
-      }
-
-      .rolls__add-button {
-        margin-bottom: 16px;
-        display: inline-flex;
-      }
-
-      .roll {
-        display: flex;
-        flex-direction: column;
-        cursor: pointer;
-        border-radius: 4px;
-        padding: 8px;
-        margin-bottom: 16px;
-        background: var(--lumo-contrast-10pct);
-        height: min-content;
-      }
-
-      @media(min-width: 921px) {
+    <span id="level-spacer"></span>
+    <span part="toggle"></span>
+    <slot></slot>
+`}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style["---level"]=t,this._debouncerUpdateLevel=o.a.debounce(this._debouncerUpdateLevel,l.c,()=>this.updateStyles({"---level":t}))}}customElements.define(p.is,p)},136:function(e,t,a){"use strict";a.r(t);var i=a(7),r=a(17),n=a(109);a(115),a(123),a(124),a(130),a(116);class o extends i.a{static get properties(){return{inventory:{type:Array},isEditMode:{type:Boolean,value:!1},character:{type:Object}}}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(r.G)()),Object(r.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.grid&&setTimeout(()=>{this.$.grid.notifyResize()},0)},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(r.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready(),setTimeout(()=>{const e=this.$.grid;let t;e.rowDetailsRenderer=((e,t,a)=>{e.firstElementChild||(e.innerHTML='<div class="details" id="stats">\n            <dnd-character-builder-equipment-item-detail></dnd-character-builder-equipment-item-detail>\n          </div>');e.querySelector("dnd-character-builder-equipment-item-detail").item=a.item}).bind(this),e.addEventListener("grid-dragstart",(function(a){t=a.detail.draggedItems[0],e.dropMode="on-top-or-between"})),e.addEventListener("grid-dragend",(function(a){t=e.dropMode=null})),e.addEventListener("grid-drop",e=>{const a=e.detail.dropTargetItem;if(t&&t!==a){const i=Object(r.N)(t,a.uniqueId);if(t.container&&i)return;const n=t.storedItem.uniqueId;if(t.storedItem.uniqueId=this.character.itemCounter++,"on-top"===e.detail.dropLocation&&a.container)return void(a.storedItem&&a.storedItem.children&&(a.storedItem.children.push(t.storedItem),Object(r.jb)(a,void 0,!0),Object(r.T)(n)));if(this.inventory){const i=""+a.id;let o=parseInt(i.substring(i.lastIndexOf("_")),10);"below"===e.detail.dropLocation&&o++,a.parentItemREF?(a.parentItemREF.storedItem.children.splice(o,0,t.storedItem),Object(r.jb)(a.parentItemREF,void 0,!0)):Object(r.nb)(o,t.storedItem),Object(r.T)(n)}}}),e.dataProvider=((e,t)=>{const a=e.page*e.pageSize;let i=e.parentItem?e.parentItem.children:this.inventory;if(i&&i.length){t(i.slice(a,a+e.pageSize),i.length)}}).bind(this)},0)}async updateFromCharacter(e){e&&(this.character=e,this.inventory=await Object(r.B)(e),console.error("inventory:",this.inventory),this.$.grid.clearCache(),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0})))}_expandDetails(e){let t=e.model.__data.item,a=this.$.grid.detailsOpenedItems.indexOf(t)>-1;for(let e of this.$.grid.detailsOpenedItems)this.$.grid.closeItemDetails(e);a?this.$.grid.closeItemDetails(t):this.$.grid.openItemDetails(t),this.$.grid.notifyResize()}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){let t=e.model.__data.item&&void 0!==e.model.__data.item.uniqueId?e.model.__data.item.uniqueId:void 0;Object(r.T)(t)}async _setItemEquipped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,a=t?t.uniqueId:void 0;if(!!t&&t.isEquipped)Object(r.sb)(a);else if(await Object(r.e)(t))Object(r.sb)(a);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,a=t?t.uniqueId:void 0;if(!!t&&t.isAttuned)Object(r.rb)(a);else if(await Object(r.d)(t))Object(r.rb)(a);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}_itemWrapTypeClassname(e,t){let a="item-wrap__type ";return e&&(a+="item-wrap__type--fromBackground"),t&&(a+="item-wrap__type--fromClass"),a}_itemWrapNameClassname(e){let t="item-wrap__name ";return e&&(t+="item-wrap__name--edited"),t}_noRarity(e){return!e||"None"===e}static get template(){return i.b`
+      <style include="material-styles"></style>
+      <style>
         :host {
-          padding-right: 0px;
+          display: block;
+          padding: 14px;
         }
-        .roll {
-          max-width: 380px;
-          margin-right: 16px;
+        [hidden] {
+          display: none !important;
         }
-        .rolls {
+        a {
+          color: var(--mdc-theme-secondary);
+        }
+
+        .heading {
           display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .col-wrap {
+          display: flex; 
+          justify-content: space-between;
           flex-wrap: wrap;
         }
-      }
 
-      .roll-header {
-        display: flex;
-        justify-content: space-between;
-      }
-      .roll-header dnd-button {
-        margin-top: 20px;
-      }
-      .roll-header vaadin-text-field {
-        padding-top: 0;
-      }
-      h3 {
-        margin: 4px 0;
-      }
-      .roll__to-hit {
-        display: flex;
-      }
-      .roll__to-hit dnd-switch {
-        margin: 0 auto;
-        padding: 26px 20px 27px;
-      }
+        .row-wrap {
+          width: 100%;
+        }
+        .row-wrap:not(:last-child) {
+          margin-bottom: 24px;
+        }
 
-      .roll-footer {
-        display: flex;
-        flex-direction: column;
-      }
-      .roll__damages {
-        display: flex;
-        flex-direction: column;
-      }
-      .roll__damage {
-        display: flex;
-      }
-      .roll__damage vaadin-text-field,
-      .roll__damage vaadin-select {
-        max-width: 100%;
-      }
-      .roll__damage-roll--edit,
-      .roll__damage-type--edit {
-        width: calc(50% - 40px);
-      }
-      .roll__damage-roll--edit {
-        margin-right: 16px;
-      }
-      .roll__damage-remove {
-        margin: auto 16px 4px;
-      }
+        .row-wrap > *:not(h2):not(:last-child) {
+          margin-bottom: 10px;
+        }
 
-      .rolls__toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-      .rolls__toolbar h4 {
-        width: 100%;
-        margin: 0;
-      }
-      .rolls__toolbar-reset-mods {
-        display: inline-flex;
-      }
-      .roll__add-damage {
-        width: min-content;
-        margin: 8px auto 0;
-      }
-    </style>
-    
-    <div class="col-wrap">
-      <div class="row-wrap">
-        <h2>Rolls</h2>
+        .no-content {
+          font-size: 14px;
+          font-style: italic;
+        }
 
+        .item-wrap {
+          display: flex;
+          flex-wrap: nowrap;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+          padding: 10px 6px;
+          min-height: 28px;
+        }
+        .item-wrap__name-wrap {
+          flex-basis: 100%;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          cursor: pointer;
+        }
+        .item-wrap__name-wrap:hover {
+          color: var(--mdc-theme-secondary);
+        }
+        .item-wrap__name {
+          font-weight: bold;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          position: relative;
+        }
+        .item-wrap__name--edited {
+          padding-right: 58px;
+        }
+        .item-wrap__edited,
+        .item-wrap__from {
+          background-color: var(--mdc-theme-text-disabled-on-background);
+          color: var(--mdc-theme-on-secondary);
+          border: none;
+          border-radius: 4px;
+          outline: none;
+          display: inline-block;
+          justify-content: center;
+          white-space: normal;
+          font-size: 10px;
+          padding: 1px 4px;
+          margin-right: 4px;
+          font-style: italic;
+        }
+        .item-wrap__edited {
+          top: 3px;
+        }
+        .item-wrap__type {
+          font-style: italic;
+          font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          position: relative;
+        }
+        .item-wrap__type--fromBackground {
+          padding-right: 38px;
+        }
+        .item-wrap__type--fromClass {
+          padding-right: 50px;
+        }
+        .item-wrap__close {
+          font-size: 14px;
+          margin-top: 6px;
+          cursor: pointer;
+        }
+        .item-wrap__checkboxes {
+          display: flex;
+          flex-direction: column;
+          width: 80px;
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+        .item-wrap__checkboxes > span {
+          cursor: pointer;
+        }
+        vaadin-checkbox {
+          pointer-events: none;
+          font-size: 13px;
+        }
+        vaadin-checkbox.flash-error {
+          color: var(--mdc-theme-error);
+          transition: color 0.2s ease-out;
+          --lumo-contrast-20pct: var(--mdc-theme-error);
+        }
+        vaadin-checkbox.transition-bg {
+          transition: color 0.2s ease-in;
+        }
 
-        <dnd-button hidden$="[[!isEditMode]]" on-click="_addRoll" label="Add Roll" icon="add" class="rolls__add-button"></dnd-button>
-        <div hidden$="[[isEditMode]]" class="rolls__toolbar">
-          <h4>Roll Modifiers:</h4>
-          <div>
-            <vaadin-checkbox id='advMod' on-change="_modChange">Advantage</vaadin-checkbox>
-            <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
+        .details {
+          font-size: 14px;
+          width: calc(100% - 30px);
+          margin: 0 auto 13px !important;
+          background: var(--lumo-contrast-10pct);
+          border-radius: 4px;
+          padding: 14px;
+        }
+        #stats {
+          margin-top: 24px;
+          font-size: 12px;
+        }
+        #stats p {
+          margin-top: 4px;
+          margin-bottom: 16px;
+        }
+        #stats .table {
+          margin-bottom: 24px;
+          border-radius: 4px;
+          box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
+        }
+        #stats .subclass-feature .stat-name {
+          color: var(--mdc-theme-primary, '#6200ee');
+        }
+        #stats .statsBlockHead .stat-name {
+          display: block;
+          font-size: 1.6rem;
+          font-weight: normal;
+          line-height: 1.2;
+        }
+        #stats .statsBlockSubHead .stat-name {
+          font-size: 1.2rem;
+          font-weight: normal;
+        }
+        #stats .statsInlineHead {
+          margin-bottom: 16px;
+        }
+        #stats .statsInlineHead .stat-name {
+          font-size: .8rem;
+          font-weight: bold;
+          display: inline;
+        }
+        #stats .statsInlineHead .stat-name + p {
+          display: inline;
+        }
+        #stats .spell-ability {
+          margin: 0 24px;
+          display: block;
+        }
+        #stats .subclass-feature,
+        #stats .class-feature {
+          padding-top: 24px;
+          border-top: 1px solid var(--mdc-theme-text-divider-on-background, 'rgba(0, 0, 0, 0.12)');
+        }
+        #stats a {
+          color: var(--mdc-theme-secondary, '#018786') !important;
+        }
+        #stats ul {
+          padding-left: 24px;
+          list-style: disc;
+        }
+        #stats ul li {
+          margin-bottom: 8px;
+        }
+
+        @media(min-width: 921px) {
+          .row-wrap {
+            width: calc(50% - 10px);
+          }
+          .row-wrap:first-child {
+            margin-bottom: 0;
+          }
+        }
+      </style>
+
+      <div class="col-wrap">
+
+        <div class="row-wrap">
+          <div class="heading">
+            <h2>Inventory</h2>
+            <a class="mdc-icon-button material-icons" href="#/items">launch</a>
           </div>
-        </div>
-
-        <div class="rolls rolls--custom">
-
-          <template is="dom-repeat" items="[[customRolls]]">
-            <div class="roll" on-click="_makeRoll" index$="[[index]]">
-              <div class="roll-header">
-                <h3 hidden$="[[isEditMode]]">[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
-                <vaadin-text-field hidden$="[[!isEditMode]]" value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
-                <dnd-button hidden$="[[!isEditMode]]" label="Remove" icon="remove" on-click="_removeRoll"></dnd-button>
-              </div>
-
-              <div class="roll-footer">
-                <div class="roll__to-hit">
-                  <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
-                  <vaadin-integer-field hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
-                  <dnd-switch hidden$="[[!isEditMode]]" label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
+          <vaadin-grid id="grid" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
+            <vaadin-grid-column>
+              <template>
+                <div class="item-wrap">
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}"></vaadin-grid-tree-toggle>
+                  <div class="item-wrap__name-wrap">
+                    <span class$="[[_itemWrapNameClassname(item.isEdited)]]" on-click="_expandDetails">[[item.name]]
+                      <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
+                    </span>
+                    <span class$="[[_itemWrapTypeClassname(item.fromBackground, item.fromClass)]]">
+                      <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
+                      <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
+                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
+                    </span>
+                  </div>
+                  <div class="item-wrap__checkboxes">
+                    <span on-click="_setItemEquipped">
+                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
+                    </span>
+                    <span on-click="_setItemAttuned">
+                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>
+                    </span>
+                  </div>
+                  <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
                 </div>
-
-                <div class="roll__damages">
-                  <template is="dom-repeat" items="[[item.damages]]" as="damage">
-                    <div class="roll__damage" index$="[[index]]">
-                      <dnd-button hidden$="[[!isEditMode]]" on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
-                      <span class="roll__damage-roll" hidden$="[[isEditMode]]" >[[damage.roll]]</span>
-                      <div class="roll__damage-roll--edit" hidden$="[[!isEditMode]]">
-                        <vaadin-text-field value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
-                      </div>
-                      <span class="roll__damage-type" hidden$="[[isEditMode]]">&nbsp;[[damage.type]] damage</span>
-                      <div class="roll__damage-type--edit" hidden$="[[!isEditMode]]">
-                        <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
-                          <template>
-                            <vaadin-list-box>
-                              <template is="dom-repeat" items="[[damageTypes]]">
-                                <vaadin-item>[[item]]</vaadin-item>
-                              </template>
-                            </vaadin-list-box>
-                          </template>
-                        </vaadin-select>
-                      </div>
-                    </div>
-                  </template>
-                  <dnd-button hidden$="[[!isEditMode]]" on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
-                </div>
-              </div>
-            </div>
-          </template>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
         </div>
-
       </div>
-    </div>
-    `}}customElements.define("dnd-character-builder-rolls",s)}}]);
+    `}}customElements.define("dnd-character-builder-equipment",o)}}]);
 //# sourceMappingURL=5.bundle.js.map
