@@ -168,6 +168,9 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         .edit__notes {
           width: 100%;
           min-height: 200px;
+        }
+        h2 {
+          margin-top: 0;
         }        
 
         @media(min-width: 921px) {

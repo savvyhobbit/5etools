@@ -10,7 +10,8 @@ import {
   toggleItemAttuned,
   setItem,
   spliceItems,
-  isChildItem
+  isChildItem,
+  getItemAtId
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import "@vaadin/vaadin-checkbox";
@@ -32,8 +33,27 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       },
       character: {
         type: Object,
+      },
+      expandedItems: {
+        type: Array
+      },
+      expandedIds: {
+        type: Array
       }
     };
+  }
+
+  static get observers() {
+    return [
+      '_expandedItemsChange(expandedItems.*)'
+    ]
+  }
+
+  _expandedItemsChange() {
+    if (this.expandedItems && this.expandedItems.length) {
+      this.expandedIds = this.expandedItems.map((item) => item.uniqueId);
+      console.error(this.expandedIds);
+    }
   }
 
   connectedCallback() {
@@ -165,7 +185,21 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       this.character = character;
       this.inventory = await getItems(character);
       console.error('inventory:', this.inventory);
+      const originalScrollHeight = window.scrollY;
       this.$.grid.clearCache();
+      if (this.openedItemID) {
+        const openedItem = getItemAtId(this.inventory, this.openedItemID);
+        if (openedItem) {
+          this.$.grid.openItemDetails(openedItem);
+        }
+      }
+      if (this.expandedIds) {
+        const expandedItems = this.expandedIds.map((id) => {
+          return getItemAtId(this.inventory, id);
+        });
+        this.expandedItems = expandedItems;
+      }
+      window.scrollTo(0, originalScrollHeight);
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
   }
@@ -182,6 +216,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       this.$.grid.closeItemDetails(data);
     } else {
       this.$.grid.openItemDetails(data);
+      this.openedItemID = data.uniqueId;
     }
     this.$.grid.notifyResize();
   }
@@ -491,7 +526,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             <h2>Inventory</h2>
             <a class="mdc-icon-button material-icons" href="#/items">launch</a>
           </div>
-          <vaadin-grid id="grid" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
+          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap">

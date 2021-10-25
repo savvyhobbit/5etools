@@ -25,6 +25,7 @@
     "@vaadin/vaadin-select": "*",
     "@vaadin/vaadin-text-field": "*",
     "http-server": "^0.12.3",
+    "mobile-drag-drop": "^2.3.0-rc.2",
     "vaadin-checkbox": "^1.0.0-alpha5"
   },
   "devDependencies": {

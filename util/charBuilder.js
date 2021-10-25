@@ -1706,6 +1706,7 @@ export {
   getWeaponItems,
   getArmorItems,
   isChildItem,
+  getItemAtId,
   getCharacterAC,
   toggleCustomAC,
   setCustomACVal,
