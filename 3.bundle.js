@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{111:function(e,t,i){"use strict";var r=i(7),s=i(53),o=i(19),a=i(54),l=i(41),n=i(13);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{110:function(e,t,i){"use strict";var r=i(7),s=i(53),o=i(19),a=i(54),l=i(41),n=i(13);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
@@ -227,7 +227,7 @@ class h extends(Object(l.a)(Object(a.a)(Object(o.a)(Object(s.a)(r.a))))){static 
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(r.content);i(111)},124:function(e,t,i){"use strict";i(45),i(52),i(50),i(39),i(30),i(51),i(113);var r=i(13);const s=r.a`<dom-module id="lumo-grid" theme-for="vaadin-grid">
+</dom-module>`;document.head.appendChild(r.content);i(110)},123:function(e,t,i){"use strict";i(45),i(51),i(50),i(39),i(30),i(52),i(113);var r=i(13);const s=r.a`<dom-module id="lumo-grid" theme-for="vaadin-grid">
   <template>
     <style>
       :host {
@@ -588,7 +588,7 @@ class h extends(Object(l.a)(Object(a.a)(Object(o.a)(Object(s.a)(r.a))))){static 
       }
    </style>
   </template>
-</dom-module>`;document.head.appendChild(s.content);var o=i(72),a=i(19),l=i(65),n=i(10),h=i(21),d=i(76),c=i(34);
+</dom-module>`;document.head.appendChild(s.content);var o=i(72),a=i(19),l=i(65),n=i(9),h=i(21),d=i(76),c=i(34);
 /**
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
@@ -1066,7 +1066,7 @@ This program is available under Apache License Version 2.0, available at https:/
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-class o extends class extends r.a{}{static get is(){return"vaadin-grid-templatizer"}static get properties(){return{dataHost:Object,template:Object,_templateInstances:{type:Array,value:function(){return[]}},_parentPathValues:{value:function(){return{}}},_grid:Object}}static get observers(){return["_templateInstancesChanged(_templateInstances.*, _parentPathValues.*)"]}constructor(){super(),this._instanceProps={detailsOpened:!0,index:!0,item:!0,selected:!0,expanded:!0,level:!0}}createInstance(){this._ensureTemplatized();const e=new this._TemplateClass({});return this.addInstance(e),e}addInstance(e){-1===this._templateInstances.indexOf(e)&&(this._templateInstances.push(e),requestAnimationFrame(()=>this.notifyPath("_templateInstances.*",this._templateInstances)))}removeInstance(e){const t=this._templateInstances.indexOf(e);this.splice("_templateInstances",t,1)}_ensureTemplatized(){this._TemplateClass||(this._TemplateClass=Object(s.c)(this.template,this,{instanceProps:this._instanceProps,parentModel:!0,forwardHostProp:function(e,t){this._forwardParentProp(e,t),this._templateInstances&&this._templateInstances.forEach(i=>i.notifyPath(e,t))},notifyInstanceProp:function(e,t,i){if("index"===t||"item"===t)return;const r=`__${t}__`;if(e[r]===i)return;e[r]=i;const s=Array.from(this._grid.$.items.children).filter(t=>this._grid._itemsEqual(t._item,e.item))[0];s&&Array.from(s.children).forEach(e=>{e._instance&&(e._instance[r]=i,e._instance.notifyPath(t,i))});if(Array.isArray(this._grid.items)&&0===t.indexOf("item.")){const r=this._grid.items.indexOf(e.item),s=t.slice("item.".length);this._grid.notifyPath(`items.${r}.${s}`,i)}const o=`_${t}InstanceChangedCallback`;this._grid&&this._grid[o]&&this._grid[o](e,i)}}))}_forwardParentProp(e,t){this._parentPathValues[e]=t,this._templateInstances.forEach(i=>i.notifyPath(e,t))}_templateInstancesChanged(e,t){let i,r;if("_templateInstances"===e.path)i=0,r=this._templateInstances.length;else{if("_templateInstances.splices"!==e.path)return;i=e.value.index,r=e.value.addedCount}Object.keys(this._parentPathValues||{}).forEach(e=>{for(var t=i;t<i+r;t++)this._templateInstances[t].set(e,this._parentPathValues[e])})}}customElements.define(o.is,o)},131:function(e,t,i){"use strict";var r=i(7),s=i(26),o=i(43),a=i(130),l=i(15),n=i(10);
+class o extends class extends r.a{}{static get is(){return"vaadin-grid-templatizer"}static get properties(){return{dataHost:Object,template:Object,_templateInstances:{type:Array,value:function(){return[]}},_parentPathValues:{value:function(){return{}}},_grid:Object}}static get observers(){return["_templateInstancesChanged(_templateInstances.*, _parentPathValues.*)"]}constructor(){super(),this._instanceProps={detailsOpened:!0,index:!0,item:!0,selected:!0,expanded:!0,level:!0}}createInstance(){this._ensureTemplatized();const e=new this._TemplateClass({});return this.addInstance(e),e}addInstance(e){-1===this._templateInstances.indexOf(e)&&(this._templateInstances.push(e),requestAnimationFrame(()=>this.notifyPath("_templateInstances.*",this._templateInstances)))}removeInstance(e){const t=this._templateInstances.indexOf(e);this.splice("_templateInstances",t,1)}_ensureTemplatized(){this._TemplateClass||(this._TemplateClass=Object(s.c)(this.template,this,{instanceProps:this._instanceProps,parentModel:!0,forwardHostProp:function(e,t){this._forwardParentProp(e,t),this._templateInstances&&this._templateInstances.forEach(i=>i.notifyPath(e,t))},notifyInstanceProp:function(e,t,i){if("index"===t||"item"===t)return;const r=`__${t}__`;if(e[r]===i)return;e[r]=i;const s=Array.from(this._grid.$.items.children).filter(t=>this._grid._itemsEqual(t._item,e.item))[0];s&&Array.from(s.children).forEach(e=>{e._instance&&(e._instance[r]=i,e._instance.notifyPath(t,i))});if(Array.isArray(this._grid.items)&&0===t.indexOf("item.")){const r=this._grid.items.indexOf(e.item),s=t.slice("item.".length);this._grid.notifyPath(`items.${r}.${s}`,i)}const o=`_${t}InstanceChangedCallback`;this._grid&&this._grid[o]&&this._grid[o](e,i)}}))}_forwardParentProp(e,t){this._parentPathValues[e]=t,this._templateInstances.forEach(i=>i.notifyPath(e,t))}_templateInstancesChanged(e,t){let i,r;if("_templateInstances"===e.path)i=0,r=this._templateInstances.length;else{if("_templateInstances.splices"!==e.path)return;i=e.value.index,r=e.value.addedCount}Object.keys(this._parentPathValues||{}).forEach(e=>{for(var t=i;t<i+r;t++)this._templateInstances[t].set(e,this._parentPathValues[e])})}}customElements.define(o.is,o)},131:function(e,t,i){"use strict";var r=i(7),s=i(26),o=i(43),a=i(130),l=i(15),n=i(9);
 /**
 @license
 Copyright (c) 2018 Vaadin Ltd.
