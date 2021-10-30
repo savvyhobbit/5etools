@@ -46,6 +46,7 @@ class DndSelectedItem extends PolymerElement {
 
   __renderSelection() {
     if (this._modelsRenderSelection && this.selectedItem) {
+      console.error('Selected Item:', this.selectedItem);
       this._modelsRenderSelection(this.selectedItem, this.shadowRoot);
       initCollapseToggles(this.shadowRoot);
     }
@@ -116,7 +117,7 @@ class DndSelectedItem extends PolymerElement {
           display: none;
         }
         .close-item {
-          position: absolute;
+          position: fixed;
           height: 64px;
           width: 64px;
           font-size: 44px;

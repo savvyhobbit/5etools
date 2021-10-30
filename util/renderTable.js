@@ -302,15 +302,13 @@ function renderTable(data, rootEl, columns) {
             let rarityFilter = new Filter({header: "Rarity", items: ["None", "Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact", "Unknown"]});
             rarityFilter.metric = "rarity";
             filters[col.id] = rarityFilter;
-            filters.tierFilter = new Filter({header: "Tier", items: ["None", "Minor", "Major"]});
-            filters.tierFilter.metric = "_fTier";
+            // filters.tierFilter = new Filter({header: "Tier", items: ["None", "Minor", "Major"]});
+            // filters.tierFilter.metric = "_fTier";
             filters.attunementFilter = new Filter({header: "Attunement", items: ["Yes", "By...", "Optional", "No"]});
             filters.attunementFilter.metric = "_fAttunement";
-            filters.categoryFilter = new Filter({header: "Category", items: ["Basic", "Generic Variant", "Specific Variant", "Other"], deselFn: deselectFilter("category", "Specific Variant")});
-            filters.categoryFilter.metric = "category";
+            // filters.categoryFilter = new Filter({header: "Category", items: ["Basic", "Generic Variant", "Specific Variant", "Other"], deselFn: deselectFilter("category", "Specific Variant")});
+            // filters.categoryFilter.metric = "category";
           }
-          const tierTags = [];
-          tierTags.push(curItem.tier ? curItem.tier : "None");
           let attunement = "No";
           if (curItem.reqAttune !== undefined) {
             if (curItem.reqAttune === "YES") {
@@ -327,8 +325,10 @@ function renderTable(data, rootEl, columns) {
               curItem.reqAttune = "(Requires Attunement " + curItem.reqAttune + ")";
             }
           }
-          tierTags.forEach(tt => filters.tierFilter.addIfAbsent(tt));
-          curItem._fTier = tierTags;
+          // const tierTags = [];
+          // tierTags.push(curItem.tier ? curItem.tier : "None");
+          // tierTags.forEach(tt => filters.tierFilter.addIfAbsent(tt));
+          // curItem._fTier = tierTags;
           curItem._fAttunement = attunement;
           columnsHtmlString += `<td class='table-cell item-rarity ${col.cssClass}'>${curItem.rarity}</td>`;
           break;
@@ -388,7 +388,8 @@ function renderTable(data, rootEl, columns) {
           const ft = data[item.elm.getAttribute(FLTR_ID)];
 
           for (let filter of Object.values(filters)) {
-            let toDisplay = filter.toDisplay(f, getFromPath(ft, filter.metric));
+            let gfpResult = getFromPath(ft, filter.metric);
+            let toDisplay = filter.toDisplay(f, gfpResult);
             if (!toDisplay) {
               return false;
             }

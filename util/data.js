@@ -235,19 +235,19 @@ async function loadRaceData() {
 function loadAllItemData() {
 	const promises = [];
 
-  promises.push(loadJSON(`${DATA_ROOT}items.json`));
-  promises.push(loadJSON(`${DATA_ROOT}basicitems.json`));
+	promises.push(loadJSON(`${DATA_ROOT}items.json`));
+	promises.push(loadJSON(`${DATA_ROOT}basicitems.json`));
 	promises.push(loadJSON(`${DATA_ROOT}magicvariants.json`));
 
-  return Promise.all(promises).then((data) => {
+	return Promise.all(promises).then((data) => {
 		return mergeItemsData(data[0], data[1], data[2]);
-  });
+	});
 }
 
 function mergeItemsData(itemData, basicItemData, variantData) {
-  const propertyList = {};
-  const typeList = {};
-  let itemList = itemData;
+	const propertyList = {};
+	const typeList = {};
+	let itemList = itemData;
 
 	let basicItemList = basicItemData.basicitems;
 	const itemPropertyList = basicItemData.itemProperty;
@@ -310,45 +310,9 @@ function mergeItemsData(itemData, basicItemData, variantData) {
 			}
 		}
 	}
-	
-
-  let pushObject = (targetObject, objectToBePushed) => {
-    const copiedObject = JSON.parse(JSON.stringify(targetObject));
-    copiedObject.push(objectToBePushed);
-    return copiedObject;
-  };
-
-	for (let i = 0; i < itemList.length; i++) {
-		const item = itemList[i];
-		if (item.noDisplay) continue;
-		if (itemList[i].type === "GV") itemList[i].category = "Generic Variant";
-		if (itemList[i].category === undefined) itemList[i].category = "Other";
-		if (item.entries === undefined) itemList[i].entries=[];
-		if (item.type && typeList[item.type]) for (let j = 0; j < typeList[item.type].entries.length; j++) itemList[i].entries = pushObject(itemList[i].entries,typeList[item.type].entries[j]);
-		if (item.property) {
-			const properties = item.property.split(",");
-			for (let j = 0; j < properties.length; j++) if (propertyList[properties[j]].entries) for (let k = 0; k < propertyList[properties[j]].entries.length; k++) itemList[i].entries = pushObject(itemList[i].entries,propertyList[properties[j]].entries[k]);
-		}
-		//The following could be encoded in JSON, but they depend on more than one JSON property; maybe fix if really bored later
-		if (item.armor) {
-			if (item.resist) itemList[i].entries = pushObject(itemList[i].entries,"You have resistance to "+item.resist+" damage while you wear this armor.");
-			if (item.armor && item.stealth) itemList[i].entries = pushObject(itemList[i].entries,"The wearer has disadvantage on Stealth (Dexterity) checks.");
-			if (item.type === "HA" && item.strength) itemList[i].entries = pushObject(itemList[i].entries,"If the wearer has a Strength score lower than " + item.strength + ", their speed is reduced by 10 feet.");
-		} else if (item.resist) {
-			if (item.type === "P") itemList[i].entries = pushObject(itemList[i].entries,"When you drink this potion, you gain resistance to "+item.resist+" damage for 1 hour.");
-			if (item.type === "RG") itemList[i].entries = pushObject(itemList[i].entries,"You have resistance to "+item.resist+" damage while wearing this ring.");
-		}
-		if (item.type === "SCF") {
-			if (item.scfType === "arcane") itemList[i].entries = pushObject(itemList[i].entries,"An arcane focus is a special item designed to channel the power of arcane spells. A sorcerer, warlock, or wizard can use such an item as a spellcasting focus, using it in place of any material component which does not list a cost.");
-			if (item.scfType === "druid") itemList[i].entries = pushObject(itemList[i].entries,"A druid can use such a druidic focus as a spellcasting focus, using it in place of any material component that does not have a cost.");
-			if (item.scfType === "holy") {
-				itemList[i].entries = pushObject(itemList[i].entries,"A holy symbol is a representation of a god or pantheon.");
-				itemList[i].entries = pushObject(itemList[i].entries,"A cleric or paladin can use a holy symbol as a spellcasting focus, using it in place of any material components which do not list a cost. To use the symbol in this way, the caster must hold it in hand, wear it visibly, or bear it on a shield.");
-			}
-		}
-	}
 	window.itemPropertyList = propertyList;
-  return itemList;
+	window.itemTypeList = typeList;
+  	return itemList;
 }
 
 function parseSubraces(race) {

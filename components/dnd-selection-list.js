@@ -129,7 +129,6 @@ class DndSelectionList extends PolymerElement {
     if (hashSelection && this.enableHashRouting && Array.isArray(this._data)) {
       const itemFromHash = resolveHash(this._data, hashSelection);
       if (itemFromHash) {
-        console.error(itemFromHash);
         this.set("_selectedItem", itemFromHash);
         this.hasSelection = true;
         if (!this.disableScrollBack) {

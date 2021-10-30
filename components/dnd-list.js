@@ -7,7 +7,6 @@ import './styles/material-styles.js';
 import "./styles/my-styles.js";
 import "./dnd-spinner.js";
 import { routeEventChannel, readRouteView, setRouteSelection } from '../util/routing';
-
 class DndList extends PolymerElement {
   static get properties() {
     return {

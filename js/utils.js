@@ -32,7 +32,7 @@ import {
   SRC_PHB,
   SRC_SCAG
 } from "../util/consts.js";
-import List from '../lib/list.js';
+import { List } from "../lib/list";
 
 let throttle = (fn, wait) => {
 	var time = Date.now();
@@ -267,8 +267,13 @@ function utils_makeAttChoose(attList) {
 }
 
 function utils_makeRoller(text) {
-	const DICE_REGEX = /([1-9]\d*)?d([1-9]\d*)(\s?[+-]\s?\d+)?/g;
-	return text.replace(DICE_REGEX, "<span class='roller' data-roll='$&'>$&</span>").replace(/(-|\+)?\d+(?= to hit)/g, "<span class='roller' data-roll='1d20$&'>$&</span>").replace(/(-|\+)?\d+(?= bonus to)/g, "<span class='roller' data-roll='1d20$&'>$&</span>").replace(/(bonus of )(=?-|\+\d+)/g, "$1<span class='roller' data-roll='1d20$2'>$2</span>");
+	if (text) {
+		const DICE_REGEX = /([1-9]\d*)?d([1-9]\d*)(\s?[+-]\s?\d+)?/g;
+		return text.replace(DICE_REGEX, "<span class='roller' data-roll='$&'>$&</span>")
+			.replace(/(-|\+)?\d+(?= to hit)/g, "<span class='roller' data-roll='1d20$&'>$&</span>")
+			.replace(/(-|\+)?\d+(?= bonus to)/g, "<span class='roller' data-roll='1d20$&'>$&</span>")
+			.replace(/(bonus of )(=?-|\+\d+)/g, "$1<span class='roller' data-roll='1d20$2'>$2</span>");
+	}
 }
 
 function makeTableThClassText(tableObject, i) {
@@ -482,11 +487,11 @@ function search(options, rootEl) {
 	const list = new List(rootEl.getElementById("listcontainer"), options);
 	list.sort("name");
 	rootEl.getElementById("reset").addEventListener('click', function() {
-    rootEl.getElementById("search-field").value = "";
-    list.search();
-    list.sort("name");
-    list.filter();
-  });
+		rootEl.getElementById("search-field").value = "";
+		list.search();
+		list.sort("name");
+		list.filter();
+	});
 	const listWrapper = rootEl.getElementById("listcontainer");
 	if (listWrapper.lists) {
 		listWrapper.lists.push(list);

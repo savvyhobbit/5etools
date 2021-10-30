@@ -829,7 +829,7 @@
 		},
 		{
 			"name": "Renaissance Bullets (10)",
-			"type": "AF",
+			"type": "A",
 			"ammunition": true,
 			"age": "Renaissance",
 			"rarity": "None",
@@ -840,7 +840,7 @@
 		},
 		{
 			"name": "Modern Bullets (10)",
-			"type": "AF",
+			"type": "A",
 			"ammunition": true,
 			"age": "Modern",
 			"rarity": "None",
@@ -850,7 +850,7 @@
 		},
 		{
 			"name": "Energy Cell",
-			"type": "AF",
+			"type": "A",
 			"ammunition": true,
 			"age": "Futuristic",
 			"rarity": "None",

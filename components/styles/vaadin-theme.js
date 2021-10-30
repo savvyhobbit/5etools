@@ -231,3 +231,12 @@ registerStyles('vaadin-grid', css`
     touch-action: unset !important;
   }
 `);
+
+registerStyles('vaadin-grid-tree-toggle', css`
+  [part~="toggle"] {
+    cursor: pointer;
+  }
+  :host([theme~="no-children"]) [part~="toggle"]:before {
+    color: var(--lumo-tint-10pct);
+  }
+`);

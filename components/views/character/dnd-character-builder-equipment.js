@@ -20,6 +20,16 @@ import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "@vaadin/vaadin-grid/vaadin-grid-column";
 import "./dnd-character-builder-equipment-item-detail";
 
+
+// TODO:
+// https://www.google.com/maps/place/7143+Billy+Goat+Dr,+New+Albany,+OH+43054/@40.1050273,-82.8250067,3a,18.1y,193.97h,87.13t/data=!3m7!1e1!3m5!1slpGo1R5kmFJTnA3yjtJYlQ!2e0!5s20151001T000000!7i13312!8i6656!4m7!3m6!1s0x88385e0b74c51a19:0x75954c845587a43b!8m2!3d40.1048551!4d-82.8250649!14m1!1BCgIgAQ
+// http://www.brosco.com/uploads/Price%20Pages%20and%20Forms/Doors/Larson1.pdf
+// Equipment choices from class
+// Parse equipment packs
+// Money counter
+// Ammunition / Potion / Other consumable counts
+// Magic Weapon modifier in entries
+// 
 class DndCharacterBuilderEquipment extends PolymerElement {
   
   static get properties() {
@@ -51,9 +61,15 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
   _expandedItemsChange() {
     if (this.expandedItems && this.expandedItems.length) {
-      this.expandedIds = this.expandedItems.map((item) => item.uniqueId);
+      this.expandedIds = this.expandedItems.filter(item => !!item).map((item) => item.uniqueId);
       console.error(this.expandedIds);
     }
+    window.scrollTo(0, this.originalScrollHeight);
+  }
+
+  _recordScrollHeight() {
+    // Fix reposition issue after tree expand/collapse toggle
+    this.originalScrollHeight = window.scrollY;
   }
 
   connectedCallback() {
@@ -208,17 +224,21 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     let data = e.model.__data.item,
       stayClosed = this.$.grid.detailsOpenedItems.indexOf(data) > -1;
 
+    const originalScrollHeight = window.scrollY;
+
     for (let item of this.$.grid.detailsOpenedItems) {
       this.$.grid.closeItemDetails(item);
     }
 
     if (stayClosed) {
       this.$.grid.closeItemDetails(data);
+      this.openedItemID = undefined;
     } else {
       this.$.grid.openItemDetails(data);
       this.openedItemID = data.uniqueId;
     }
     this.$.grid.notifyResize();
+    window.scrollTo(0, originalScrollHeight);
   }
 
   _flashCheckbox(checkboxEl) {
@@ -273,6 +293,18 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     }
   }
 
+  _quantityChange(e) {
+    console.log(e);
+    const item = this.$.grid.getEventContext(e).item;
+    let newQuantity = parseInt(item.quantity, 10);
+    if (isNaN(newQuantity)) {
+      newQuantity = 0;
+    }
+
+    item.storedItem.quantity = newQuantity;
+    setItem(item);
+  }
+
   _preventDefault(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -286,28 +318,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     }
     return false;
   }
-  
-  _itemWrapTypeClassname(fromBackground, fromClass) {
-    let className = 'item-wrap__type ';
-    if (fromBackground) {
-      className += 'item-wrap__type--fromBackground'
-    }
-    if (fromClass) {
-      className += 'item-wrap__type--fromClass'
-    }
-    return className;
-  }
-  
-  _itemWrapNameClassname(isEdited) {
-    let className = 'item-wrap__name '
-    if (isEdited) {
-      className += 'item-wrap__name--edited'
-    }
-    return className;
-  }
 
   _noRarity(rarity) {
     return !rarity || rarity === 'None';
+  }
+
+  _toggleTheme(item) {
+    return item.children && item.children.length === 0 ? 'no-children' : '';
   }
 
   static get template() {
@@ -380,9 +397,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           white-space: nowrap;
           position: relative;
         }
-        .item-wrap__name--edited {
-          padding-right: 58px;
-        }
         .item-wrap__edited,
         .item-wrap__from {
           background-color: var(--mdc-theme-text-disabled-on-background);
@@ -399,7 +413,9 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           font-style: italic;
         }
         .item-wrap__edited {
-          top: 3px;
+          top: -1px;
+          position: relative;
+          font-weight: normal;
         }
         .item-wrap__type {
           font-style: italic;
@@ -430,6 +446,17 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
         .item-wrap__checkboxes > span {
           cursor: pointer;
+        }
+        .item-wrap__quantity {
+          display: flex;
+          flex-direction: column;
+          width: 80px;
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+        vaadin-integer-field {
+          margin: -13px 0 8px;
         }
         vaadin-checkbox {
           pointer-events: none;
@@ -530,24 +557,27 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap">
-                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}"></vaadin-grid-tree-toggle>
-                  <div class="item-wrap__name-wrap">
-                    <span class$="[[_itemWrapNameClassname(item.isEdited)]]" on-click="_expandDetails">[[item.name]]
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
+                  <div class="item-wrap__name-wrap" on-click="_expandDetails">
+                    <span class="item-wrap__name">[[item.name]]
                       <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
                     </span>
-                    <span class$="[[_itemWrapTypeClassname(item.fromBackground, item.fromClass)]]">
+                    <span class="item-wrap__type">
                       <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
                       <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
                       <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
                     </span>
                   </div>
-                  <div class="item-wrap__checkboxes">
+                  <div hidden$="[[item.hasQuantity]]" class="item-wrap__checkboxes">
                     <span on-click="_setItemEquipped">
                       <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
                     </span>
                     <span on-click="_setItemAttuned">
                       <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>
                     </span>
+                  </div>
+                  <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
+                    <vaadin-integer-field min="0" value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
                   </div>
                   <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
                 </div>

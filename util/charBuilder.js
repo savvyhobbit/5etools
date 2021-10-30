@@ -1137,7 +1137,7 @@ async function getItems(character = selectedCharacter, isFlat = false) {
   if (character && character.items && character.items.length) {
     for (let index = 0; index < character.items.length; index ++) {
       const storedItem = character.items[index];
-      const parsedItem = await parseItem(storedItem, index);
+      const parsedItem = await parseItem(storedItem, index, undefined, character);
       resultItems.push(parsedItem);
     }
     resultItems = resultItems.filter(item => !!item && item.type !== 'GV');
@@ -1148,7 +1148,7 @@ async function getItems(character = selectedCharacter, isFlat = false) {
   return resultItems;
 }
 
-async function parseItem(storedItem, index, parentItem) {
+async function parseItem(storedItem, index, parentItem, character) {
   let newItem = {};
 
   const itemRefs = await loadModel('items');
@@ -1158,6 +1158,15 @@ async function parseItem(storedItem, index, parentItem) {
     const itemRef = itemRefs.find(item => item.source.toLowerCase() === storedItem.itemRef.source.toLowerCase() && item.name.toLowerCase() === storedItem.itemRef.name.toLowerCase());
     if (itemRef) {
       newItem = { ...itemRef };
+
+      // Storing Pack items
+      if (!storedItem.children && itemRef.container && itemRef.name.indexOf(' Pack') > -1 && itemRef.entries && itemRef.entries.length > 1 && itemRef.entries[0] === "Includes:") {
+        storedItem.children = itemRef.entries[1].items.map((includedItem) => {
+          return { name: includedItem, uniqueId: character.itemCounter++ };
+        });
+        saveCharacter(character);
+      }
+
     } else {
       newItem = { name: storedItem.itemRef.name, lookupFailed: true };
     }
@@ -1194,7 +1203,7 @@ async function parseItem(storedItem, index, parentItem) {
     }
     for (let childIndex = 0; childIndex < newItem.children.length; childIndex ++) {
       const storedChildItem = newItem.children[childIndex];
-      const parsedItem = await parseItem(storedChildItem, `${index}_${childIndex}`, newItem);
+      const parsedItem = await parseItem(storedChildItem, `${index}_${childIndex}`, newItem, character);
       newItem.children[childIndex] = parsedItem;
     }
   }
