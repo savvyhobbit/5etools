@@ -216,9 +216,9 @@ class DndLayout extends PolymerElement {
           <div class="breadcrumbs mdc-theme--on-primary">
             <div class="container breadcrumbs__list">
               <div class="breadcrumbs__crumb" hidden$="[[_exists(selectedTitle)]]">
-                <a on-click="_resetHashClickHandler">[[header]]</a>
+                <a class='typography_mono' on-click="_resetHashClickHandler">[[header]]</a>
               </div>
-              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span>[[selectedTitle]]</span></div>
+              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span class='typography_mono' >[[selectedTitle]]</span></div>
             </div>
           </div>
           <div class="nav-button">

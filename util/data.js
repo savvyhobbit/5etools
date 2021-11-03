@@ -94,7 +94,7 @@ export async function filterModel(modelId, selectorString, orOperand = false) {
 	
 	if (typeof selectorString === "string") {
 		if (selectorString.indexOf('|') > -1) {
-			selectorString
+			selectors = selectorString
 				.split('|')
 				.map((selectorStr) => {
 					let selectorKeyValue = selectorStr.split('=');
