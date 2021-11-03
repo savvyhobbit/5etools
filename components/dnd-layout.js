@@ -218,7 +218,7 @@ class DndLayout extends PolymerElement {
               <div class="breadcrumbs__crumb" hidden$="[[_exists(selectedTitle)]]">
                 <a on-click="_resetHashClickHandler">[[header]]</a>
               </div>
-              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]">[[selectedTitle]]</div>
+              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span>[[selectedTitle]]</span></div>
             </div>
           </div>
           <div class="nav-button">
@@ -286,6 +286,14 @@ class DndLayout extends PolymerElement {
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">class</i>
               <span class="mdc-list-item__text">Classes</span>
             </a>
+            <a class="mdc-list-item mdc-theme--on-surface" href="#/spells">
+              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">flash_on</i>
+              <span class="mdc-list-item__text">Spells</span>
+            </a>
+            <a class="mdc-list-item mdc-theme--on-surface" href="#/races">
+              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">face</i>
+              <span class="mdc-list-item__text">Races</span>
+            </a>
             <a class="mdc-list-item mdc-theme--on-surface" href="#/backgrounds">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">public</i>
               <span class="mdc-list-item__text">Backgrounds</span>
@@ -296,20 +304,20 @@ class DndLayout extends PolymerElement {
               >
               <span class="mdc-list-item__text">Feats</span>
             </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/races">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">face</i>
-              <span class="mdc-list-item__text">Races</span>
+
+            <hr class="mdc-list-divider" />
+            <h6 class="mdc-list-group__subheader mdc-theme--on-surface">References</h6>
+            <a class="mdc-list-item mdc-theme--on-surface" href="#/bestiary">
+              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">warning</i>
+              <span class="mdc-list-item__text">Bestiary</span>
+            </a>
+            <a class="mdc-list-item mdc-theme--on-surface" href="#/items">
+              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">restaurant</i>
+              <span class="mdc-list-item__text">Items</span>
             </a>
             <a class="mdc-list-item mdc-theme--on-surface" href="#/features">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
               <span class="mdc-list-item__text">Class Features</span>
-            </a>
-
-            <hr class="mdc-list-divider" />
-            <h6 class="mdc-list-group__subheader mdc-theme--on-surface">References</h6>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/spells">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">flash_on</i>
-              <span class="mdc-list-item__text">Spells</span>
             </a>
             <a class="mdc-list-item mdc-theme--on-surface" href="#/conditions">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
@@ -317,28 +325,20 @@ class DndLayout extends PolymerElement {
               >
               <span class="mdc-list-item__text">Conditions</span>
             </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/items">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">restaurant</i>
-              <span class="mdc-list-item__text">Items</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
+            <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">toll</i>
               <span class="mdc-list-item__text">Other Rewards</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/bestiary">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">warning</i>
-              <span class="mdc-list-item__text">Bestiary</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/psionics">
+            </a> -->
+            <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/psionics">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
                 >record_voice_over</i
               >
               <span class="mdc-list-item__text">Psionics</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/cults">
+            </a> -->
+            <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/cults">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">group</i>
               <span class="mdc-list-item__text">Cults</span>
-            </a>
+            </a> -->
 
             <hr class="mdc-list-divider" />
             <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Tools</h6>
@@ -348,9 +348,9 @@ class DndLayout extends PolymerElement {
             </a>
             <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
               <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
-              <span class="mdc-list-item__text">Character Builder</span>
+              <span class="mdc-list-item__text">Character Sheets</span>
             </a>
-            <span class="version mdc-typography--caption">v2.0.0</span>
+            <span class="version mdc-typography--caption">v2.1.0</span>
           </nav>
         </div>
       </aside>

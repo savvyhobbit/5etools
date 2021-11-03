@@ -14,7 +14,7 @@ export default function renderList(rootEl, items) {
 		htmlString += 
 			`<div class='list-item history-link grid-item__${svg}'
 				data-link='${encodeForHash(curItem.name, curItem.source)}' data-title='${curItem.name}'>
-				<dnd-svg id='${svg}' default-color class='asdf list-item--image grid-item__${svg}'></dnd-svg>
+				<dnd-svg id='${svg}' default-color class='list-item--image grid-item__${svg}'></dnd-svg>
 				<span class='list-item--text'>${curItem.name}</span>
 			</div>`
 	}

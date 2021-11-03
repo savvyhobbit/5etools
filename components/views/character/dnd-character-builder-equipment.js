@@ -63,6 +63,11 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     if (this.expandedItems && this.expandedItems.length) {
       this.expandedIds = this.expandedItems.filter(item => !!item).map((item) => item.uniqueId);
       console.error(this.expandedIds);
+
+      if (this.openedItemID) {
+        this.$.grid.closeItemDetails(this.openedItemID);
+        this.openedItemID = undefined;
+      }
     }
     window.scrollTo(0, this.originalScrollHeight);
   }
@@ -204,7 +209,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       const originalScrollHeight = window.scrollY;
       this.$.grid.clearCache();
       if (this.openedItemID) {
-        const openedItem = getItemAtId(this.inventory, this.openedItemID);
+        const openedItem = getItemAtId(this.inventory, this.openedItemID.uniqueId);
         if (openedItem) {
           this.$.grid.openItemDetails(openedItem);
         }
@@ -235,7 +240,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       this.openedItemID = undefined;
     } else {
       this.$.grid.openItemDetails(data);
-      this.openedItemID = data.uniqueId;
+      this.openedItemID = data;
     }
     this.$.grid.notifyResize();
     window.scrollTo(0, originalScrollHeight);

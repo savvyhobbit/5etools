@@ -423,7 +423,7 @@ styleElement.innerHTML = `
         align-items: center;
         justify-content: center;
         height: 57px;
-        font-size: 16px;
+        font-size: 20px;
         padding: 0 64px;
         overflow: hidden;
       }
@@ -431,6 +431,12 @@ styleElement.innerHTML = `
         white-space: nowrap;
         display: flex;
         align-items: center;
+      }
+      .breadcrumbs__crumb span,
+      .breadcrumbs__crumb a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .breadcrumbs__crumb a {
         color: inherit;
@@ -629,7 +635,7 @@ styleElement.innerHTML = `
         display: none;
       }
       .close-item {
-        position: absolute;
+        position: fixed;
         height: 64px;
         width: 64px;
         font-size: 44px;
@@ -998,6 +1004,9 @@ styleElement.innerHTML = `
         border: 1px solid var(--mdc-theme-text-divider-on-background);
         position: relative; 
       }
+      .grid-item.grid-item--wide {
+        width: 100%;
+      }
       .grid-item .grid-item--text {
         position: absolute;
         bottom: 5px;
@@ -1006,6 +1015,10 @@ styleElement.innerHTML = `
         text-align: center;
         z-index: 1;
         color: var(--mdc-theme-on-surface) !important;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .grid-item:hover .grid-item--image {
         transform: scale(1.8);
@@ -1029,7 +1042,7 @@ styleElement.innerHTML = `
         transition: transform 100ms 0ms cubic-bezier(0.4, 0, 1, 1);
         text-align: center;
         font-size: 44px;
-        margin-top: 50px;
+        margin-top: 25px;
       }
       .grid-item.list-item--activated .grid-item--image {
         fill: var(--mdc-theme-primary, #6200ee);
@@ -1037,15 +1050,16 @@ styleElement.innerHTML = `
 
       .list-container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: wrap;
+        margin-top: 40px;
       }
       .list-item {
         cursor: pointer;
-        padding-bottom: 24px;
-        padding-left: 38px;
+        padding-bottom: 40px;
+        padding-left: 55px;
         position: relative;
-        width: calc(50% - 38px);
+        width: 80%
         transform: color .2s;
       }
       .list-item:hover {
@@ -1055,8 +1069,20 @@ styleElement.innerHTML = `
         display: block;
         position: absolute;
         left: -2px;
-        top: -4px;
-        width: 30px;
+        top: -10px;
+        width: 36px;
+      }
+      .list-item--text {
+        font-size: 20px;
+      }
+      /* Tablet and up */
+      @media(min-width: 921px) {
+        .list-item {
+          width: calc(50 - 38px);
+        }
+        .list-container {
+          height: 120vh;
+        }
       }
 
       .dice-wrapper {
@@ -1268,7 +1294,7 @@ styleElement.innerHTML = `
       }
       #subclasses {
         position: relative;
-        margin-top: 16px;
+        margin-top: 6px;
         padding-top: 24px;
         padding-bottom: 26px;
         border-top: 1px solid var(--mdc-theme-text-divider-on-background, rgba(0, 0, 0, 0.12));
@@ -1276,7 +1302,7 @@ styleElement.innerHTML = `
       #subclasses .title {
         text-align: center;
         font-weight: normal;
-        font-size: 20px;
+        font-size: 16px;
         margin-bottom: 16px;
       }
       #subclasses .mdc-chip {
@@ -1303,9 +1329,9 @@ styleElement.innerHTML = `
         left: 0;
         overflow: hidden;
         padding: 16px 16px 24px;
-        width: calc(100% - 32px);
+        width: calc(100% - 22px);
         left: -8px;
-        padding-top: 28px;
+        padding-top: 16px;
       }
       #subclasses.fixed .tab {
         display: block;
@@ -1581,6 +1607,7 @@ styleElement.innerHTML = `
           max-height: calc(var(--vh, 1vh) * 100 - 325px);
         }
       }
+
       /* Tablet and up */
       @media(min-width: 921px) {
         .nav-button .logo {
@@ -1776,6 +1803,11 @@ styleElement.innerHTML = `
       @media(max-width: 920px) {
         .hidden-mobile-down {
           display: none !important;
+        }
+        .breadcrumbs__crumb {
+          flex: 1;
+          max-width: calc(100vw - 205px);
+          justify-content: center;
         }
       }
       /* Below Desktop */

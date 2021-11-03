@@ -102,7 +102,7 @@ class DndBaseRoutingView extends PolymerElement {
       case 'dice':
         return 'Dice Roller';
       case 'character-builder':
-        return 'Character Builder'
+        return 'Character Sheets'
       default:
         return viewId ? util_capitalize(viewId) : '';
     }
