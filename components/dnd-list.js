@@ -2,7 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer';
 import "@polymer/polymer/lib/elements/dom-repeat.js";
 import { MDCTextField } from "@material/textfield";
 import { MDCNotchedOutline } from "@material/notched-outline";
-import { renderTable } from "../util/renderTable.js";
+import { renderTable, renderFilters } from "../util/renderTable.js";
 import './styles/material-styles.js';
 import "./styles/my-styles.js";
 import "./dnd-spinner.js";
@@ -43,9 +43,40 @@ class DndList extends PolymerElement {
     routeEventChannel().removeEventListener("view-change", this.viewChangeHandler);
   }
 
+  ready() {
+    super.ready();
+
+    this._adjustTableHeight(5);
+    window.addEventListener('resize', this._adjustTableHeight.bind(this));
+  }
+
+  _adjustTableHeight(retry) {
+    console.log('_adjustTableHeight');
+    const scrollWrapEl = this.$.tableScrollWrap.getBoundingClientRect();
+
+    if (scrollWrapEl.top) {
+      let adjust = 50;
+
+      switch(this.view) {
+        case 'races':
+        case 'backgrounds':
+        case 'feats':
+        case 'items':
+          adjust = 130;
+      }
+      this.$.tableScrollWrap.style.height = `${window.innerHeight - scrollWrapEl.top - adjust}px`;
+
+    } else if (retry > 0) {
+      setTimeout(() => {
+        this._adjustTableHeight(retry-1);
+      }, 500);
+    }
+  }
+
   _dataChange() {
     if (this.data) {
-      renderTable(this.data, this.shadowRoot, this.columns);
+      this.filters = renderTable(this.data, this.shadowRoot, this.columns);
+      renderFilters(this.data, this.shadowRoot, this.columns, this.filters);
       this._setSelectionListeners();
     }
   }
@@ -90,7 +121,7 @@ class DndList extends PolymerElement {
         </div>
 
         <div class="table-wrap mdc-elevation--z6">
-          <div class="table--scroll" view$="[[view]]">
+          <div id="tableScrollWrap" class="table--scroll" view$="[[view]]">
             <table class="table">
               <thead>
                 <tr class="table-row table-row--header">

@@ -1,3 +1,4 @@
+import { timeout } from "../js/utils.js";
 import droll from "../lib/droll.js";
 
 const rollChannel = document.createElement('div');
@@ -6,7 +7,26 @@ function rollEventChannel() {
     return rollChannel;
 }
 
-function emitRoll(name, roll, result) {
+const EMIT_INTERVAL = 1000;
+let emitQueue;
+async function emitRoll(name, roll, result) {
+    if (!emitQueue) {
+        emitQueue = [{name, roll, result}];
+        while (emitQueue.length) {
+            const emitDetails = emitQueue.shift();
+            const nameOut = emitDetails.name, 
+                rollOut = emitDetails.roll, 
+                resultOut = emitDetails.result;
+            emitRollSubmit(nameOut, rollOut, resultOut);
+            await timeout(EMIT_INTERVAL);
+        }
+        emitQueue = null;
+    } else {
+        emitQueue.push({name, roll, result});
+    }
+}
+
+function emitRollSubmit(name, roll, result) {
     const rollEvent = new CustomEvent("roll", {
         bubbles: true,
         composed: true,

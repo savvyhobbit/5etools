@@ -353,6 +353,9 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           align-items: center;
           justify-content: space-between;
         }
+        .reference-link:hover {
+          color: var(--mdc-theme-secondary);
+        }
 
         .col-wrap {
           display: flex; 
@@ -541,6 +544,16 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           margin-bottom: 8px;
         }
 
+
+        @media(min-width: 420px) {
+          .heading {
+            justify-content: flex-start;
+          }
+          .reference-link {
+            margin-left: 8px;
+          }
+        }
+
         @media(min-width: 921px) {
           .row-wrap {
             width: calc(50% - 10px);
@@ -556,7 +569,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         <div class="row-wrap">
           <div class="heading">
             <h2>Inventory</h2>
-            <a class="mdc-icon-button material-icons" href="#/items">launch</a>
+            <a class="reference-link mdc-icon-button material-icons" href="#/items">launch</a>
           </div>
           <vaadin-grid id="grid" expanded-items="{{expandedItems}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>

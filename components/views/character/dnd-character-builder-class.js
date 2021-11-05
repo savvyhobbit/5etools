@@ -601,9 +601,15 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           display: flex;
           float: left;
           flex-wrap: wrap;
+          width: 100%;
         }
         .choices-col__choice {
           margin-right: 16px;
+          width: 100%;
+        }
+        .choices-col__choice dnd-select-add {
+          min-width: 250px;
+          width: calc(50% - 20px);
         }
         .choices-col__subclass-choice {
           display: block;

@@ -146,7 +146,8 @@ styleElement.innerHTML = `
       .container {
         margin: 0 auto;
         padding: 0 16px;
-        max-width: 392px;
+        max-width: 100vw;
+        overflow-x: hidden;
       }
       .page-title {
         font-size: 2rem;
@@ -312,18 +313,12 @@ styleElement.innerHTML = `
         width: 100%;
       }
       .table--scroll {
-        max-height: calc(var(--vh, 1vh) * 100 - 297px);
         overflow-x: auto;
         overflow-y: auto;
         padding-top: 44px;
         border-radius: 4px;
         box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
         background-color: var(--mdc-theme-surface);
-      }
-      .table--scroll[view="feats"],
-      .table--scroll[view="backgrounds"],
-      .table--scroll[view="races"] {
-        max-height: calc(var(--vh, 1vh) * 100 - 315px);
       }
       .table--scroll .table-row--header {
         border-bottom: none;
@@ -357,6 +352,12 @@ styleElement.innerHTML = `
       .table-cell {
         padding: 12px 20px 8px;
         color: var(--mdc-theme-on-surface);
+      }
+      .table-cell.source {
+        max-width: 70px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
       }
       .table-row--header .table-cell {
         color: var(--mdc-theme-text-disabled-on-background);
@@ -1598,14 +1599,6 @@ styleElement.innerHTML = `
           width: 50px;
           height: 50px;
         }
-        .table--scroll {
-          max-height: calc(var(--vh, 1vh) * 100 - 310px);
-        }
-        .table--scroll[view="feats"],
-        .table--scroll[view="backgrounds"],
-        .table--scroll[view="races"] {
-          max-height: calc(var(--vh, 1vh) * 100 - 325px);
-        }
       }
 
       /* Tablet and up */
@@ -1655,9 +1648,7 @@ styleElement.innerHTML = `
         .page-title {
           display: block;
           margin-right: 0 !important;
-          font-size: 3.75rem;
-          line-height: 3.75rem;
-          margin: 48px 0 24px;
+          margin: 24px 0 24px;
         }
         .page-title dnd-svg {
           width: 90px;
@@ -1684,13 +1675,7 @@ styleElement.innerHTML = `
           width: calc(100% / 5 - 34px);
         }
         .table--scroll {
-          max-height: calc(var(--vh, 1vh) * 100 - 345px);
           min-height: 404px;
-        }
-        .table--scroll[view="feats"],
-        .table--scroll[view="backgrounds"],
-        .table--scroll[view="races"] {
-          max-height: calc(var(--vh, 1vh) * 100 - 360px);
         }
         .table-wrap {
           max-width: 100%;
@@ -1806,7 +1791,7 @@ styleElement.innerHTML = `
         }
         .breadcrumbs__crumb {
           flex: 1;
-          max-width: calc(100vw - 205px);
+          //max-width: calc(100% - 205px);
           justify-content: center;
         }
       }
@@ -1955,8 +1940,6 @@ styleElement.innerHTML = `
         display: flex;
 
       }
-
-      @medi
     </style>
   </template
 `;

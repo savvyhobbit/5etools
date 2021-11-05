@@ -361,7 +361,31 @@ function renderTable(data, rootEl, columns) {
 		const rowEl = parseHTML(tempString, true);
 		rootEl.querySelector(".list").append(rowEl);
   } // End Item (row) Loop
+
+  return filters;
   
+  function deselectFilter(deselectProperty, deselectValue) {
+    return function(val) {
+      let selectionHash = readRouteSelection();
+      if (selectionHash.length) {
+        const itemProperty = resolveHash(data, selectionHash)[deselectProperty];
+        if (itemProperty === deselectValue) {
+          return deselNoHash();
+        } else {
+          return val === deselectValue && itemProperty !== val;
+        }
+      } else {
+        return deselNoHash();
+      }
+
+      function deselNoHash() {
+        return val === deselectValue;
+      }
+    };
+  }
+}
+
+function renderFilters(data, rootEl, columns, filters) {
   // Initialize search
 	const list = search({
 		valueNames: columns.map(col => col.id),
@@ -402,26 +426,6 @@ function renderTable(data, rootEl, columns) {
     filterBox.addEventListener(FilterBox.EVNT_VALCHANGE, handleFilterChange);
     handleFilterChange();
   }
-  
-  function deselectFilter(deselectProperty, deselectValue) {
-    return function(val) {
-      let selectionHash = readRouteSelection();
-      if (selectionHash.length) {
-        const itemProperty = resolveHash(data, selectionHash)[deselectProperty];
-        if (itemProperty === deselectValue) {
-          return deselNoHash();
-        } else {
-          return val === deselectValue && itemProperty !== val;
-        }
-      } else {
-        return deselNoHash();
-      }
-
-      function deselNoHash() {
-        return val === deselectValue;
-      }
-    };
-  }
 }
 
 /**
@@ -448,4 +452,4 @@ function resolveHash(data, hash) {
   return undefined;
 }
 
-export {renderTable, resolveHash};
+export {renderTable, renderFilters, resolveHash};

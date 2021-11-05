@@ -196,14 +196,12 @@ class DndLayout extends PolymerElement {
           min-height: calc(var(--vh, 1vh) * 100 - 64px);
         }
         .container {
-          padding-bottom: 45px;
         }
         @media(min-width: 921px) {
           .page-title {
             display: block;
           }
           .container {
-              padding-bottom: 125px;
           }
           .breadcrumbs__crumb[hidden] {
             display: flex !important;
@@ -216,9 +214,9 @@ class DndLayout extends PolymerElement {
           <div class="breadcrumbs mdc-theme--on-primary">
             <div class="container breadcrumbs__list">
               <div class="breadcrumbs__crumb" hidden$="[[_exists(selectedTitle)]]">
-                <a class='typography_mono' on-click="_resetHashClickHandler">[[header]]</a>
+                <a on-click="_resetHashClickHandler">[[header]]</a>
               </div>
-              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span class='typography_mono' >[[selectedTitle]]</span></div>
+              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span>[[selectedTitle]]</span></div>
             </div>
           </div>
           <div class="nav-button">

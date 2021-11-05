@@ -454,7 +454,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          padding-bottom: 50px;
         }
+
         .stats {
           display: flex;
           flex-direction: column;
@@ -774,6 +776,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         /* Rest Buttons */
         .rest-btn {
           margin-bottom: 16px;
+        }
+
+        @media(min-width: 420px) {
+          .wrap {
+            padding-bottom: 0;
+          }
         }
       </style>
 

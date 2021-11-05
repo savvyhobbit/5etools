@@ -113,6 +113,12 @@ class DndCharacterBuilderSpells extends PolymerElement {
       [4,3,3,3,3,2,2,1,1]
     ];
 
+    this.fullCasterSlotsDef = [];
+
+    this.halfCasterSlotsDef = [];
+    
+    this.thirdCasterSlotsDef = [];
+
     setTimeout(() => {
       const grid = this.$.grid;
 
@@ -207,8 +213,27 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
       for (const [ className, level ] of Object.entries(classLevels)) {
         const classRef = classRefs[className];
+        let casterSourceRef = classRef;
+        let isSubclass = false;
+        let tableGroups = classRef.classTableGroups;
+        let casterName = className;
 
-        if (classRef.casterProgression) {
+        // Checking the class first for a caster progression, then checking subclass
+        if (!casterSourceRef.casterProgression) {
+          const subclassLevel = getSubclassChoiceLevel(classRef);
+          if (level >= subclassLevel && character.subclasses && character.subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
+            const subclassDef = classRef.subclasses.find(i => character.subclasses[className].name === i.name);
+            if (subclassDef && subclassDef.casterProgression) {
+              // replacing caster parsing references with that from subclass 
+              casterSourceRef = subclassDef;
+              casterName = subclassDef.shortName;
+              tableGroups = subclassDef.subclassTableGroups;
+              isSubclass = true;
+            }
+          }
+        }
+
+        if (casterSourceRef.casterProgression) {
           this.noContentMessage = false;
           let spellsKnownOrPrepared;
           let spellsKnowPreparedType = 'known';
@@ -217,27 +242,27 @@ class DndCharacterBuilderSpells extends PolymerElement {
           let warlockSpellSlots;
 
           // Getting spells + cantrips known info from table, also getting warlock info from table
-          classRef.classTableGroups.forEach((classTableGroup) => {
-            if (classTableGroup.colLabels && classTableGroup.colLabels.length) {
-              const spellsColIndex = classTableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("spells known") > -1);
-              if (spellsColIndex > -1 && classTableGroup.rows && classTableGroup.rows.length > level - 1) {
-                spellsKnownOrPrepared = classTableGroup.rows[level - 1][spellsColIndex];
+          tableGroups.forEach((tableGroup) => {
+            if (tableGroup.colLabels && tableGroup.colLabels.length) {
+              const spellsColIndex = tableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("spells known") > -1);
+              if (spellsColIndex > -1 && tableGroup.rows && tableGroup.rows.length > level - 1) {
+                spellsKnownOrPrepared = tableGroup.rows[level - 1][spellsColIndex];
               }
-              const cantripsColIndex = classTableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("cantrips known") > -1);
-              if (cantripsColIndex > -1 && classTableGroup.rows && classTableGroup.rows.length > level - 1) {
-                cantripsKnown = classTableGroup.rows[level - 1][cantripsColIndex];
+              const cantripsColIndex = tableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("cantrips known") > -1);
+              if (cantripsColIndex > -1 && tableGroup.rows && tableGroup.rows.length > level - 1) {
+                cantripsKnown = tableGroup.rows[level - 1][cantripsColIndex];
               }
-              const warlockSpellLevelColIndex = classTableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("slot level") > -1);
-              if (warlockSpellLevelColIndex > -1 && classTableGroup.rows && classTableGroup.rows.length > level - 1) {
-                const warlockSpellLevelString = classTableGroup.rows[level - 1][warlockSpellLevelColIndex];
+              const warlockSpellLevelColIndex = tableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("slot level") > -1);
+              if (warlockSpellLevelColIndex > -1 && tableGroup.rows && tableGroup.rows.length > level - 1) {
+                const warlockSpellLevelString = tableGroup.rows[level - 1][warlockSpellLevelColIndex];
                 const warlockSpellLevelMatches = warlockSpellLevelString.match(/(\d+)/g);
                 if (warlockSpellLevelMatches && warlockSpellLevelMatches.length) {
                   warlockSpellLevel = parseInt(warlockSpellLevelMatches[0]);
                 }
               }
-              const warlockSpellSlotsColIndex = classTableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("spell slots") > -1);
-              if (warlockSpellSlotsColIndex > -1 && classTableGroup.rows && classTableGroup.rows.length > level - 1) {
-                warlockSpellSlots = classTableGroup.rows[level - 1][warlockSpellSlotsColIndex];
+              const warlockSpellSlotsColIndex = tableGroup.colLabels.findIndex((label) => label.toLowerCase().indexOf("spell slots") > -1);
+              if (warlockSpellSlotsColIndex > -1 && tableGroup.rows && tableGroup.rows.length > level - 1) {
+                warlockSpellSlots = tableGroup.rows[level - 1][warlockSpellSlotsColIndex];
               }
             }
           });
@@ -245,41 +270,53 @@ class DndCharacterBuilderSpells extends PolymerElement {
           // otherwise compute spells prepared
           if (spellsKnownOrPrepared === undefined) {
             spellsKnowPreparedType = 'prepared';
-            const levelMultiplier = classRef.casterProgression === 'full' ? 1 : 0.5;
-            const attributeModifier = await getAttributeModifier(classRef.spellcastingAbility);
+            // todo, check 1/3 caster progression
+            const levelMultiplier = casterSourceRef.casterProgression === 'full' ? 1 : casterSourceRef.casterProgression === '1/3' ? 0.33 : 0.5;
+            const attributeModifier = await getAttributeModifier(casterSourceRef.spellcastingAbility);
             spellsKnownOrPrepared = Math.floor(level * levelMultiplier) + attributeModifier;
             spellsKnownOrPrepared = spellsKnownOrPrepared < 1 ? 1 : spellsKnownOrPrepared;
           }
 
           /* SPELL LISTS */
           // Getting class spell list
-          let classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: className, source: classRef.source } } );
+          let classSpellList = [];
+          let subclassName;
+          
+          if (isSubclass) {
+            subclassName = casterSourceRef.shortName;
+          } else {
+            classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: casterSourceRef.name, source: casterSourceRef.source } } );
 
-          // Getting subclass spell list (always prepared)
-          const subclassLevel = getSubclassChoiceLevel(classRef);
-          if (level >= subclassLevel) {
-            const subclassName = character.subclasses && character.subclasses[className] ? character.subclasses[className].shortName : '';
-            if (subclassName) {
-              let subclassSpellList = await filterModel('spells', { key: 'classes.fromSubclass', value: { 'subclass.name': subclassName, 'class.name': className, 'class.source': classRef.source } } );
-              if (subclassName === 'Divine Soul') {
-                let divineAffinityChoice = getSubclassChoice(className.toLowerCase(), subclassName.toLowerCase(), level, 'Divine Magic Affinity', character);
-                if (divineAffinityChoice) {
-                  subclassSpellList = subclassSpellList.filter(spell => divineAffinityChoice.indexOf(spell.name) > -1);
-                } else {
-                  subclassSpellList = [];
-                }
-              }
-              subclassSpellList = subclassSpellList.map(spell => ({ ...spell, isSubclassSpell: true }));
-              classSpellList = [...new Set(classSpellList.concat(subclassSpellList))];
-            }
-            if (subclassName === 'Divine Soul') {
-              let divineSoulSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'cleric', source: 'phb' } } );
-              classSpellList = [...new Set(classSpellList.concat(divineSoulSpellList))];
+            const subclassLevel = getSubclassChoiceLevel(classRef);
+            if (level >= subclassLevel) {
+              subclassName = character.subclasses && character.subclasses[className] ? character.subclasses[className].shortName : '';
             }
           }
 
+          // Getting subclass spell list (always prepared)
+          if (subclassName) {
+            if (subclassName === 'Eldritch Knight') {
+              classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'wizard', source: 'phb' } } );
+            }
+            let subclassSpellList = await filterModel('spells', { key: 'classes.fromSubclass', value: { 'subclass.name': subclassName, 'class.name': className, 'class.source': classRef.source } } );
+            if (subclassName === 'Divine Soul') {
+              let divineAffinityChoice = getSubclassChoice(className.toLowerCase(), subclassName.toLowerCase(), level, 'Divine Magic Affinity', character);
+              if (divineAffinityChoice) {
+                subclassSpellList = subclassSpellList.filter(spell => divineAffinityChoice.indexOf(spell.name) > -1);
+              } else {
+                subclassSpellList = [];
+              }
+            }
+            subclassSpellList = subclassSpellList.map(spell => ({ ...spell, isSubclassSpell: true }));
+            classSpellList = [...new Set(classSpellList.concat(subclassSpellList))];
+          }
+          if (subclassName === 'Divine Soul') {
+            let divineSoulSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'cleric', source: 'phb' } } );
+            classSpellList = [...new Set(classSpellList.concat(divineSoulSpellList))];
+          }
+
           // Getting spell slots per level array
-          const spellTable = classRef.classTableGroups.find((tableGroup) => tableGroup.title === "Spell Slots per Spell Level");
+          const spellTable = tableGroups.find((tableGroup) => tableGroup.title === "Spell Slots per Spell Level");
           let spellSlotEntries;
           if (spellTable) {
             spellSlotEntries = spellTable.rows[level - 1].filter((spellSlots) => spellSlots !== 0);
@@ -301,8 +338,8 @@ class DndCharacterBuilderSpells extends PolymerElement {
           // Clearing prepared spells to filter out those that can no longer be prepared
           let oldSpellsPrepared = JSON.parse(JSON.stringify(character.preparedSpells));
           let oldCantripsPrepared = JSON.parse(JSON.stringify(character.preparedCantrips));
-          character.preparedSpells[className] = {};
-          character.preparedCantrips[className] = {};
+          character.preparedSpells[casterName] = {};
+          character.preparedCantrips[casterName] = {};
 
           // Generating hierarchical structure of classes > levels > spells > spellDef
           const spellSlots = spellSlotEntries.map((spellSlots, index) => {
@@ -318,21 +355,21 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 })
                 .map(spell => {
                   const isCantrip = index + hasCantrips === 0;
-                  const isPrepared = isCantrip ? isSpellPreparedFromObj(className, spell, oldCantripsPrepared) : isSpellPreparedFromObj(className, spell, oldSpellsPrepared);
+                  const isPrepared = isCantrip ? isSpellPreparedFromObj(casterName, spell, oldCantripsPrepared) : isSpellPreparedFromObj(casterName, spell, oldSpellsPrepared);
                   if (isPrepared) {
                     if (isCantrip) {
-                      character.preparedCantrips[className][spell.name] = {name: spell.name, source: spell.source};
+                      character.preparedCantrips[casterName][spell.name] = {name: spell.name, source: spell.source};
                     } else {
-                      character.preparedSpells[className][spell.name] = {name: spell.name, source: spell.source};
+                      character.preparedSpells[casterName][spell.name] = {name: spell.name, source: spell.source};
                     }
                   }
                   if (this.isEditMode || isPrepared || spell.isSubclassSpell) {
                     return {
                       id: 'spell',
                       name: spell.name, 
-                      children: [{...spell, hasChildren: false, id: 'spelldef', parentClass: className, parentLevel: index + hasCantrips} ],
+                      children: [{...spell, hasChildren: false, id: 'spelldef', parentClass: casterName, parentLevel: index + hasCantrips} ],
                       hasChildren: true,
-                      parentClass: className,
+                      parentClass: casterName,
                       parentLevel: index + hasCantrips,
                       isCantrip,
                       isSubclassSpell: spell.isSubclassSpell,
@@ -350,7 +387,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 currentSlots: getSpellSlots(index + hasCantrips),
                 children: spellList,
                 hasChildren: spellList.length > 0,
-                parentClass: className,
+                parentClass: casterName,
                 isWarlock: !!warlockSpellLevel
               };
               const isExpanded = this.$.grid.expandedItems.some(item => item.id === 'level' && item.level === levelObj.level && item.parentClass === levelObj.parentClass);
@@ -363,25 +400,25 @@ class DndCharacterBuilderSpells extends PolymerElement {
             }
           }).filter(slots => slots !== null);
 
-          spellsKnownObj[className] = {
-            current: character.preparedSpells && character.preparedSpells[className] ? Object.keys(character.preparedSpells[className]) : [],
+          spellsKnownObj[casterName] = {
+            current: character.preparedSpells && character.preparedSpells[casterName] ? Object.keys(character.preparedSpells[casterName]) : [],
             max: spellsKnownOrPrepared,
             type: spellsKnowPreparedType,
             maxCantrips: cantripsKnown,
-            currentCantrips: character.preparedCantrips && character.preparedCantrips[className] ? Object.keys(character.preparedCantrips[className]) : []
+            currentCantrips: character.preparedCantrips && character.preparedCantrips[casterName] ? Object.keys(character.preparedCantrips[casterName]) : []
           };
 
           if (spellSlots.length) {
             const classObj = {
               id: 'class',
-              className,
+              className: casterName,
               level,
               hasCantrips,
               children: spellSlots,
               spellsKnown: spellsKnownOrPrepared,
               hasChildren: spellSlots.length > 0,
               spellPrepType: spellsKnowPreparedType,
-              multiclassingLevels: Math.floor((classRef.casterProgression === 'full' ? 1 : 0.5) * level),
+              multiclassingLevels: isSubclass ? 0 : Math.floor((classRef.casterProgression === 'full' ? 1 : 0.5) * level),
               isWarlock: !!warlockSpellLevel,
               warlockSpellLevel,
               warlockSpellSlots
@@ -749,7 +786,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
   }
 
   _spellClassText(parentClass) {
-    return util_capitalizeAll(parentClass);
+    return parentClass;//util_capitalizeAll(parentClass);
   }
 
   _isEmpty(a) {
@@ -856,8 +893,16 @@ class DndCharacterBuilderSpells extends PolymerElement {
           user-select: none;
         }
 
+        .slot-checkboxes .label {
+          padding-left: 8px;
+        }
+
         vaadin-checkbox {
           pointer-events: none;
+        }
+
+        .spell-outer-wrap {
+          display: flex;
         }
 
         .spell-wrap {
@@ -935,8 +980,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           margin: 0 14px;
         }
 
-        .spell-button,
-        .class-icon {
+        .spell-button {
           background-color: var(--mdc-theme-text-disabled-on-background);
           color: var(--mdc-theme-on-secondary);
           border: none;
@@ -947,7 +991,18 @@ class DndCharacterBuilderSpells extends PolymerElement {
           justify-content: center;
           white-space: normal;
           font-size: 12px;
-          padding: 1px 4px;
+          padding: 4px 4px;
+        }
+        .class-icon {
+          border: none;
+          border-radius: 4px;
+          outline: none;
+          width: 60px;
+          display: inline-block;
+          justify-content: center;
+          white-space: normal;
+          font-size: 12px;
+          padding: 4px 4px;
         }
         .spell-button.edit-mode {
           cursor: pointer;
@@ -1113,14 +1168,14 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     <template is='dom-repeat' items='[[_countToArray(item.warlockSpellSlots)]]' as="thing">
                       <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSpellSlotChecked(item.currentWarlockSlots, index)]]"></vaadin-checkbox></span>
                     </template>
-                    <span>Pact</span>
+                    <span class="label">Pact</span>
                   </div>
 
                   <div class="slot-checkboxes" hidden$="[[_hideCheckboxes(item.spellSlots, isEditMode)]]" on-click="_toggleSpellSlot">
                     <template is='dom-repeat' items='[[_countToArray(item.spellSlots)]]' as="thing">
                       <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSpellSlotChecked(item.currentSlots, index)]]"></vaadin-checkbox></span>
                     </template>
-                    <span>Slots</span>
+                    <span class="label">Slots</span>
                   </div>
                 </div>
               </template>
@@ -1131,7 +1186,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     <span class="spell-inner-wrap">[[item.name]]<span class="spell-level" hidden>[[_spellLevel(item)]]</span><span class="rit-ind" title="Ritual" hidden$="[[!_isRitualSpell(item)]]"></span><span class="conc-ind" title="Concentration" hidden$="[[!_isConcentrationSpell(item)]]"></span></span>
                   </vaadin-grid-tree-toggle>
                   <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
-                  <span class="class-icon" hidden$="[[isEditMode]]">[[_spellClassText(item.parentClass)]]</span>
+                  <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>
                 </div>
               </template>
 

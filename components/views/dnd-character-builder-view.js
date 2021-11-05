@@ -5,11 +5,12 @@ import "../dnd-tabs.js";
 import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-switch";
-import { jqEmpty } from "../../js/utils.js";
+import { downloadObjectAsJson, jqEmpty } from "../../js/utils.js";
 import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
 import { rollEventChannel } from '../../util/roll.js';
+import { readRouteSelection, routeEventChannel, setRouteSelection } from '../../util/routing.js';
 
 class DndCharacterBuilderView extends PolymerElement {
   static get properties() {
@@ -33,6 +34,10 @@ class DndCharacterBuilderView extends PolymerElement {
       isEditMode: {
         type: Boolean,
         value: false
+      },
+      routeSelection: {
+        type: String,
+        observer: 'routeSelectionChange'
       }
     }
   }
@@ -67,6 +72,8 @@ class DndCharacterBuilderView extends PolymerElement {
     this.tabChangeHandler = (e) => {
       let newTabIndex = e.detail.index,
         newViewId = this.tabs[newTabIndex].viewId;
+
+      setRouteSelection(newViewId);
 
       this.indexForTabs = newTabIndex;
       if (newViewId !== undefined) {
@@ -151,6 +158,14 @@ class DndCharacterBuilderView extends PolymerElement {
       }, 3900);
     }
     rollEventChannel().addEventListener('roll', this.rollHandler);
+
+    this._selectionChangeHandler = (e) => {
+      if (e && e.detail && e.detail.selection) {
+        this.routeSelection = e.detail.selection;
+      }
+    };
+    routeEventChannel().addEventListener("selection-change", this._selectionChangeHandler);
+    this.routeSelection = readRouteSelection();
   }
 
   disconnectedCallback() {
@@ -174,8 +189,18 @@ class DndCharacterBuilderView extends PolymerElement {
       window.scrollTo(0, scrollHeight);
     });
   }
+  
+  routeSelectionChange() {
+    if (this.tabs && this.routeSelection) {
+      const newViewId = this.tabs.findIndex((tab) => tab.viewId === this.routeSelection);
+      if (newViewId > -1) {
+        this.initialSelectedTab = newViewId;
+      }
+    }
+  }
 
   async setStateFromCharacter(character) {
+    this.indexForTabs = 0;
     this.characterName = character.name;
     this.classLevel = getClassString(character);
     this.background = getFeatureString("backgrounds", character, true);
@@ -192,6 +217,14 @@ class DndCharacterBuilderView extends PolymerElement {
 
         if (classRef.casterProgression) {
           isNonCaster = false;
+        }
+
+        if (character.subclasses && character.subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
+          const subclassDef = classRef.subclasses.find(i => character.subclasses[className].name === i.name);
+
+          if (subclassDef.casterProgression) {
+            isNonCaster = false;
+          }
         }
       }
     }
@@ -233,6 +266,11 @@ class DndCharacterBuilderView extends PolymerElement {
 
   removeCharacter() {
     removeSelectedCharacter();
+  }
+
+  downloadCharacter() {
+    const char = getSelectedCharacter();
+    downloadObjectAsJson(char, `${char.name} - ${new Date().toLocaleString()}`);
   }
 
   toggleEditMode() {
@@ -404,6 +442,7 @@ class DndCharacterBuilderView extends PolymerElement {
             <dnd-character-select mini></dnd-character-select>
             <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
             <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
+            <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">download</button>
           </div>
 
           <div class="char-detail-edit">

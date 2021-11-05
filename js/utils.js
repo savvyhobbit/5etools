@@ -60,6 +60,10 @@ let debounce = (func, wait, immediate) => {
 	};
 };
 
+let timeout = (ms) => {
+	return new Promise(resolve => { setTimeout(resolve, ms) });
+}
+
 String.prototype.formatUnicorn = String.prototype.formatUnicorn || function () {
 	let str = this.toString();
 	if (arguments.length) {
@@ -1002,9 +1006,20 @@ function getItemTypeText(curItem) {
 	return getItemTypes(curItem).join(',');
 }
 
+function downloadObjectAsJson(exportObj, exportName) {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
 export {
   throttle,
   debounce,
+  timeout,
   utils_joinPhraseArray,
   uppercaseFirst,
   utils_combineText,
@@ -1080,4 +1095,5 @@ export {
 	entryTextSearch,
 	getItemTypes,
 	getItemTypeText,
+	downloadObjectAsJson,
 };

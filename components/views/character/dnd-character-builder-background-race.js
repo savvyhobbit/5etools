@@ -8,13 +8,9 @@ import {
   getBackgroundSkillProfOptions,
   getBackgroundSkillProfDefaults,
   setBackgroundSkillProficiencies,
-  getBackgroundReference,
-  getRaceReference,
 } from "../../../util/charBuilder";
-import { renderSelection as renderRace  } from "../../../js/races";
-import { renderSelection as renderBackground } from "../../../js/backgrounds";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { util_capitalizeAll, absInt, initCollapseToggles } from "../../../js/utils"; 
+import { util_capitalizeAll, absInt, initCollapseToggles, encodeForHash } from "../../../js/utils"; 
 
 class DndCharacterBuilderBackgroundRace extends PolymerElement {
   
@@ -122,16 +118,6 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         return attribute.toUpperCase() + ' ' + absInt(mod);
       }).join(', ');
 
-    const backgroundRef = await getBackgroundReference();
-    if (backgroundRef) {
-      renderBackground(backgroundRef, this.$.backgroundDetails)
-    }
-
-    const raceRef = await getRaceReference();
-    if (raceRef) {
-      renderRace(raceRef, this.$.raceDetails)
-    }
-
     initCollapseToggles(this.shadowRoot);
     
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
@@ -143,6 +129,24 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
   _raceAttributeAddCallback(attr) {
     setRaceAttributes(attr);
+  }
+
+  _getRaceLink(race) {
+    let linkData = [race.name];
+    if (race.source) {
+      linkData.push(race.source);
+    }
+    let dataLink = encodeForHash(linkData);
+    return race ? `#/races/${dataLink}` : '#/races'
+  }
+
+  _getBackgroundLink(bg) {
+    let linkData = [bg.name];
+    if (bg.source) {
+      linkData.push(bg.source);
+    }
+    let dataLink = encodeForHash(linkData);
+    return bg ? `#/backgrounds/${dataLink}` : '#/backgrounds'
   }
 
   _showEmpty(isEditMode, value) {
@@ -187,6 +191,16 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           margin-bottom: 10px;
         }
 
+        .heading {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .reference-link:hover {
+          color: var(--mdc-theme-secondary);
+        }
+
         .default-selection {
           font-size: 14px;
           margin-bottom: 0 !important;
@@ -199,6 +213,15 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         .missing-text {
           font-style: italic;
           font-size: 14px;
+        }
+
+        @media(min-width: 420px) {
+          .heading {
+            justify-content: flex-start;
+          }
+          .reference-link {
+            margin-left: 8px;
+          }
         }
 
         @media(min-width: 921px) {
@@ -238,51 +261,29 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
       <div class="col-wrap">
         <div class="row-wrap">
-          <h2>Race</h2>
+          <div class="heading">
+            <h2>Race</h2>
+            <a class="reference-link mdc-icon-button material-icons" href="[[_getRaceLink(selectedRace)]]">launch</a>
+          </div>
           <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
           <div class="missing-text" hidden$="[[_exists(raceAttributeOptions, defaultRaceAttribute)]]">Select Race to add Attribute Bonuses</div>
           <div hidden$="[[!_exists(raceAttributeOptions, defaultRaceAttribute)]]">Attribute Bonuses from Race:</div>
           <div hidden$="[[!_exists(defaultRaceAttribute)]]" class="default-selection">Default Attributes: <span>[[defaultRaceAttribute]]</span></div>
           <dnd-select-add hidden$="[[!_exists(raceAttributeOptions)]]" choices="[[raceAttributeChoices]]" placeholder="<Choose Attribute>" label="Chosen Attribute(s)"
             options="[[raceAttributeOptions]]" value="[[raceAttributeSelections]]" add-callback="[[_raceAttributeAddCallback]]"></dnd-select-add>
-
-          <div class="collapse collapse--left-arrow" hidden$="[[!raceName]]">
-            <div class="collapse-toggle">
-              <div class="mdc-list-item stat-name">Race Details</div>
-            </div>
-            <div class="collapse-wrapper">
-              <div class="details-container collapse-list">
-                <h3>[[raceName]]</h3>
-                <div class="details" id="raceDetails">
-                  [[raceDetails]]
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="row-wrap">
-          <h2>Background</h2>
+          <div class="heading">
+            <h2>Background</h2>
+            <a class="mdc-icon-button material-icons" href="[[_getBackgroundLink(selectedBackground)]]">launch</a>
+          </div>
           <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
           <div class="missing-text" hidden$="[[_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Select Background to add Skill Proficiencies</div>
           <div hidden$="[[!_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Skill Proficiencies from Background:</div>
           <div hidden$="[[!_exists(defaultBackgroundSkillProf)]]" class="default-selection">Default Skills: <span>[[defaultBackgroundSkillProf]]</span></div>
           <dnd-select-add hidden$="[[!_exists(backgroundSkillProfOptions)]]" choices="[[backgroundSkillProfChoices]]" placeholder="<Choose Skills>" label="Chosen Skill(s)" disabled$="[[!isEditMode]]"
             options="[[backgroundSkillProfOptions]]" value="[[backgroundSkillProfSelections]]" add-callback="[[_backgroundSkillAddCallback]]"></dnd-select-add>
-          
-          <div class="collapse collapse--left-arrow" hidden$="[[!backgroundName]]">
-            <div class="collapse-toggle">
-              <div class="mdc-list-item stat-name">Background Details</div>
-            </div>
-            <div class="collapse-wrapper">
-              <div class="details-container collapse-list">
-                <h3>[[backgroundName]]</h3>
-                <div class="details" id="backgroundDetails">
-                  [[backgroundDetails]]
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     `;

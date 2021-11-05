@@ -98,7 +98,7 @@ class FilterBox {
         $quickBtns.append($all);
         const $clear = parseHTML(`<div class="filter-button">Clear</div>`);
         $quickBtns.append($clear);
-        const $default = parseHTML(`<div class="filter-button">Default</div>`);
+        const $default = parseHTML(`<div ></div>`);
         $quickBtns.append($default);
         $line.append($quickBtns);
 
@@ -125,6 +125,10 @@ class FilterBox {
           e.preventDefault();
           self._reset(filter.header);
         });
+
+        setTimeout(() => {
+          $clear.click();
+        }, 200);
 
         return $line;
       }

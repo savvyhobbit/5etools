@@ -1,6 +1,7 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import "@polymer/polymer/lib/elements/dom-repeat.js";
 import "@vaadin/vaadin-checkbox";
+import "../../dnd-button";
 import { cloneDeep, findInPath } from "../../../js/utils";
 import {
   getCharacterChannel,
@@ -80,9 +81,10 @@ class DndCharacterBuilderRolls extends PolymerElement {
         rollHit(`${rollModel.name} (to hit)`, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked);
       }
       rollModel.damages.forEach((damage, index) => {
+        rollDice(`${rollModel.name} (${damage.type} damage)`, damage.roll);
+
         setTimeout(() =>{
-          rollDice(`${rollModel.name} (${damage.type} damage)`, damage.roll);
-        }, (index + 1) * 300);
+        }, (index + 1) * 500);
       });
     }
   }
@@ -185,6 +187,20 @@ class DndCharacterBuilderRolls extends PolymerElement {
         margin-bottom: 16px;
         background: var(--lumo-contrast-10pct);
         height: min-content;
+        width: 100%;
+      }
+      
+      .rolls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding-bottom: 60px;
+      }
+
+      @media(min-width: 500px) {
+        .roll {
+          width: calc(50% - 24px);
+        }
       }
 
       @media(min-width: 921px) {
@@ -198,6 +214,12 @@ class DndCharacterBuilderRolls extends PolymerElement {
         .rolls {
           display: flex;
           flex-wrap: wrap;
+        }
+      }
+
+      @media(min-width: 1321px) {
+        .roll {
+          width: calc(33.3% - 32px);
         }
       }
 

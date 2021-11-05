@@ -84,6 +84,28 @@ class DndCharacterPopup extends PolymerElement {
     }
   }
 
+  _charBuilderLink(view) {
+    let charBuilderView;
+
+    switch(view) {
+      case 'items':
+        charBuilderView = 'equipment';
+        break;
+
+      case 'backgrounds':
+      case 'races':
+        charBuilderView = 'background-race';
+        break;
+
+      case 'feats':
+        charBuilderView = 'class';
+        break;
+
+    }
+
+    return charBuilderView ? `#/character-builder/${charBuilderView}` : '#/character-builder'
+  }
+
   _exists(a) {
     return !!a;
   }
@@ -162,7 +184,7 @@ class DndCharacterPopup extends PolymerElement {
 
       <div class="wrapper">
         <div class="left-wrap">
-          <a class="open-char-button mdc-icon-button material-icons" href="#/character-builder">launch</a>
+          <a class="open-char-button mdc-icon-button material-icons" href="[[_charBuilderLink(view)]]">launch</a>
           <div class="char-select-wrap" smaller$="[[_exists(selection)]]">
             <dnd-character-select></dnd-character-select>
             <div class="class" hidden$="[[!_equal(view, 'classes')]]">[[classString(selectedCharacter)]]</div>

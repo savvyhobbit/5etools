@@ -12,7 +12,8 @@ class DndTabs extends PolymerElement {
       },
       initialSelectedIndex: {
         type: Number,
-        value: 0
+        value: 0,
+        observer: 'selectedIndexChange'
       }
     }
   }
@@ -26,8 +27,14 @@ class DndTabs extends PolymerElement {
       setTimeout(() => {
         this.tabBar = new MDCTabBar(this.$.tabs);
         this.$.tabs.addEventListener("MDCTabBar:activated", this.handleTabChange);
-        // this.tabBar.activateTab(this.initialSelectedIndex);
+        this.tabBar.activateTab(this.initialSelectedIndex);
       }, 0);
+    }
+  }
+
+  selectedIndexChange() {
+    if (this.tabBar && this.initialSelectedIndex) {
+      this.tabBar.activateTab(this.initialSelectedIndex);
     }
   }
 
