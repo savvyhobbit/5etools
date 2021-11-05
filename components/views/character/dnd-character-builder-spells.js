@@ -826,6 +826,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
           margin: 34px 14px 24px;
         }
 
+        vaadin-grid {
+          margin-bottom: 200px;
+        }
+
         vaadin-grid-tree-toggle { 
           width: 100%;
           cursor: pointer;

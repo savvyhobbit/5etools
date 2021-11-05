@@ -377,6 +377,13 @@ class DndCharacterBuilderView extends PolymerElement {
         #editBtn.edit-mode {
           background: var(--mdc-theme-secondary) !important;
         }
+        .download-mobile {
+          margin-bottom: 20px;
+          background: var(--mdc-theme-secondary) !important;
+        }
+        .not-edit-mode .download-mobile {
+          display: none;
+        }
 
         .tab-wrap {
           background-color: var(--mdc-theme-surface);
@@ -391,6 +398,9 @@ class DndCharacterBuilderView extends PolymerElement {
         .not-edit-mode .delete-char,
         .not-edit-mode .add-char,
         .not-edit-mode .download-char {
+          display: none;
+        }
+        .download-char {
           display: none;
         }
         .not-edit-mode .char-change vaadin-text-field {
@@ -433,6 +443,12 @@ class DndCharacterBuilderView extends PolymerElement {
           .thumb-menu {
             position: static;
           }
+          .download-char {
+            display: block;
+          }
+          .download-mobile {
+            display: none;
+          }
         }
       </style>
 
@@ -455,6 +471,7 @@ class DndCharacterBuilderView extends PolymerElement {
             <div class="thumb-menu">
               <div class="roll-container" id="rollContainer"></div>
               <button class="thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" id="editBtn" on-click="toggleEditMode">edit</button>
+              <button class="thumb-menu__btn download-mobile mdc-icon-button mdc-button--raised material-icons" on-click="downloadCharacter">file_download</button>
             </div>
           </div>
         </div>

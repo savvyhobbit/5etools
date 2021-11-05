@@ -347,6 +347,10 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           color: var(--mdc-theme-secondary);
         }
 
+        vaadin-grid {
+          margin-bottom: 200px;
+        }
+
         .heading {
           display: flex;
           flex-direction: row;
