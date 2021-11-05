@@ -176,6 +176,10 @@ const d=document.createElement("template");d.innerHTML="<custom-style>\n  <style
           margin: 34px 14px 24px;
         }
 
+        vaadin-grid {
+          margin-bottom: 200px;
+        }
+
         vaadin-grid-tree-toggle { 
           width: 100%;
           cursor: pointer;
