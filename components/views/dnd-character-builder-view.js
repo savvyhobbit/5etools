@@ -389,7 +389,8 @@ class DndCharacterBuilderView extends PolymerElement {
         }
 
         .not-edit-mode .delete-char,
-        .not-edit-mode .add-char {
+        .not-edit-mode .add-char,
+        .not-edit-mode .download-char {
           display: none;
         }
         .not-edit-mode .char-change vaadin-text-field {
@@ -442,7 +443,7 @@ class DndCharacterBuilderView extends PolymerElement {
             <dnd-character-select mini></dnd-character-select>
             <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
             <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
-            <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">download</button>
+            <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
           </div>
 
           <div class="char-detail-edit">
