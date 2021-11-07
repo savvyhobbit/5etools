@@ -391,6 +391,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           align-items: flex-start;
           padding: 10px 6px;
           min-height: 28px;
+          border-bottom: 1px solid var(--_lumo-grid-secondary-border-color);
         }
         .item-wrap__name-wrap {
           flex-basis: 100%;

@@ -244,6 +244,7 @@ class DndCharacterBuilderView extends PolymerElement {
       { label: "", icon: "favorite", viewId: "attributes" },
       { label: "", icon: "flash_on", viewId: "spells" },
       { label: "", icon: "local_grocery_store", viewId: "equipment" },
+      { label: "", icon: "receipt", viewId: "abilities" },
       { label: "", icon: "casino", viewId: "rolls" },
       { label: "", icon: "class", viewId: "class" },
       { label: "", icon: "face", viewId: "background-race" },
@@ -254,6 +255,7 @@ class DndCharacterBuilderView extends PolymerElement {
     return [
       { label: "", icon: "favorite", viewId: "attributes" },
       { label: "", icon: "local_grocery_store", viewId: "equipment" },
+      { label: "", icon: "receipt", viewId: "abilities" },
       { label: "", icon: "casino", viewId: "rolls" },
       { label: "", icon: "class", viewId: "class" },
       { label: "", icon: "face", viewId: "background-race" },

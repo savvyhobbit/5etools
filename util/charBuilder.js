@@ -1640,6 +1640,49 @@ async function getSpellRolls(character = selectedCharacter) {
   return spellRolls;
 }
 
+function setAbilityUsage(ability, index, character = selectedCharacter) {
+  if (character) {
+    if (!character.customAbilities) {
+      character.customAbilities = [];
+    }
+    if (typeof ability.slots !== 'number') {
+      ability.slots = parseInt(ability.slots, 10);
+      if (isNaN(ability.slots)) {
+        ability.slots = 0;
+      }
+    }
+    if (typeof ability.currentSlots !== 'number') {
+      ability.currentSlots = parseInt(ability.currentSlots, 10);
+      if (isNaN(ability.currentSlots)) {
+        ability.currentSlots = 0;
+      }
+    }
+    ability.useNumberField = ability.slots > 10;
+    if (ability.currentSlots > ability.slots) {
+      ability.currentSlots = ability.slots;
+    }
+    if (index !== undefined) {
+      if (character.customAbilities.length > index) {
+        character.customAbilities[index] = ability;
+      } else {
+        character.customAbilities.push(ability);
+      }
+    }
+    saveCharacter(character);
+  }
+}
+
+function removeAbilityUsage(index, character = selectedCharacter) {
+  if (character && character.customAbilities  && character.customAbilities.length > index) {
+    if (character.customAbilities.length === 0 && index === 0) {
+      character.customAbilities = [];
+    } else {
+      character.customAbilities.splice(index, 1);
+    }
+    saveCharacter(character);
+  }
+}
+
 export {
   addCharacter,
   addFeature,
@@ -1729,5 +1772,7 @@ export {
   removeCustomRoll,
   removeCustomRollDamage,
   getSpellRolls,
-  getItemRolls
+  getItemRolls,
+  setAbilityUsage,
+  removeAbilityUsage
 };

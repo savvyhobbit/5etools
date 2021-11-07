@@ -1,4 +1,5 @@
 import { PolymerElement, html } from "@polymer/polymer";
+import { encodeForHash } from "../js/utils";
 import { getSelectedCharacter, getASIForLevel, getCharacterChannel, setASI, getFeatReference, setFeatAttributeSelection } from "../util/charBuilder";
 
 class DndAsiSelect extends PolymerElement {
@@ -134,9 +135,18 @@ class DndAsiSelect extends PolymerElement {
     return checked ? 'Feat' : 'ASI';
   }
 
+  _getFeatLink(feat) {
+    let linkData = [feat.name];
+    if (feat.source) {
+      linkData.push(feat.source);
+    }
+    let dataLink = encodeForHash(linkData);
+    return dataLink ? `#/feats/${dataLink}` : '#/feats';
+  }
+
   static get template() {
     return html`
-      <style>
+      <style include="material-styles">
         :host {
           display: flex;
           flex-direction: column;
@@ -163,6 +173,15 @@ class DndAsiSelect extends PolymerElement {
           font-weight: 500;
           color: var(--mdc-theme-primary);
         }
+        .reference-link {
+          color: var(--lumo-body-text-color);
+        }
+        .reference-link:hover {
+          color: var(--mdc-theme-secondary);
+        }
+        .feat-pick-wrap {
+          display: flex;
+        }
       </style>
 
       <div class="disable-label" hidden$="[[!disabled]]">[[_disableLabel(checked)]]</div>
@@ -171,8 +190,9 @@ class DndAsiSelect extends PolymerElement {
         <dnd-select-add add-callback="[[_genASICallback('ability1')]]" value="[[selectedAbility1]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
         <dnd-select-add add-callback="[[_genASICallback('ability2')]]" value="[[selectedAbility2]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
       </div>
-      <div hidden$=[[!checked]]>
+      <div class="feat-pick-wrap" hidden$=[[!checked]]>
         <dnd-select-add add-callback="[[_genASICallback('feat')]]" model="feats" value="[[selectedFeat.name]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
+        <a class="reference-link mdc-icon-button material-icons" href="[[_getFeatLink(selectedFeat)]]">launch</a>
       </div>
       <div hidden$=[[!featHasAttributeChoice]]>
         <dnd-select-add test add-callback="[[_genFeatAbilityCallback()]]" value="[[featAttributeSelection]]" options="[[featAttributeOptions]]" placeholder="<Choose Attribute>" disabled$="[[disabled]]"></dnd-select-add>
