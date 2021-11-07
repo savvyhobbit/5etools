@@ -1,313 +1,374 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[10],{115:function(e,t,i){"use strict";i(113),i(110)},123:function(e,t,i){"use strict";i(45),i(39);var a=i(13);const n=a.a`<dom-module id="lumo-grid-tree-toggle" theme-for="vaadin-grid-tree-toggle">
-  <template>
-    <style>
-      :host {
-        --vaadin-grid-tree-toggle-level-offset: 2em;
-        align-items: center;
-        vertical-align: middle;
-        margin-left: calc(var(--lumo-space-s) * -1);
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      :host(:not([leaf])) {
-        cursor: default;
-      }
-
-      [part="toggle"] {
-        display: inline-block;
-        font-size: 1.5em;
-        line-height: 1;
-        width: 1em;
-        height: 1em;
-        text-align: center;
-        color: var(--lumo-contrast-50pct);
-        /* Increase touch target area */
-        padding: calc(1em / 3);
-        margin: calc(1em / -3);
-      }
-
-      :host(:not([dir="rtl"])) [part="toggle"] {
-        margin-right: 0;
-      }
-
-      @media (hover: hover) {
-        :host(:hover) [part="toggle"] {
-          color: var(--lumo-contrast-80pct);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[10],{115:function(e,t,i){"use strict";var s=i(7),a=i(68);i(77),i(112);class l extends s.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new a.a(this.$.button)},10)}_exists(e){return!!e}_styleStr(e,t){let i="";return e&&(i+=`background: ${e}; `),t&&(i+=`border: ${t}; `),i}_svgStyleStr(e,t){let i="";return e&&(i+=`fill: ${e}; `),t&&(i+=`stroke: ${t}; `),i}static get template(){return s.b`
+      <style include="material-styles">
+        .mdc-tab-scroller__scroll-area--scroll {
+          overflow-x: auto;
+          background-color: var(--mdc-theme-surface);
+          border: 1px solid var(--mdc-theme-text-divider-on-background);
+          border-bottom: none;
         }
-      }
+        :host {
+          display: inline;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+        .mdc-button {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        }
+        .mdc-button .mdc-button__icon {
+          margin-right: 0px;
+          margin-left: 8px;
+        }
+        .mdc-button [background] {
+          background: var(--lumo-contrast-10pct);
+        }
+        dnd-svg {
+          height: 20px;
+          width: 20px;
+          flex-shrink: 0;
+          flex-grow: 0;
+          padding-left: 8px;
+          fill: var(--mdc-theme-primary);
+          stroke: var(--mdc-theme-primary);
+        }
+        i {
+          flex-shrink: 0;
+          flex-grow: 0;
+        }
 
-      [part="toggle"]::before {
-        font-family: "lumo-icons";
-        display: inline-block;
-        height: 100%;
-      }
+        
+        :host(.btn-field__btn) dnd-svg {
+          padding-left: 0;
+        }
+        :host(.btn-field__btn) i {
+          margin-left: 0;
+        }
 
-      :host(:not([expanded])) [part="toggle"]::before {
-        content: var(--lumo-icons-angle-right);
-      }
+        :host(.icon-only) dnd-svg {
+          margin-left: -24px;
+          padding-left: 0;
+        }
+        :host(.icon-only) i {
+          margin-left: -18px;
+          padding-left: 0;
+        }
 
-      :host([expanded]) [part="toggle"]::before {
-        content: var(--lumo-icons-angle-right);
-        transform: rotate(90deg);
-      }
-
-      /* Experimental support for hierarchy connectors, using an unsupported selector */
-      :host([theme~="connectors"]) #level-spacer {
-        position: relative;
-        z-index: -1;
-        font-size: 1em;
-        height: 1.5em;
-      }
-
-      :host([theme~="connectors"]) #level-spacer::before {
-        display: block;
-        content: "";
-        margin-top: calc(var(--lumo-space-m) * -1);
-        height: calc(var(--lumo-space-m) + 3em);
-        background-image: linear-gradient(to right, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
-        background-size: var(--vaadin-grid-tree-toggle-level-offset) var(--vaadin-grid-tree-toggle-level-offset);
-        background-position: calc(var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px) 0;
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) {
-        margin-left: 0;
-        margin-right: calc(var(--lumo-space-s) * -1);
-      }
-
-      :host([dir="rtl"]) [part="toggle"] {
-        margin-left: 0;
-      }
-
-      :host([dir="rtl"][expanded]) [part="toggle"]::before {
-        transform: rotate(-90deg);
-      }
-
-      :host([dir="rtl"][theme~="connectors"]) #level-spacer::before {
-        background-image: linear-gradient(to left, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
-        background-position: calc(100% - (var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px)) 0;
-      }
-
-      :host([dir="rtl"]:not([expanded])) [part="toggle"]::before,
-      :host([dir="rtl"][expanded]) [part="toggle"]::before {
-        content: var(--lumo-icons-angle-left);
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(n.content);var r=i(7),o=(i(31),i(15)),s=i(19),d=i(43),l=i(9);
-/**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-const c=document.createElement("template");c.innerHTML="<custom-style>\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n</custom-style>",document.head.appendChild(c.content);class p extends(Object(s.a)(Object(d.a)(r.a))){static get template(){return a.a`
-    <style>
-      :host {
-        display: inline-flex;
-        align-items: baseline;
-
-        /* CSS API for :host */
-        --vaadin-grid-tree-toggle-level-offset: 1em;
-
-        /*
-          ShadyCSS seems to polyfill :dir(rtl) only for :host, thus using
-          a host custom CSS property for ltr/rtl toggle icon choice.
-         */
-        ---collapsed-icon: "\\e7be\\00a0";
-      }
-
-      :host(:dir(rtl)) {
-        ---collapsed-icon: "\\e7bd\\00a0";
-      }
-
-      :host([hidden]) {
-        display: none !important;
-      }
-
-      :host(:not([leaf])) {
-        cursor: pointer;
-      }
-
-      #level-spacer,
-      [part="toggle"] {
-        flex: none;
-      }
-
-      #level-spacer {
-        display: inline-block;
-        width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
-      }
-
-      [part="toggle"]::before {
-        font-family: "vaadin-grid-tree-icons";
-        line-height: 1em; /* make icon font metrics not affect baseline */
-      }
-
-      :host(:not([expanded])) [part="toggle"]::before {
-        content: var(---collapsed-icon);
-      }
-
-      :host([expanded]) [part="toggle"]::before {
-        content: "\\e7bc\\00a0"; /* icon glyph + single non-breaking space */
-      }
-
-      :host([leaf]) [part="toggle"] {
-        visibility: hidden;
-      }
-    </style>
-
-    <span id="level-spacer"></span>
-    <span part="toggle"></span>
-    <slot></slot>
-`}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style["---level"]=t,this._debouncerUpdateLevel=o.a.debounce(this._debouncerUpdateLevel,l.c,()=>this.updateStyles({"---level":t}))}}customElements.define(p.is,p)},135:function(e,t,i){"use strict";i.r(t);var a=i(7),n=i(17),r=i(111);i(115),i(121),i(123),i(129),i(122);class o extends a.a{static get properties(){return{inventory:{type:Array},isEditMode:{type:Boolean,value:!1},character:{type:Object},expandedItems:{type:Array},expandedIds:{type:Array}}}static get observers(){return["_expandedItemsChange(expandedItems.*)"]}_expandedItemsChange(){this.expandedItems&&this.expandedItems.length&&(this.expandedIds=this.expandedItems.filter(e=>!!e).map(e=>e.uniqueId),console.error(this.expandedIds),this.openedItemID&&(this.$.grid.closeItemDetails(this.openedItemID),this.openedItemID=void 0)),window.scrollTo(0,this.originalScrollHeight)}_recordScrollHeight(){this.originalScrollHeight=window.scrollY}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(n.F)()),Object(n.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.grid&&setTimeout(()=>{this.$.grid.notifyResize()},0)},Object(r.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(r.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(r.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready(),setTimeout(()=>{const e=this.$.grid;let t;e.rowDetailsRenderer=((e,t,i)=>{e.firstElementChild||(e.innerHTML='<div class="details" id="stats">\n            <dnd-character-builder-equipment-item-detail></dnd-character-builder-equipment-item-detail>\n          </div>');e.querySelector("dnd-character-builder-equipment-item-detail").item=i.item}).bind(this),e.addEventListener("grid-dragstart",(function(i){t=i.detail.draggedItems[0],e.dropMode="on-top-or-between"})),e.addEventListener("grid-dragend",(function(i){t=e.dropMode=null})),e.addEventListener("grid-drop",e=>{const i=e.detail.dropTargetItem;if(t&&t!==i){const a=Object(n.M)(t,i.uniqueId);if(t.container&&a)return;const r=t.storedItem.uniqueId;if(t.storedItem.uniqueId=this.character.itemCounter++,"on-top"===e.detail.dropLocation&&i.container)return void(i.storedItem&&i.storedItem.children&&(i.storedItem.children.push(t.storedItem),Object(n.ib)(i,void 0,!0),Object(n.S)(r)));if(this.inventory){const a=""+i.id;let o=parseInt(a.substring(a.lastIndexOf("_")),10);"below"===e.detail.dropLocation&&o++,i.parentItemREF?(i.parentItemREF.storedItem.children.splice(o,0,t.storedItem),Object(n.ib)(i.parentItemREF,void 0,!0)):Object(n.mb)(o,t.storedItem),Object(n.S)(r)}}}),e.dataProvider=((e,t)=>{const i=e.page*e.pageSize;let a=e.parentItem?e.parentItem.children:this.inventory;if(a&&a.length){t(a.slice(i,i+e.pageSize),a.length)}}).bind(this)},0)}async updateFromCharacter(e){if(e){this.character=e,this.inventory=await Object(n.B)(e),console.error("inventory:",this.inventory);const t=window.scrollY;if(this.$.grid.clearCache(),this.openedItemID){const e=Object(n.A)(this.inventory,this.openedItemID.uniqueId);e&&this.$.grid.openItemDetails(e)}if(this.expandedIds){const e=this.expandedIds.map(e=>Object(n.A)(this.inventory,e));this.expandedItems=e}window.scrollTo(0,t),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_expandDetails(e){let t=e.model.__data.item,i=this.$.grid.detailsOpenedItems.indexOf(t)>-1;const a=window.scrollY;for(let e of this.$.grid.detailsOpenedItems)this.$.grid.closeItemDetails(e);i?(this.$.grid.closeItemDetails(t),this.openedItemID=void 0):(this.$.grid.openItemDetails(t),this.openedItemID=t),this.$.grid.notifyResize(),window.scrollTo(0,a)}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){let t=e.model.__data.item&&void 0!==e.model.__data.item.uniqueId?e.model.__data.item.uniqueId:void 0;Object(n.S)(t)}async _setItemEquipped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isEquipped)Object(n.rb)(i);else if(await Object(n.e)(t))Object(n.rb)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isAttuned)Object(n.qb)(i);else if(await Object(n.d)(t))Object(n.qb)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_quantityChange(e){console.log(e);const t=this.$.grid.getEventContext(e).item;let i=parseInt(t.quantity,10);isNaN(i)&&(i=0),t.storedItem.quantity=i,Object(n.ib)(t)}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}_noRarity(e){return!e||"None"===e}_toggleTheme(e){return e.children&&0===e.children.length?"no-children":""}static get template(){return a.b`
-      <style include="material-styles"></style>
+        :host(.link) .mdc-button__label {
+          text-transform: none;
+          color: var(--lumo-body-text-color);
+          letter-spacing: normal;
+        }
+        :host(.link) i {
+          color: var(--lumo-body-text-color);
+        }
+        :host(.link) button:hover::before {
+          background: none;
+        }
+        :host(.link) button:hover i,
+        :host(.link) button:hover .mdc-button__label {
+          color: var(--mdc-theme-secondary);
+        }
+      </style>
+      <button id="button" class="mdc-button" style$="[[_styleStr(background, border)]]">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">[[label]]</span>
+        <slot name="label"></slot>
+        <template is="dom-if" if="[[_exists(icon)]]">
+          <i class="material-icons mdc-button__icon" aria-hidden="true">[[icon]]</i>
+        </template>
+        <template is="dom-if" if="[[_exists(svg)]]">
+          <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
+        </template>
+      </button>
+    `}}customElements.define("dnd-button",l)},120:function(e,t,i){"use strict";var s=i(7),a=i(17),l=i(1),n=(i(81),i(32));class o extends s.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(l.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(n.b)(this.model)),this.$.select.renderer=(e,t)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",e=>{t.opened=!0;let i=null!==e.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!i&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(l.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],i=document.createElement("vaadin-item");t.name?(i.textContent=t.name,i.setAttribute("value",e)):(i.textContent=Object(l.util_capitalizeAll)(t),i.setAttribute("value",e)),this.listBox.appendChild(i)}e.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(a.O)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t){if(e)return t?`${e} (${t})`:e}static get template(){return s.b`
       <style>
         :host {
-          display: block;
-          padding: 14px;
+          display: inline-block;
+        }
+        [slot="prefix"] {
+          width: calc(100% - 46px);
+          padding: 12px;
+          line-height: 1.4;
+        }
+        vaadin-select {
+          width: 100%;
+        }
+        .prefix {
+          white-space: normal;
+          color: var(--lumo-body-text-color);
+        }
+      </style>
+      <vaadin-select test$="[[test]]" theme="dark" add id="select" label="[[_label(label, choices)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+        <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
+          <span class="prefix">[[multiValue]]</span>
+        </div>
+      </vaadin-select>
+    `}}customElements.define("dnd-select-add",o)},136:function(e,t,i){"use strict";i.r(t);var s=i(7),a=i(27),l=i(17),n=(i(121),i(120),i(127),i(115),i(1));class o extends s.a{static get properties(){return{levelIndex:{type:Number},checked:{type:Boolean,value:!1},selectedFeat:{type:Object},selectedAbility1:{type:String,value:""},selectedAbility2:{type:String,value:""},featHasAttributeChoice:{type:Boolean,value:!1},featAttributeSelection:{type:String,value:""},featAttributeOptions:{type:Array,value:[]},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}constructor(){super(),this.attributeOptions=["STR","DEX","CON","INT","WIS","CHA"]}connectedCallback(){super.connectedCallback(),this.switchChangeHandler=e=>{this.checked=e.detail.checked,this._genASICallback()()},this.addEventListener("switch-change",this.switchChangeHandler),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.F)()),Object(l.l)().addEventListener("character-selected",this.characterChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("switch-change",this.switchChangeHandler),Object(l.l)().removeEventListener("character-selected",this.characterChangeHandler)}async updateFromCharacter(e){const{asi:t,index:i}=await Object(l.f)(this.levelIndex,e);if(this.featHasAttributeChoice=!1,t){if(this.selectedFeat=t.feat,this.selectedAbility1=t.ability1,this.selectedAbility2=t.ability2,this.checked=t.isFeat,t.isFeat&&t.feat&&t.feat.name&&t.feat.source){const i=`${t.feat.name}_${t.feat.source}`,s=await Object(l.v)(i);s.ability&&s.ability.length&&s.ability[0].choose&&(this.featHasAttributeChoice=!0,this.featAttributeOptions=s.ability[0].choose.from.map(e=>e.toUpperCase()),this.featAttributeSelection=e.featAttributeSelections&&e.featAttributeSelections[i]?e.featAttributeSelections[i]:"")}}else this.selectedFeat={name:"",source:""},this.selectedAbility1="",this.selectedAbility2="",this.checked=!1;this.asiIndex=i}_genASICallback(e){return t=>{Object(l.Y)({feat:"feat"===e?{name:t.name,source:t.source}:this.selectedFeat,ability1:"ability1"===e?t:this.selectedAbility1,ability2:"ability2"===e?t:this.selectedAbility2,isFeat:this.checked},this.asiIndex)}}_genFeatAbilityCallback(){return e=>{if(this.selectedFeat&&this.selectedFeat.name&&this.selectedFeat.source){const t=`${this.selectedFeat.name}_${this.selectedFeat.source}`;Object(l.ib)(t,e)}}}_disableLabel(e){return e?"Feat":"ASI"}_getFeatLink(e){let t=[e.name];e.source&&t.push(e.source);let i=Object(n.encodeForHash)(t);return i?"#/feats/"+i:"#/feats"}static get template(){return s.b`
+      <style include="material-styles">
+        :host {
+          display: flex;
+          flex-direction: column;
+          max-width: 192px;
         }
         [hidden] {
           display: none !important;
         }
-        a {
-          color: var(--mdc-theme-secondary);
-        }
-
-        vaadin-grid {
-          margin-bottom: 200px;
-        }
-
-        .heading {
+        .abilities {
           display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+        .abilities dnd-select-add {
+          width: calc(50% - 8px);
+        }
+        dnd-select-add + dnd-select-add {
+          margin-left: 16px;
+        }
+        dnd-select-add {
+          display: block;
+        }
+        .disable-label {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--mdc-theme-primary);
+        }
+        .reference-link {
+          color: var(--lumo-body-text-color);
         }
         .reference-link:hover {
           color: var(--mdc-theme-secondary);
         }
+        .feat-pick-wrap {
+          display: flex;
+        }
+      </style>
 
-        .col-wrap {
-          display: flex; 
+      <div class="disable-label" hidden$="[[!disabled]]">[[_disableLabel(checked)]]</div>
+      <dnd-switch initial-value=[[checked]] label="ASI" secondary-label="Feat" disabled$="[[disabled]]" hidden$="[[disabled]]"></dnd-switch>
+      <div class="abilities" hidden$=[[checked]]>
+        <dnd-select-add add-callback="[[_genASICallback('ability1')]]" value="[[selectedAbility1]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
+        <dnd-select-add add-callback="[[_genASICallback('ability2')]]" value="[[selectedAbility2]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
+      </div>
+      <div class="feat-pick-wrap" hidden$=[[!checked]]>
+        <dnd-select-add add-callback="[[_genASICallback('feat')]]" model="feats" value="[[selectedFeat.name]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
+        <a class="reference-link mdc-icon-button material-icons" href="[[_getFeatLink(selectedFeat)]]">launch</a>
+      </div>
+      <div hidden$=[[!featHasAttributeChoice]]>
+        <dnd-select-add test add-callback="[[_genFeatAbilityCallback()]]" value="[[featAttributeSelection]]" options="[[featAttributeOptions]]" placeholder="<Choose Attribute>" disabled$="[[disabled]]"></dnd-select-add>
+      </div>
+    `}}customElements.define("dnd-asi-select",o);i(112);const c={"artificer(ua)":{class:{2:{name:"Wonderous Invention",count:1,options:["{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},5:{name:"Wonderous Invention",count:1,options:["{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},10:{name:"Wonderous Invention",count:1,options:["{@item Bag of beans}","{@item chime of opening}","{@item decanter of endless water}","{@item eyes of minute seeing}","{@item folding boat}","{@item Heward's handy haversack}","{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},15:{name:"Wonderous Invention",count:1,options:["{@item Boots of striding and springing}","{@item bracers of archery}","{@item brooch of shielding}","{@item broom of flying}","{@item hat of disguise}","{@item slippers of spider climbing}","{@item Bag of beans}","{@item chime of opening}","{@item decanter of endless water}","{@item eyes of minute seeing}","{@item folding boat}","{@item Heward's handy haversack}","{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]},20:{name:"Wonderous Invention",count:1,options:["{@item Eyes of the eagle}","{@item gem of brightness}","{@item gloves of missile snaring}","{@item gloves of swimming and climbing}","{@item ring of jumping}","{@item ring of mind shielding}","{@item wings of flying}","{@item Boots of striding and springing}","{@item bracers of archery}","{@item brooch of shielding}","{@item broom of flying}","{@item hat of disguise}","{@item slippers of spider climbing}","{@item Bag of beans}","{@item chime of opening}","{@item decanter of endless water}","{@item eyes of minute seeing}","{@item folding boat}","{@item Heward's handy haversack}","{@item Alchemy jug}","{@item helm of comprehending languages}","{@item lantern of revealing}","{@item ring of swimming}","{@item robe of useful items}","{@item rope of climbing}","{@item wand of magic detection}","{@item wand of secrets}","{@item Bag of holding}","{@item cap of water breathing}","{@item driftglobe}","{@item goggles of night}","{@item sending stones}"]}}},"artificer (revisited)":{class:{2:{name:"Infuse Item",count:3,type:"featureType=ai|source=UAArtificerRevisited"},4:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},7:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},11:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},15:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"},19:{name:"Infuse Item",count:1,type:"featureType=ai|source=UAArtificerRevisited"}}},artificer:{class:{2:{name:"Infuse Item",count:4,type:"featureType=ai|source=ERLW"},6:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"},10:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"},14:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"},18:{name:"Infuse Item",count:2,type:"featureType=ai|source=ERLW"}}},barbarian:{subclasses:{"Path of the Totem Warrior":{3:{name:"Totem Spirit",count:1,options:["Bear","Eagle","Elk","Wolf","Tiger"]},6:{name:"Aspect of the Beast",count:1,options:["Bear","Eagle","Elk",{name:"Tiger",options:["athletics","acrobatics","stealth","survival"],choose:2,type:"proficiency"},"Wolf"]},14:{name:"Totemic Attunement",count:1,options:["Bear","Eagle","Elk","Tiger","Wolf"]}}}},bard:{subclasses:{"College of Swords":{3:{name:"Fighting Style",count:1,type:"fs:b"}}}},paladin:{class:{2:{name:"Fighting Style",type:"fs:p",count:1}}},sorcerer:{class:{3:{name:"Metamagic",type:"mm",count:2},10:{name:"Metamagic",type:"mm",count:1},17:{name:"Metamagic",type:"mm",count:1}},subclasses:{"Divine Soul":{1:[{name:"Divine Magic Affinity",options:["Good (Cure Wounds)","Evil (Inflict Wounds)","Law (Bless)","Chaos (Bane)","Neutrality (Protection From Good and Evil"],count:1}]}}}};var d=i(71),r=(i(77),i(79),i(111)),m=i(32);class h extends(Object(a.a)(s.a)){static get properties(){return{levels:{type:Array,value:[]},classes:{type:Object},subclasses:{type:Object,value:void 0},noContentMessage:{type:Boolean,value:!1},isEditMode:{type:Boolean,value:!1}}}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.F)()),Object(l.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.classGrid.notifyResize()},Object(r.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(r.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(l.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(r.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready();const e=new d.a;setTimeout(()=>{const t=this.$.classGrid;let i;t.rowDetailsRenderer=((t,i,s)=>{let a=[],l=this._getClassLevelFeatures(this.levels,s.index,this.classes,this.subclasses);if(l&&l.length){t.firstElementChild||(t.innerHTML='<div class="details" id="stats"></div>');for(let t of l)e.recursiveEntryRender(t,a,0,void 0,!0);const i=t.querySelector(".details");Object(n.jqEmpty)(i),i.innerHTML=a.join("")}}).bind(this),t.addEventListener("grid-dragstart",(function(e){i=e.detail.draggedItems[0],t.dropMode="between"})),t.addEventListener("grid-dragend",(function(e){i=t.dropMode=null})),t.addEventListener("grid-drop",(function(e){const s=e.detail.dropTargetItem;if(i&&i!==s){const a=t.items.filter((function(e){return e!==i})),n=a.indexOf(s)+("below"===e.detail.dropLocation?1:0);a.splice(n,0,i),Object(l.cb)(a)}}))},0)}async updateFromCharacter(e){if(e&&e.levels&&e.levels.length){this.noContentMessage=!1,this.character=e,this.classes=await Object(l.r)(e),this.subclasses=JSON.parse(JSON.stringify(e.subclasses)),this.classChoices=await this._findLevelChoices(e,this.classes),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0})),this.levels=e.levels;const t=[];for(let i=0;i<e.levels.length;i++)t.push(await Object(l.x)(i));this.hitDiceMaxes=t,this.$.classGrid.clearCache()}else this.noContentMessage=!0,this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0})),this.$.classGrid.clearCache()}_getClassLevelFeatures(e,t,i,s){if(i&&e[t]&&s){const a=e[t].name,l=i[a];if(l){const i=l.classFeatures;let o=-1,c=-1;if(e.length>=t+1){for(let s=0;s<=t;s++)if(e[s].name===a){o++;const e=i[o];if(e){e.find(e=>e.gainSubclassFeature)&&c++}}const d=i[o];if(d){if(d.some(e=>e.gainSubclassFeature)&&s&&s[a]&&l.subclasses&&l.subclasses.length){const e=l.subclasses.find(e=>s[a].name===e.name);if(e.subclassFeatures[c])return e.subclassFeatures[c].map(e=>(e.isSubclass=!0,e)),[...d].concat(e.subclassFeatures[c])}return d.filter(e=>{const t=Object(n.getEntryName)(e);return"Proficiency Versatility"!==t&&"Martial Versatility"!==t})}}}}}_getClassLevelFeatureStringArray(e,t,i,s){if(e&&void 0!==t&&i&&s){const a=this._getClassLevelFeatures(e,t,i,s);if(a)return a.map(e=>({name:Object(n.getEntryName)(e),isSubclass:e.isSubclass}))}}_level(e){return e+1}_deleteLevel(e){let t=e.model.__data.index;this.levels.splice(t,1),Object(l.cb)(this.levels)}_expandDetails(e){let t=e.model.__data.item,i=this.$.classGrid.detailsOpenedItems.indexOf(t)>-1;for(let e of this.$.classGrid.detailsOpenedItems)this.$.classGrid.closeItemDetails(e);i?this.$.classGrid.closeItemDetails(t):this.$.classGrid.openItemDetails(t),this.$.classGrid.notifyResize()}async _findLevelChoices(e,t){const i=[];if(e&&e.levels&&e.levels.length)for(let s=0;s<e.levels.length;s++)i.push(await this._findChoices(e,t,s));return i}async _findChoices(e,t,i){if(t&&e.levels&&e.levels.length&&e.levels.length>i){let s=e.levels,a=e.subclasses,n=s[i].name,o=t[n];if(o){let d=[],r=0,h=Object(l.J)(o);for(let e=0;e<=i;e++){s[e].name===n&&r++}void 0!==h&&r===h&&d.push({id:"subclass",from:o.subclasses,selections:e.subclasses[n]});let p=this._getClassLevelFeatures(s,i,t,a);if(p&&p.length&&p.find(e=>"Ability Score Improvement"===e.name)&&d.push({id:"asi"}),0===i){const t=o.startingProficiencies.skills[0].choose;d.push({id:"profs",count:t.count,from:t.from,selections:e.classSkillProficiencies})}if(r){const e=c[n.toLowerCase()];if(e&&e.class&&e.class[r]){const t=[].concat(e.class[r]);for(const e of t)if(e.options)d.push({id:"classFeature",name:e.name,from:e.options,count:e.count>1?e.count:void 0,class:n.toLowerCase(),feature:e.name,level:r,selections:Object(l.p)(n.toLowerCase(),r,e.name)});else if(e.type){const t=await Object(m.a)("features",e.type);d.push({id:"classFeature",name:e.name,from:t,count:e.count>1?e.count:void 0,class:n.toLowerCase(),feature:e.name,level:r,selections:Object(l.p)(n.toLowerCase(),r,e.name)})}}if(e&&e.subclasses&&a[n]&&e.subclasses[a[n].name]&&e.subclasses[a[n].name][r]){const t=[].concat(e.subclasses[a[n].name][r]);for(const e of t)if(e.options)d.push({id:"subclassFeature",name:e.name,from:e.options,count:e.count>1?e.count:void 0,class:n.toLowerCase(),subclass:a[n],feature:e.name,level:r,selections:Object(l.I)(n.toLowerCase(),a[n].name.toLowerCase(),r,e.name)});else if(e.type){const t=await Object(m.a)("features",e.type);d.push({id:"subclassFeature",name:e.name,from:t,count:e.count>1?e.count:void 0,class:n.toLowerCase(),subclass:a[n],feature:e.name,level:r,selections:Object(l.I)(n.toLowerCase(),a[n].name.toLowerCase(),r,e.name)})}}}return d}}return[]}_equal(e,t){return e===t}_genSubclassCallback(e){return t=>{Object(l.P)(void 0,e.name,t)}}_genSubclassOptions(e){return this.classes[e.name].subclasses}_getSubclassSelection(e,t){return t[e.name]}_classFeatureOptionAddCallback(e,t,i){return s=>{let a;a=Array.isArray(s)?s.map(e=>e.name?{name:e.name,source:e.source}:e):s.name?{name:s.name,source:s.source}:s,Object(l.bb)(e,t,i,a)}}_subclassFeatureOptionAddCallback(e,t,i,s){return a=>{let n;n=Array.isArray(a)?a.map(e=>e.name?{...e}:e):a.name?{...a}:a,Object(l.nb)(e,t.name.toLowerCase(),i,s,n)}}_indexOfLevel(e,t){return t.indexOf(e)}_isMobile(){return window.innerWidth<921}_objArray(e){return Object.values(e)}_atIndex(e,t){return e?e[t]:null}_svgFromClass(e){return e?e.replace(/(\s|\(|\))/g,""):""}_addClassLevel(e){Object(l.O)(void 0,e.model.item,"classes")}_classSkillAddCallback(e){Object(l.db)(e)}_levelHp(e,t){return Object(l.y)(e,t+1)}_editModeClass(e){return e?"edit-mode":"not-edit-mode"}_toggleHpField(e){const t=e.target.closest(".btn-field"),i=t.classList.contains("btn-field--open"),s=t.querySelector("vaadin-integer-field"),a=parseInt(t.dataset.level)+1,n=t.dataset.className,o=parseInt(t.dataset.max);if(i){const e=parseInt(s.value);e&&e<=o&&e>0?(Object(l.jb)(n,a,e),s.value="",t.classList.toggle("btn-field--open")):(t.classList.add("btn-field--error"),setTimeout(()=>{t.classList.remove("btn-field--error")},500))}else t.classList.toggle("btn-field--open"),s.focus()}_levelHitDice(e,t){if(t&&void 0!==e&&t[e])return t[e]}static get template(){return s.b`
+      <style include="material-styles my-styles">
+        .something {
+          display: block;
+        }
+        #stats {
+          margin-top: 16px;
+          line-height: 1.9;
+        }
+        .details {
+          padding: 0 24px;
+        }
+
+        #classGrid {
+          margin-bottom: 144px;
+        }
+
+        .not-edit-mode .heading-wrap {
+          display: none;
+        }
+
+        .heading-wrap {
+          display: flex;
           justify-content: space-between;
+          margin: 22px 14px 5px;
+          align-items: center;
+        }
+
+        .not-edit-mode .button-wrap {
+          display: none;
+        }
+
+        .button-wrap {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          padding: 10px;
+        }
+        .button-wrap > * {
+          margin: 4px;
+        }
+
+        .row {
+          position: relative;
+        }
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        .open-details {
+          cursor: pointer;
+          display: flex;
+          align-items: flex-start;
           flex-wrap: wrap;
         }
-
-        .row-wrap {
-          width: 100%;
-        }
-        .row-wrap:not(:last-child) {
-          margin-bottom: 24px;
-        }
-
-        .row-wrap > *:not(h2):not(:last-child) {
-          margin-bottom: 10px;
-        }
-
-        .no-content {
-          font-size: 14px;
-          font-style: italic;
-        }
-
-        .item-wrap {
-          display: flex;
-          flex-wrap: nowrap;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: flex-start;
-          padding: 10px 6px;
-          min-height: 28px;
-        }
-        .item-wrap__name-wrap {
-          flex-basis: 100%;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          cursor: pointer;
-        }
-        .item-wrap__name-wrap:hover {
+        .open-details:hover {
           color: var(--mdc-theme-secondary);
         }
-        .item-wrap__name {
+
+        .level-col {
+          width: calc(100% - 70px);
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          flex-shrink: 0;
+          padding: 6px 0;
+        }
+        .level-col__level {
+          margin-right: 10px;
+          font-size: 20px;
           font-weight: bold;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          position: relative;
         }
-        .item-wrap__edited,
-        .item-wrap__from {
-          background-color: var(--mdc-theme-text-disabled-on-background);
-          color: var(--mdc-theme-on-secondary);
-          border: none;
-          border-radius: 4px;
-          outline: none;
+        .level-col__image-wrap {
+          width: 30px;
+          position: relative;
+          height: 21px;
           display: inline-block;
-          justify-content: center;
-          white-space: normal;
-          font-size: 10px;
-          padding: 1px 4px;
-          margin-right: 4px;
-          font-style: italic;
         }
-        .item-wrap__edited {
+        .level-col__image {
+          width: 30px;
+          height: 30px;
+          display: block;
+          position: absolute;
           top: -1px;
-          position: relative;
-          font-weight: normal;
         }
-        .item-wrap__type {
-          font-style: italic;
-          font-size: 12px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          position: relative;
+        .level-col__class {
+          font-size: 20px;
+          font-weight: bold;
         }
-        .item-wrap__type--fromBackground {
-          padding-right: 38px;
+
+        .features-col {
+          white-space: normal;
+          width: calc(100% - 70px);
+          margin: 0;
+          padding: 8px 0;
+          font-size: 15px;
         }
-        .item-wrap__type--fromClass {
-          padding-right: 50px;
+        .class-feature:not(:last-of-type)::after {
+          content: ', ';
         }
-        .item-wrap__close {
-          font-size: 14px;
-          margin-top: 6px;
-          cursor: pointer;
+        .class-feature[subclass] {
+          color: var(--mdc-theme-secondary);
         }
-        .item-wrap__checkboxes {
+
+        .choices-col {
           display: flex;
-          flex-direction: column;
+          float: left;
+          flex-wrap: wrap;
+          width: 100%;
+        }
+        .choices-col__choice {
+          margin-right: 16px;
+          width: 100%;
+        }
+        .choices-col__choice dnd-select-add {
+          min-width: 250px;
+          width: calc(50% - 20px);
+        }
+        .choices-col__subclass-choice {
+          display: block;
+        }
+
+        .delete-col {
+          position: absolute;
+          right: -8px;
+          bottom: 0;
+        }
+        .delete-btn {
+          height: 24px;
+          width: 24px;
+          font-size: 18px;
+          padding: 0;
+        }
+        .delete-btn:hover {
+          color: var(--mdc-theme-secondary);
+        }
+        .not-edit-mode .delete-btn {
+          display: none;
+        }
+        
+
+        .btn-field {
+          display: inline-flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          margin-bottom: 16px;
           width: 80px;
-          flex-grow: 0;
-          flex-shrink: 0;
-          margin-left: auto;
+          height: 36px;
+          background: var(--lumo-contrast-10pct);
+          border-radius: 4px;
         }
-        .item-wrap__checkboxes > span {
-          cursor: pointer;
+        .btn-field--error {
+          background: var(--lumo-error-color-50pct);
         }
-        .item-wrap__quantity {
-          display: flex;
-          flex-direction: column;
-          width: 80px;
-          flex-grow: 0;
-          flex-shrink: 0;
-          margin-left: auto;
+        .btn-field__btn {
+          display: block;
+          width: 100%;
         }
-        vaadin-integer-field {
-          margin: -13px 0 8px;
+        .btn-field__input {
+          display: none;
         }
-        vaadin-checkbox {
-          pointer-events: none;
-          font-size: 13px;
+        .btn-field--open .btn-field__btn {
+          width: 40px;
         }
-        vaadin-checkbox.flash-error {
-          color: var(--mdc-theme-error);
-          transition: color 0.2s ease-out;
-          --lumo-contrast-20pct: var(--mdc-theme-error);
+        .btn-field__btn-label-text {
+          position: relative;
+          left: 4px;
+          bottom: 2px;
         }
-        vaadin-checkbox.transition-bg {
-          transition: color 0.2s ease-in;
+        .btn-field--open .btn-field__btn-label-text {
+          display: none;
+        }
+        .btn-field--open .btn-field__input {
+          display: block;
+          width: 40px;
+          margin-top: -40px;
+        }
+        .btn-field--open .btn-field__btn-label {
+          margin-left: -20px;
+        }
+        .btn-field vaadin-integer-field {
+          --lumo-contrast-10pct: transparent;
+        }
+
+
+        .hp-col {
+          position: absolute;
+          right: 0;
+          top: 8px;
+        }
+        .not-edit-mode .hp-col {
+          right: 0px;
+        }
+        .hp-col .material-icons {
+          font-size: 16px;
+          position: relative;
+          margin-right: 8px;
+          top: 3px;
+        }
+        .hp-col__non-edit {
+          display: block;
+        }
+        .edit-mode .hp-col__non-edit {
+          display: none;
+        }
+        .hp-col__edit {
+          display: none;
+        }
+        .edit-mode .hp-col__edit {
+          display: inline-flex;
         }
 
         .details {
@@ -316,124 +377,105 @@ const c=document.createElement("template");c.innerHTML="<custom-style>\n  <style
           margin: 0 auto 13px !important;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
-          padding: 14px;
-        }
-        #stats {
-          margin-top: 24px;
-          font-size: 12px;
-        }
-        #stats p {
-          margin-top: 4px;
-          margin-bottom: 16px;
-        }
-        #stats .table {
-          margin-bottom: 24px;
-          border-radius: 4px;
-          box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
-        }
-        #stats .subclass-feature .stat-name {
-          color: var(--mdc-theme-primary, '#6200ee');
-        }
-        #stats .statsBlockHead .stat-name {
-          display: block;
-          font-size: 1.6rem;
-          font-weight: normal;
-          line-height: 1.2;
-        }
-        #stats .statsBlockSubHead .stat-name {
-          font-size: 1.2rem;
-          font-weight: normal;
-        }
-        #stats .statsInlineHead {
-          margin-bottom: 16px;
-        }
-        #stats .statsInlineHead .stat-name {
-          font-size: .8rem;
-          font-weight: bold;
-          display: inline;
-        }
-        #stats .statsInlineHead .stat-name + p {
-          display: inline;
-        }
-        #stats .spell-ability {
-          margin: 0 24px;
-          display: block;
-        }
-        #stats .subclass-feature,
-        #stats .class-feature {
-          padding-top: 24px;
-          border-top: 1px solid var(--mdc-theme-text-divider-on-background, 'rgba(0, 0, 0, 0.12)');
-        }
-        #stats a {
-          color: var(--mdc-theme-secondary, '#018786') !important;
-        }
-        #stats ul {
-          padding-left: 24px;
-          list-style: disc;
-        }
-        #stats ul li {
-          margin-bottom: 8px;
+          white-space: pre-line;
+          padding: 14px 14px 1px;
         }
 
-
-        @media(min-width: 420px) {
-          .heading {
-            justify-content: flex-start;
-          }
-          .reference-link {
-            margin-left: 8px;
-          }
+        .details#stats p {
+          line-height: 1.5;
         }
 
         @media(min-width: 921px) {
-          .row-wrap {
-            width: calc(50% - 10px);
+          .features-col {
+            margin: 0 30px 0 12px;
+            width: unset;
+            font-size: 16px;
           }
-          .row-wrap:first-child {
+          #classGrid {
             margin-bottom: 0;
           }
         }
+
+        .no-content-message {
+          padding: 20px;
+          font-size: 14px;
+          font-style: italic;
+        }
       </style>
 
-      <div class="col-wrap">
-
-        <div class="row-wrap">
-          <div class="heading">
-            <h2>Inventory</h2>
-            <a class="reference-link mdc-icon-button material-icons" href="#/items">launch</a>
-          </div>
-          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
-            <vaadin-grid-column>
-              <template>
-                <div class="item-wrap">
-                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
-                  <div class="item-wrap__name-wrap" on-click="_expandDetails">
-                    <span class="item-wrap__name">[[item.name]]
-                      <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
-                    </span>
-                    <span class="item-wrap__type">
-                      <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
-                      <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
-                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
-                    </span>
-                  </div>
-                  <div hidden$="[[item.hasQuantity]]" class="item-wrap__checkboxes">
-                    <span on-click="_setItemEquipped">
-                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
-                    </span>
-                    <span on-click="_setItemAttuned">
-                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>
-                    </span>
-                  </div>
-                  <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
-                    <vaadin-integer-field min="0" value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
-                  </div>
-                  <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
-                </div>
-              </template>
-            </vaadin-grid-column>
-          </vaadin-grid>
+      <div class$="[[_editModeClass(isEditMode)]]">
+        <div class="heading-wrap">
+          <dnd-select-add model="classes" placeholder="Add a Class"></dnd-select-add>
         </div>
+        <div class="button-wrap">
+          <template is="dom-repeat" items="[[_objArray(classes)]]">
+            <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
+          </template>
+        </div>
+
+        <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
+
+        <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows>
+          <vaadin-grid-column flex-grow="1">
+            <template>
+              <div class="row">
+                <div class="open-details" on-click="_expandDetails">
+                  <div class="level-col">
+                    <span class="level-col__level">[[_level(index)]]</span>
+                    <span class="level-col__image-wrap" ><dnd-svg class="level-col__image" default-color id="[[_svgFromClass(item.name)]]"></dnd-svg></span>
+                    <span class="level-col__class">[[item.name]]</span>
+                  </div>
+
+                  <div class="features-col">
+                    <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses)]]">
+                      <span class="class-feature" subclass$="[[item.isSubclass]]">[[item.name]]</span>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="choices-col">
+                  <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
+                    <div class="choices-col__choice">
+                      <template is="dom-if" if="[[_equal(choice.id, 'subclass')]]">
+                        <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
+                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
+                      </template>
+                      <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
+                        <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
+                      </template>
+                      <template is="dom-if" if="[[_equal(choice.id, 'profs')]]">
+                        <dnd-select-add choices="[[choice.count]]" label="Skill Proficiency" placeholder="<Choose Skills>" disabled$="[[!isEditMode]]"
+                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classSkillAddCallback]]"></dnd-select-add>
+                      </template>
+                      <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
+                        <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                      </template>
+                      <template is="dom-if" if="[[_equal(choice.id, 'subclassFeature')]]">
+                        <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+
+                <div class="hp-col">
+                  <div class="hp-col__non-edit">HP Roll: <span class="material-icons" aria-hidden="true">favorite</span> [[_levelHp(item.name, index)]]</div>
+                  <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
+                    <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
+                      <span class="btn-field__btn-label" slot="label"><span class="material-icons" aria-hidden="true">favorite</span><span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span></span>
+                    </dnd-button>
+                    <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]"></vaadin-integer-field>
+                  </div>
+                </div>
+
+                <div class="delete-col">
+                  <dnd-button class="delete-btn link" label="Delete" icon="close" on-click="_deleteLevel"></dnd-button>
+                </div>
+              </div>
+            </template>
+          </vaadin-grid-column>
+        </vaadin-grid>
       </div>
-    `}}customElements.define("dnd-character-builder-equipment",o)}}]);
+    `}}customElements.define("dnd-character-builder-class",h)}}]);
 //# sourceMappingURL=10.bundle.js.map
