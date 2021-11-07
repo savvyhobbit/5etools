@@ -70,7 +70,11 @@ class DndCharacterBuilderAbilities extends PolymerElement {
   }
 
   updateFromCharacter(character) {
-    this.set('abilities', cloneDeep(character.customAbilities));
+    if (character && character.customAbilities) {
+      this.set('abilities', cloneDeep(character.customAbilities));
+    } else {
+      this.set('abilities', []);
+    }
 
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
   }
@@ -153,6 +157,28 @@ class DndCharacterBuilderAbilities extends PolymerElement {
     return data;
   }
 
+  _shortRest() {
+    if (this.abilities) {
+      this.abilities.forEach((item, index) => {
+        if (item.reset === 'Short Rest') {
+          item.currentSlots = 0;
+          setAbilityUsage(item, index);
+        }
+      });
+    }
+  }
+
+  _longRest() {
+    if (this.abilities) {
+      this.abilities.forEach((item, index) => {
+        if (item.reset === 'Long Rest') {
+          item.currentSlots = 0;
+          setAbilityUsage(item, index);
+        }
+      });
+    }
+  }
+
   _isSlotChecked(currentSlots, index) {
     return index < currentSlots;
   }
@@ -196,6 +222,16 @@ class DndCharacterBuilderAbilities extends PolymerElement {
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+        }
+        
+        .rest-buttons {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .short-rest { 
+          margin-left: 10px;
         }
 
         .abilities {
@@ -256,6 +292,8 @@ class DndCharacterBuilderAbilities extends PolymerElement {
 
         .ability__slots-label-suffix {
           user-select: none;
+          font-size: 16px;
+          padding-left: 6px;
         }
 
         .ability__delete {
@@ -272,9 +310,6 @@ class DndCharacterBuilderAbilities extends PolymerElement {
         }
 
         @media (min-width: 420px) {
-          .heading {
-            justify-content: flex-start;
-          }
         }
 
         @media (min-width: 921px) {
@@ -284,6 +319,10 @@ class DndCharacterBuilderAbilities extends PolymerElement {
       <div class="col-wrap" edit-mode$=[[isEditMode]]>
         <div class="heading">
           <h2>Abilities</h2>
+          <div class='rest-buttons'>
+            <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
+            <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
+          </div>
         </div>
 
         <div class="abilities">
