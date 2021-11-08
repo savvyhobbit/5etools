@@ -1,556 +1,570 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{114:function(e,t,s){"use strict";s(113),s(109)},116:function(e,t,s){"use strict";s(78)},119:function(e,t,s){"use strict";s.r(t),s.d(t,"renderSelection",(function(){return o})),s.d(t,"spellHtml",(function(){return r}));var l=s(71),n=s(5);const a=new l.a;function o(e,t){t.querySelector(".selection-wrapper").innerHTML='\n\t<div class="stats-wrapper margin-bottom_large">\n\t</div>';const s=r(e);t.querySelector(".stats-wrapper").innerHTML=s}function r(e){const t=[];if(t.push(`<div class="margin-bottom_med"><span class="stats-source source${e.source}" title="${n.a.sourceJsonToFull(e.source)}">${n.a.sourceJsonToAbv(e.source)}</div>`),t.push(`<div class="margin-bottom_med"><span>${n.a.spLevelSchoolMetaToFull(e.level,e.school,e.meta)}</span></div>`),t.push(`<div class="margin-bottom_med"><span class="stat-name">Casting Time: </span>${n.a.spTimeListToFull(e.time)}</div>`),t.push(`<div class="margin-bottom_med"><span class="stat-name">Range: </span>${n.a.spRangeToFull(e.range)}</div>`),t.push(`<div class="margin-bottom_med"><span class="stat-name">Components: </span>${n.a.spComponentsToFull(e.components)}</div>`),t.push(`<div class="margin-bottom_med"><span class="stat-name">Duration: </span>${n.a.spDurationToFull(e.duration)}</div>`),t.push("<div class='text'>"),a.recursiveEntryRender({type:"entries",entries:e.entries},t,1),e.entriesHigherLevel){const s={type:"entries",entries:e.entriesHigherLevel};a.recursiveEntryRender(s,t,2)}if(t.push("</div>"),t.push(`<div class="margin-bottom_med"><span class="stat-name">Classes: </span>${n.a.spMainClassesToFull(e.classes)}</div>`),e.classes.fromSubclass){const s=n.a.spSubclassesToCurrentAndLegacyFull(e.classes);t.push(`<div class="margin-bottom_med"><span class="stat-name">Subclasses: </span>${s[0]}</div>`),s[1]&&t.push(`<div class="mdc-theme--text-disabled-on-background margin-bottom_med"><span class="stat-name">Subclasses (legacy): </span>${s[1]}</div>`)}return e.scrollNote&&(t.push('<div class="mdc-theme--text-disabled-on-background">'),a.recursiveEntryRender("{@italic Note: Both the {@class Fighter (Eldritch Knight)} and the {@class Rogue (Arcane Trickster)} spell lists include all {@class Wizard} spells. Spells of 5th level or higher may be cast with the aid of a spell scroll or similar.}",t,2),t.push("</div>")),t.join("")}},124:function(e,t,s){"use strict";s(45),s(39);var l=s(13);const n=l.a`<dom-module id="lumo-grid-tree-toggle" theme-for="vaadin-grid-tree-toggle">
-  <template>
-    <style>
-      :host {
-        --vaadin-grid-tree-toggle-level-offset: 2em;
-        align-items: center;
-        vertical-align: middle;
-        margin-left: calc(var(--lumo-space-s) * -1);
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      :host(:not([leaf])) {
-        cursor: default;
-      }
-
-      [part="toggle"] {
-        display: inline-block;
-        font-size: 1.5em;
-        line-height: 1;
-        width: 1em;
-        height: 1em;
-        text-align: center;
-        color: var(--lumo-contrast-50pct);
-        /* Increase touch target area */
-        padding: calc(1em / 3);
-        margin: calc(1em / -3);
-      }
-
-      :host(:not([dir="rtl"])) [part="toggle"] {
-        margin-right: 0;
-      }
-
-      @media (hover: hover) {
-        :host(:hover) [part="toggle"] {
-          color: var(--lumo-contrast-80pct);
-        }
-      }
-
-      [part="toggle"]::before {
-        font-family: "lumo-icons";
-        display: inline-block;
-        height: 100%;
-      }
-
-      :host(:not([expanded])) [part="toggle"]::before {
-        content: var(--lumo-icons-angle-right);
-      }
-
-      :host([expanded]) [part="toggle"]::before {
-        content: var(--lumo-icons-angle-right);
-        transform: rotate(90deg);
-      }
-
-      /* Experimental support for hierarchy connectors, using an unsupported selector */
-      :host([theme~="connectors"]) #level-spacer {
-        position: relative;
-        z-index: -1;
-        font-size: 1em;
-        height: 1.5em;
-      }
-
-      :host([theme~="connectors"]) #level-spacer::before {
-        display: block;
-        content: "";
-        margin-top: calc(var(--lumo-space-m) * -1);
-        height: calc(var(--lumo-space-m) + 3em);
-        background-image: linear-gradient(to right, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
-        background-size: var(--vaadin-grid-tree-toggle-level-offset) var(--vaadin-grid-tree-toggle-level-offset);
-        background-position: calc(var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px) 0;
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) {
-        margin-left: 0;
-        margin-right: calc(var(--lumo-space-s) * -1);
-      }
-
-      :host([dir="rtl"]) [part="toggle"] {
-        margin-left: 0;
-      }
-
-      :host([dir="rtl"][expanded]) [part="toggle"]::before {
-        transform: rotate(-90deg);
-      }
-
-      :host([dir="rtl"][theme~="connectors"]) #level-spacer::before {
-        background-image: linear-gradient(to left, transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px), var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px));
-        background-position: calc(100% - (var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px)) 0;
-      }
-
-      :host([dir="rtl"]:not([expanded])) [part="toggle"]::before,
-      :host([dir="rtl"][expanded]) [part="toggle"]::before {
-        content: var(--lumo-icons-angle-left);
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(n.content);var a=s(7),o=(s(30),s(15)),r=s(19),i=s(43),c=s(9);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{108:function(e,t,o){"use strict";var a=o(7),i=o(53),l=o(19),r=o(54),n=o(41),d=o(13);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-const d=document.createElement("template");d.innerHTML="<custom-style>\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n</custom-style>",document.head.appendChild(d.content);class p extends(Object(r.a)(Object(i.a)(a.a))){static get template(){return l.a`
+class s extends(Object(n.a)(Object(r.a)(Object(l.a)(Object(i.a)(a.a))))){static get template(){return d.a`
     <style>
       :host {
-        display: inline-flex;
-        align-items: baseline;
-
-        /* CSS API for :host */
-        --vaadin-grid-tree-toggle-level-offset: 1em;
-
-        /*
-          ShadyCSS seems to polyfill :dir(rtl) only for :host, thus using
-          a host custom CSS property for ltr/rtl toggle icon choice.
-         */
-        ---collapsed-icon: "\\e7be\\00a0";
-      }
-
-      :host(:dir(rtl)) {
-        ---collapsed-icon: "\\e7bd\\00a0";
+        display: inline-block;
       }
 
       :host([hidden]) {
         display: none !important;
       }
 
-      :host(:not([leaf])) {
-        cursor: pointer;
+      label {
+        display: inline-flex;
+        align-items: baseline;
+        outline: none;
       }
 
-      #level-spacer,
-      [part="toggle"] {
+      [part="checkbox"] {
+        position: relative;
+        display: inline-block;
         flex: none;
       }
 
-      #level-spacer {
-        display: inline-block;
-        width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
+      input[type="checkbox"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: inherit;
+        margin: 0;
       }
 
-      [part="toggle"]::before {
-        font-family: "vaadin-grid-tree-icons";
-        line-height: 1em; /* make icon font metrics not affect baseline */
-      }
-
-      :host(:not([expanded])) [part="toggle"]::before {
-        content: var(---collapsed-icon);
-      }
-
-      :host([expanded]) [part="toggle"]::before {
-        content: "\\e7bc\\00a0"; /* icon glyph + single non-breaking space */
-      }
-
-      :host([leaf]) [part="toggle"] {
-        visibility: hidden;
+      :host([disabled]) {
+        -webkit-tap-highlight-color: transparent;
       }
     </style>
 
-    <span id="level-spacer"></span>
-    <span part="toggle"></span>
-    <slot></slot>
-`}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style["---level"]=t,this._debouncerUpdateLevel=o.a.debounce(this._debouncerUpdateLevel,c.c,()=>this.updateStyles({"---level":t}))}}customElements.define(p.is,p)},134:function(e,t,s){"use strict";s.r(t);var l=s(7),n=(s(121),s(124),s(17)),a=s(32),o=s(111),r=s(119),i=s(1),c=s(5);s(114),s(116);class d extends l.a{static get properties(){return{spellsKnown:{type:Object,value:{}},preparedSpells:{type:Object,value:{}},noContentMessage:{type:Boolean,value:!1},isEditMode:{type:Boolean,value:!1},filterStr:{type:String,value:"",observer:"_filterChange"}}}_filterChange(){this.filterStr.length?(this.oldExpanded||(this.oldExpanded=this.$.grid.expandedItems),this.expandAll(),this.$.grid.clearCache(),setTimeout(()=>{this.expandAll()},10)):(this.oldExpanded&&(this.$.grid.expandedItems=this.oldExpanded,this.oldExpanded=void 0),this.$.grid.clearCache())}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.refresh=!0,this.updateFromCharacter(Object(n.F)()),Object(n.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.refresh=!0,this.updateFromCharacter(Object(n.F)())},Object(o.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(o.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready(),this.multiclassSlotsDef=[[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1]],this.fullCasterSlotsDef=[],this.halfCasterSlotsDef=[],this.thirdCasterSlotsDef=[],setTimeout(()=>{this.$.grid.dataProvider=((e,t)=>{const s=e.page*e.pageSize;let l=e.parentItem?e.parentItem.children:this.spellDisplay;if(this.filterStr.length&&(l=l.filter(e=>this.hasDecendentWithFilter(e,this.filterStr.toLowerCase()))),l&&l.length){t(l.slice(s,s+e.pageSize),l.length)}}).bind(this)},0)}hasDecendentWithFilter(e,t){if(!e.name||e.name.toLowerCase().indexOf(t)>-1)return!0;const s=e.length?e:e.children;if(s&&s.length)for(let e of s)return this.hasDecendentWithFilter(e,t);return!1}clearFilterStr(){this.filterStr=""}expandAll(){this.$.grid.expandedItems=this.findExpandables(this.spellDisplay)}findExpandables(e,t=[]){"level"!==e.id&&"class"!==e.id||t.push(e);const s=e.length?e:e.children;if(s&&s.length)for(let e of s)this.findExpandables(e,t);return t}async updateSpellStats(e,t){if(t&&e){const s=[],l=Object.entries(t).reduce((e,[t,s])=>e+s,0),a=Object(i.getProfBonus)(l);for(const[l,o]of Object.entries(t)){const t=e[l];if(t.casterProgression){const e=s.find(e=>t.spellcastingAbility===e.spellcastingAbility);if(e)e.classes.push(l);else{const e=await Object(n.g)(t.spellcastingAbility),o=e+a,r=8+o;s.push({classes:[l],mod:e,spellAttackBonus:o,dc:r,spellcastingAbility:t.spellcastingAbility})}}}this.spellMods=s}else this.spellMods=[]}async updateFromCharacter(e){if(e&&this.refresh){this.noContentMessage=!0;const t=await Object(n.r)(e),s=Object(n.q)(e),l=[],o={};let r=[];this.updateSpellStats(t,s);for(const[i,c]of Object.entries(s)){const s=t[i];let d=s,p=!1,h=s.classTableGroups,m=i;if(!d.casterProgression){const t=Object(n.J)(s);if(c>=t&&e.subclasses&&e.subclasses[i]&&s.subclasses&&s.subclasses.length){const t=s.subclasses.find(t=>e.subclasses[i].name===t.name);t&&t.casterProgression&&(d=t,m=t.shortName,h=t.subclassTableGroups,p=!0)}}if(d.casterProgression){let t;this.noContentMessage=!1;let u,g,A,f="known";if(h.forEach(e=>{if(e.colLabels&&e.colLabels.length){const s=e.colLabels.findIndex(e=>e.toLowerCase().indexOf("spells known")>-1);s>-1&&e.rows&&e.rows.length>c-1&&(t=e.rows[c-1][s]);const l=e.colLabels.findIndex(e=>e.toLowerCase().indexOf("cantrips known")>-1);l>-1&&e.rows&&e.rows.length>c-1&&(u=e.rows[c-1][l]);const n=e.colLabels.findIndex(e=>e.toLowerCase().indexOf("slot level")>-1);if(n>-1&&e.rows&&e.rows.length>c-1){const t=e.rows[c-1][n].match(/(\d+)/g);t&&t.length&&(g=parseInt(t[0]))}const a=e.colLabels.findIndex(e=>e.toLowerCase().indexOf("spell slots")>-1);a>-1&&e.rows&&e.rows.length>c-1&&(A=e.rows[c-1][a])}}),void 0===t){f="prepared";const e="full"===d.casterProgression?1:"1/3"===d.casterProgression?.33:.5,s=await Object(n.g)(d.spellcastingAbility);t=Math.floor(c*e)+s,t=t<1?1:t}let v,b=[];if(p)v=d.shortName;else{b=await Object(a.a)("spells",{key:"classes.fromClassList",value:{name:d.name,source:d.source}});const t=Object(n.J)(s);c>=t&&(v=e.subclasses&&e.subclasses[i]?e.subclasses[i].shortName:"")}if(v){"Eldritch Knight"===v&&(b=await Object(a.a)("spells",{key:"classes.fromClassList",value:{name:"wizard",source:"phb"}}));let t=await Object(a.a)("spells",{key:"classes.fromSubclass",value:{"subclass.name":v,"class.name":i,"class.source":s.source}});if("Divine Soul"===v){let s=Object(n.I)(i.toLowerCase(),v.toLowerCase(),c,"Divine Magic Affinity",e);t=s?t.filter(e=>s.indexOf(e.name)>-1):[]}t=t.map(e=>({...e,isSubclassSpell:!0})),b=[...new Set(b.concat(t))]}if("Divine Soul"===v){let e=await Object(a.a)("spells",{key:"classes.fromClassList",value:{name:"cleric",source:"phb"}});b=[...new Set(b.concat(e))]}const w=h.find(e=>"Spell Slots per Spell Level"===e.title);let x;if(w)x=w.rows[c-1].filter(e=>0!==e);else{x=[];for(let e=0;e<g;e++)x.push(0)}const S=u?0:1;u&&(x=[0].concat(x));let C=JSON.parse(JSON.stringify(e.preparedSpells)),y=JSON.parse(JSON.stringify(e.preparedCantrips));e.preparedSpells[m]={},e.preparedCantrips[m]={};const k=x.map((t,s)=>{if(-1!==t){let a=b.filter(e=>e.level===s+S).sort((e,t)=>e.name<t.name?-1:e.name>t.name?1:0).map(t=>{const l=s+S===0,a=l?Object(n.N)(m,t,y):Object(n.N)(m,t,C);return a&&(l?e.preparedCantrips[m][t.name]={name:t.name,source:t.source}:e.preparedSpells[m][t.name]={name:t.name,source:t.source}),this.isEditMode||a||t.isSubclassSpell?{id:"spell",name:t.name,children:[{...t,hasChildren:!1,id:"spelldef",parentClass:m,parentLevel:s+S}],hasChildren:!0,parentClass:m,parentLevel:s+S,isCantrip:l,isSubclassSpell:t.isSubclassSpell,isWarlock:!!g}:void 0}).filter(e=>void 0!==e);const o={id:"level",level:s+S,spellSlots:t,currentSlots:Object(n.H)(s+S),children:a,hasChildren:a.length>0,parentClass:m,isWarlock:!!g};return this.$.grid.expandedItems.some(e=>"level"===e.id&&e.level===o.level&&e.parentClass===o.parentClass)&&l.push(o),o}return null}).filter(e=>null!==e);if(o[m]={current:e.preparedSpells&&e.preparedSpells[m]?Object.keys(e.preparedSpells[m]):[],max:t,type:f,maxCantrips:u,currentCantrips:e.preparedCantrips&&e.preparedCantrips[m]?Object.keys(e.preparedCantrips[m]):[]},k.length){const e={id:"class",className:m,level:c,hasCantrips:S,children:k,spellsKnown:t,hasChildren:k.length>0,spellPrepType:f,multiclassingLevels:p?0:Math.floor(("full"===s.casterProgression?1:.5)*c),isWarlock:!!g,warlockSpellLevel:g,warlockSpellSlots:A};l.push(e),r.push(e)}}}if(r.sort((e,t)=>e.children.length-t.children.length),!this.isEditMode){let t=[];if(r.length){let s,l,a=0,o=-1;for(let e of r)e.isWarlock?(s=e.warlockSpellLevel,l=e.warlockSpellSlots):(a+=e.multiclassingLevels,o++),e.children.forEach((s,l)=>{const n=l+e.hasCantrips;t[n]?s.children[l]&&(t[n].children=t[n].children.concat(s.children)):t[n]=s});t=t.filter(e=>void 0!==e);const i=0===t[0].level;if(o>0){const e=this.multiclassSlotsDef[a+1];for(let s=i?1:0;s<e.length;s++){const l=e[s-(i?1:0)];t[s]?t[s].spellSlots=l:t.push({children:[],currentSlots:Object(n.H)(s+1-(i?1:0)),hasChildren:!1,id:"level",isWarlock:!1,level:s,spellSlots:l})}}s&&(t[s-(i?0:1)].warlockSpellSlots=l,t[s-(i?0:1)].currentWarlockSlots=e.warlockSpellSlots||0)}r=t}this.refresh=!1,Object(n.W)(e),this.spellsKnown=o,this.spellDisplay=r,this.expandedItems=l,this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0})),this.$.grid.clearCache()}}_renderSpell(e){return Object(r.spellHtml)(e)}_toggleSpellPrepared(e){e.preventDefault(),e.stopPropagation();if(!e.model.item.isSubclassSpell&&this.isEditMode){if(e.model.item.isCantrip)this._toggleCantripPrepared(e);else{const t=e.model.item.parentClass,s=e.model.item.children[0],l=this._isPreparedSpell(this.spellsKnown,t,s.name),a=this._currentSpellsKnownCount(t,this.spellsKnown),o=this._maxSpellsKnownCount(t,this.spellsKnown);if((l||a<o)&&"spelldef"===s.id){let e=JSON.parse(JSON.stringify(this.spellsKnown));if(l){const l=e[t].current.indexOf(s.name);e[t].current.splice(l,1)}else e[t].current.push(s.name);this.spellsKnown=e,Object(n.ub)(t,s)}else a>=o&&this._flashPreparedButton(Object(i.findInPath)("button",e))}}}_toggleCantripPrepared(e){e.preventDefault(),e.stopPropagation();const t=e.model.item.parentClass,s=e.model.item.children[0],l=this._isPreparedCantrip(this.spellsKnown,t,s.name),a=this._currentCantripsKnownCount(t,this.spellsKnown),o=this._maxCantripsKnownCount(t,this.spellsKnown);if((l||a<o)&&"spelldef"===s.id){let e=JSON.parse(JSON.stringify(this.spellsKnown));if(l){const l=e[t].currentCantrips.indexOf(s.name);e[t].currentCantrips.splice(l,1)}else e[t].currentCantrips.push(s.name);this.spellsKnown=e,Object(n.pb)(t,s)}else a>=o&&this._flashPreparedButton(Object(i.findInPath)("button",e))}_flashPreparedButton(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_toggleSpellSlot(e){e.preventDefault(),e.stopPropagation();const t=Object(i.findInPath)(".checkbox-wrap",e),s=!!Object(i.findInPath)("[warlock-spell]",e),l=s?e.model.item.currentWarlockSlots:e.model.item.currentSlots,a=s?e.model.item.warlockSpellSlots:e.model.item.spellSlots,o=e.model.item.level;if(t){!t.children[0].checked&&l<a?s?e.model.item.currentWarlockSlots=l+1:e.model.item.currentSlots=l+1:l>0&&(s?e.model.item.currentWarlockSlots=l-1:e.model.item.currentSlots=l-1)}else l<a?s?e.model.item.currentWarlockSlots=l+1:e.model.item.currentSlots=l+1:l>0&&(s?e.model.item.currentWarlockSlots=l-1:e.model.item.currentSlots=l-1);s?(this._setSpellSlotsChecked(e.model.item.currentWarlockSlots,Object(i.findInPath)(".slot-checkboxes",e)),Object(n.mb)(o,e.model.item.currentWarlockSlots,void 0,!0)):(this._setSpellSlotsChecked(e.model.item.currentSlots,Object(i.findInPath)(".slot-checkboxes",e)),Object(n.mb)(o,e.model.item.currentSlots))}_setSpellSlotsChecked(e,t){const s=t.querySelectorAll("vaadin-checkbox");for(let t=0;t<s.length;t++)s[t].checked=t<e}_isPreparedClass(e,t,s){const l=t.parentClass,n=t.name,a=t.isCantrip,o=t.isSubclassSpell;if(o)return s?"spell-button always-prepared edit-mode":"spell-button always-prepared";return(a?this._isPreparedCantrip(e,l,n):this._isPreparedSpell(e,l,n,o))?s?"spell-prepared spell-button edit-mode":"spell-prepared spell-button":s?"spell-button edit-mode":"spell-button"}_isPreparedSpell(e,t,s,l){return l||e[t]&&e[t].current&&e[t].current.length&&e[t].current.indexOf(s)>-1}_isPreparedCantrip(e,t,s){return e[t]&&e[t].currentCantrips&&e[t].currentCantrips.length&&e[t].currentCantrips.indexOf(s)>-1}_isPreparedText(e,t){const s=t.parentClass,l=t.name,n=t.isCantrip,a=t.isSubclassSpell,o=e[s].type;if(a)return"Always";return(n?this._isPreparedCantrip(e,s,l):this._isPreparedSpell(e,s,l,a))?"known"===o?"Learned":"Prepared":"known"===o?"Learn":"Prepare"}_countToArray(e){const t=[];for(var s=0;s<e;s++)t.push(null);return t}_toLevel(e){return 0===e?c.a.spLevelToFull(e)+"s":c.a.spLevelToFull(e)+" Level"}_currentSpellsKnownCount(e,t){return t&&e&&t[e]&&t[e].current?t[e].current.length:0}_maxSpellsKnownCount(e,t){return t&&e&&t[e]?t[e].max:0}_currentCantripsKnownCount(e,t){return t&&e&&t[e]&&t[e].current?t[e].currentCantrips.length:0}_maxCantripsKnownCount(e,t){return t&&e&&t[e]?t[e].maxCantrips:0}_toggleTooltip(e){const t=e.target.dataset.tooltip,s=Array.from(e.target.children).find(e=>e.matches(".tooltip"));if(window.tooltipCloseListener||(window.tooltipCloseListener=!0,window.tooltips=[],document.addEventListener("click",()=>{window.tooltips.forEach(e=>{e.classList.remove("tooltip--open"),setTimeout(()=>{e.remove()},300)}),window.tooltips=[]})),s)s.classList.remove("tooltip--open"),setTimeout(()=>{s.remove()},300);else if(t){const s=document.createElement("div");s.innerHTML=t,s.classList.add("tooltip"),e.target.appendChild(s),setTimeout(()=>{s.classList.add("tooltip--open"),window.tooltips.push(s)},0)}}_spellsKnownString(e){return"Spells "+Object(i.util_capitalize)(e)+":"}_isRitualSpell(e){const t=e.children[0];return t&&t.meta&&t.meta.ritual}_isConcentrationSpell(e){return e.children[0].duration.some(e=>e.concentration)}_spellLevel(e){if(e&&e.children&&e.children.length&&e.children[0].level)return c.a.spLevelToFull(e.children[0].level)}_isSpellSlotChecked(e,t){return t<e}_spellClassText(e){return e}_isEmpty(e){return!e||!e.length}_hideCheckboxes(e){return!e||e>0&&this.isEditMode}_equal(e,t){return e===t}_hasTwo(e){return e&&e.length&&e.length>1}_join(e){return e.join(", ")}static get template(){return l.b`
-      <style include='my-styles'>
-        :host {}
+    <label>
+      <span part="checkbox">
+        <input type="checkbox" checked="{{checked::change}}" disabled\$="[[disabled]]" indeterminate="{{indeterminate::change}}" role="presentation" tabindex="-1">
+      </span>
+
+      <span part="label">
+        <slot></slot>
+      </span>
+    </label>
+`}static get is(){return"vaadin-checkbox"}static get version(){return"2.5.0"}static get properties(){return{checked:{type:Boolean,value:!1,notify:!0,observer:"_checkedChanged",reflectToAttribute:!0},indeterminate:{type:Boolean,notify:!0,observer:"_indeterminateChanged",reflectToAttribute:!0,value:!1},value:{type:String,value:"on"},_nativeCheckbox:{type:Object}}}constructor(){super(),this.name}get name(){return this.checked?this._storedName:""}set name(e){this._storedName=e}ready(){super.ready(),this.setAttribute("role","checkbox"),this._nativeCheckbox=this.shadowRoot.querySelector('input[type="checkbox"]'),this.addEventListener("click",this._handleClick.bind(this)),this._addActiveListeners();const e=this.getAttribute("name");e&&(this.name=e),this.shadowRoot.querySelector('[part~="label"]').querySelector("slot").addEventListener("slotchange",this._updateLabelAttribute.bind(this)),this._updateLabelAttribute()}_updateLabelAttribute(){const e=this.shadowRoot.querySelector('[part~="label"]'),t=e.firstElementChild.assignedNodes();this._isAssignedNodesEmpty(t)?e.setAttribute("empty",""):e.removeAttribute("empty")}_isAssignedNodesEmpty(e){return 0===e.length||1==e.length&&e[0].nodeType==Node.TEXT_NODE&&""===e[0].textContent.trim()}_checkedChanged(e){this.indeterminate?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",Boolean(e))}_indeterminateChanged(e){e?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",this.checked)}_addActiveListeners(){this._addEventListenerToNode(this,"down",e=>{this.__interactionsAllowed(e)&&this.setAttribute("active","")}),this._addEventListenerToNode(this,"up",()=>this.removeAttribute("active")),this.addEventListener("keydown",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this.setAttribute("active",""))}),this.addEventListener("keyup",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this._toggleChecked(),this.removeAttribute("active"),this.indeterminate&&(this.indeterminate=!1))})}get focusElement(){return this.shadowRoot.querySelector("input")}__interactionsAllowed(e){return!this.disabled&&"a"!==e.target.localName}_handleClick(e){this.__interactionsAllowed(e)&&(this.indeterminate?(this.indeterminate=!1,e.preventDefault(),this._toggleChecked()):e.composedPath()[0]!==this._nativeCheckbox&&(e.preventDefault(),this._toggleChecked()))}_toggleChecked(){this.checked=!this.checked,this.dispatchEvent(new CustomEvent("change",{composed:!1,bubbles:!0}))}}customElements.define(s.is,s)},112:function(e,t,o){"use strict";var a=o(7),i=o(68);o(77),o(111);class l extends a.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new i.a(this.$.button)},10)}_exists(e){return!!e}_styleStr(e,t){let o="";return e&&(o+=`background: ${e}; `),t&&(o+=`border: ${t}; `),o}_svgStyleStr(e,t){let o="";return e&&(o+=`fill: ${e}; `),t&&(o+=`stroke: ${t}; `),o}static get template(){return a.b`
+      <style include="material-styles">
+        .mdc-tab-scroller__scroll-area--scroll {
+          overflow-x: auto;
+          background-color: var(--mdc-theme-surface);
+          border: 1px solid var(--mdc-theme-text-divider-on-background);
+          border-bottom: none;
+        }
         :host {
-          display: block;
-        }
-        [hidden] {
-          display: none !important;
-        }
-
-        h2 {
-          font-size: 24px;
-          font-weight: bold;
-          margin: 34px 14px 24px;
-        }
-
-        vaadin-grid {
-          margin-bottom: 200px;
-        }
-
-        vaadin-grid-tree-toggle { 
-          width: 100%;
-          cursor: pointer;
-        }
-
-        .class-wrap {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          align-items: center;
-          padding-top: 4px;
-          /* padding-top: 34px;
-          padding-bottom: 8px; */
-          -youbkit-touch-callout: none;
-          -youbkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-        .class-wrap h3 {
-          font-size: 22px;
-          font-weight: bold;
-        }
-
-        .spells-prepared-text {
-          margin-right: 6px;
-          margin-left: auto;
-        }
-        .prepared-count {
-          color: var(--mdc-theme-secondary);
-          font-weight: bold;
-        }
-        .cantrips-prepared {
-          margin-right: 0;
-        }
-
-        .level-outer-wrap {
-          border-bottom: 1px solid var(--_lumo-grid-secondary-border-color);
-          padding-bottom: 8px;
-          display: flex;
-          height: 32px;
-        }
-
-        .level-wrap {
-          width: 100%;
-          -youbkit-touch-callout: none;
-          -youbkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-
-        .slot-checkboxes {
-          cursor: pointer;
-          display: flex;
-          padding: 4px;
-        }
-
-        .slot-checkboxes span {
-          -youbkit-touch-callout: none;
-          -youbkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-
-        .slot-checkboxes .label {
-          padding-left: 8px;
-        }
-
-        vaadin-checkbox {
-          pointer-events: none;
-        }
-
-        .spell-outer-wrap {
-          display: flex;
-        }
-
-        .spell-wrap {
-          width: calc(100% - 100px);
-          margin-left: 24px;
-          white-space: nowrap;
+          display: inline;
           overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .spell-inner-wrap {
           white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          -youbkit-touch-callout: none;
-          -youbkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
         }
-
-        .spell-level {
-          color: var(--mdc-theme-text-disabled-on-background);
-          margin-left: 8px;
-          margin-right: 4px;
-          font-size: 12px;
-        }
-
-        .rit-ind,
-        .conc-ind {
+        .mdc-button {
           display: inline-flex;
-          align-items: center;
           justify-content: center;
-          width: 13px;
-          height: 13px;
-          border-radius: 50%;
-          color: var(--mdc-theme-on-secondary);
-          background-color: var(--mdc-theme-secondary);
-          font-size: 10px;
-          position: relative;
-          bottom: 1px;
-          margin-left: 4px;
+          align-items: center;
+          width: 100%;
         }
-
-        .rit-ind::before {
-          content: 'R';
+        .mdc-button .mdc-button__icon {
+          margin-right: 0px;
+          margin-left: 8px;
         }
-
-        .conc-ind::before {
-          content: 'C';
-        }
-
-        .spell-def-wrap {
-          font-size: 14px;
-          width: calc(100% - 20px);
-          margin: 0 auto;
+        .mdc-button [background] {
           background: var(--lumo-contrast-10pct);
-          border-radius: 4px;
-          white-space: pre-line;
+        }
+        dnd-svg {
+          height: 20px;
+          width: 20px;
+          flex-shrink: 0;
+          flex-grow: 0;
+          padding-left: 8px;
+          fill: var(--mdc-theme-primary);
+          stroke: var(--mdc-theme-primary);
+        }
+        i {
+          flex-shrink: 0;
+          flex-grow: 0;
         }
 
-        .spell-def-wrap .margin-bottom_med {
-          margin-bottom: 0px !important;
+        
+        :host(.btn-field__btn) dnd-svg {
+          padding-left: 0;
+        }
+        :host(.btn-field__btn) i {
+          margin-left: 0;
         }
 
-        .spell-def-wrap .text {
-          margin-top: 16px;
+        :host(.icon-only) dnd-svg {
+          margin-left: -24px;
+          padding-left: 0;
+        }
+        :host(.icon-only) i {
+          margin-left: -18px;
+          padding-left: 0;
         }
 
-        .spell-def-wrap p {
-          margin-bottom: 16px;
+        :host(.link) .mdc-button__label {
+          text-transform: none;
+          color: var(--lumo-body-text-color);
+          letter-spacing: normal;
+        }
+        :host(.link) i {
+          color: var(--lumo-body-text-color);
+        }
+        :host(.link) button:hover::before {
+          background: none;
+        }
+        :host(.link) button:hover i,
+        :host(.link) button:hover .mdc-button__label {
+          color: var(--mdc-theme-secondary);
         }
 
-        .stats-wrapper {
-          margin: 0 14px;
-        }
-
-        .spell-button {
-          background-color: var(--mdc-theme-text-disabled-on-background);
-          color: var(--mdc-theme-on-secondary);
-          border: none;
-          border-radius: 4px;
-          outline: none;
-          width: 60px;
-          display: inline-block;
-          justify-content: center;
-          white-space: normal;
-          font-size: 12px;
-          padding: 4px 4px;
-        }
-        .class-icon {
-          border: none;
-          border-radius: 4px;
-          outline: none;
-          width: 60px;
-          display: inline-block;
-          justify-content: center;
-          white-space: normal;
-          font-size: 12px;
-          padding: 4px 4px;
-        }
-        .spell-button.edit-mode {
-          cursor: pointer;
-        }
-        .spell-button.always-prepared {
-          background-color: var(--mdc-theme-secondary-lighter);
-          cursor: not-allowed;
-        }
-        .spell-button.spell-prepared {
+        :host([edit-mode]) button {
           background-color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-on-secondary)
         }
-        .spell-button.flash-error {
-          background-color: var(--mdc-theme-error);
-          transition: background-color 0.2s ease-out;
+        :host([edit-mode]) .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
         }
-        .spell-button.transition-bg {
-          transition: background-color 0.2s ease-in;
+        :host([edit-mode]) i {
+          color: var(--mdc-theme-on-primary);
         }
-        .class-icon {
-          width: auto;
-        }
-
-        .mods {
-          display: flex;
-          flex-wrap: nowrap;
-          justify-content: space-around;
-          margin: 16px 0 8px;
-        }
-        .mod-row {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          font-size: 12px;
-          text-align: center;
-          margin: 0 4px;
-          width: 130px;
-        }
-        .mod-val-wrap {
-          font-size: 16px;
-        }
-        .mod-val:not(:first-child)::before {
-          content: '|';
-          margin-right: 4px;
-        }
-        .mod-label {
-          font-weight: bold;
-        }
-        @media(min-width: 420px) {
-          .mods {
-            justify-content: flex-start;
-          }
-          .mod-row {
-            font-size: 14px;
-          }
-          .mod-val-wrap {
-            font-size: 18px;
-          }
+        :host([edit-mode]) button:hover i,
+        :host([edit-mode]) button:hover .mdc-button__label {
+          color: var(--mdc-theme-on-secondary);
         }
 
-        .filter {
-          margin-left: 16px;
-
+        :host([not-edit-mode]) button {
+          background-color: var(--mdc-theme-primary);
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) i {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) button:hover i,
+        :host([not-edit-mode]) button:hover .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
         }
 
-        .tooltip {
-          position: absolute;
-          background: lightgray;
-          color: black;
-          padding: 2px 10px;
-          border-radius: 4px;
-          white-space: nowrap;
-          left: 8px;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          border-top-left-radius: 0px;
-        }
-        .tooltip--open {
-          opacity: 1;
-        }
-        .tooltip::after {
-          content: '';
-          height: 0;
-          width: 0;
-          position: absolute;
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-bottom: 5px solid lightgray;
-          top: -5px;
-          left: 0px;
-        }
-        [data-tooltip] {
-          position: relative;
-        }
-
-        .no-content-message {
-          font-size: 14px;
-          padding: 20px;
-          font-style: italic;
-        }
       </style>
+      <button id="button" class="mdc-button" style$="[[_styleStr(background, border)]]">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">[[label]]</span>
+        <slot name="label"></slot>
+        <template is="dom-if" if="[[_exists(icon)]]">
+          <i class="material-icons mdc-button__icon" aria-hidden="true">[[icon]]</i>
+        </template>
+        <template is="dom-if" if="[[_exists(svg)]]">
+          <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
+        </template>
+      </button>
+    `}}customElements.define("dnd-button",l)},113:function(e,t,o){"use strict";o(45),o(31);const a=o(13).a`<dom-module id="lumo-checkbox" theme-for="vaadin-checkbox">
+  <template>
+    <style include="lumo-checkbox-style lumo-checkbox-effects">
+      /* IE11 only */
+      ::-ms-backdrop,
+      [part="checkbox"] {
+        line-height: 1;
+      }
+    </style>
+  </template>
+</dom-module><dom-module id="lumo-checkbox-style">
+  <template>
+    <style>
+      :host {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: default;
+        outline: none;
+      }
 
-      <div class="header-wrap" hidden$="[[noContentMessage]]">
+      [part="label"]:not([empty]) {
+        margin: 0.1875em 0.875em 0.1875em 0.375em;
+      }
 
-        <!-- Spell Mods -->
-        <div class="mods" >
-          <div class="mod-row">
-            <span class="mod-val-wrap">
-              <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">+[[item.mod]]</span>
-              </template>
-            </span>
-            <span class="mod-label">Spell Mod</span>
-          </div>
-          <div class="mod-row">
-            <span class="mod-val-wrap">
-              <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">+[[item.spellAttackBonus]]</span>
-              </template>
-            </span>
-            <span class="mod-label">Spell Atk +</span>
-          </div>
-          <div class="mod-row">
-            <span class="mod-val-wrap">
-              <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">[[item.dc]]</span>
-              </template>
-            </span>
-            <span class="mod-label">Spell DC</span>
+      [part="checkbox"] {
+        width: calc(1em + 2px);
+        height: calc(1em + 2px);
+        margin: 0.1875em;
+        position: relative;
+        border-radius: var(--lumo-border-radius-s);
+        background-color: var(--lumo-contrast-20pct);
+        transition: transform 0.2s cubic-bezier(.12, .32, .54, 2), background-color 0.15s;
+        pointer-events: none;
+        line-height: 1.2;
+      }
+
+      :host([indeterminate]) [part="checkbox"],
+      :host([checked]) [part="checkbox"] {
+        background-color: var(--lumo-primary-color);
+      }
+
+      /* Needed to align the checkbox nicely on the baseline */
+      [part="checkbox"]::before {
+        content: "\\2003";
+      }
+
+      /* Checkmark */
+      [part="checkbox"]::after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border: 0 solid var(--lumo-primary-contrast-color);
+        border-width: 0.1875em 0 0 0.1875em;
+        box-sizing: border-box;
+        transform-origin: 0 0;
+        position: absolute;
+        top: 0.8125em;
+        left: 0.5em;
+        transform: scale(0.55) rotate(-135deg);
+        opacity: 0;
+      }
+
+      :host([checked]) [part="checkbox"]::after {
+        opacity: 1;
+        width: 0.625em;
+        height: 1.0625em;
+      }
+
+      /* Indeterminate checkmark */
+
+      :host([indeterminate]) [part="checkbox"]::after {
+        transform: none;
+        opacity: 1;
+        top: 45%;
+        height: 10%;
+        left: 22%;
+        right: 22%;
+        width: auto;
+        border: 0;
+        background-color: var(--lumo-primary-contrast-color);
+        transition: opacity 0.25s;
+      }
+
+      /* Focus ring */
+
+      :host([focus-ring]) [part="checkbox"] {
+        box-shadow: 0 0 0 3px var(--lumo-primary-color-50pct);
+      }
+
+      /* Disabled */
+
+      :host([disabled]) {
+        pointer-events: none;
+        color: var(--lumo-disabled-text-color);
+      }
+
+      :host([disabled]) [part="label"] ::slotted(*) {
+        color: inherit;
+      }
+
+      :host([disabled]) [part="checkbox"] {
+        background-color: var(--lumo-contrast-10pct);
+      }
+
+      :host([disabled]) [part="checkbox"]::after {
+        border-color: var(--lumo-contrast-30pct);
+      }
+
+      :host([indeterminate][disabled]) [part="checkbox"]::after {
+        background-color: var(--lumo-contrast-30pct);
+      }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"]) [part="label"]:not([empty]) {
+        margin: 0.1875em 0.375em 0.1875em 0.875em;
+      }
+    </style>
+  </template>
+</dom-module><dom-module id="lumo-checkbox-effects">
+  <template>
+    <style>
+      /* Transition the checkmark if activated with the mouse (disabled for grid select-all this way) */
+      :host(:hover) [part="checkbox"]::after {
+        transition: width 0.1s, height 0.25s;
+      }
+
+      /* Used for activation "halo" */
+      [part="checkbox"]::before {
+        color: transparent;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background-color: inherit;
+        transform: scale(1.4);
+        opacity: 0;
+        transition: transform 0.1s, opacity 0.8s;
+      }
+
+      /* Hover */
+
+      :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
+        background-color: var(--lumo-contrast-30pct);
+      }
+
+      /* Disable hover for touch devices */
+      @media (pointer: coarse) {
+        :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
+          background-color: var(--lumo-contrast-20pct);
+        }
+      }
+
+      /* Active */
+
+      :host([active]) [part="checkbox"] {
+        transform: scale(0.9);
+        transition-duration: 0.05s;
+      }
+
+      :host([active][checked]) [part="checkbox"] {
+        transform: scale(1.1);
+      }
+
+      :host([active]:not([checked])) [part="checkbox"]::before {
+        transition-duration: 0.01s, 0.01s;
+        transform: scale(0);
+        opacity: 0.4;
+      }
+    </style>
+  </template>
+</dom-module>`;document.head.appendChild(a.content);o(108)},114:function(e,t,o){"use strict";o(113),o(108)},132:function(e,t,o){"use strict";o.r(t);var a=o(7),i=(o(79),o(114),o(112),o(1)),l=o(17),r=o(0),n=o(110),d=o(73);class s extends a.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},customRolls:{type:Array}}}connectedCallback(){super.connectedCallback(),this.damageTypes=r.k,this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.G)()),Object(l.m)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(l.m)().removeEventListener("character-selected",this.characterChangeHandler),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateFromCharacter(e){this.customRolls=e.customRolls?Object(i.cloneDeep)(e.customRolls):[],this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}__exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}__abs(e){return e>=0?"+"+e:e}_makeRoll(e){if(!this.isEditMode){let t=e.model.__data.item;t.noHitRoll||Object(d.d)(t.name+" (to hit)",t.toHit,this.$.advMod.checked,this.$.disadvMod.checked),t.damages.forEach((e,o)=>{Object(d.b)(`${t.name} (${e.type} damage)`,e.roll),setTimeout(()=>{},500*(o+1))})}}_rollChangeHandler(e){const t=Object(i.findInPath)(".roll",e).getAttribute("index"),o=parseInt(t,10);Object(l.ib)(this.customRolls[o],o)}_addRoll(){Object(l.ib)({name:"",toHit:0,noHitRoll:!1,damages:[{roll:"",type:""}]},this.customRolls.length)}_removeRoll(e){const t=Object(i.findInPath)(".roll",e).getAttribute("index"),o=parseInt(t,10);Object(l.S)(o)}_addDamage(e){const t=Object(i.findInPath)(".roll",e).getAttribute("index"),o=parseInt(t,10),a=this.customRolls[o];a.damages.push({roll:"",type:""}),Object(l.ib)(a,o)}_removeDamage(e){const t=Object(i.findInPath)(".roll",e).getAttribute("index"),o=parseInt(t,10),a=Object(i.findInPath)(".roll__damage",e).getAttribute("index"),r=parseInt(a,10);Object(l.T)(o,r)}_or(e,t){return e||t}_orNot(e,t){return e||!t}_isTruthy(e){return!!e}_modChange(e){"advMod"===e.currentTarget.id?this.$.disadvMod.checked=!1:this.$.advMod.checked=!1}static get template(){return a.b`
+    <style include="material-styles">
+      body {}
+      :host {
+        display: block;
+        padding: 14px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      
+      .col-wrap {
+        display: flex; 
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: 56px;
+      }
+      .row-wrap {
+        width: 100%;
+      }
+
+      h2 {
+        margin-bottom: 24px;
+      }
+
+      .rolls__add-button {
+        margin-bottom: 16px;
+        display: inline-flex;
+      }
+
+      .roll {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 16px;
+        background: var(--lumo-contrast-10pct);
+        height: min-content;
+        width: 100%;
+      }
+      
+      .rolls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding-bottom: 60px;
+      }
+
+      @media(min-width: 500px) {
+        .roll {
+          width: calc(50% - 24px);
+        }
+      }
+
+      @media(min-width: 921px) {
+        :host {
+          padding-right: 0px;
+        }
+        .roll {
+          max-width: 380px;
+          margin-right: 16px;
+        }
+        .rolls {
+          display: flex;
+          flex-wrap: wrap;
+        }
+      }
+
+      @media(min-width: 1321px) {
+        .roll {
+          width: calc(33.3% - 32px);
+        }
+      }
+
+      .roll-header {
+        display: flex;
+        justify-content: space-between;
+      }
+      .roll-header dnd-button {
+        margin-top: 20px;
+      }
+      .roll-header vaadin-text-field {
+        padding-top: 0;
+      }
+      h3 {
+        margin: 4px 0;
+      }
+      .roll__to-hit {
+        display: flex;
+      }
+      .roll__to-hit dnd-switch {
+        margin: 0 auto;
+        padding: 26px 20px 27px;
+      }
+
+      .roll-footer {
+        display: flex;
+        flex-direction: column;
+      }
+      .roll__damages {
+        display: flex;
+        flex-direction: column;
+      }
+      .roll__damage {
+        display: flex;
+      }
+      .roll__damage vaadin-text-field,
+      .roll__damage vaadin-select {
+        max-width: 100%;
+      }
+      .roll__damage-roll--edit,
+      .roll__damage-type--edit {
+        width: calc(50% - 40px);
+      }
+      .roll__damage-roll--edit {
+        margin-right: 16px;
+      }
+      .roll__damage-remove {
+        margin: auto 16px 4px;
+      }
+
+      .rolls__toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .rolls__toolbar h4 {
+        width: 100%;
+        margin: 0;
+      }
+      .rolls__toolbar-reset-mods {
+        display: inline-flex;
+      }
+      .roll__add-damage {
+        width: min-content;
+        margin: 8px auto 0;
+      }
+    </style>
+    
+    <div class="col-wrap">
+      <div class="row-wrap">
+        <h2>Rolls</h2>
+
+
+        <dnd-button hidden$="[[!isEditMode]]" on-click="_addRoll" label="Add Roll" icon="add" class="rolls__add-button"></dnd-button>
+        <div hidden$="[[isEditMode]]" class="rolls__toolbar">
+          <h4>Roll Modifiers:</h4>
+          <div>
+            <vaadin-checkbox id='advMod' on-change="_modChange">Advantage</vaadin-checkbox>
+            <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
           </div>
         </div>
 
-        <div class="filter">
-          <vaadin-text-field clear-button-visible value="{{filterStr}}" placeholder='Filter'></vaadin-text-field>
-        </div>
-      </div>
+        <div class="rolls rolls--custom">
 
-      <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
-
-      <vaadin-grid id="grid" theme="no-border no-row-borders" expanded-items="[[expandedItems]]" height-by-rows hidden$="[[noContentMessage]]">
-        <vaadin-grid-column flex-grow="1">
-          <template>
-              <template is="dom-if" if="[[_equal(item.id, 'class')]]">
-                <div class="class-wrap">
-                  <h3>[[item.className]]</h3>
-                  <div class='spells-prepared-text'>
-                    <span>[[_spellsKnownString(item.spellPrepType)]]</span>
-                    <span class='prepared-count'>[[_currentSpellsKnownCount(item.className, spellsKnown)]] / [[_maxSpellsKnownCount(item.className, spellsKnown)]]</span>
-                  </div>
+          <template is="dom-repeat" items="[[customRolls]]">
+            <template is="dom-if" if="[[!isEditMode]]">
+              <div class="roll" on-click="_makeRoll" index$="[[index]]">
+                <div class="roll-header">
+                  <h3>[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
                 </div>
-              </template>
-  
-              <template is="dom-if" if="[[_equal(item.id, 'level')]]">
-                <div class="level-outer-wrap">
-                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}">
-                    <h4 class="level-wrap">[[_toLevel(item.level)]]</h4>
-                    <div class="cantrips-prepared spells-prepared-text" hidden$="[[!_equal(item.level, 0)]]">
-                      <span>Cantrips Known:</span>
-                      <span class='prepared-count'>[[_currentCantripsKnownCount(item.parentClass, spellsKnown)]] / [[_maxCantripsKnownCount(item.parentClass, spellsKnown)]]</span>
-                    </div>
-                  </vaadin-grid-tree-toggle>
 
-                  <div class="slot-checkboxes" hidden$="[[_hideCheckboxes(item.warlockSpellSlots, isEditMode)]]" on-click="_toggleSpellSlot" warlock-spell>
-                    <template is='dom-repeat' items='[[_countToArray(item.warlockSpellSlots)]]' as="thing">
-                      <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSpellSlotChecked(item.currentWarlockSlots, index)]]"></vaadin-checkbox></span>
+                <div class="roll-footer">
+                  <div class="roll__to-hit">
+                    <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
+                  </div>
+
+                  <div class="roll__damages">
+                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
+                      <div class="roll__damage" index$="[[index]]">
+                        <span class="roll__damage-roll" >[[damage.roll]]</span>
+                        <span class="roll__damage-type">&nbsp;[[damage.type]] damage</span>
+                      </div>
                     </template>
-                    <span class="label">Pact</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <template is="dom-if" if="[[isEditMode]]">
+              <div class="roll" on-click="_makeRoll" index$="[[index]]">
+                <div class="roll-header">
+                  <vaadin-text-field value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
+                  <dnd-button label="Remove" icon="remove" on-click="_removeRoll"></dnd-button>
+                </div>
+
+                <div class="roll-footer">
+                  <div class="roll__to-hit">
+                    <vaadin-integer-field hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
+                    <dnd-switch label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
                   </div>
 
-                  <div class="slot-checkboxes" hidden$="[[_hideCheckboxes(item.spellSlots, isEditMode)]]" on-click="_toggleSpellSlot">
-                    <template is='dom-repeat' items='[[_countToArray(item.spellSlots)]]' as="thing">
-                      <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSpellSlotChecked(item.currentSlots, index)]]"></vaadin-checkbox></span>
+                  <div class="roll__damages">
+                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
+                      <div class="roll__damage" index$="[[index]]">
+                        <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                        <div class="roll__damage-roll--edit">
+                          <vaadin-text-field value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
+                        </div>
+                        <div class="roll__damage-type--edit">
+                          <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
+                            <template>
+                              <vaadin-list-box>
+                                <template is="dom-repeat" items="[[damageTypes]]">
+                                  <vaadin-item>[[item]]</vaadin-item>
+                                </template>
+                              </vaadin-list-box>
+                            </template>
+                          </vaadin-select>
+                        </div>
+                      </div>
                     </template>
-                    <span class="label">Slots</span>
+                    <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
                   </div>
                 </div>
-              </template>
-
-              <template is="dom-if" if="[[_equal(item.id, 'spell')]]">
-                <div class="spell-outer-wrap">
-                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" class="spell-wrap">
-                    <span class="spell-inner-wrap">[[item.name]]<span class="spell-level" hidden>[[_spellLevel(item)]]</span><span class="rit-ind" title="Ritual" hidden$="[[!_isRitualSpell(item)]]"></span><span class="conc-ind" title="Concentration" hidden$="[[!_isConcentrationSpell(item)]]"></span></span>
-                  </vaadin-grid-tree-toggle>
-                  <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
-                  <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>
-                </div>
-              </template>
-
-              <template is="dom-if" if="[[_equal(item.id, 'spelldef')]]">
-                <div class="spell-def-wrap">
-                  <div class= "stats-wrapper" inner-h-t-m-l="[[_renderSpell(item)]]"></div>
-                </div>
-              </template>
+              </div>
+            </template>
           </template>
-        </vaadin-grid-column>
-      </vaadin-grid>
-    `}}customElements.define("dnd-character-builder-spells",d)}}]);
+        </div>
+
+      </div>
+    </div>
+    `}}customElements.define("dnd-character-builder-rolls",s)}}]);
 //# sourceMappingURL=8.bundle.js.map

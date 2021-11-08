@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{95:function(i,a,e){"use strict";e.r(a);var s=e(7);e(63),e(70);class t extends s.a{static get template(){return s.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{94:function(i,a,e){"use strict";e.r(a);var s=e(7);e(63),e(70);class t extends s.a{static get template(){return s.b`
       <style include="material-styles my-styles"></style>
 
       <h1 class="mdc-typography--headline2 margin-bottom_large margin-top_large typography_mono">5e Tools</h1>
