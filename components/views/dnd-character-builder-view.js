@@ -135,13 +135,23 @@ class DndCharacterBuilderView extends PolymerElement {
       registerSwipe(this.$.tabTarget, "right", () => {
         if (this.indexForTabs > 0) {
           const newIndex = this.indexForTabs - 1;
-          this.$.tabs.tabBar.activateTab(newIndex);
+          if (!this.tabs[newIndex].hidden) {
+            this.$.tabs.tabBar.activateTab(newIndex);
+          } else if (this.indexForTabs > 1) {
+            const newIndex = this.indexForTabs - 2;
+            this.$.tabs.tabBar.activateTab(newIndex);
+          }
         }
       });
       registerSwipe(this.$.tabTarget, "left", () => {
         if (this.indexForTabs < this.tabs.length - 1) {
           const newIndex = this.indexForTabs + 1;
-          this.$.tabs.tabBar.activateTab(newIndex);
+          if (!this.tabs[newIndex].hidden) {
+            this.$.tabs.tabBar.activateTab(newIndex);
+          } else if (this.indexForTabs < this.tabs.length - 2) {
+            const newIndex = this.indexForTabs + 2;
+            this.$.tabs.tabBar.activateTab(newIndex);
+          }
         }
       });
     }
@@ -195,12 +205,13 @@ class DndCharacterBuilderView extends PolymerElement {
       const newViewId = this.tabs.findIndex((tab) => tab.viewId === this.routeSelection);
       if (newViewId > -1) {
         this.initialSelectedTab = newViewId;
+      } else {
+        this.initialSelectedTab = 0;
       }
     }
   }
 
   async setStateFromCharacter(character) {
-    this.indexForTabs = 0;
     this.characterName = character.name;
     this.classLevel = getClassString(character);
     this.background = getFeatureString("backgrounds", character, true);
@@ -254,6 +265,7 @@ class DndCharacterBuilderView extends PolymerElement {
   nonCasterTabs() {
     return [
       { label: "", icon: "favorite", viewId: "attributes" },
+      { label: "", icon: "flash_on", viewId: "spells", hidden: true},
       { label: "", icon: "local_grocery_store", viewId: "equipment" },
       { label: "", icon: "receipt", viewId: "abilities" },
       { label: "", icon: "casino", viewId: "rolls" },
@@ -276,10 +288,11 @@ class DndCharacterBuilderView extends PolymerElement {
   }
 
   toggleEditMode() {
-    this.$.editBtn.classList.toggle('edit-mode');
-    const isEditMode = this.$.editBtn.classList.contains('edit-mode');
-    dispatchEditModeChange(isEditMode);
-    this.$.editBtn.innerHTML = isEditMode ? 'check' : 'edit';
+    dispatchEditModeChange(!this.isEditMode);
+  }
+
+  _editIcon(isEditMode) {
+    return isEditMode ? 'check' : 'edit';
   }
 
   _editModeClass(isEditMode) {
@@ -336,7 +349,7 @@ class DndCharacterBuilderView extends PolymerElement {
           animation-timing-function: ease-in;
           position: absolute;
           top: -80px;
-          width: max-content;
+          width: calc(100vw - 50px);
           right: 0;
           font-weight: bold;
           font-size: 20px;
@@ -376,7 +389,7 @@ class DndCharacterBuilderView extends PolymerElement {
         .thumb-menu__btn {
           border-radius: 50%;
         }
-        #editBtn.edit-mode {
+        .edit-mode .edit-button {
           background: var(--mdc-theme-secondary) !important;
         }
         .download-mobile {
@@ -472,8 +485,8 @@ class DndCharacterBuilderView extends PolymerElement {
 
             <div class="thumb-menu">
               <div class="roll-container" id="rollContainer"></div>
-              <button class="thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" id="editBtn" on-click="toggleEditMode">edit</button>
-              <button class="thumb-menu__btn download-mobile mdc-icon-button mdc-button--raised material-icons" on-click="downloadCharacter">file_download</button>
+              <button class="thumb-menu__btn edit-button mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
+              <!-- <button class="thumb-menu__btn download-mobile mdc-icon-button mdc-button--raised material-icons" on-click="downloadCharacter">file_download</button> -->
             </div>
           </div>
         </div>

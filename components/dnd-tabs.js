@@ -28,7 +28,7 @@ class DndTabs extends PolymerElement {
         this.tabBar = new MDCTabBar(this.$.tabs);
         this.$.tabs.addEventListener("MDCTabBar:activated", this.handleTabChange);
         this.tabBar.activateTab(this.initialSelectedIndex);
-      }, 0);
+      }, 10);
     }
   }
 
@@ -87,6 +87,9 @@ class DndTabs extends PolymerElement {
           border: 1px solid var(--mdc-theme-text-divider-on-background);
           border-bottom: none;
         }
+        .mdc-tab[hidden] {
+          display: none;
+        }
       </style>
 
       <div class="mdc-tab-bar" role="tablist" id="tabs">
@@ -96,7 +99,7 @@ class DndTabs extends PolymerElement {
               
               <template is="dom-repeat" items="[[tabs]]">
                 
-                <button class="mdc-tab" role="tab" aria-selected="false" tabindex="[[index]]">
+                <button class="mdc-tab" role="tab" aria-selected="false" tabindex="[[index]]" hidden$="[[item.hidden]]">
                   <span class="mdc-tab__content">
                       <span class="mdc-tab__icon material-icons" aria-hidden="true">[[item.icon]]</span>
                     <span class="mdc-tab__text-label">[[item.label]]</span>

@@ -7,7 +7,7 @@ import { resolveHash } from '../util/renderTable.js';
 import { onDataLoad, onClassChange, onSubChange } from "../js/classes.js";
 import { readRouteSelection, routeEventChannel, clearRouteSelection } from '../util/routing.js';
 import { scrollToTop } from '../util/animateScroll.js';
-import { jqOffset, jqHeight, throttle } from '../js/utils.js';
+import { jqOffset, jqHeight } from '../js/utils.js';
 
 
 class DndClasses extends PolymerElement {

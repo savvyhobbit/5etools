@@ -306,46 +306,67 @@ class DndCharacterBuilderRolls extends PolymerElement {
         <div class="rolls rolls--custom">
 
           <template is="dom-repeat" items="[[customRolls]]">
-            <div class="roll" on-click="_makeRoll" index$="[[index]]">
-              <div class="roll-header">
-                <h3 hidden$="[[isEditMode]]">[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
-                <vaadin-text-field hidden$="[[!isEditMode]]" value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
-                <dnd-button hidden$="[[!isEditMode]]" label="Remove" icon="remove" on-click="_removeRoll"></dnd-button>
-              </div>
-
-              <div class="roll-footer">
-                <div class="roll__to-hit">
-                  <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
-                  <vaadin-integer-field hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
-                  <dnd-switch hidden$="[[!isEditMode]]" label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
+            <template is="dom-if" if="[[!isEditMode]]">
+              <div class="roll" on-click="_makeRoll" index$="[[index]]">
+                <div class="roll-header">
+                  <h3>[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
                 </div>
 
-                <div class="roll__damages">
-                  <template is="dom-repeat" items="[[item.damages]]" as="damage">
-                    <div class="roll__damage" index$="[[index]]">
-                      <dnd-button hidden$="[[!isEditMode]]" on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
-                      <span class="roll__damage-roll" hidden$="[[isEditMode]]" >[[damage.roll]]</span>
-                      <div class="roll__damage-roll--edit" hidden$="[[!isEditMode]]">
-                        <vaadin-text-field value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
+                <div class="roll-footer">
+                  <div class="roll__to-hit">
+                    <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
+                  </div>
+
+                  <div class="roll__damages">
+                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
+                      <div class="roll__damage" index$="[[index]]">
+                        <span class="roll__damage-roll" >[[damage.roll]]</span>
+                        <span class="roll__damage-type">&nbsp;[[damage.type]] damage</span>
                       </div>
-                      <span class="roll__damage-type" hidden$="[[isEditMode]]">&nbsp;[[damage.type]] damage</span>
-                      <div class="roll__damage-type--edit" hidden$="[[!isEditMode]]">
-                        <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
-                          <template>
-                            <vaadin-list-box>
-                              <template is="dom-repeat" items="[[damageTypes]]">
-                                <vaadin-item>[[item]]</vaadin-item>
-                              </template>
-                            </vaadin-list-box>
-                          </template>
-                        </vaadin-select>
-                      </div>
-                    </div>
-                  </template>
-                  <dnd-button hidden$="[[!isEditMode]]" on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+                    </template>
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
+
+            <template is="dom-if" if="[[isEditMode]]">
+              <div class="roll" on-click="_makeRoll" index$="[[index]]">
+                <div class="roll-header">
+                  <vaadin-text-field value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
+                  <dnd-button label="Remove" icon="remove" on-click="_removeRoll"></dnd-button>
+                </div>
+
+                <div class="roll-footer">
+                  <div class="roll__to-hit">
+                    <vaadin-integer-field hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
+                    <dnd-switch label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
+                  </div>
+
+                  <div class="roll__damages">
+                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
+                      <div class="roll__damage" index$="[[index]]">
+                        <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                        <div class="roll__damage-roll--edit">
+                          <vaadin-text-field value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
+                        </div>
+                        <div class="roll__damage-type--edit">
+                          <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
+                            <template>
+                              <vaadin-list-box>
+                                <template is="dom-repeat" items="[[damageTypes]]">
+                                  <vaadin-item>[[item]]</vaadin-item>
+                                </template>
+                              </vaadin-list-box>
+                            </template>
+                          </vaadin-select>
+                        </div>
+                      </div>
+                    </template>
+                    <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+                  </div>
+                </div>
+              </div>
+            </template>
           </template>
         </div>
 

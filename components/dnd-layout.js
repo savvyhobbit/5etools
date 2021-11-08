@@ -190,7 +190,7 @@ class DndLayout extends PolymerElement {
           display: none;
         }
         .content-wrap {
-          margin-top: 16px;
+          padding-top: 16px;
         }
         .main {
           min-height: calc(var(--vh, 1vh) * 100 - 64px);

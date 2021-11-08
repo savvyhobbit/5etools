@@ -34,15 +34,16 @@ import {
 } from "../util/consts.js";
 import { List } from "../lib/list";
 
-let throttle = (fn, wait) => {
-	var time = Date.now();
-	return function() {
-		if (time + wait - Date.now() < 0) {
-			fn();
-			time = Date.now();
+function throttle(func, timeFrame) {
+	var lastTime = 0;
+	return function () {
+		var now = new Date();
+		if (now - lastTime >= timeFrame) {
+			func();
+			lastTime = now;
 		}
 	};
-};
+}
 
 let debounce = (func, wait, immediate) => {
 	var timeout;

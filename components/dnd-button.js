@@ -142,6 +142,37 @@ class DndButton extends PolymerElement {
         :host(.link) button:hover .mdc-button__label {
           color: var(--mdc-theme-secondary);
         }
+
+        :host([edit-mode]) button {
+          background-color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-on-secondary)
+        }
+        :host([edit-mode]) .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([edit-mode]) i {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([edit-mode]) button:hover i,
+        :host([edit-mode]) button:hover .mdc-button__label {
+          color: var(--mdc-theme-on-secondary);
+        }
+
+        :host([not-edit-mode]) button {
+          background-color: var(--mdc-theme-primary);
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) i {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) button:hover i,
+        :host([not-edit-mode]) button:hover .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+
       </style>
       <button id="button" class="mdc-button" style$="[[_styleStr(background, border)]]">
         <div class="mdc-button__ripple"></div>

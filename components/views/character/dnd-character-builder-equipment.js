@@ -11,7 +11,8 @@ import {
   setItem,
   spliceItems,
   isChildItem,
-  getItemAtId
+  getItemAtId,
+  addItem
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import "@vaadin/vaadin-checkbox";
@@ -115,14 +116,17 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
       // Define Row Details
       grid.rowDetailsRenderer = ((root, grid, rowData) => {
-        if (!root.firstElementChild) {
-          root.innerHTML =
-          `<div class="details" id="stats">
-            <dnd-character-builder-equipment-item-detail></dnd-character-builder-equipment-item-detail>
-          </div>`;
+        if (rowData.detailsOpened) {
+          if (!root.firstElementChild) {
+            root.innerHTML = '<div class="details" id="stats"></div>';
+          }
+          if (!this.detailEl) {
+            this.detailEl = document.createElement('dnd-character-builder-equipment-item-detail');
+            this.detailEl.unique = Date.now();
+          }
+          root.querySelector('.details').appendChild(this.detailEl);
+          this.detailEl.item = rowData.item;
         }
-        const detailEl = root.querySelector('dnd-character-builder-equipment-item-detail');
-        detailEl.item = rowData.item;
       }).bind(this);
 
       // Add Drag and Drop
@@ -308,6 +312,10 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
     item.storedItem.quantity = newQuantity;
     setItem(item);
+  }
+
+  _addItem() {
+    addItem({}, false);
   }
 
   _preventDefault(e) {
@@ -548,7 +556,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         #stats ul li {
           margin-bottom: 8px;
         }
-
 
         @media(min-width: 420px) {
           .heading {

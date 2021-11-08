@@ -236,6 +236,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
 
         .abilities {
           width: 100%;
+          margin-bottom: 200px;
         }
 
         .ability {
@@ -283,7 +284,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
 
         .ability__slots-label {
           padding-left: 8px;
-          width: 80px;
+          width: 64px;
           text-align: center;
           font-size: 12px;
           line-height: 1.4;
@@ -300,6 +301,10 @@ class DndCharacterBuilderAbilities extends PolymerElement {
           position: absolute;
           top: 0;
           right: 0;
+        }
+
+        .add-ability {
+          display: inline-flex;
         }
 
         vaadin-checkbox {
@@ -324,6 +329,8 @@ class DndCharacterBuilderAbilities extends PolymerElement {
             <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
           </div>
         </div>
+
+        <dnd-button class="add-ability" hidden$="[[!isEditMode]]" icon="add" label="Add Ability" on-click="_addAbility"></dnd-button>
 
         <div class="abilities">
           <template is="dom-repeat" items="[[abilities]]">
@@ -371,7 +378,6 @@ class DndCharacterBuilderAbilities extends PolymerElement {
             </div>
           </template>
         </div>
-        <dnd-button hidden$="[[!isEditMode]]" label="Add Ability" on-click="_addAbility"></dnd-button>
       </div>
     `;
   }

@@ -3,12 +3,13 @@ import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSubclassChoice } from "../../../util/charBuilder";
 import { filterModel } from "../../../util/data";
-import { getEditModeChannel, isEditMode } from "../../../util/editMode";
+import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { spellHtml } from "../../../js/spells";
-import { findInPath, util_capitalize, util_capitalizeAll, getProfBonus } from "../../../js/utils";
+import { findInPath, util_capitalize, util_capitalizeAll, getProfBonus, throttle, debounce } from "../../../js/utils";
 import Parser from "../../../util/Parser";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-text-field";
+import "../../dnd-button";
 
 // todo:
 // compute spell slots for multiclassing, warlock ++
@@ -37,11 +38,29 @@ class DndCharacterBuilderSpells extends PolymerElement {
         type: String,
         value: '',
         observer: '_filterChange'
-      }
+      },
+      expandedItems: {
+        type: Array
+      },
     };
   }
 
-  _filterChange() {
+  static get observers() {
+    return [
+      '_expandedItemsChange(expandedItems.*)'
+    ]
+  }
+
+  _expandedItemsChange() {
+    window.scrollTo(0, this.originalScrollHeight);
+  }
+
+  _recordScrollHeight() {
+    // Fix reposition issue after tree expand/collapse toggle
+    this.originalScrollHeight = window.scrollY;
+  }
+
+  __filterChangeThrottled() {
     if (this.filterStr.length) {
       if (!this.oldExpanded) {
         this.oldExpanded = this.$.grid.expandedItems;
@@ -58,6 +77,12 @@ class DndCharacterBuilderSpells extends PolymerElement {
       }
       this.$.grid.clearCache();
     }
+  }
+
+  constructor() {
+    super();
+
+    this._filterChange = debounce(this.__filterChangeThrottled.bind(this), 250);
   }
 
   connectedCallback() {
@@ -761,6 +786,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
     }
   }
 
+  _toggleEditMode() {
+    dispatchEditModeChange(!this.isEditMode);
+  }
+
   _spellsKnownString(spellPrepType) {
     return 'Spells ' + util_capitalize(spellPrepType) + ':'
   }
@@ -773,6 +802,20 @@ class DndCharacterBuilderSpells extends PolymerElement {
   _isConcentrationSpell(spellParent) {
     const spell = spellParent.children[0];
     return spell.duration.some((d) => d.concentration);
+  }
+
+  _isBonusActionSpell(spellParent) {
+    const spell = spellParent.children[0];
+    return spell.time.some((t) => t.unit === 'bonus');
+  }
+
+  _getSpellSchool(spellParent) {
+    const spell = spellParent.children[0];
+    return Parser.SP_SCHOOL_ABV_TO_FULL[spell.school];
+  }
+
+  _hidePrepareSpellsButton(isEditMode, spellsKnown) {
+    return isEditMode || !Object.values(spellsKnown).some((clas) => clas.current.length < clas.max - 1 || clas.currentCantrips.length < clas.maxCantrips - 1);
   }
 
   _spellLevel(item) {
@@ -796,6 +839,14 @@ class DndCharacterBuilderSpells extends PolymerElement {
   _hideCheckboxes(spellSlots) {
     return !spellSlots || spellSlots > 0 && this.isEditMode;
   }
+  
+  _hideSlotsLabel(isEditMode, level) {
+    return !isEditMode || level === 0;
+  }
+  
+  _wrapClassString(isEditMode) {
+    return isEditMode ? 'edit-mode' : 'not-edit-mode';
+  }
 
   _equal(a, b) {
     return a === b;
@@ -815,15 +866,29 @@ class DndCharacterBuilderSpells extends PolymerElement {
         :host {}
         :host {
           display: block;
+          padding-top: 16px;
         }
         [hidden] {
           display: none !important;
         }
 
+        .heading {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+
         h2 {
-          font-size: 24px;
+          display: block;
+          font-size: 1.5em;
+          margin: 20px 0 20px 16px;
           font-weight: bold;
-          margin: 34px 14px 24px;
+        }
+
+        .prepare-spells-button {
+          margin-right: 16px;
         }
 
         vaadin-grid {
@@ -849,6 +914,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
           -moz-user-select: none;
           -ms-user-select: none;
           user-select: none;
+          left: -16px;
+          border-bottom: 3px solid var(--_lumo-grid-secondary-border-color);;
+          padding: 24px 16px 8px;
+          position: relative;
         }
         .class-wrap h3 {
           font-size: 22px;
@@ -860,8 +929,11 @@ class DndCharacterBuilderSpells extends PolymerElement {
           margin-left: auto;
         }
         .prepared-count {
-          color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-primary);
           font-weight: bold;
+        }
+        .prepared-count[edit-mode] {
+          color: var(--mdc-theme-secondary);
         }
         .cantrips-prepared {
           margin-right: 0;
@@ -881,6 +953,12 @@ class DndCharacterBuilderSpells extends PolymerElement {
           -moz-user-select: none;
           -ms-user-select: none;
           user-select: none;
+        }
+
+        .level-wrap .label {
+          padding-left: 6px;
+          font-size: 12px;
+          color: var(--lumo-tint-70pct);
         }
 
         .slot-checkboxes {
@@ -910,7 +988,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         }
 
         .spell-wrap {
-          width: calc(100% - 100px);
+          width: 100%;
           margin-left: 24px;
           white-space: nowrap;
           overflow: hidden;
@@ -935,28 +1013,38 @@ class DndCharacterBuilderSpells extends PolymerElement {
           font-size: 12px;
         }
 
-        .rit-ind,
-        .conc-ind {
+        .ind {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 13px;
-          height: 13px;
-          border-radius: 50%;
+          border-radius: 8px;
           color: var(--mdc-theme-on-secondary);
           background-color: var(--mdc-theme-secondary);
-          font-size: 10px;
+          font-size: 12px;
           position: relative;
-          bottom: 1px;
-          margin-left: 4px;
+          bottom: 2px;
+          margin-left: 0;
+          padding: 0px 4px;
+          font-weight: 500;
         }
 
         .rit-ind::before {
           content: 'R';
         }
-
         .conc-ind::before {
           content: 'C';
+        }
+        .bonus-ind::before {
+          content: 'BA';
+        }
+        .school-ind {
+          font-size: 10px;
+          height: 16px;
+          bottom: 3px;
+        }
+
+        .spell-inner-wrap[not-edit-mode] .ind {
+          background-color: var(--mdc-theme-primary);
         }
 
         .spell-def-wrap {
@@ -990,12 +1078,13 @@ class DndCharacterBuilderSpells extends PolymerElement {
           border: none;
           border-radius: 4px;
           outline: none;
-          width: 60px;
+          width: 80px;
           display: inline-block;
           justify-content: center;
           white-space: normal;
           font-size: 12px;
           padding: 4px 4px;
+          margin-left: 8px;
         }
         .class-icon {
           border: none;
@@ -1108,7 +1197,13 @@ class DndCharacterBuilderSpells extends PolymerElement {
         }
       </style>
 
-      <div class="header-wrap" hidden$="[[noContentMessage]]">
+      <div class$="[[_wrapClassString(isEditMode)]]" hidden$="[[noContentMessage]]">
+
+        <div class="heading">
+          <h2>Spells</h2>
+
+          <dnd-button class="prepare-spells-button link" hidden$="[[_hidePrepareSpellsButton(isEditMode, spellsKnown)]]" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Prepare Your Spells!" icon="edit" on-click="_toggleEditMode"></dnd-button>
+        </div>
 
         <!-- Spell Mods -->
         <div class="mods" >
@@ -1145,7 +1240,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
       <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
 
-      <vaadin-grid id="grid" theme="no-border no-row-borders" expanded-items="[[expandedItems]]" height-by-rows hidden$="[[noContentMessage]]">
+      <vaadin-grid id="grid" theme="no-border no-row-borders" expanded-items="{{expandedItems}}" height-by-rows hidden$="[[noContentMessage]]">
         <vaadin-grid-column flex-grow="1">
           <template>
               <template is="dom-if" if="[[_equal(item.id, 'class')]]">
@@ -1153,18 +1248,18 @@ class DndCharacterBuilderSpells extends PolymerElement {
                   <h3>[[item.className]]</h3>
                   <div class='spells-prepared-text'>
                     <span>[[_spellsKnownString(item.spellPrepType)]]</span>
-                    <span class='prepared-count'>[[_currentSpellsKnownCount(item.className, spellsKnown)]] / [[_maxSpellsKnownCount(item.className, spellsKnown)]]</span>
+                    <span class='prepared-count' edit-mode$=[[isEditMode]]>[[_currentSpellsKnownCount(item.className, spellsKnown)]] / [[_maxSpellsKnownCount(item.className, spellsKnown)]]</span>
                   </div>
                 </div>
               </template>
   
               <template is="dom-if" if="[[_equal(item.id, 'level')]]">
                 <div class="level-outer-wrap">
-                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}">
-                    <h4 class="level-wrap">[[_toLevel(item.level)]]</h4>
+                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" on-click='_recordScrollHeight'>
+                    <h4 class="level-wrap">[[_toLevel(item.level)]]<span hidden$="[[_hideSlotsLabel(isEditMode, item.level)]]" class="label">([[item.spellSlots]] Slots)</span></h4>
                     <div class="cantrips-prepared spells-prepared-text" hidden$="[[!_equal(item.level, 0)]]">
                       <span>Cantrips Known:</span>
-                      <span class='prepared-count'>[[_currentCantripsKnownCount(item.parentClass, spellsKnown)]] / [[_maxCantripsKnownCount(item.parentClass, spellsKnown)]]</span>
+                      <span class='prepared-count' edit-mode$=[[isEditMode]]>[[_currentCantripsKnownCount(item.parentClass, spellsKnown)]] / [[_maxCantripsKnownCount(item.parentClass, spellsKnown)]]</span>
                     </div>
                   </vaadin-grid-tree-toggle>
 
@@ -1186,8 +1281,15 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
               <template is="dom-if" if="[[_equal(item.id, 'spell')]]">
                 <div class="spell-outer-wrap">
-                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" class="spell-wrap">
-                    <span class="spell-inner-wrap">[[item.name]]<span class="spell-level" hidden>[[_spellLevel(item)]]</span><span class="rit-ind" title="Ritual" hidden$="[[!_isRitualSpell(item)]]"></span><span class="conc-ind" title="Concentration" hidden$="[[!_isConcentrationSpell(item)]]"></span></span>
+                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" class="spell-wrap" on-click='_recordScrollHeight'>
+                    <div class="spell-inner-wrap" not-edit-mode$="[[!isEditMode]]">
+                      [[item.name]]
+                      <span class="spell-level" hidden>[[_spellLevel(item)]]</span>
+                      <span class="ind rit-ind" title="Ritual" hidden$="[[!_isRitualSpell(item)]]"></span>
+                      <span class="ind conc-ind" title="Concentration" hidden$="[[!_isConcentrationSpell(item)]]"></span>
+                      <span class="ind bonus-ind" title="Bonus Action" hidden$="[[!_isBonusActionSpell(item)]]"></span>
+                      <span class="ind school-ind" title="[[_getSpellSchool(item)]]">[[_getSpellSchool(item)]]</span>
+                    </div>
                   </vaadin-grid-tree-toggle>
                   <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
                   <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>

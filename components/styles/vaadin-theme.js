@@ -208,6 +208,23 @@ registerStyles('vaadin-integer-field', css`
     :host([theme="hp"]) [part="input-field"]::after {
       display: none;
     }
+
+    :host([edit-mode]) [part="input-field"] {
+      background-color: var(--mdc-theme-secondary-lighter);
+      color: var(--mdc-theme-on-secondary);
+    }
+    :host([edit-mode]) [part="decrease-button"]::before,
+    :host([edit-mode]) [part="increase-button"]::before {
+      color: var(--mdc-theme-on-secondary);
+    }
+    :host([not-edit-mode]) [part="input-field"] {
+      background-color: var(--mdc-theme-primary-lighter);
+      color: var(--mdc-theme-on-primary);
+    }
+    :host([not-edit-mode]) [part="decrease-button"]::before,
+    :host([not-edit-mode]) [part="increase-button"]::before {
+      color: var(--mdc-theme-on-primary);
+    }
 `);
 
 registerStyles('vaadin-grid', css`

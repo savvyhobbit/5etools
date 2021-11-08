@@ -12,7 +12,7 @@ export default function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-on-secondary", "#000");
         root.style.setProperty("--mdc-theme-on-surface", "hsla(214, 96%, 96%, 0.9)");
         root.style.setProperty("--mdc-theme-on-error", "#000");
-        root.style.setProperty("--mdc-theme-text-primary-on-background", "#fff");
+        root.style.setProperty("--mdc-theme-text-primary-on-background", "var(--lumo-body-text-color)"); // Body Text
         root.style.setProperty("--mdc-theme-text-secondary-on-background", "rgba(255, 255, 255, 0.87)");
         root.style.setProperty("--mdc-theme-text-hint-on-background", "rgba(255, 255, 255, 0.6)");
         root.style.setProperty("--mdc-theme-text-disabled-on-background", "rgba(255, 255, 255, 0.38)");
@@ -98,7 +98,7 @@ export default function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-on-secondary", "#fff");
         root.style.setProperty("--mdc-theme-on-surface", "#000");
         root.style.setProperty("--mdc-theme-on-error", "#fff");
-        root.style.setProperty("--mdc-theme-text-primary-on-background", "rgba(0, 0, 0, 0.87)");
+        root.style.setProperty("--mdc-theme-text-primary-on-background", "var(--lumo-body-text-color)");
         root.style.setProperty("--mdc-theme-text-secondary-on-background", "rgba(0, 0, 0, 0.54)");
         root.style.setProperty("--mdc-theme-text-hint-on-background", "rgba(0, 0, 0, 0.38)");
         root.style.setProperty("--mdc-theme-text-disabled-on-background", "rgba(0, 0, 0, 0.38)");

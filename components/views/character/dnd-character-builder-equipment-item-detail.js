@@ -516,84 +516,85 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           </div>
         </div>
 
-        <div class="edit__wrap" hidden$="[[!isEditMode]]">
-          <vaadin-text-field class="edit__name" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
-          <vaadin-number-field has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
+        <template is="dom-if" if="[[isEditMode]]">
+          <div class="edit__wrap">
+            <vaadin-text-field class="edit__name" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
+            <vaadin-number-field has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
 
-          <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
-            <template>
-              <vaadin-list-box>
-                <template is="dom-repeat" items="[[itemTypes]]">
-                  <vaadin-item>[[item]]</vaadin-item>
-                </template>
-              </vaadin-list-box>
-            </template>
-          </vaadin-select>
+            <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[itemTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
 
-          <vaadin-select id="raritySelect" value="{{itemRarity}}" on-change="_itemRarityChange" label="Rarity" >
-            <template>
-              <vaadin-list-box>
-                <template is="dom-repeat" items="[[rarityTypes]]">
-                  <vaadin-item>[[item]]</vaadin-item>
-                </template>
-              </vaadin-list-box>
-            </template>
-          </vaadin-select>
+            <vaadin-select id="raritySelect" value="{{itemRarity}}" on-change="_itemRarityChange" label="Rarity" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[rarityTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
 
-          <div class="edit__weapon" hidden$="[[!item.weapon]]">
-            <vaadin-integer-field  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+            <div class="edit__weapon" hidden$="[[!item.weapon]]">
+              <vaadin-integer-field  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
 
-            <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
+              <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
 
-            <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
+              <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
 
-            <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
-              <div class="roll__damage" index$="[[index]]">
-                <dnd-button hidden$="[[!isEditMode]]" on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
-                <div class="roll__damage-roll--edit" hidden$="[[!isEditMode]]">
-                  <vaadin-text-field value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
+              <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
+                <div class="roll__damage" index$="[[index]]">
+                  <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                  <div class="roll__damage-roll--edit">
+                    <vaadin-text-field value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
+                  </div>
+                  <div class="roll__damage-type--edit">
+                    <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
+                      <template>
+                        <vaadin-list-box>
+                          <template is="dom-repeat" items="[[damageTypes]]">
+                            <vaadin-item>[[item]]</vaadin-item>
+                          </template>
+                        </vaadin-list-box>
+                      </template>
+                    </vaadin-select>
+                  </div>
                 </div>
-                <div class="roll__damage-type--edit" hidden$="[[!isEditMode]]">
-                  <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
-                    <template>
-                      <vaadin-list-box>
-                        <template is="dom-repeat" items="[[damageTypes]]">
-                          <vaadin-item>[[item]]</vaadin-item>
-                        </template>
-                      </vaadin-list-box>
-                    </template>
-                  </vaadin-select>
-                </div>
-              </div>
-            </template>
-            <dnd-button hidden$="[[!isEditMode]]" on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+              </template>
+              <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+            </div>
+
+            <vaadin-integer-field hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
+            
+            <vaadin-integer-field hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
+
+            <!-- <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[resistTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select> -->
+
+            <div class="edit__checkboxes">
+              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity?</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth?</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement?</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous?</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference?</vaadin-checkbox>
+            </div>
+
+            <vaadin-text-area class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
           </div>
-
-          <vaadin-integer-field hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
-          
-          <vaadin-integer-field hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
-
-          <!-- <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
-            <template>
-              <vaadin-list-box>
-                <template is="dom-repeat" items="[[resistTypes]]">
-                  <vaadin-item>[[item]]</vaadin-item>
-                </template>
-              </vaadin-list-box>
-            </template>
-          </vaadin-select> -->
-
-          <div class="edit__checkboxes">
-            <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity?</vaadin-checkbox>
-            <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth?</vaadin-checkbox>
-            <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement?</vaadin-checkbox>
-            <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous?</vaadin-checkbox>
-            <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference?</vaadin-checkbox>
-          </div>
-
-          <vaadin-text-area class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
-        </div>
-        
+        </template>
       </div>
     `;
   }

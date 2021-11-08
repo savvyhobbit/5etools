@@ -767,6 +767,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           font-size: 10px;
           margin: -4px 0 8px auto;
           background-color: var(--lumo-contrast-10pct);
+          /* background-color: var(--mdc-theme-secondary-lighter); */
           padding: 5px 5px 4px;
           line-height: 1;
           border-radius: 4px;
@@ -930,7 +931,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
                 <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
                 <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{int}} min="1" max="20" has-controls label="Intellegence" disabled$="[[!isEditMode]]">
+                  <vaadin-integer-field theme="mini" value={{int}} min="1" max="20" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
                     <span class="stat-box__adj" slot="suffix">[[_adjustString(intAdj)]]</span>
                   </vaadin-integer-field>
                 </div>
