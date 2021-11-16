@@ -227,7 +227,7 @@ class h extends(Object(l.a)(Object(a.a)(Object(o.a)(Object(s.a)(r.a))))){static 
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(r.content);i(108)},120:function(e,t,i){"use strict";i(45),i(51),i(50),i(39),i(31),i(52),i(113);var r=i(13);const s=r.a`<dom-module id="lumo-grid" theme-for="vaadin-grid">
+</dom-module>`;document.head.appendChild(r.content);i(108)},121:function(e,t,i){"use strict";i(45),i(51),i(50),i(39),i(31),i(52),i(113);var r=i(13);const s=r.a`<dom-module id="lumo-grid" theme-for="vaadin-grid">
   <template>
     <style>
       :host {
