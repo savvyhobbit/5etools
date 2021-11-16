@@ -197,7 +197,7 @@ async function addFeatureById(type = readRouteView(), id = readRouteSelection(),
 }
 
 function mergeFeature(character = selectedCharacter, selectedItem, type) {
-  if (type === "classes") {
+  if (type === "classes" || type === "class-all") {
     mergeClass(character, selectedItem);
 
   } else if (type==="items") { 
@@ -366,19 +366,19 @@ async function getClassReferences(char = selectedCharacter, levelIndex) {
   let classReferences = {};
 
   if (char.levels && char.levels.length) {
-    let classData = await loadModel("classes");
+    let classData = await loadModel("class-all");
 
     if (levelIndex === undefined) {
       classReferences = char.levels.reduce((obj, level) => {
         if (level.name) {
           if (!obj.hasOwnProperty(level.name)) {
-            obj[level.name] = resolveHash(classData, level.name);
+            obj[level.name] = resolveHash(classData, level.id);
           }
         }
         return obj;
       }, {});
     } else if (char.levels.length > levelIndex) {
-      classReferences = resolveHash(classData, char.levels[levelIndex].name);
+      classReferences = resolveHash(classData, char.levels[levelIndex].id);
     }
   }
   return classReferences;
@@ -514,12 +514,12 @@ function setRaceAttributes(attr, character = selectedCharacter) {
 
 async function getASIForLevel(level, character = selectedCharacter) {
   const asiArray = character.asi,
-    classData = await loadModel("classes");
+    classData = await loadModel("class-all");
   let asiIndex = -1
 
   for (let i = 0; i <= level && i < character.levels.length; i ++) {
     const curLevel = character.levels[i],
-      classLevelData = resolveHash(classData, curLevel.name);
+      classLevelData = resolveHash(classData, curLevel.id);
 
     for (let feature of classLevelData.classFeatures[i]) {
       if (feature.name === "Ability Score Improvement") {

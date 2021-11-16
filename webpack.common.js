@@ -31,6 +31,11 @@ module.exports = {
           toType: "dir"
         },
         {
+          from: "data/newClasses/*",
+          to: ".",
+          toType: "dir"
+        },
+        {
           from: "data/spells/*",
           to: ".",
           toType: "dir"

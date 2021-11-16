@@ -344,7 +344,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           const spellTable = tableGroups.find((tableGroup) => tableGroup.title === "Spell Slots per Spell Level");
           let spellSlotEntries;
           if (spellTable) {
-            spellSlotEntries = spellTable.rows[level - 1].filter((spellSlots) => spellSlots !== 0);
+            spellSlotEntries = spellTable.rowsSpellProgression[level - 1].filter((spellSlots) => spellSlots !== 0);
           } else {
             // If no spell slots per level, then we're a warlock, get spell entries for
             // warlocks with zero spell slots at each level (pact slots will be added later)

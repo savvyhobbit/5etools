@@ -137,7 +137,7 @@ class DndSelectionList extends PolymerElement {
         this.dispatchEvent(new CustomEvent("title-change", {
           bubbles: true,
           composed: true,
-          detail: { title: itemFromHash.name }
+          detail: itemFromHash
         }));
       } else {
         clearRouteSelection(true);

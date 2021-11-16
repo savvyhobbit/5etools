@@ -13,10 +13,6 @@ class DndBaseRoutingView extends PolymerElement {
         value: 'index',
         observer: 'viewIdChange'
       },
-      header: {
-        type: String,
-        computed: '_lookupheader(viewId)'
-      },
       loadingRender: {
         type: Boolean,
         value: false
@@ -89,27 +85,38 @@ class DndBaseRoutingView extends PolymerElement {
     jqEmpty(this.$.routeTarget);
     this.$.routeTarget.appendChild(document.createElement(`dnd-${this.viewId}-view`));
     this.loadingView = false;
+
+    this.triggerTitleChange(this.viewId);
+    
     window.scrollTo(0,0);
   }
 
-  _lookupheader(viewId) {
+  triggerTitleChange(viewId) {
+    let title;
+
     switch (viewId) {
       case 'variantrules':
-        return 'Variant Rules';
+        title = 'Variant Rules';
       case 'index':
-        return undefined;
+        title = undefined;
       case 'dice':
-        return 'Dice Roller';
+        title = 'Dice Roller';
       case 'character-builder':
-        return 'Character Sheets'
+        title = 'Character Sheets'
       default:
-        return viewId ? util_capitalize(viewId) : '';
+        title = viewId ? util_capitalize(viewId) : '';
     }
+    
+    this.$.titleEl.dispatchEvent(new CustomEvent("title-change", {
+      bubbles: true,
+      composed: true,
+      detail: { name: title }
+    }));
   }
   
   static get template() {
     return html`
-      <dnd-layout header="[[header]]">
+      <dnd-layout id="titleEl" header="[[header]]">
         <dnd-spinner loading$="[[loading]]"></dnd-spinner>
         <div hidden$="[[loading]]" id="routeTarget"></div>
       </dnd-layout>

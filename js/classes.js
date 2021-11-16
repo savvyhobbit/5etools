@@ -203,15 +203,30 @@ function onClassChange(curClass, rootEl) {
         colHeaders.append(parseHTML(`<th class="centred-col table-cell" ${subclassData}>${lbl}</th>`, true, true));
       }
 
-      for (let j = 0; j < 20; j++) {
-        const tr = rootEl.querySelector(`#level${j + 1}`);
-        levelTrs[j] = tr;
-        for (let k = 0; k < tGroup.rows[j].length; k++) {
-          let entry = tGroup.rows[j][k];
-          if (entry === 0) entry = "\u2014";
-          const stack = [];
-          renderer.recursiveEntryRender(entry, stack, "", "");
-          tr.append(parseHTML(`<td class="centred-col" ${subclassData}>${stack.join("")}</td>`, true, true));
+      if (tGroup.rows) {
+        for (let j = 0; j < 20; j++) {
+          const tr = rootEl.querySelector(`#level${j + 1}`);
+          levelTrs[j] = tr;
+          for (let k = 0; k < tGroup.rows[j].length; k++) {
+            let entry = tGroup.rows[j][k];
+            if (entry === 0) entry = "\u2014";
+            const stack = [];
+            renderer.recursiveEntryRender(entry, stack, "", "");
+            tr.append(parseHTML(`<td class="centred-col" ${subclassData}>${stack.join("")}</td>`, true, true));
+          }
+        }
+      }
+      if (tGroup.rowsSpellProgression) {
+        for (let j = 0; j < 20; j++) {
+          const tr = rootEl.querySelector(`#level${j + 1}`);
+          levelTrs[j] = tr;
+          for (let k = 0; k < tGroup.rowsSpellProgression[j].length; k++) {
+            let entry = tGroup.rowsSpellProgression[j][k];
+            if (entry === 0) entry = "\u2014";
+            const stack = [];
+            renderer.recursiveEntryRender(entry, stack, "", "");
+            tr.append(parseHTML(`<td class="centred-col" ${subclassData}>${stack.join("")}</td>`, true, true));
+          }
         }
       }
       let combinedLabels = tGroup.colLabels.join(' ');
@@ -275,12 +290,11 @@ function onClassChange(curClass, rootEl) {
     for (let j = 0; j < lvlFeatureList.length; j++) {
       const feature = lvlFeatureList[j];
       const featureId = HASH_FEATURE + encodeForHash(feature.name) + "_" + i;
-
       const featureLinkPart = HASH_FEATURE + encodeForHash(feature.name) + i;
       const featureLinkClasses = [CLSS_FEATURE_LINK];
       if (isNonstandardSource(feature.source)) featureLinkClasses.push(CLSS_NON_STANDARD_SOURCE);
       const featureLink = parseHTML(
-        `<a href="#${encodeForHash(curClass.name, curClass.source)}${HASH_PART_SEP}${featureLinkPart}"
+        `<a href="#${encodeForHash([curClass.name, curClass.source])}${HASH_PART_SEP}${featureLinkPart}"
           class="${featureLinkClasses.join(" ")}"
           ${ATB_DATA_FEATURE_LINK}="${featureLinkPart}"
           ${ATB_DATA_FEATURE_ID}="${featureId}">${feature.name}</a>`
@@ -294,7 +308,9 @@ function onClassChange(curClass, rootEl) {
       featureNames.push(featureLink);
 
       const styleClasses = [CLSS_CLASS_FEATURE];
-      if (feature.gainSubclassFeature) styleClasses.push(CLSS_GAIN_SUBCLASS_FEATURE);
+      if (feature.gainSubclassFeature) {
+        styleClasses.push(CLSS_GAIN_SUBCLASS_FEATURE);
+      }
 
       renderer.recursiveEntryRender(
         feature,
@@ -307,39 +323,42 @@ function onClassChange(curClass, rootEl) {
 
       // add subclass features to render stack if appropriate
       if (feature.gainSubclassFeature) {
-        for (let k = 0; k < curClass.subclasses.length; k++) {
-          const subClass = curClass.subclasses[k];
-          for (let l = 0; l < subClass.subclassFeatures[subclassIndex].length; l++) {
-            const subFeature = subClass.subclassFeatures[subclassIndex][l];
+        for (const subClass of curClass.subclasses) {
+          if (subClass.subclassFeatures) {
+            const subFeatureList = subClass.subclassFeatures[subclassIndex];
 
-            // if this is not the subclass intro, add the subclass to the feature name
-            // this will only be shown if there are multiple subclasses displayed
-            if (subFeature.name === undefined) {
-              for (let m = 0; m < subFeature.entries.length; m++) {
-                const childEntry = subFeature.entries[m];
-                if (
-                  childEntry.name !== undefined &&
-                  !childEntry.name.startsWith(`<span class="${CLSS_SUBCLASS_PREFIX}">`)
-                ) {
-                  childEntry.name = `<span class="${CLSS_SUBCLASS_PREFIX}">${subClass.name}: </span>${childEntry.name}`;
+            for (let i = 0; i < subFeatureList.length; i++) {
+              const subFeature = subFeatureList[i];
+              // if this is not the subclass intro, add the subclass to the feature name
+              // this will only be shown if there are multiple subclasses displayed
+              if (subFeature.name === undefined) {
+                for (let m = 0; m < subFeature.entries.length; m++) {
+                  const childEntry = subFeature.entries[m];
+                  if (
+                    childEntry.name !== undefined &&
+                    !childEntry.name.startsWith(`<span class="${CLSS_SUBCLASS_PREFIX}">`)
+                  ) {
+                    childEntry.name = `<span class="${CLSS_SUBCLASS_PREFIX}">${subClass.name}: </span>${childEntry.name}`;
+                  }
                 }
               }
-            }
 
-            const styleClasses = [CLSS_SUBCLASS_FEATURE];
-            const hideSource =
-              isNonstandardSource(subClass.source) || hasBeenReprinted(subClass.shortName, subClass.source);
-            if (hideSource) styleClasses.push(CLSS_NON_STANDARD_SOURCE);
-            renderer.recursiveEntryRender(
-              subFeature,
-              renderStack,
-              0,
-              `<div class="${styleClasses.join(" ")}" ${ATB_DATA_SC}="${subClass.name}" ${ATB_DATA_SRC}="${
-                subClass.source
-              }">`,
-              `</div>`,
-              true
-            );
+              const styleClasses = [CLSS_SUBCLASS_FEATURE];
+              const hideSource =
+                isNonstandardSource(subClass.source) || hasBeenReprinted(subClass.shortName, subClass.source);
+              if (hideSource) styleClasses.push(CLSS_NON_STANDARD_SOURCE);
+              if (i !== 0) styleClasses.push("referenced-subclass-feature");
+              renderer.recursiveEntryRender(
+                subFeature,
+                renderStack,
+                0,
+                `<div class="${styleClasses.join(" ")}" ${ATB_DATA_SC}="${subClass.name}" ${ATB_DATA_SRC}="${
+                  subClass.source
+                }">`,
+                `</div>`,
+                true
+              );
+            }
           }
         }
         subclassIndex++;
@@ -468,7 +487,7 @@ function onClassChange(curClass, rootEl) {
     const routeSelection = readRouteSelection();
     const split = routeSelection.split(HASH_PART_SEP);
 
-    const encodedSubClass = encodeForHash(subclassName, subclassSource);
+    const encodedSubClass = encodeForHash([subclassName]);
     const subclassLink = HASH_SUBCLASS + encodedSubClass;
 
     if (isPillActive && routeSelection.includes(HASH_SUBCLASS)) {
@@ -547,7 +566,8 @@ function onSubChange(sub, curHash, rootEl) {
 		const $subClassSpanList = rootEl.querySelectorAll(`.${CLSS_SUBCLASS_PILL}`);
 		for (let classSpan of $subClassSpanList) {
 			const $this = classSpan;
-			const thisSc = encodeForHash($this.getAttribute(ATB_DATA_SC), $this.getAttribute(ATB_DATA_SRC));
+      const name = $this.getAttribute(ATB_DATA_SC);
+			const thisSc = encodeForHash([name]);
 			let shown = false;
 
 			for (let j = 0; j < subclasses.length; j++) {

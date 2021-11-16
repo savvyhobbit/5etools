@@ -45,7 +45,7 @@ class DndRules extends PolymerElement {
       this.dispatchEvent(new CustomEvent("title-change", {
         bubbles: true,
         composed: true,
-        detail: { title: this.selectedRule.name }
+        detail: this.selectedRule
       }));
       this.$.rulescontent.innerHTML = this.selectedRule.htmlcontent;
       let tables = this.$.rulescontent.querySelectorAll("table");

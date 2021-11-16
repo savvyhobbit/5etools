@@ -10,7 +10,7 @@ import {
   setAbilityUsage,
   removeAbilityUsage,
 } from "../../../util/charBuilder";
-import { getEditModeChannel, isEditMode } from "../../../util/editMode";
+import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { cloneDeep, findInPath } from "../../../js/utils";
 
 class DndCharacterBuilderAbilities extends PolymerElement {
@@ -81,6 +81,13 @@ class DndCharacterBuilderAbilities extends PolymerElement {
   
   _addAbility() {
     setAbilityUsage({name: '', currentSlots: 0, slots: 1}, this.abilities.length);
+    if (!this.isEditMode) {
+      dispatchEditModeChange(true);
+    }
+    setTimeout(() => {
+      const abilityEls = this.shadowRoot.querySelectorAll('.ability');
+      abilityEls[abilityEls.length - 1].scrollIntoView();
+    }, 1);
   }
 
   _deleteAbility(e) {
@@ -327,10 +334,9 @@ class DndCharacterBuilderAbilities extends PolymerElement {
           <div class='rest-buttons'>
             <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
             <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
+            <dnd-button class="add-ability link" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add an Ability" icon="edit"  on-click="_addAbility"></dnd-button>
           </div>
         </div>
-
-        <dnd-button class="add-ability" hidden$="[[!isEditMode]]" icon="add" label="Add Ability" on-click="_addAbility"></dnd-button>
 
         <div class="abilities">
           <template is="dom-repeat" items="[[abilities]]">

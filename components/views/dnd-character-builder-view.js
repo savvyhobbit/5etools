@@ -233,7 +233,7 @@ class DndCharacterBuilderView extends PolymerElement {
         if (character.subclasses && character.subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
           const subclassDef = classRef.subclasses.find(i => character.subclasses[className].name === i.name);
 
-          if (subclassDef.casterProgression) {
+          if (subclassDef && subclassDef.casterProgression) {
             isNonCaster = false;
           }
         }

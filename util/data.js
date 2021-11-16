@@ -12,27 +12,34 @@ export async function loadModel(modelId) {
 	if (modelId) {
 		// Checks model cache for data
 		if (!cache.hasOwnProperty(modelId)) {
-			// Catch for items.json to load additional data
-			switch (modelId) {
-				case "items":
-					cache[modelId] = await loadAllItemData();
-					break;
+			if (modelId.indexOf('class-') > -1) {
+				if (modelId === 'class-all') {
+					cache[modelId] = loadAllNewClassModels();
+				} else {
+					cache[modelId] = loadNewClassModel(modelId);
+				}
+			} else {
+				// Catch for items.json to load additional data
+				switch (modelId) {
+					case "items":
+						cache[modelId] = await loadAllItemData();
+						break;
 
-				case "bestiary":
-					cache[modelId] = await loadAllMonsterData();
-					break;
+					case "bestiary":
+						cache[modelId] = await loadAllMonsterData();
+						break;
 
-				case "spells":
-				case "classes":
-					cache[modelId] = await loadModelFromIndex(modelId);
-					break;
+					case "spells":
+						cache[modelId] = await loadModelFromIndex(modelId);
+						break;
 
-				case "races":
-					cache[modelId] = await loadRaceData();
-					break;
+					case "races":
+						cache[modelId] = await loadRaceData();
+						break;
 
-				default:
-					cache[modelId] = await loadModelFromSingleJSON(modelId);
+					default:
+						cache[modelId] = await loadModelFromSingleJSON(modelId);
+				}
 			}
 		}
 		return cache[modelId];
@@ -78,7 +85,7 @@ async function loadModelFromIndex(modelId) {
 			let allData = [];
 
 			for (let srcData of data) {
-				allData = allData.concat(srcData);
+				allData = allData.concat(srcData.spell);
 			}
 
 			return allData;
@@ -88,6 +95,140 @@ async function loadModelFromIndex(modelId) {
 		return [];
 	}
 }
+
+function loadAllNewClassModels() {
+	let classModelIds = ["artificer","barbarian","bard","cleric","druid","fighter","generic","monk","mystic","paladin","ranger","rogue","sidekick","sorcerer","warlock","wizard"]
+	const promises = [];
+
+	for (let classModelId of classModelIds) {
+		promises.push(loadModel(`class-${classModelId}`));
+	}
+
+	return Promise.all(promises).then(classesData => {
+		let result = []
+		for (let classData of classesData) {
+			result = result.concat(classData.class);
+		}
+		return result.filter((item) => !!item);
+	});
+}
+
+async function loadNewClassModel(classId) {
+	const path = `${DATA_ROOT}newClasses/${classId}.json`;
+	const modelData = await loadJSON(path).then(parseNewClassModel);
+	if (modelData) {
+		return modelData;
+	} else {
+		console.error("Didn't load individual Class JSON.", path);
+		return {};
+	}
+}
+
+async function parseNewClassModel(classModel) {
+	if (classModel.class) {
+		for (const classObj of classModel.class) {
+			const newClassFeatures = [];
+			for (let i = 0; i < 20; i++) {
+				newClassFeatures.push([])
+			}
+
+			classObj.classFeatures.forEach((key) => {
+				const isSubclassGain = !!key.gainSubclassFeature;
+				const featureRef = findClassRefFromKey(classModel, isSubclassGain ? key.classFeature : key);
+
+				if (featureRef) {
+					const currentLevelArray = newClassFeatures[parseInt(featureRef.level, 10) - 1];
+
+					if (isSubclassGain) {
+						currentLevelArray.push({ ...featureRef, gainSubclassFeature: true });
+					} else {
+						currentLevelArray.push(featureRef);
+					}
+				} else {
+					console.error('Class feature lookup failed!!');
+				}
+			});
+			if (classObj._copy) {
+				console.error("Need to Copy Class", classObj.name);
+			}
+			classObj.classFeatures = newClassFeatures;
+			if (classModel.subclass) {
+				classObj.subclasses = classModel.subclass.filter((subclass) => subclass.className === classObj.name && subclass.classSource === classObj.source);
+			}
+		}
+	}
+
+	if (classModel.subclass) {
+		for (const subclassObj of classModel.subclass) {
+			let newSubclassFeatures = [];
+			for (let i = 0; i < 20; i++) {
+				newSubclassFeatures.push([])
+			}
+
+			if (subclassObj.subclassFeatures) {
+				subclassObj.subclassFeatures.forEach(key => {
+					const featureRef = findClassRefFromKey(classModel, key);
+	
+					if (featureRef) {
+						const currentLevelArray = newSubclassFeatures[parseInt(featureRef.level, 10) - 1];
+
+						currentLevelArray.push(featureRef);
+						featureRef.entries.forEach((subclassEntry) => {
+							if (subclassEntry.subclassFeature) {
+								const subclassFeatureRef = findClassRefFromKey(classModel, subclassEntry.subclassFeature);
+								currentLevelArray.push(subclassFeatureRef);
+							}
+						});
+					} else {
+						console.error('Sub Class feature lookup failed!!');
+					}
+				});
+				newSubclassFeatures = newSubclassFeatures.filter((array) => array.length > 0)
+				subclassObj.subclassFeatures = newSubclassFeatures;
+			}
+			if (subclassObj._copy) {
+				//console.error("Need to Copy sub class", subclassObj.name);
+			}
+		}
+	}
+	return classModel;
+}
+
+
+// Class Keys     have 4 data points: feature name, class name, class source, level
+// Subclass Keys  have 6 data points: feature name, class name, class source , subclass name, subclass source, level
+function findClassRefFromKey(classModel, keyStr) {
+	let keys = keyStr.split('|');
+
+	const featureName = keys[0];
+	let featureSource = keys[keys.length - 2];	
+	let featureLevel;
+	let isSubclass;
+
+	if (keys.length === 7) {
+		isSubclass = true;
+		featureSource = keys[keys.length - 1];
+		featureLevel = parseInt(keys[5], 10);
+	} else  if (keys.length === 6) {
+		isSubclass = true;
+		featureLevel = parseInt(keys[5], 10);
+	} else if (keys.length === 5) {
+		isSubclass = false;
+		featureSource = keys[keys.length - 1];
+		featureLevel = parseInt(keys[3], 10);
+	} else if (keys.length === 4) {
+		isSubclass = false; 
+		featureLevel = parseInt(keys[3], 10);
+	} else {
+		console.error('New class ref keyStr length assumption was wrong!!!', keyStr);
+	}
+
+	const searchFeatures = isSubclass ? classModel.subclassFeature : classModel.classFeature;
+	const foundFeature = searchFeatures.find(feature => feature.name === featureName && (!featureSource || feature.source === featureSource) && feature.level === featureLevel);
+	console.log(foundFeature.name);
+ 	return foundFeature;
+}
+
 
 export async function filterModel(modelId, selectorString, orOperand = false) {
 	let selectors;

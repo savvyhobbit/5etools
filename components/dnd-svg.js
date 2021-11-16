@@ -1,19 +1,20 @@
 import {PolymerElement, html} from '@polymer/polymer';
 
 class DndSvg extends PolymerElement {
-  static get properties() {
-    return {
-      id: {
-        type: String
-      },
-      hide: {
-        type: Boolean,
-		    value: true
-		  },
+	static get properties() {
+		return {
+			id: {
+				type: String
+			},
+			hide: {
+				type: Boolean,
+				value: true,
+				reflectToAttribute: true
+			},
 			color: {
 				type: String
 			}
-    };
+		};
 	}
 	
 	static get observers() {
@@ -28,7 +29,7 @@ class DndSvg extends PolymerElement {
 	}
 
   _rerender() {
-    if (this.id) {
+    	if (this.id) {
 			let fixedId = this.transformId(this.id);
 			if (this[fixedId] && typeof this[fixedId] === "function") {
 				this.$.svg.innerHTML = this[fixedId](this.color);
@@ -36,9 +37,9 @@ class DndSvg extends PolymerElement {
 			} else {
 				this.hide = true;
 			}
-    } else {
-      this.hide = true;
-    }
+		} else {
+			this.hide = true;
+		}
 	}
 	
 	transformId(id) {

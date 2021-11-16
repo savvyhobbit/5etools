@@ -147,13 +147,9 @@ class DndSelectAdd extends PolymerElement {
             for (let i = 0; i < this.options.length; i ++) {
               const option = this.options[i],
                 item = document.createElement('vaadin-item');
-              if (option.name) {
-                item.textContent = option.name;
-                item.setAttribute("value", i);
-              } else {
-                item.textContent = util_capitalizeAll(option);
-                item.setAttribute("value", i);
-              }
+              const optionName = option.name || util_capitalizeAll(option);
+              item.innerHTML = `<span>${optionName}</span> ${option.name ? `<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${option.source}</span>` : ''}`
+              item.setAttribute("value", i);
               this.listBox.appendChild(item);
             }
           }

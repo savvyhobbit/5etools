@@ -1,6 +1,7 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import "@polymer/polymer/lib/elements/dom-repeat.js";
 import "@vaadin/vaadin-checkbox";
+import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "../../dnd-button";
 import { cloneDeep, findInPath } from "../../../js/utils";
 import {
@@ -11,7 +12,7 @@ import {
   removeCustomRollDamage
 } from "../../../util/charBuilder";
 import { DAMAGE_TYPES } from "../../../util/consts";
-import { getEditModeChannel, isEditMode } from "../../../util/editMode";
+import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { rollDice, rollHit } from "../../../util/roll";
 
 class DndCharacterBuilderRolls extends PolymerElement {
@@ -99,6 +100,13 @@ class DndCharacterBuilderRolls extends PolymerElement {
   _addRoll() {
     const newRoll = {name: "", toHit: 0, noHitRoll: false, damages: [ {roll: '', type: ''} ]};
     setCustomRoll(newRoll, this.customRolls.length);
+    if (!this.isEditMode) {
+      dispatchEditModeChange(true);
+    }
+    setTimeout(() => {
+      const rollEls = this.shadowRoot.querySelectorAll('.roll');
+      rollEls[rollEls.length - 1].scrollIntoView();
+    }, 1);
   }
 
   _removeRoll(e) {
@@ -169,13 +177,20 @@ class DndCharacterBuilderRolls extends PolymerElement {
         width: 100%;
       }
 
+      .heading {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+
       h2 {
         margin-bottom: 24px;
       }
 
       .rolls__add-button {
-        margin-bottom: 16px;
-        display: inline-flex;
+        margin-left: 16px;
       }
 
       .roll {
@@ -187,7 +202,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
         margin-bottom: 16px;
         background: var(--lumo-contrast-10pct);
         height: min-content;
-        width: 100%;
+        width: calc(100% - 16px);
       }
       
       .rolls {
@@ -209,7 +224,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
         }
         .roll {
           max-width: 380px;
-          margin-right: 16px;
+          margin-right: 15px;
         }
         .rolls {
           display: flex;
@@ -291,10 +306,11 @@ class DndCharacterBuilderRolls extends PolymerElement {
     
     <div class="col-wrap">
       <div class="row-wrap">
-        <h2>Rolls</h2>
+        <div class="heading">
+          <h2>Rolls</h2>
+          <dnd-button class="rolls__add-button link" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add a Roll" icon="edit"  on-click="_addRoll"></dnd-button>
+        </div>
 
-
-        <dnd-button hidden$="[[!isEditMode]]" on-click="_addRoll" label="Add Roll" icon="add" class="rolls__add-button"></dnd-button>
         <div hidden$="[[isEditMode]]" class="rolls__toolbar">
           <h4>Roll Modifiers:</h4>
           <div>

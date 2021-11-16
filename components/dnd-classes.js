@@ -39,7 +39,7 @@ class DndClasses extends PolymerElement {
   constructor() {
     super();
     this.loading = true;
-    loadModel("classes").then(data => {
+    loadModel("class-all").then(data => {
       this.set("classes", data);
       this.loading = false;
     });
@@ -152,7 +152,7 @@ class DndClasses extends PolymerElement {
         this.dispatchEvent(new CustomEvent("title-change", {
           bubbles: true,
           composed: true,
-          detail: { title: selectedClass.name }
+          detail: selectedClass
         }));
       } else {
         clearRouteSelection(true);

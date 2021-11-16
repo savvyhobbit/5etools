@@ -182,7 +182,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
             const hasSubclassFeature = classFeaturesForLevel.some(i => i.gainSubclassFeature);
             if (hasSubclassFeature && subclasses && subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
               const subclassDef = classRef.subclasses.find(i => subclasses[className].name === i.name);
-              if (subclassDef.subclassFeatures[levelsInSubclass]) {
+              if (subclassDef && subclassDef.subclassFeatures[levelsInSubclass]) {
                 subclassDef.subclassFeatures[levelsInSubclass].map((i) => { i.isSubclass = true; return i; })
                 return [...classFeaturesForLevel].concat(subclassDef.subclassFeatures[levelsInSubclass]);
               }
@@ -535,6 +535,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
         .row {
           position: relative;
+          min-height: 80px;
         }
         .row:after {
           content: "";
@@ -739,7 +740,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
       <div class$="[[_editModeClass(isEditMode)]]">
         <div class="heading-wrap">
-          <dnd-select-add model="classes" placeholder="Add a Class"></dnd-select-add>
+          <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
         </div>
         <div class="button-wrap">
           <template is="dom-repeat" items="[[_objArray(classes)]]">

@@ -13,7 +13,7 @@ export default function renderGrid(rootEl, items) {
 
 		htmlString += 
 			`<div class='grid-item history-link grid-item__${svg}'
-				data-link='${encodeForHash(curItem.name, curItem.source)}' data-title='${curItem.name}'>
+				data-link='${encodeForHash([curItem.name, curItem.source])}' data-title='${curItem.name}'>
 				<span class='grid-item--text'>${curItem.name}</span>
 				<dnd-svg id='${svg}' default-color class='grid-item--image grid-item__${svg}'></dnd-svg>
 			</div>`
@@ -22,8 +22,8 @@ export default function renderGrid(rootEl, items) {
 	while (itemElements.length > 0) {
 		itemElements[0].addEventListener("click", (e) => {
 			let tar = e.target.closest(".grid-item");
-      setRouteSelection(tar.getAttribute("data-link"));
-    });
+			setRouteSelection(tar.getAttribute("data-link"));
+		});
 		gridWrapper.appendChild(itemElements[0]);
 	}
 }

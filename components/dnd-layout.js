@@ -20,6 +20,10 @@ class DndLayout extends PolymerElement {
         value: "",
         observer: 'selectedTitleChange'
       },
+      selectedSource: {
+        type: String,
+        value: ""
+      },
       hideCharacterPopup: {
         type: Boolean,
         value: true
@@ -124,8 +128,9 @@ class DndLayout extends PolymerElement {
    */
   _initSelectionEvents() {
     this.addEventListener("title-change", e => {
-      if (e.detail.title) {
-        this.selectedTitle = e.detail.title;
+      if (e.detail) {
+        this.selectedTitle = e.detail.name || '';
+        this.selectedSource = e.detail.source || '';
       }
     });
 
@@ -188,6 +193,17 @@ class DndLayout extends PolymerElement {
         :host {}
         .page-title {
           display: none;
+        }
+        .title-text-wrap {
+          display: flex;
+          flex-direction: column;
+        }
+        .source-text {
+          font-size: 16px;
+          color: var(--lumo-contrast-50pct);
+        }
+        dnd-svg:not([hide]) + .title-text-wrap  {
+          margin-left: 110px;
         }
         .content-wrap {
           padding-top: 16px;
@@ -359,8 +375,12 @@ class DndLayout extends PolymerElement {
         class="main mdc-top-app-bar--fixed-adjust mdc-typography--body1 mdc-theme--background mdc-theme--text-primary-on-background"
       >
         <div class="container content-wrap">
-          <h1 class="page-title mdc-typography--headline2">[[_or(selectedTitle, header)]]
-            <dnd-svg id$="[[_or(selectedTitle, header)]]"></dnd-svg>
+          <h1 class="page-title mdc-typography--headline2">
+            <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
+            <div class="title-text-wrap">
+              <span class="title-text">[[selectedTitle]]</span>
+              <span class="source-text" hidden$=[[!selectedSource]]>([[selectedSource]])</span>
+            </div>
           </h1>
 
           <slot></slot>
