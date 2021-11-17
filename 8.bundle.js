@@ -706,7 +706,7 @@ const c=document.createElement("template");c.innerHTML="<custom-style>\n  <style
                     </div>
                   </vaadin-grid-tree-toggle>
                   <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
-                  <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>
+                  <!-- <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg> -->
                 </div>
               </template>
 
