@@ -206,7 +206,7 @@ function renderTable(data, rootEl, columns) {
             classFilter.metric = "_fClasses";
             filters[col.id] = classFilter;
           }
-          curItem._fClasses = curItem.classes.fromClassList ? curItem.classes.fromClassList.map(c => getClassFilterStr(c)) : [];
+          curItem._fClasses = curItem.classes && curItem.classes.fromClassList ? curItem.classes.fromClassList.map(c => getClassFilterStr(c)) : [];
 		      curItem._fClasses.forEach(c => filters[col.id].addIfAbsent(c));
           columnsHtmlString += `<td class='table-cell ${col.cssClass} classes'>${Parser.spClassesToFull(curItem.classes)}</td>`;
           break;
@@ -217,7 +217,7 @@ function renderTable(data, rootEl, columns) {
             subclassFilter.metric = "_fSubclasses";
             filters[col.id] = subclassFilter;
           }
-          curItem._fSubclasses = curItem.classes.fromSubclass ? curItem.classes.fromSubclass.map(c => getClassFilterStr(c.subclass)) : [];
+          curItem._fSubclasses = curItem.classes && curItem.classes.fromSubclass ? curItem.classes.fromSubclass.map(c => getClassFilterStr(c.subclass)) : [];
 		      curItem._fSubclasses.forEach(sc => filters[col.id].addIfAbsent(sc));
           columnsHtmlString += `<td class='table-cell subclasses ${col.cssClass}'>${curItem._fSubclasses.join(", ")}</td>`;
           break;

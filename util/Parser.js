@@ -376,8 +376,10 @@ Parser.spDurationToFull = function(dur) {
 };
 
 Parser.spClassesToFull = function(classes) {
-  const fromSubclasses = Parser.spSubclassesToFull(classes);
-  return Parser.spMainClassesToFull(classes) + (fromSubclasses ? ", " + fromSubclasses : "");
+  if (classes) {
+    const fromSubclasses = Parser.spSubclassesToFull(classes);
+    return Parser.spMainClassesToFull(classes) + (fromSubclasses ? ", " + fromSubclasses : "");
+  }
 };
 
 Parser.spMainClassesToFull = function(classes) {
