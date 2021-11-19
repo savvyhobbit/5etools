@@ -527,7 +527,7 @@ styleElement.innerHTML = `
       }
       .filter-menu .mdc-menu-surface {
         border: 1px solid var(--mdc-theme-text-divider-on-background);
-        width: 420px;
+        width: 100vw;
         overflow-x: hidden;
       }
       .filter-menu-divider {

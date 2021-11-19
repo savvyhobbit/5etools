@@ -134,7 +134,7 @@ let Parser = {};
 Parser._parse_aToB = function(abMap, a) {
   a = a.trim();
   if (abMap[a] !== undefined) return abMap[a];
-  //console.error(a);
+  console.error(a, abMap);
   return a;
 };
 
@@ -156,7 +156,11 @@ Parser.attFullToAbv = function(full) {
 };
 
 Parser.sizeAbvToFull = function(abv) {
-  return Parser._parse_aToB(Parser.SIZE_ABV_TO_FULL, abv);
+  if (abv) {
+    return Parser._parse_aToB(Parser.SIZE_ABV_TO_FULL, Array.isArray(abv) ? abv[0] : abv);
+  } else {
+    return '';
+  }
 };
 
 Parser.getAbilityModNumber = function(abilityScore) {
@@ -676,6 +680,15 @@ Parser.SOURCE_JSON_TO_FULL[SRC_EGW] = "Explorer’s Guide to Wildemount";
 Parser.SOURCE_JSON_TO_FULL[SRC_ERLW] = "Eberron: Rising from the Last War";
 Parser.SOURCE_JSON_TO_FULL[SRC_BOLS_3PP] = "Book of Lost Spells" + PP3_SUFFIX;
 Parser.SOURCE_JSON_TO_FULL[SRC_ToB_3PP] = "Tome of Beasts" + PP3_SUFFIX;
+Parser.SOURCE_JSON_TO_FULL["VRGR"] = "Van Richten's Guide to Ravenloft";
+Parser.SOURCE_JSON_TO_FULL["AWM"] = "Adventure with Muk";
+Parser.SOURCE_JSON_TO_FULL["FTD"] = "Fizban’s Treasury of Dragons";
+Parser.SOURCE_JSON_TO_FULL["LR"] = "Locathah Rising";
+Parser.SOURCE_JSON_TO_FULL["PSA"] = "Plane Shift: Amonkhet";
+Parser.SOURCE_JSON_TO_FULL["PSD"] = "Plane Shift: Dominaria";
+Parser.SOURCE_JSON_TO_FULL["TCE"] = "Tasha’s Cauldron of Everything";
+Parser.SOURCE_JSON_TO_FULL["UAWGE"] = "Wayfinder’s Guide to Eberron";
+Parser.SOURCE_JSON_TO_FULL["WBtW"] = "The Wild Beyond the Witchlight";
 
 Parser.SOURCE_JSON_TO_ABV = {};
 Parser.SOURCE_JSON_TO_ABV[SRC_CoS] = "CoS";

@@ -518,6 +518,21 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           margin: 22px 14px 5px;
           align-items: center;
         }
+        .heading {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        h2 {
+          margin-bottom: 24px;
+          display: block;
+          font-size: 1.5em;
+          margin: 20px 0;
+          font-weight: bold;
+        }
 
         .not-edit-mode .button-wrap {
           display: none;
@@ -738,15 +753,18 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
       </style>
 
+      <div class="heading-wrap">
+        <h2>Class Levels</h2>
+        <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
+      </div>
+
       <div class$="[[_editModeClass(isEditMode)]]">
-        <div class="heading-wrap">
-          <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
-        </div>
         <div class="button-wrap">
           <template is="dom-repeat" items="[[_objArray(classes)]]">
             <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
           </template>
         </div>
+
 
         <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
 

@@ -1,6 +1,7 @@
-import {parseHTML, jqHeight, jqPrepend } from "../js/utils.js";
+import {parseHTML, jqHeight, jqPrepend, encodeForHash } from "../js/utils.js";
 import Parser from "../util/Parser.js";
 import EntryRenderer from "../util/entryrender.js";
+import { resolveHash } from "../util/renderTable.js";
 
 const renderer = new EntryRenderer();
 
@@ -24,6 +25,10 @@ function renderSelection(curbg, rootEl, allBgs) {
   } else {
     rootEl.innerHTML = stats_wrapper;
   }
+  while (curbg._copy) {
+    const foundCopy = resolveHash(allBgs, encodeForHash([curbg._copy.name, curbg._copy.source]));
+    curbg = foundCopy;
+  }
   const source = curbg.source;
   const sourceAbv = Parser.sourceJsonToAbv(source);
   const sourceFull = Parser.sourceJsonToFull(source);
@@ -35,7 +40,7 @@ function renderSelection(curbg, rootEl, allBgs) {
 
   const entries = curbg.entries;
 
-  if (entries.length) {
+  if (entries && entries.length) {
     for (let n = entries.length - 1; n >= 0; n--) {
       let entry = entries[n],
         outStack = [];

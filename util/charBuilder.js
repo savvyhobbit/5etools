@@ -627,11 +627,28 @@ function setFeatAttributeSelection(featId, selection, character = selectedCharac
   saveCharacter(character);
 }
 
+async function toggleCustomSkill(skill, character = selectedCharacter) {
+  if (character) {
+    const allSkills = await getSkillProfs(undefined, selectedCharacter);
+    if (character.customSkills) {
+      if (allSkills.filter(currentSkill => currentSkill === skill).length < 2) {
+        character.customSkills.push(skill)
+      } else {
+        character.customSkills = character.customSkills.join('$%').replaceAll(skill, '').split('$%').filter((i) => !!i);
+      }
+    } else {
+      character.customSkills = [skill];
+    }
+    saveCharacter(character);
+  }
+}
+
 async function getSkillProfs(attr, character = selectedCharacter) {
   let classSkills = character.classSkillProficiencies || [],
     choosenBackgroundSkills = character.backgroundSkillProficiencies || [],
+    customSkills = character.customSkills || [],
     defaultBackgroundSkills = await getBackgroundSkillProfDefaults(),
-    allSkills = classSkills.concat(choosenBackgroundSkills).concat(defaultBackgroundSkills);
+    allSkills = classSkills.concat(choosenBackgroundSkills).concat(defaultBackgroundSkills).concat(customSkills);
   
   if (attr) {
     let skillsForAttr = [];
@@ -1774,5 +1791,6 @@ export {
   getSpellRolls,
   getItemRolls,
   setAbilityUsage,
-  removeAbilityUsage
+  removeAbilityUsage,
+  toggleCustomSkill
 };

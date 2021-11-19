@@ -157,7 +157,7 @@ class DndSelectionList extends PolymerElement {
           }
         }
       </style>
-      <dnd-selected-item model-id="[[modelId]]" selected-item="[[_selectedItem]]" character-option="[[characterOption]]"></dnd-selected-item>
+      <dnd-selected-item model-id="[[modelId]]" selected-item="[[_selectedItem]]" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
       <dnd-list data="[[_data]]" columns="[[columns]]"></dnd-list>
     `;
   }

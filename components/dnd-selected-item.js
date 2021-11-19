@@ -15,6 +15,9 @@ class DndSelectedItem extends PolymerElement {
       selectedItem: {
         type: Object
       },
+      allItems: {
+        type: Array
+      },
       loading: {
         type: Boolean,
         value: false,
@@ -47,7 +50,7 @@ class DndSelectedItem extends PolymerElement {
   __renderSelection() {
     if (this._modelsRenderSelection && this.selectedItem) {
       console.error('Selected Item:', this.selectedItem);
-      this._modelsRenderSelection(this.selectedItem, this.shadowRoot);
+      this._modelsRenderSelection(this.selectedItem, this.shadowRoot, this.allItems);
       initCollapseToggles(this.shadowRoot);
     }
   }
@@ -91,7 +94,6 @@ class DndSelectedItem extends PolymerElement {
         :host {
           display: block;
         }
-
         .main {
           max-width: 100vw;
         }
@@ -125,6 +127,14 @@ class DndSelectedItem extends PolymerElement {
           right: 0;
           top: -4px;
           z-index: 12;
+        }
+        .main.item-opened {
+          margin-bottom: 120px;
+        }
+        @media(min-width: 921px) {
+          .main.item-opened {
+            padding-bottom: 0;
+          }
         }
       </style>
 

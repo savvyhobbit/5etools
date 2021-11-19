@@ -138,7 +138,8 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = sizeFilter;
           }
           filters[col.id].addIfAbsent(curItem.size);
-          columnsHtmlString += `<td class='table-cell ${col.cssClass} size'>${Parser.sizeAbvToFull(curItem.size)}</td>`;
+          const renderedSize = curItem.size && curItem.size.length ? Parser.sizeAbvToFull(curItem.size) : ''
+          columnsHtmlString += `<td class='table-cell ${col.cssClass} size'>${renderedSize}</td>`;
           break;
 
         case "reward-type":
@@ -270,7 +271,7 @@ function renderTable(data, rootEl, columns) {
               items: [SZ_FINE, SZ_DIMINUTIVE, SZ_TINY, SZ_SMALL, SZ_MEDIUM, SZ_LARGE, SZ_HUGE, SZ_GARGANTUAN, SZ_COLOSSAL, SZ_VARIES],
               displayFn: Parser.sizeAbvToFull
             });
-            filters.sizeFilter.metric = "size";
+            filters.sizeFilter.metric = "size.0";
             filters.tagFilter = new Filter({ header: "Tag", displayFn: uppercaseFirst });
             filters.tagFilter.metric = "_pTypes.tags";
             filters.miscFilter = new Filter({header: "Miscellaneous", items: ["Legendary"], displayFn: uppercaseFirst});

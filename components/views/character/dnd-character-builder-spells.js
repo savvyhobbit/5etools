@@ -296,7 +296,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           if (spellsKnownOrPrepared === undefined) {
             spellsKnowPreparedType = 'prepared';
             // todo, check 1/3 caster progression
-            const levelMultiplier = casterSourceRef.casterProgression === 'full' ? 1 : casterSourceRef.casterProgression === '1/3' ? 0.33 : 0.5;
+            const levelMultiplier = casterSourceRef.casterProgression === 'full' ? 1 : 0.51;
             const attributeModifier = await getAttributeModifier(casterSourceRef.spellcastingAbility);
             spellsKnownOrPrepared = Math.floor(level * levelMultiplier) + attributeModifier;
             spellsKnownOrPrepared = spellsKnownOrPrepared < 1 ? 1 : spellsKnownOrPrepared;
@@ -310,7 +310,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
           if (isSubclass) {
             subclassName = casterSourceRef.shortName;
           } else {
-            classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: casterSourceRef.name, source: casterSourceRef.source } } );
+            // Revised Ranger fix
+            let searchSource = casterSourceRef.name.indexOf('(Revised)') > -1 ? 'PHB' : casterSourceRef.source;
+            let searchName = casterSourceRef.name.indexOf('(Revised)') > -1 ? casterSourceRef.name.replaceAll('(Revised)', '').trim() : casterSourceRef.name;
+            classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: searchName, source: searchSource } } );
 
             const subclassLevel = getSubclassChoiceLevel(classRef);
             if (level >= subclassLevel) {
@@ -860,6 +863,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
     return a.join(', ');
   }
 
+  _abs(num) {
+    return num >= 0 ? `+${num}`: num;
+  }
+
   static get template() {
     return html`
       <style include='my-styles'>
@@ -1096,6 +1103,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           white-space: normal;
           font-size: 12px;
           padding: 4px 4px;
+          width: 20px;
         }
         .spell-button.edit-mode {
           cursor: pointer;
@@ -1114,15 +1122,12 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .spell-button.transition-bg {
           transition: background-color 0.2s ease-in;
         }
-        .class-icon {
-          width: auto;
-        }
 
         .mods {
           display: flex;
           flex-wrap: nowrap;
           justify-content: space-around;
-          margin: 16px 0 8px;
+          margin: 16px 0;
         }
         .mod-row {
           display: flex;
@@ -1139,19 +1144,31 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .mod-val:not(:first-child)::before {
           content: '|';
           margin-right: 4px;
+          color: var(--lumo-contrast-30pct);
         }
         .mod-label {
           font-weight: bold;
+          color: var(--mdc-theme-primary);
+        }
+        .edit-mode .mod-label {
+          font-weight: bold;
+          color: var(--mdc-theme-secondary);
         }
         @media(min-width: 420px) {
           .mods {
-            justify-content: flex-start;
+            justify-content: center;
           }
           .mod-row {
             font-size: 14px;
           }
           .mod-val-wrap {
             font-size: 18px;
+          }
+        }
+
+        @media(min-width: 921px) {
+          .mods {
+            justify-content: flex-start;
           }
         }
 
@@ -1210,7 +1227,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           <div class="mod-row">
             <span class="mod-val-wrap">
               <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">+[[item.mod]]</span>
+                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">[[_abs(item.mod)]]</span>
               </template>
             </span>
             <span class="mod-label">Spell Mod</span>
@@ -1292,7 +1309,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     </div>
                   </vaadin-grid-tree-toggle>
                   <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
-                  <!-- <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg> -->
+                  <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>
                 </div>
               </template>
 
