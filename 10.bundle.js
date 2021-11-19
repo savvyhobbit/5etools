@@ -136,7 +136,7 @@
           <span class="prefix">[[multiValue]]</span>
         </div>
       </vaadin-select>
-    `}}customElements.define("dnd-select-add",o)},135:function(e,t,i){"use strict";i.r(t);var s=i(7),a=i(27),l=i(17),n=(i(121),i(120),i(126),i(112),i(1));class o extends s.a{static get properties(){return{levelIndex:{type:Number},checked:{type:Boolean,value:!1},selectedFeat:{type:Object},selectedAbility1:{type:String,value:""},selectedAbility2:{type:String,value:""},featHasAttributeChoice:{type:Boolean,value:!1},featAttributeSelection:{type:String,value:""},featAttributeOptions:{type:Array,value:[]},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}constructor(){super(),this.attributeOptions=["STR","DEX","CON","INT","WIS","CHA"]}connectedCallback(){super.connectedCallback(),this.switchChangeHandler=e=>{this.checked=e.detail.checked,this._genASICallback()()},this.addEventListener("switch-change",this.switchChangeHandler),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.G)()),Object(l.m)().addEventListener("character-selected",this.characterChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("switch-change",this.switchChangeHandler),Object(l.m)().removeEventListener("character-selected",this.characterChangeHandler)}async updateFromCharacter(e){const{asi:t,index:i}=await Object(l.g)(this.levelIndex,e);if(this.featHasAttributeChoice=!1,t){if(this.selectedFeat=t.feat,this.selectedAbility1=t.ability1,this.selectedAbility2=t.ability2,this.checked=t.isFeat,t.isFeat&&t.feat&&t.feat.name&&t.feat.source){const i=`${t.feat.name}_${t.feat.source}`,s=await Object(l.w)(i);s.ability&&s.ability.length&&s.ability[0].choose&&(this.featHasAttributeChoice=!0,this.featAttributeOptions=s.ability[0].choose.from.map(e=>e.toUpperCase()),this.featAttributeSelection=e.featAttributeSelections&&e.featAttributeSelections[i]?e.featAttributeSelections[i]:"")}}else this.selectedFeat={name:"",source:""},this.selectedAbility1="",this.selectedAbility2="",this.checked=!1;this.asiIndex=i}_genASICallback(e){return t=>{Object(l.Z)({feat:"feat"===e?{name:t.name,source:t.source}:this.selectedFeat,ability1:"ability1"===e?t:this.selectedAbility1,ability2:"ability2"===e?t:this.selectedAbility2,isFeat:this.checked},this.asiIndex)}}_genFeatAbilityCallback(){return e=>{if(this.selectedFeat&&this.selectedFeat.name&&this.selectedFeat.source){const t=`${this.selectedFeat.name}_${this.selectedFeat.source}`;Object(l.jb)(t,e)}}}_disableLabel(e){return e?"Feat":"ASI"}_getFeatLink(e){let t=[e.name];e.source&&t.push(e.source);let i=Object(n.encodeForHash)(t);return i?"#/feats/"+i:"#/feats"}static get template(){return s.b`
+    `}}customElements.define("dnd-select-add",o)},135:function(e,t,i){"use strict";i.r(t);var s=i(7),a=i(28),l=i(17),n=(i(121),i(120),i(126),i(112),i(1));class o extends s.a{static get properties(){return{levelIndex:{type:Number},checked:{type:Boolean,value:!1},selectedFeat:{type:Object},selectedAbility1:{type:String,value:""},selectedAbility2:{type:String,value:""},featHasAttributeChoice:{type:Boolean,value:!1},featAttributeSelection:{type:String,value:""},featAttributeOptions:{type:Array,value:[]},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}constructor(){super(),this.attributeOptions=["STR","DEX","CON","INT","WIS","CHA"]}connectedCallback(){super.connectedCallback(),this.switchChangeHandler=e=>{this.checked=e.detail.checked,this._genASICallback()()},this.addEventListener("switch-change",this.switchChangeHandler),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(l.G)()),Object(l.m)().addEventListener("character-selected",this.characterChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("switch-change",this.switchChangeHandler),Object(l.m)().removeEventListener("character-selected",this.characterChangeHandler)}async updateFromCharacter(e){const{asi:t,index:i}=await Object(l.g)(this.levelIndex,e);if(this.featHasAttributeChoice=!1,t){if(this.selectedFeat=t.feat,this.selectedAbility1=t.ability1,this.selectedAbility2=t.ability2,this.checked=t.isFeat,t.isFeat&&t.feat&&t.feat.name&&t.feat.source){const i=`${t.feat.name}_${t.feat.source}`,s=await Object(l.w)(i);s.ability&&s.ability.length&&s.ability[0].choose&&(this.featHasAttributeChoice=!0,this.featAttributeOptions=s.ability[0].choose.from.map(e=>e.toUpperCase()),this.featAttributeSelection=e.featAttributeSelections&&e.featAttributeSelections[i]?e.featAttributeSelections[i]:"")}}else this.selectedFeat={name:"",source:""},this.selectedAbility1="",this.selectedAbility2="",this.checked=!1;this.asiIndex=i}_genASICallback(e){return t=>{Object(l.Z)({feat:"feat"===e?{name:t.name,source:t.source}:this.selectedFeat,ability1:"ability1"===e?t:this.selectedAbility1,ability2:"ability2"===e?t:this.selectedAbility2,isFeat:this.checked},this.asiIndex)}}_genFeatAbilityCallback(){return e=>{if(this.selectedFeat&&this.selectedFeat.name&&this.selectedFeat.source){const t=`${this.selectedFeat.name}_${this.selectedFeat.source}`;Object(l.jb)(t,e)}}}_disableLabel(e){return e?"Feat":"ASI"}_getFeatLink(e){let t=[e.name];e.source&&t.push(e.source);let i=Object(n.encodeForHash)(t);return i?"#/feats/"+i:"#/feats"}static get template(){return s.b`
       <style include="material-styles">
         :host {
           display: flex;
@@ -214,6 +214,21 @@
           justify-content: space-between;
           margin: 22px 14px 5px;
           align-items: center;
+        }
+        .heading {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        h2 {
+          margin-bottom: 24px;
+          display: block;
+          font-size: 1.5em;
+          margin: 20px 0;
+          font-weight: bold;
         }
 
         .not-edit-mode .button-wrap {
@@ -435,15 +450,18 @@
         }
       </style>
 
+      <div class="heading-wrap">
+        <h2>Class Levels</h2>
+        <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
+      </div>
+
       <div class$="[[_editModeClass(isEditMode)]]">
-        <div class="heading-wrap">
-          <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
-        </div>
         <div class="button-wrap">
           <template is="dom-repeat" items="[[_objArray(classes)]]">
             <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
           </template>
         </div>
+
 
         <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
 
