@@ -67,27 +67,27 @@ export const classOptionsMap = {
       2: {
         name: "Infuse Item",
         count: 4,
-        type: "featureType=ai|source=ERLW"
+        type: "featureType=ai|source=TCE"
       },
       6: {
         name: "Infuse Item",
         count: 2,
-        type: "featureType=ai|source=ERLW"
+        type: "featureType=ai|source=TCE"
       },
       10: {
         name: "Infuse Item",
         count: 2,
-        type: "featureType=ai|source=ERLW"
+        type: "featureType=ai|source=TCE"
       },
       14: {
         name: "Infuse Item",
         count: 2,
-        type: "featureType=ai|source=ERLW"
+        type: "featureType=ai|source=TCE"
       },
       18: {
         name: "Infuse Item",
         count: 2,
-        type: "featureType=ai|source=ERLW"
+        type: "featureType=ai|source=TCE"
       }
     }
   },
@@ -97,17 +97,12 @@ export const classOptionsMap = {
         3: {
           name: "Totem Spirit",
           count: 1,
-          options: ["Bear", "Eagle", "Elk", "Wolf", "Tiger"]
+          options: ["Bear", "Eagle", "Elk", "Tiger", "Wolf"]
         },
         6: {
           name: "Aspect of the Beast",
           count: 1,
-          options: ["Bear", "Eagle", "Elk", {
-            name: "Tiger",
-            options: ["athletics", "acrobatics", "stealth", "survival"],
-            choose: 2,
-            type: "proficiency"
-          }, "Wolf"]
+          options: ["Bear", "Eagle", "Elk", "Tiger", "Wolf"]
         },
         14: {
           name: "Totemic Attunement",
@@ -128,11 +123,29 @@ export const classOptionsMap = {
       }
     }
   },
+  fighter: {
+    class: {
+      1: {
+        name: "Fighting Style",
+        type: "fs:f",
+        count: 1
+      }
+    }
+  },
   paladin: {
     class: {
       2: {
         name: "Fighting Style",
         type: "fs:p",
+        count: 1
+      },
+    }
+  },
+  ranger: {
+    class: {
+      2: {
+        name: "Fighting Style",
+        type: "fs:r",
         count: 1
       },
     }
@@ -164,6 +177,50 @@ export const classOptionsMap = {
             count: 1
           }
         ]
+      }
+    }
+  },
+  warlock: {
+    class: {
+      2: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 2
+      },
+      3: {
+        name: "Pact Boon",
+        type: "pb",
+        count: 1
+      },
+      5: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 1
+      },
+      7: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 1
+      },
+      9: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 1
+      },
+      12: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 1
+      },
+      15: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 1
+      },
+      18: {
+        name: "Eldritch Invocations",
+        type: "ei",
+        count: 1
       }
     }
   }
