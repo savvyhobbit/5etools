@@ -175,7 +175,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         }
 
         .col-wrap {
-          display: flex; 
+          display: flex;
           justify-content: space-between;
           flex-wrap: wrap;
           margin-bottom: 200px;
