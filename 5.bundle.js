@@ -42,7 +42,7 @@
             <div class="col-wrap">
                 <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection">Default Attributes: <span>[[defaultAttributes]]</span></div>
 
-                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skill Proficiencies: <span>[[defaultSkillProfs]]</span></div>
+                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skills: <span>[[defaultSkillProfs]]</span></div>
 
                 <template is="dom-if" if="[[_exists(attributeOptions)]]">
                     <dnd-select-add disabled$="[[!isEditMode]]" 
