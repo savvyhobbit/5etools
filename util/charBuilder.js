@@ -33,7 +33,8 @@ let schema = {
   preparedSpells: {},
   preparedCantrips: {},
   hp: {},
-  items: []
+  items: [],
+  choices: {}
 }
 
 const channel = document.createElement('div');
@@ -661,7 +662,7 @@ async function toggleCustomSkill(skill, character = selectedCharacter) {
 
 function getAllChoices(character = selectedCharacter) {
   const choices = [],
-    choiceVisited = Object.values(cloneDeep(character.choices));
+    choiceVisited = Object.values(cloneDeep(character.choices || {}));
 
   while (choiceVisited.length > 0) {
     const curChoice = choiceVisited.pop();
@@ -687,7 +688,7 @@ function getChoiceSkillProfs(character = selectedCharacter) {
       skillProfs = skillProfs.concat(choice.defaultSkillProfs.split(','));
     }
   }
-  return skillProfs;
+  return skillProfs.map(skill => skill.toLowerCase().trim());
 }
 
 function getChoiceAttributes(character = selectedCharacter) {
@@ -730,8 +731,7 @@ async function getSkillProfs(attr, character = selectedCharacter) {
   let classSkills = character.classSkillProficiencies || [],
     choiceSkills = getChoiceSkillProfs(character),
     customSkills = character.customSkills || [],
-    defaultBackgroundSkills = await getBackgroundSkillProfDefaults(),
-    allSkills = classSkills.concat(choiceSkills).concat(defaultBackgroundSkills).concat(customSkills);
+    allSkills = classSkills.concat(choiceSkills).concat(customSkills);
   
   if (attr) {
     let skillsForAttr = [];
