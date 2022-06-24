@@ -10,7 +10,6 @@ import {
   getClassSaves,
   getSkillProfs,
   toggleCustomSkill,
-  getRaceAttributeOptions,
   getRaceAttributeDefaults,
   getAttributeScoreModifiers,
   getMaxHP,
@@ -78,7 +77,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         type: Number,
         value: 0
       },
-      attributeProfs: {
+      skillProfs: {
         type: String,
         value: ""
       },
@@ -96,14 +95,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         value: []
       },
       defaultBackgroundSkillProf: {
-        type: String,
-        value: ""
-      },
-      raceAttributeOptions: {
-        type: Object,
-        value: []
-      },
-      defaultRaceAttribute: {
         type: String,
         value: ""
       },
@@ -219,23 +210,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
       // Attributes from Race
       let attributeAdj = await getAttributeScoreModifiers();
-      let raceAttributes = await getRaceAttributeOptions();
-      if (raceAttributes && raceAttributes.choose) {
-        this.raceAttributeOptions = raceAttributes.choose.from.map(i => { return i.toUpperCase() });
-        this.raceAttributeChoices = raceAttributes.choose.count || 1;
-        this.raceAttributeSelections = character.raceAttributes;
-      } else {
-        this.raceAttributeOptions = undefined;
-        this.raceAttributeChoices = undefined;
-        this.raceAttributeSelections = undefined;
-      }
-      let defaultRaceAttribute = await getRaceAttributeDefaults(raceAttributes);
-      this.defaultRaceAttribute = defaultRaceAttribute
-        .map(e => {
-          let attribute = e[0].toLowerCase(),
-            mod = e[1];
-          return attribute.toUpperCase() + ' ' + absInt(mod);
-        }).join(', ');
 
       this.strAdj = attributeAdj.str;
       this.dexAdj = attributeAdj.dex;
@@ -244,7 +218,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.wisAdj = attributeAdj.wis;
       this.chaAdj = attributeAdj.cha;
 
-      this.attributeProfs = (await getSkillProfs()).join(',');
+      this.skillProfs = (await getSkillProfs()).join(',');
 
       this.maxHP = await getMaxHP();
       this.currentHP = await getCurrentHP();
@@ -919,7 +893,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(attributeProfs, 'athletics')]]" expertise$="[[_strContainsTwo(attributeProfs, 'athletics')]]">Athletics</div>
+                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(skillProfs, 'athletics')]]" expertise$="[[_strContainsTwo(skillProfs, 'athletics')]]">Athletics</div>
               </div>
             </div>
             <div class="attribute-wrap">
@@ -933,9 +907,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'acrobatics')]]" enabled$="[[_strContains(attributeProfs, 'acrobatics')]]">Acrobatics</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'sleight of hand')]]" enabled$="[[_strContains(attributeProfs, 'sleight of hand')]]">Sleight of Hand</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'stealth')]]" enabled$="[[_strContains(attributeProfs, 'stealth')]]">Stealth</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>
               </div>
             </div>
             <div class="attribute-wrap">
@@ -963,11 +937,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'arcana')]]" enabled$="[[_strContains(attributeProfs, 'arcana')]]">Arcana</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'history')]]" enabled$="[[_strContains(attributeProfs, 'history')]]">History</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'investigation')]]" enabled$="[[_strContains(attributeProfs, 'investigation')]]">Investigation</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'nature')]]" enabled$="[[_strContains(attributeProfs, 'nature')]]">Nature</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'religion')]]" enabled$="[[_strContains(attributeProfs, 'religion')]]">Religion</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'arcana')]]" enabled$="[[_strContains(skillProfs, 'arcana')]]">Arcana</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'history')]]" enabled$="[[_strContains(skillProfs, 'history')]]">History</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'nature')]]" enabled$="[[_strContains(skillProfs, 'nature')]]">Nature</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'religion')]]" enabled$="[[_strContains(skillProfs, 'religion')]]">Religion</div>
               </div>
             </div>
             <div class="attribute-wrap">
@@ -981,11 +955,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'animal handling')]]" enabled$="[[_strContains(attributeProfs, 'animal handling')]]">Animal Handling</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'insight')]]" enabled$="[[_strContains(attributeProfs, 'insight')]]">Insight</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'medicine')]]" enabled$="[[_strContains(attributeProfs, 'medicine')]]">Medicine</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'perception')]]" enabled$="[[_strContains(attributeProfs, 'perception')]]">Perception</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'survival')]]" enabled$="[[_strContains(attributeProfs, 'survival')]]">Survival</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'insight')]]" enabled$="[[_strContains(skillProfs, 'insight')]]">Insight</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'medicine')]]" enabled$="[[_strContains(skillProfs, 'medicine')]]">Medicine</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'perception')]]" enabled$="[[_strContains(skillProfs, 'perception')]]">Perception</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'survival')]]" enabled$="[[_strContains(skillProfs, 'survival')]]">Survival</div>
               </div>
             </div>
             <div class="attribute-wrap">
@@ -999,10 +973,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
               </div>
               <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'deception')]]" enabled$="[[_strContains(attributeProfs, 'deception')]]">Deception</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'intimidation')]]" enabled$="[[_strContains(attributeProfs, 'intimidation')]]">Intimidation</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'performance')]]" enabled$="[[_strContains(attributeProfs, 'performance')]]">Performance</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(attributeProfs, 'persuasion')]]" enabled$="[[_strContains(attributeProfs, 'persuasion')]]">Persuasion</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'deception')]]" enabled$="[[_strContains(skillProfs, 'deception')]]">Deception</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'intimidation')]]" enabled$="[[_strContains(skillProfs, 'intimidation')]]">Intimidation</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'performance')]]" enabled$="[[_strContains(skillProfs, 'performance')]]">Performance</div>
+                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'persuasion')]]" enabled$="[[_strContains(skillProfs, 'persuasion')]]">Persuasion</div>
               </div>
             </div>
           </div>

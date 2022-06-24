@@ -1,4 +1,18 @@
-export default function setDarkmode(isDark) {
+
+export function togglePrimarySecondary(isPrimary, el) {
+    let root = document.documentElement;
+    const styleProp = el && el.style ? el.style : root.style;
+    
+    if (isPrimary) {
+        styleProp.setProperty("--mdc-theme-primary", "var(--mdc-theme-secondary)");
+        styleProp.setProperty("--mdc-theme-primary-darker", "var(--mdc-theme-secondary-lighter)");
+    } else {
+        styleProp.removeProperty("--mdc-theme-primary");
+        styleProp.removeProperty("--mdc-theme-primary-darker");
+    }
+}
+
+export function setDarkmode(isDark) {
     let root = document.documentElement;
     if (isDark) {
         root.style.setProperty("--mdc-theme-primary", "#bb86fc");

@@ -1,14 +1,11 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import {
+  getBackgroundReference,
   getCharacterChannel,
+  getRaceReference,
   getSelectedCharacter,
-  getRaceAttributeOptions,
-  getRaceAttributeDefaults,
-  setRaceAttributes,
-  getBackgroundSkillProfOptions,
-  getBackgroundSkillProfDefaults,
-  setBackgroundSkillProficiencies,
 } from "../../../util/charBuilder";
+import './dnd-character-builder-suboptions';
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, initCollapseToggles, encodeForHash } from "../../../js/utils"; 
 
@@ -20,25 +17,15 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         type: String,
         value: ""
       },
-      backgroundSkillProfOptions: {
+      selectedBackgroundRef: {
         type: Object,
-        value: []
-      },
-      defaultBackgroundSkillProf: {
-        type: String,
-        value: ""
       },
       selectedRace: {
         type: String,
         value: ""
       },
-      raceAttributeOptions: {
+      selectedRaceRef: {
         type: Object,
-        value: []
-      },
-      defaultRaceAttribute: {
-        type: String,
-        value: ""
       },
       isEditMode: {
         type: Boolean,
@@ -82,53 +69,13 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
   async updateFromCharacter(character) {
     this.selectedBackground = character.background;
+    this.selectedBackgroundRef = await getBackgroundReference();
     this.backgroundName = this.selectedBackground.name;
     this.selectedRace = character.race;
+    this.selectedRaceRef = await getRaceReference();
     this.raceName = this.selectedRace.name;
-    // Skills from Background
-    let backgroundSkills = await getBackgroundSkillProfOptions();
-    if (backgroundSkills && backgroundSkills.choose) {
-      this.backgroundSkillProfOptions = backgroundSkills.choose.from;
-      this.backgroundSkillProfChoices = backgroundSkills.choose.count || 1;
-      this.backgroundSkillProfSelections = character.backgroundSkillProficiencies;
-    } else {
-      this.backgroundSkillProfOptions = undefined;
-      this.backgroundSkillProfChoices = undefined;
-      this.backgroundSkillProfSelections = undefined;
-    }
-    let defaultBackgroundSkillProf = await getBackgroundSkillProfDefaults(backgroundSkills);
-    this.defaultBackgroundSkillProf = defaultBackgroundSkillProf.map(e => { return util_capitalizeAll(e) }).join(', ');
-
-    // Attributes from Race
-    let raceAttributes = await getRaceAttributeOptions();
-    if (raceAttributes && raceAttributes.choose) {
-      this.raceAttributeOptions = raceAttributes.choose.from.map(i => { return i.toUpperCase() });
-      this.raceAttributeChoices = raceAttributes.choose.count || 1;
-      this.raceAttributeSelections = character.raceAttributes;
-    } else {
-      this.raceAttributeOptions = undefined;
-      this.raceAttributeChoices = undefined;
-      this.raceAttributeSelections = undefined;
-    }
-    let defaultRaceAttribute = await getRaceAttributeDefaults(raceAttributes);
-    this.defaultRaceAttribute = defaultRaceAttribute
-      .map(e => {
-        let attribute = e[0].toLowerCase(),
-          mod = e[1];
-        return attribute.toUpperCase() + ' ' + absInt(mod);
-      }).join(', ');
-
-    initCollapseToggles(this.shadowRoot);
     
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
-  }
-
-  _backgroundSkillAddCallback(skills) {
-    setBackgroundSkillProficiencies(skills);
-  }
-
-  _raceAttributeAddCallback(attr) {
-    setRaceAttributes(attr);
   }
 
   _getRaceLink(race) {
@@ -197,6 +144,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+          border-bottom: 1px solid var(--lumo-contrast-10pct);
         }
         .reference-link:hover {
           color: var(--mdc-theme-secondary);
@@ -258,6 +206,15 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         .stats-wrapper.margin-bottom_large {
           margin-bottom: 0px !important;
         }
+        dnd-select-add {
+          --lumo-font-size-m: 20px;
+          width: 100%;
+        }
+
+        dnd-character-builder-suboptions {
+          display: block;
+          margin-left: 30px;
+        }
       </style>
 
       <div class="col-wrap">
@@ -267,11 +224,8 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
             <a class="reference-link mdc-icon-button material-icons" href="[[_getRaceLink(selectedRace)]]">launch</a>
           </div>
           <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
-          <div class="missing-text" hidden$="[[_exists(raceAttributeOptions, defaultRaceAttribute)]]">Select Race to add Attribute Bonuses</div>
-          <div hidden$="[[!_exists(raceAttributeOptions, defaultRaceAttribute)]]">Attribute Bonuses from Race:</div>
-          <div hidden$="[[!_exists(defaultRaceAttribute)]]" class="default-selection">Default Attributes: <span>[[defaultRaceAttribute]]</span></div>
-          <dnd-select-add hidden$="[[!_exists(raceAttributeOptions)]]" disabled$="[[!isEditMode]]" choices="[[raceAttributeChoices]]" placeholder="<Choose Attribute>" label="Chosen Attribute(s)"
-            options="[[raceAttributeOptions]]" value="[[raceAttributeSelections]]" add-callback="[[_raceAttributeAddCallback]]"></dnd-select-add>
+          <div class="missing-text" hidden$="[[_exists(selectedRace)]]">Select Race to add Attribute Bonuses</div>
+          <dnd-character-builder-suboptions storage-key="race" selected-item="[[selectedRaceRef]]"></dnd-character-builder-suboptions>
         </div>
 
         <div class="row-wrap">
@@ -280,11 +234,8 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
             <a class="mdc-icon-button material-icons" href="[[_getBackgroundLink(selectedBackground)]]">launch</a>
           </div>
           <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
-          <div class="missing-text" hidden$="[[_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Select Background to add Skill Proficiencies</div>
-          <div hidden$="[[!_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Skill Proficiencies from Background:</div>
-          <div hidden$="[[!_exists(defaultBackgroundSkillProf)]]" class="default-selection">Default Skills: <span>[[defaultBackgroundSkillProf]]</span></div>
-          <dnd-select-add hidden$="[[!_exists(backgroundSkillProfOptions)]]" disabled$="[[!isEditMode]]" choices="[[backgroundSkillProfChoices]]" placeholder="<Choose Skills>" label="Chosen Skill(s)" disabled$="[[!isEditMode]]"
-            options="[[backgroundSkillProfOptions]]" value="[[backgroundSkillProfSelections]]" add-callback="[[_backgroundSkillAddCallback]]"></dnd-select-add>
+          <div class="missing-text" hidden$="[[_exists(selectedBackground)]]">Select Background to add Skill Proficiencies</div>
+          <dnd-character-builder-suboptions storage-key="background" selected-item="[[selectedBackgroundRef]]"></dnd-character-builder-suboptions>
         </div>
       </div>
     `;

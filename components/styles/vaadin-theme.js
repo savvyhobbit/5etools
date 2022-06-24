@@ -23,7 +23,7 @@ registerStyles('vaadin-select', css`
       margin: -12px;
       color: var(--lumo-body-text-color);
     }
-  
+
     :host([disabled]) [part="toggle-button"] {
       display: none;
     }
@@ -44,7 +44,9 @@ registerStyles('vaadin-select-text-field', css`
   }
   :host([disabled]) [part="input-field"] ::slotted(*) {
     color: var(--lumo-body-text-color);
-    -webkit-text-fill-color: var(--lumo-body-text-color);
+    -webkit-text-fill-color: unset;
+    position: relative;
+    left: -12px;
   }
 `);
 

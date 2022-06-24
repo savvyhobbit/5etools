@@ -6,7 +6,7 @@ import "./styles/material-styles.js";
 import "./styles/my-styles.js";
 import "./dnd-character-popup.js";
 import registerSwipe from '../util/swipe.js';
-import setDarkmode from "../util/darkmode.js";
+import { setDarkmode } from "../util/darkmode.js";
 import { clearRouteSelection, routeEventChannel, readRouteView } from '../util/routing.js';
 
 class DndLayout extends PolymerElement {

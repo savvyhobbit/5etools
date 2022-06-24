@@ -47,7 +47,7 @@ class DndButton extends PolymerElement {
     return !!i;
   }
 
-  _styleStr(background, border) {
+  _styleStr(background, border, label) {
     let result = '';
     if (background) {
       result+= `background: ${background}; `
@@ -174,7 +174,7 @@ class DndButton extends PolymerElement {
         }
 
       </style>
-      <button id="button" class="mdc-button" style$="[[_styleStr(background, border)]]">
+      <button id="button" class="mdc-button" style$="[[_styleStr(background, border, label)]]">
         <div class="mdc-button__ripple"></div>
         <span class="mdc-button__label">[[label]]</span>
         <slot name="label"></slot>

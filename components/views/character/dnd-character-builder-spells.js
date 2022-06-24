@@ -11,9 +11,6 @@ import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-text-field";
 import "../../dnd-button";
 
-// todo:
-// compute spell slots for multiclassing, warlock ++
-
 class DndCharacterBuilderSpells extends PolymerElement {
   
   static get properties() {
@@ -880,22 +877,20 @@ class DndCharacterBuilderSpells extends PolymerElement {
         }
 
         .heading {
-          width: 100%;
+          width: calc(100% - 32px);
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+          border-bottom: 1px solid var(--lumo-contrast-10pct);
+          margin: 0 16px;
         }
 
         h2 {
           display: block;
           font-size: 1.5em;
-          margin: 20px 0 20px 16px;
+          margin: 20px 0 20px 0;
           font-weight: bold;
-        }
-
-        .prepare-spells-button {
-          margin-right: 16px;
         }
 
         vaadin-grid {
@@ -1149,6 +1144,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .mod-label {
           font-weight: bold;
           color: var(--mdc-theme-primary);
+          font-size: 15px;
         }
         .edit-mode .mod-label {
           font-weight: bold;
@@ -1230,7 +1226,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">[[_abs(item.mod)]]</span>
               </template>
             </span>
-            <span class="mod-label">Spell Mod</span>
+            <span class="mod-label">Modifier</span>
           </div>
           <div class="mod-row">
             <span class="mod-val-wrap">
@@ -1238,7 +1234,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">+[[item.spellAttackBonus]]</span>
               </template>
             </span>
-            <span class="mod-label">Spell Atk +</span>
+            <span class="mod-label">Attack +</span>
           </div>
           <div class="mod-row">
             <span class="mod-val-wrap">
@@ -1246,7 +1242,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">[[item.dc]]</span>
               </template>
             </span>
-            <span class="mod-label">Spell DC</span>
+            <span class="mod-label">DC</span>
           </div>
         </div>
 

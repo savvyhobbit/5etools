@@ -600,4 +600,4 @@ function renderSelection(mon, rootEl) {
 	}
 }
 
-export { renderSelection };
+export { renderSelection, SKILL_TO_ATB_ABV };

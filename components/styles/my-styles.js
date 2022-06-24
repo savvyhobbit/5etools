@@ -1412,6 +1412,7 @@ styleElement.innerHTML = `
         font-size: 1.6rem;
         font-weight: normal;
         line-height: 1.2;
+        margin: 8px 0;
       }
       #stats .statsBlockSubHead .stat-name {
         font-size: 1.2rem;

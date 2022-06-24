@@ -31,6 +31,9 @@ class DndSelectAdd extends PolymerElement {
         type: Number,
         observer: "choicesUpdated"
       },
+      paren: {
+        type: String,
+      },
       label: {
         type: String
       },
@@ -195,14 +198,18 @@ class DndSelectAdd extends PolymerElement {
     return !!a;
   }
 
-  _label(label, choices) {
+  _label(label, choices, paren) {
+    let result = '';
     if (label) {
-      if (choices) {
-        return `${label} (${choices})`;
-      } else {
-        return label;
+      result = label;
+      if (choices && choices !== 1) {
+        result += ` (${choices})`;
+      }
+       if (paren) {
+        result += ` (${paren})`;
       }
     }
+    return result;
   }
   
   static get template() {
@@ -224,7 +231,7 @@ class DndSelectAdd extends PolymerElement {
           color: var(--lumo-body-text-color);
         }
       </style>
-      <vaadin-select test$="[[test]]" theme="dark" add id="select" label="[[_label(label, choices)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+      <vaadin-select test$="[[test]]" theme="dark" add id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
         <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
           <span class="prefix">[[multiValue]]</span>
         </div>

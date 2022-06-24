@@ -364,6 +364,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+          border-bottom: 1px solid var(--lumo-contrast-10pct);
         }
         .reference-link:hover {
           color: var(--mdc-theme-secondary);

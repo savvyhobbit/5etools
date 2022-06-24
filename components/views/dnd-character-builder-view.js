@@ -6,11 +6,12 @@ import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-switch";
 import { downloadObjectAsJson, jqEmpty } from "../../js/utils.js";
-import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups } from '../../util/charBuilder.js';
+import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
 import { rollEventChannel } from '../../util/roll.js';
 import { readRouteSelection, routeEventChannel, setRouteSelection } from '../../util/routing.js';
+import { togglePrimarySecondary } from '../../util/darkmode.js';
 
 class DndCharacterBuilderView extends PolymerElement {
   static get properties() {
@@ -126,6 +127,7 @@ class DndCharacterBuilderView extends PolymerElement {
 
     this.editModeHandler = (e) => {
       this.isEditMode = e.detail.isEditMode;
+      togglePrimarySecondary(this.isEditMode, this);
     }
     getEditModeChannel().addEventListener('editModeChange', this.editModeHandler);
     this.isEditMode = isEditMode();
@@ -253,24 +255,24 @@ class DndCharacterBuilderView extends PolymerElement {
   defaultTabs() {
     return [
       { label: "", icon: "favorite", viewId: "attributes" },
+      { label: "", icon: "class", viewId: "class" },
+      { label: "", icon: "face", viewId: "background-race" },
       { label: "", icon: "flash_on", viewId: "spells" },
       { label: "", icon: "local_grocery_store", viewId: "equipment" },
       { label: "", icon: "receipt", viewId: "abilities" },
       { label: "", icon: "casino", viewId: "rolls" },
-      { label: "", icon: "class", viewId: "class" },
-      { label: "", icon: "face", viewId: "background-race" },
     ]
   }
 
   nonCasterTabs() {
     return [
       { label: "", icon: "favorite", viewId: "attributes" },
+      { label: "", icon: "class", viewId: "class" },
+      { label: "", icon: "face", viewId: "background-race" },
       { label: "", icon: "flash_on", viewId: "spells", hidden: true},
       { label: "", icon: "local_grocery_store", viewId: "equipment" },
       { label: "", icon: "receipt", viewId: "abilities" },
       { label: "", icon: "casino", viewId: "rolls" },
-      { label: "", icon: "class", viewId: "class" },
-      { label: "", icon: "face", viewId: "background-race" },
     ]
   }
 
@@ -285,6 +287,33 @@ class DndCharacterBuilderView extends PolymerElement {
   downloadCharacter() {
     const char = getSelectedCharacter();
     downloadObjectAsJson(char, `${char.name} - ${new Date().toLocaleString()}`);
+  }
+  
+  downloadCharacters() {
+    const chars = getCharacters();
+    downloadObjectAsJson(chars, `Character Export - ${new Date().toLocaleString()}`);
+  }
+
+  processUpload(event) {
+    const fileList = event.target.files;
+    console.log('upload', fileList);
+    const timestamp = new Date().toLocaleString();
+
+    for (let file of fileList) {
+      if (file && file.type === "application/json") {
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+          const readFile = JSON.parse(event.target.result);
+          const readArray = Array.isArray(readFile) ? readFile : [readFile];
+
+          for (let readObject of readArray) {
+            readObject.name += ` ${timestamp}`;
+            uploadCharacter(readObject);
+          }
+        });
+        reader.readAsText(file);
+      }
+    }
   }
 
   toggleEditMode() {
@@ -309,23 +338,28 @@ class DndCharacterBuilderView extends PolymerElement {
         .head-wrap {
           display: flex;
           flex-direction: column;
-          margin-bottom: 16px;
         }
 
         .char-change {
           display: flex;
+          flex-wrap: wrap;
         }
         .char-change vaadin-text-field {
           font-size: 24px;
           margin: 0 8px 12px 0;
-          max-width: calc(100% - 140px);
+          max-width: calc(100% - 50px);
         }
         .char-change .mdc-icon-button {
           margin-left: 8px;
         }
+        .char-name {
+          display: flex;
+          flex-direction: column;
+        }
         .char-detail-edit {
           display: flex;
           justify-content: space-between;
+          margin-bottom: 16px;
         }
         .char-detail {
           font-size: 16px;
@@ -410,17 +444,39 @@ class DndCharacterBuilderView extends PolymerElement {
           flex-grow: 1;
         }
 
+        .buttons {
+          display: flex;
+          margin-left: auto;
+        }
+
         .not-edit-mode .delete-char,
-        .not-edit-mode .add-char,
-        .not-edit-mode .download-char {
+        .not-edit-mode .add-char {
           display: none;
         }
-        .download-char {
+        .not-edit-mode .download-char,
+        .not-edit-mode .download-all-char,
+        .not-edit-mode .upload-char {
+          display: block;
+        }
+        .download-char,
+        .download-all-char,
+        .upload-char {
           display: none;
         }
-        .not-edit-mode .char-change vaadin-text-field {
-          max-width: calc(100% - 50px);
+
+        .upload-char input {
+          display: none;
         }
+
+        .upload-char .mdc-icon-button {
+          overflow: hidden;
+        }
+        .upload-char .material-icons {
+          position: absolute;
+          left: -132px;
+        }
+
+
         @media(max-width: 420px) {
           .thumb-menu {
             bottom: 90px;
@@ -470,25 +526,42 @@ class DndCharacterBuilderView extends PolymerElement {
       <div class$="[[_editModeClass(isEditMode)]]">
         <div class="head-wrap">
           <div class="char-change">
-            <vaadin-text-field id="name" class="name" value="{{characterName}}" disabled$="[[!isEditMode]]"></vaadin-text-field>
-            <dnd-character-select mini></dnd-character-select>
-            <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
-            <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
-            <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
-          </div>
+            <div class="char-name">
+              <div>
+                <vaadin-text-field id="name" class="name" value="{{characterName}}" disabled$="[[!isEditMode]]"></vaadin-text-field>
+                <dnd-character-select mini></dnd-character-select>
+              </div>
 
-          <div class="char-detail-edit">
-            <div class="char-detail">
-              <span class="char-detail__class">[[classLevel]]</span>
-              <span class="char-detail__race-background">[[race]], [[background]]</span>
+              <div class="char-detail-edit">
+                <div class="char-detail">
+                  <span class="char-detail__class">[[classLevel]]</span>
+                  <span class="char-detail__race-background">[[race]], [[background]]</span>
+                </div>
+              </div>
             </div>
 
-            <div class="thumb-menu">
-              <div class="roll-container" id="rollContainer"></div>
-              <button class="thumb-menu__btn edit-button mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
-              <!-- <button class="thumb-menu__btn download-mobile mdc-icon-button mdc-button--raised material-icons" on-click="downloadCharacter">file_download</button> -->
+            <div class="buttons">
+              <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
+              <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
+              <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
+              
+              <button class="mdc-icon-button download-all-char" on-click="downloadCharacters">
+                <span class=" material-icons">save</span>
+              </button>
+
+              <label class="upload-char">
+                <span class="mdc-icon-button">
+                  <span class=" material-icons">drive_folder_upload</span>
+                </span>
+                <input type="file" id="file-selector" accept=".json" on-change="processUpload" />
+              </label>
             </div>
           </div>
+        </div>
+
+        <div class="thumb-menu">
+          <div class="roll-container" id="rollContainer"></div>
+          <button class="thumb-menu__btn edit-button mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
         </div>
 
         <div class="character-builder--tabs-wrapper">

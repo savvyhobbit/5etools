@@ -106,9 +106,9 @@ function saveCharacter(character) {
   saveCharacters(characters);
 }
 
-function addCharacter(name) {
+function addCharacter(name, charObject) {
   let characters = getCharacters(),
-    newChar = newCharacter(name);
+    newChar = charObject ? charObject : newCharacter(name);
 
   characters.push(newChar);
   saveCharacters(characters);
@@ -129,6 +129,12 @@ function newCharacter(name = "New Character") {
   newCharacter.isDefault = true;
   newCharacter.id = Date.now();
   return newCharacter;
+}
+
+function uploadCharacter(uploadedChar) {
+  uploadedChar.id = Date.now();
+  uploadedChar.isDefault = true;
+  addCharacter(uploadedChar.name, uploadedChar);
 }
 
 function findCharacterIndex(char) {
@@ -205,11 +211,11 @@ function mergeFeature(character = selectedCharacter, selectedItem, type) {
     return;
 
   } else {
-    if (type === "backgrounds") {
-      character.backgroundSkillProficiencies = []
+    if (type === "backgrounds" && character.choices && character.choices.background) {
+      character.choices.background = {};
     }
-    if (type === "races") {
-      character.raceAttributes = [];
+    if (type === "races" && character.choices && character.choices.race) {
+      character.choices.race = {};
     }
     // backgrounds, feats, and races, currently just have to remove the 's'
     let featureKey = transformTypeToFeatureKey(type);
@@ -538,6 +544,16 @@ async function getASIForLevel(level, character = selectedCharacter) {
   return { asi: undefined, index: asiIndex };
 }
 
+// function setASI(asiObj, index, character = selectedCharacter) {
+//   if (!character.choices) {
+//     character.choices = {};
+//   }
+
+//   character.choices[`asi_${index}`] = asiObj;
+
+//   saveCharacter(character);
+// }
+
 function setASI(asiObj, index, character = selectedCharacter) {
   if (!character.asi) {
     character.asi = [];
@@ -643,12 +659,79 @@ async function toggleCustomSkill(skill, character = selectedCharacter) {
   }
 }
 
+function getAllChoices(character = selectedCharacter) {
+  const choices = [],
+    choiceVisited = Object.values(cloneDeep(character.choices));
+
+  while (choiceVisited.length > 0) {
+    const curChoice = choiceVisited.pop();
+    if (curChoice) {
+      choices.push(curChoice);
+      if (curChoice.suboptions) {
+        choiceVisited.push(curChoice.suboptions);
+      }
+    }
+  }
+
+  return choices;
+}
+
+function getChoiceSkillProfs(character = selectedCharacter) {
+  const choices = getAllChoices(character);
+  let skillProfs = [];
+  for (const choice of choices) {
+    if (choice.selectedSkillProfs) {
+      skillProfs = skillProfs.concat(choice.selectedSkillProfs.split(','))
+    }
+    if (choice.defaultSkillProfs) {
+      skillProfs = skillProfs.concat(choice.defaultSkillProfs.split(','));
+    }
+  }
+  return skillProfs;
+}
+
+function getChoiceAttributes(character = selectedCharacter) {
+  const choices = getAllChoices(character);
+  let attributeAdj = {
+    str: 0,
+    dex: 0,
+    con: 0,
+    int: 0,
+    wis: 0,
+    cha: 0
+  };
+
+  for (const choice of choices) {
+    let attributes = [];
+    if (choice.selectedAttributes) {
+      attributes = attributes.concat(choice.selectedAttributes.toLowerCase().split(','))
+    }
+    if (choice.defaultAttributes) {
+      attributes = attributes.concat(choice.defaultAttributes.toLowerCase().split(','));
+    }
+    for (const attribute of attributes) {
+      const attrSplit = attribute.split(' ');
+      let mod = choice.attributeMod || 1;
+      if (attrSplit.length > 1) {
+        try {
+          mod = parseInt(attrSplit[1]);
+        } catch {}
+        attributeAdj[attrSplit[0]] += mod;
+      } else {
+        attributeAdj[attribute] += mod;
+      }
+    }
+  }
+  return attributeAdj;
+}
+
+
 async function getSkillProfs(attr, character = selectedCharacter) {
   let classSkills = character.classSkillProficiencies || [],
-    choosenBackgroundSkills = character.backgroundSkillProficiencies || [],
+    choiceSkills = getChoiceSkillProfs(character),
     customSkills = character.customSkills || [],
     defaultBackgroundSkills = await getBackgroundSkillProfDefaults(),
-    allSkills = classSkills.concat(choosenBackgroundSkills).concat(defaultBackgroundSkills).concat(customSkills);
+    allSkills = classSkills.concat(choiceSkills).concat(defaultBackgroundSkills).concat(customSkills);
   
   if (attr) {
     let skillsForAttr = [];
@@ -858,26 +941,7 @@ function isCantripPrepared(parentClass, spell, character = selectedCharacter) {
 
 async function getAttributeScoreModifiers(character = selectedCharacter) {
   // Attributes from Race
-  let attributeAdj = {
-    str: 0,
-    dex: 0,
-    con: 0,
-    int: 0,
-    wis: 0,
-    cha: 0
-  };
-  let raceAttributes = await getRaceAttributeOptions();
-  if (raceAttributes && raceAttributes.choose) {
-    character.raceAttributes.forEach(a => {
-      attributeAdj[a.toLowerCase()] ++;
-    });
-  } 
-  let defaultRaceAttribute = await getRaceAttributeDefaults(raceAttributes);
-  defaultRaceAttribute.forEach(e => {
-    let attribute = e[0].toLowerCase(),
-      mod = e[1];
-    attributeAdj[attribute] += mod;
-  });
+  let attributeAdj = getChoiceAttributes(character);
 
   let asiData = await getASIAndFeatAttributeData();
   for (let asi of asiData) {
@@ -1701,7 +1765,9 @@ function removeAbilityUsage(index, character = selectedCharacter) {
 }
 
 export {
+  getCharacters,
   addCharacter,
+  uploadCharacter,
   addFeature,
   addFeatureById,
   updateAttr,

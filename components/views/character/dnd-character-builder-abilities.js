@@ -229,6 +229,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+          border-bottom: 1px solid var(--lumo-contrast-10pct);
         }
         
         .rest-buttons {
@@ -330,7 +331,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
 
       <div class="col-wrap" edit-mode$=[[isEditMode]]>
         <div class="heading">
-          <h2>Usage Tracker</h2>
+          <h2>Abilities</h2>
           <div class='rest-buttons'>
             <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
             <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->

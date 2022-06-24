@@ -2,15 +2,14 @@ import { PolymerElement, html } from "@polymer/polymer";
 import {
     getCharacterChannel,
     getSelectedCharacter,
-    getRaceAttributeOptions,
-    getRaceAttributeDefaults,
-    setRaceAttributes,
-    getBackgroundSkillProfOptions,
-    getBackgroundSkillProfDefaults,
-    setBackgroundSkillProficiencies,
+    saveCharacter,
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { util_capitalizeAll, absInt, initCollapseToggles, encodeForHash } from "../../../js/utils"; 
+import { util_capitalizeAll, absInt, cloneDeep } from "../../../js/utils"; 
+import { loadModel } from "../../../util/data";
+import '../../dnd-select-add';
+import { SKILL_TO_ATB_ABV } from "../../../js/bestiary";
+import { } from '@polymer/polymer/lib/elements/dom-if.js';
     
 class DndCharacterBuilderSuboptions extends PolymerElement {
     static get properties() {
@@ -18,33 +17,37 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             storageKey: {
                 type: String
             },
+            // This selectedItem provided is used to populate the sub option fields using the option data structure setup in data
             selectedItem: {
                 type: Object
             },
 
-            profOptions: {
-                type: Object,
+            skillProfOptions: {
+                type: Array,
                 value: []
             },
-            profChoices: {
+            skillProfChoices: {
                 type: Number,
             },
-            profSelection: {
+            selectedSkillProfs: {
                 type: Array,
             },
-            defaultProfs: {
+            defaultSkillProfs: {
                 type: String,
                 value: ""
             },
 
             attributeOptions: {
-                type: Object,
+                type: Array,
                 value: []
             },
             attributeChoices: {
                 type: Number,
             },
-            attributeSelection: {
+            attributeMod: {
+                type: Number,
+            },
+            selectedAttributes: {
                 type: Array,
             },
             defaultAttributes: {
@@ -53,12 +56,13 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             },
 
             featOptions: {
-                type: Array
+                type: Array,
+                value: []
             },
             featChoices: {
                 type: Number
             },
-            featSelection: {
+            selectedFeat: {
                 type: Array,
             },
 
@@ -69,15 +73,21 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         };
     }
 
+    static get observers() {
+        return ['updateOptions(selectedItem, storageKey, character)']
+    }
+
     connectedCallback() {
         super.connectedCallback();
 
         this.characterChangeHandler = (e) => {
+            // let character = cloneDeep(e.detail.character);
             let character = e.detail.character;
-            this.updateFromCharacter(character);
+            this.set('character', character);
+            this.updateOptions();
         };
         
-        this.updateFromCharacter(getSelectedCharacter());
+        this.set('character', getSelectedCharacter());
         getCharacterChannel().addEventListener("character-selected", this.characterChangeHandler);
 
         this.editModeHandler = (e) => {
@@ -94,91 +104,120 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
     }
 
-    async updateFromCharacter(character) {
-        if (character && this.storageKey && this.selectedItem) {
+    async updateOptions() {
+        if (this.character && this.storageKey && this.selectedItem) {
+            // Finding the storedItem from the character's choices at storageKey 
             const storageKeys = this.storageKey.split('.');
-            let storedItem = character;
+            if (!this.character.choices) {
+                this.character.choices = {};
+            }
+            let storedItem = this.character.choices;
 
-            for (let storageKey of storageKeys) {
+            for (let i = 0; i < storageKeys.length; i++) {
+                const storageKey = storageKeys[i];
+                if (!storedItem[storageKey]) {
+                    if (storageKeys.length < i + 1 && !isNaN(parseInt(storageKeys[i + 1], 10))) {
+                        storedItem[storageKey] = new Array(20);
+                    } else {
+                        storedItem[storageKey] = {};
+                    }
+                }
                 storedItem = storedItem[storageKey];
             }
+            this.storedItem = storedItem;
 
-            this.profOptions = '';
-            this.profChoices = '';
-            this.profSelection = '';
-            this.defaultProfs = '';
 
-            this.attributeOptions = '';
-            this.attributeChoices = '';
-            this.attributeSelection = '';
-            this.defaultAttributes = '';
+            // Retrieving the selected choices for attribute, feat, or proficiency off of the storedItem
 
-            this.featOptions = '';
-            this.featChoices = '';
-            this.featSelection = '';
-            
-            /////
-            // Skills from Background
-            let backgroundSkills = await getBackgroundSkillProfOptions();
-            if (backgroundSkills && backgroundSkills.choose) {
-                this.backgroundSkillProfOptions = backgroundSkills.choose.from;
-                this.backgroundSkillProfChoices = backgroundSkills.choose.count || 1;
-                this.backgroundSkillProfSelections = character.backgroundSkillProficiencies;
-            } else {
-                this.backgroundSkillProfOptions = undefined;
-                this.backgroundSkillProfChoices = undefined;
-                this.backgroundSkillProfSelections = undefined;
+            // Populating Attribute choice field
+            this.attributeOptions = [];
+            this.attributeChoices = null;
+            this.attributeMod = 1;
+            this.selectedAttributes = null;
+            this.defaultAttributes = null;
+            if (this.selectedItem.ability && this.selectedItem.ability.length) {
+                const ability = this.selectedItem.ability[0];
+                if (ability.choose) {
+                    this.attributeOptions = ability.choose.from.map(i => { return i.toUpperCase() });
+                    this.attributeChoices = ability.choose.count || 1;
+                    this.attributeMod = ability.choose.amount || 1;
+                    this.selectedAttributes = this.storedItem.selectedAttributes ? this.storedItem.selectedAttributes.split(',') : null;
+                }
+                this.defaultAttributes = Object.entries(ability).map(e => {
+                    if (e[0] !== 'choose' && e[0] !== 'any') {
+                        let attribute = e[0].toLowerCase(),
+                            mod = e[1];
+                        return attribute.toUpperCase() + ' ' + absInt(mod);
+                    }
+                }).filter(e => !!e).join(', ');
+                // store defaults on character to avoid future look-ups
+                this.storedItem.defaultAttributes = this.defaultAttributes;
+                this.storedItem.attributeMod = this.attributeMod;
             }
-            let defaultBackgroundSkillProf = await getBackgroundSkillProfDefaults(backgroundSkills);
-            this.defaultBackgroundSkillProf = defaultBackgroundSkillProf.map(e => { return util_capitalizeAll(e) }).join(', ');
-    
-            // Attributes from Race
-            let raceAttributes = await getRaceAttributeOptions();
-            if (raceAttributes && raceAttributes.choose) {
-                this.raceAttributeOptions = raceAttributes.choose.from.map(i => { return i.toUpperCase() });
-                this.raceAttributeChoices = raceAttributes.choose.count || 1;
-                this.raceAttributeSelections = character.raceAttributes;
-            } else {
-                this.raceAttributeOptions = undefined;
-                this.raceAttributeChoices = undefined;
-                this.raceAttributeSelections = undefined;
+
+            // Populating Skill Proficiency choice field
+            this.skillProfOptions = [];
+            this.skillProfChoices = null;
+            this.selectedSkillProfs = null;
+            this.defaultSkillProfs = null;
+            if (this.selectedItem.skillProficiencies && this.selectedItem.skillProficiencies.length) {
+                const skillProficiency = this.selectedItem.skillProficiencies[0];
+                if (skillProficiency.choose) {
+                    this.skillProfOptions = skillProficiency.choose.from;
+                    this.skillProfChoices = skillProficiency.choose.count || 1;
+                    this.selectedSkillProfs = this.storedItem.selectedSkillProfs ? this.storedItem.selectedSkillProfs.split(',') : null;
+                }
+                if (skillProficiency.any) {
+                    this.skillProfOptions = Object.keys(SKILL_TO_ATB_ABV);
+                    this.skillProfChoices = skillProficiency.any;
+                    this.selectedSkillProfs = this.storedItem.selectedSkillProfs ? this.storedItem.selectedSkillProfs.split(',') : null;
+                }
+                this.defaultSkillProfs = Object.keys(skillProficiency).map(e => {
+                    if (e !== 'choose' && e !== 'any') {
+                        return util_capitalizeAll(e) 
+                    }
+                }).filter(e => !!e).join(', ');
+                // store defaults on character to avoid future look-ups
+                this.storedItem.defaultSkillProfs = this.defaultSkillProfs;
             }
-            let defaultRaceAttribute = await getRaceAttributeDefaults(raceAttributes);
-            this.defaultRaceAttribute = defaultRaceAttribute
-                .map(e => {
-                let attribute = e[0].toLowerCase(),
-                    mod = e[1];
-                return attribute.toUpperCase() + ' ' + absInt(mod);
-                }).join(', ');
+
+            // Populating Feat choice field
+            this.featOptions = [];
+            this.featChoices = null;
+            this.selectedFeat = null;
+            if (this.selectedItem.feats) {
+                this.featOptions = await loadModel('feats');
+                this.featChoices = this.selectedItem.feats;
+                this.selectedFeat = this.storedItem.selectedFeat;
+            }
             
             this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
         }
     }
 
-    _backgroundSkillAddCallback(skills) {
-        setBackgroundSkillProficiencies(skills);
+    _skillProficiencyAddCallback() {
+        return ((skills) => {
+            this.storedItem.selectedSkillProfs = skills.join(',');
+            saveCharacter(this.character);
+        }).bind(this);
     }
 
-    _raceAttributeAddCallback(attr) {
-        setRaceAttributes(attr);
+    _attributeAddCallback() {
+        return ((attr) => {
+            this.storedItem.selectedAttributes = attr.join(',');
+            saveCharacter(this.character);
+        }).bind(this);
     }
 
-    _getRaceLink(race) {
-        let linkData = [race.name];
-        if (race.source) {
-            linkData.push(race.source);
-        }
-        let dataLink = encodeForHash(linkData);
-        return race ? `#/races/${dataLink}` : '#/races'
+    _featAddCallback() {
+        return ((feat) => {
+            this.storedItem.selectedFeat = feat;
+            saveCharacter(this.character);
+        }).bind(this);
     }
 
-    _getBackgroundLink(bg) {
-        let linkData = [bg.name];
-        if (bg.source) {
-            linkData.push(bg.source);
-        }
-        let dataLink = encodeForHash(linkData);
-        return bg ? `#/backgrounds/${dataLink}` : '#/backgrounds'
+    _suboptionStorageKey(storageKey) {
+        return `${storageKey}.suboptions`
     }
 
     _showEmpty(isEditMode, value) {
@@ -188,136 +227,77 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
     _exists() {
         for (let arg of arguments) {
             if (!!arg && (arg.constructor !== Object || Object.entries(arg).length > 0) && (!Array.isArray(arg) || arg.length > 0)) {
-            return true;
+                return true;
             }
         }
         return false;
     }
 
+    _plusPrefix(num) {
+        console.error(num)
+        return `+${num}`
+    }
+
+    _plural(str, num) {
+        if (num > 1) {
+            return str + 's'
+        }
+        return str;
+    }
+
     static get template() {
         return html`
-            <style include="material-styles my-styles">
-            body {}
-            :host {
-                display: block;
-                padding: 14px;
-            }
-            [hidden] {
-                display: none !important;
-            }
-
-            .col-wrap {
-                display: flex; 
-                justify-content: space-between;
-                flex-wrap: wrap;
-                margin-bottom: 200px;
-            }
-
-            .row-wrap {
-                width: 100%;
-            }
-            .row-wrap:first-child {
-                margin-bottom: 24px;
-            }
-
-            .row-wrap > *:not(h2):not(:last-child) {
-                margin-bottom: 10px;
-            }
-
-            .heading {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .reference-link:hover {
-                color: var(--mdc-theme-secondary);
-            }
-
-            .default-selection {
-                font-size: 14px;
-                margin-bottom: 0 !important;
-            }
-
-            .default-selection span {
-                color: var(--mdc-theme-secondary)
-            }
-
-            .missing-text {
-                font-style: italic;
-                font-size: 14px;
-            }
-
-            @media(min-width: 420px) {
-                .heading {
-                justify-content: flex-start;
+            <style include="material-styles">
+                [hidden] {
+                    display: none !important;
                 }
-                .reference-link {
-                margin-left: 8px;
+                dnd-select-add {
+                    width: 100%;
                 }
-            }
-
-            @media(min-width: 921px) {
-                .row-wrap {
-                width: calc(50% - 10px);
+                @media(min-width: 420px) {
+                    dnd-select-add {
+                        width: calc(50% - 20px);
+                    }
                 }
-                .row-wrap:first-child {
-                margin-bottom: 0;
+
+                @media(min-width: 921px) {
                 }
-            }
-
-            h2 {
-                display: block;
-                font-size: 1.5em;
-                margin-block-start: 0.83em;
-                margin-block-end: 0.83em;
-                margin-inline-start: 0px;
-                margin-inline-end: 0px;
-                font-weight: bold;
-            }
-
-            h3 {
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 8px;
-            }
-            .details-container  {
-                background: var(--lumo-contrast-10pct);
-                padding: 14px;
-                border-radius: 4px;
-                font-size: 14px;
-            }
-            .stats-wrapper.margin-bottom_large {
-                margin-bottom: 0px !important;
-            }
             </style>
 
             <div class="col-wrap">
-            <div class="row-wrap">
-                <div class="heading">
-                <h2>Race</h2>
-                <a class="reference-link mdc-icon-button material-icons" href="[[_getRaceLink(selectedRace)]]">launch</a>
-                </div>
-                <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
-                <div class="missing-text" hidden$="[[_exists(raceAttributeOptions, defaultRaceAttribute)]]">Select Race to add Attribute Bonuses</div>
-                <div hidden$="[[!_exists(raceAttributeOptions, defaultRaceAttribute)]]">Attribute Bonuses from Race:</div>
-                <div hidden$="[[!_exists(defaultRaceAttribute)]]" class="default-selection">Default Attributes: <span>[[defaultRaceAttribute]]</span></div>
-                <dnd-select-add hidden$="[[!_exists(raceAttributeOptions)]]" disabled$="[[!isEditMode]]" choices="[[raceAttributeChoices]]" placeholder="<Choose Attribute>" label="Chosen Attribute(s)"
-                options="[[raceAttributeOptions]]" value="[[raceAttributeSelections]]" add-callback="[[_raceAttributeAddCallback]]"></dnd-select-add>
-            </div>
+                <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection">Default Attributes: <span>[[defaultAttributes]]</span></div>
 
-            <div class="row-wrap">
-                <div class="heading">
-                <h2>Background</h2>
-                <a class="mdc-icon-button material-icons" href="[[_getBackgroundLink(selectedBackground)]]">launch</a>
-                </div>
-                <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
-                <div class="missing-text" hidden$="[[_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Select Background to add Skill Proficiencies</div>
-                <div hidden$="[[!_exists(backgroundSkillProfOptions, defaultBackgroundSkillProf)]]">Skill Proficiencies from Background:</div>
-                <div hidden$="[[!_exists(defaultBackgroundSkillProf)]]" class="default-selection">Default Skills: <span>[[defaultBackgroundSkillProf]]</span></div>
-                <dnd-select-add hidden$="[[!_exists(backgroundSkillProfOptions)]]" disabled$="[[!isEditMode]]" choices="[[backgroundSkillProfChoices]]" placeholder="<Choose Skills>" label="Chosen Skill(s)" disabled$="[[!isEditMode]]"
-                options="[[backgroundSkillProfOptions]]" value="[[backgroundSkillProfSelections]]" add-callback="[[_backgroundSkillAddCallback]]"></dnd-select-add>
-            </div>
+                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skill Proficiencies: <span>[[defaultSkillProfs]]</span></div>
+
+                <template is="dom-if" if="[[_exists(attributeOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]" 
+                        placeholder="<Select Attribute>" label='[[_plural("Selected Attribute", attributeChoices)]]'
+                        choices="[[attributeChoices]]" paren="[[_plusPrefix(attributeMod)]]" options="[[attributeOptions]]"
+                        value="[[selectedAttributes]]" add-callback="[[_attributeAddCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-if" if="[[_exists(skillProfOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Skill>" label='[[_plural("Selected Skill", skillProfChoices)]]'
+                        choices="[[skillProfChoices]]" options="[[skillProfOptions]]"
+                        value="[[selectedSkillProfs]]" add-callback="[[_skillProficiencyAddCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <!-- Todo: add language and tool proficiencies -->
+
+                <template is="dom-if" if="[[_exists(featOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Feat>" label="Selected Feat"
+                        options="[[featOptions]]" value="[[selectedFeat]]"
+                        add-callback="[[_featAddCallback()]]">
+                    </dnd-select-add>
+                    
+                    <template is="dom-if" if="[[_exists(selectedFeat)]]"></template>
+                        <dnd-character-builder-suboptions storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
+                    </template>
+                </template>
             </div>
         `;
     }

@@ -225,7 +225,6 @@ function findClassRefFromKey(classModel, keyStr) {
 
 	const searchFeatures = isSubclass ? classModel.subclassFeature : classModel.classFeature;
 	const foundFeature = searchFeatures.find(feature => feature.name === featureName && (!featureSource || feature.source === featureSource) && feature.level === featureLevel);
-	console.log(foundFeature.name);
  	return foundFeature;
 }
 
