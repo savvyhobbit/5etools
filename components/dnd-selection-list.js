@@ -2,7 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer';
 import "./dnd-list.js";
 import "./dnd-selected-item.js";
 import {loadModel} from "../util/data.js";
-import { resolveHash } from "../util/renderTable.js";
+import { parseListData, resolveHash } from "../util/renderTable.js";
 import { readRouteSelection, routeEventChannel, clearRouteSelection } from '../util/routing.js';
 
 class DndSelectionList extends PolymerElement {
@@ -31,6 +31,9 @@ class DndSelectionList extends PolymerElement {
         value: false
       },
       _data: {
+        type: Array
+      },
+      _filters: {
         type: Array
       },
       _selectedItem: {
@@ -101,11 +104,14 @@ class DndSelectionList extends PolymerElement {
   _modelChange() {
     if (this.modelId) {
       this.set("_data", undefined);
+      this.set("_filters", undefined);
       this.loading = true;
 
       loadModel(this.modelId)
         .then(result => {
+          const filters = parseListData(result, this.columns);
           this.set("_data", result);
+          this.set("_filters", filters);
           this._checkHashForSelection();
           this.loading = false;
         })
@@ -158,7 +164,7 @@ class DndSelectionList extends PolymerElement {
         }
       </style>
       <dnd-selected-item model-id="[[modelId]]" selected-item="[[_selectedItem]]" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
-      <dnd-list data="[[_data]]" columns="[[columns]]"></dnd-list>
+      <dnd-list list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
     `;
   }
 }

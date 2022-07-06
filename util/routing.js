@@ -112,13 +112,13 @@ function readRouteSelection(newURL) {
 
 function clearRouteSelection(noHistory) {
 	let hashView = readRouteView();
-	if (noHistory) {
-		isBacking = true;
-		prevScrollHeight =  window.historyScrollHeight.pop();
-		window.history.back();
-	} else {
+	// if (noHistory) {
+	// 	isBacking = true;
+	// 	prevScrollHeight =  window.historyScrollHeight.pop();
+	// 	window.history.back();
+	// } else {
 		window.location.hash = "#/" + hashView;
-	}
+	// }
 }
 
 function setRouteView(newRoute) {

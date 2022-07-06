@@ -12,9 +12,8 @@ class DndRewardsView extends PolymerElement {
         enable-hash-routing
         model-id="rewards"
         columns='[
-          {"id":"name","label":"Name"},
           {"id":"source","label":"Source"}, 
-          {"id":"reward-type","label":"Type","cssClass":"hidden-mobile-down"}
+          {"id":"reward-type","label":"Type","hideMobile":true}
         ]'
       >
       </dnd-selection-list>

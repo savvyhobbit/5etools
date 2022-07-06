@@ -673,6 +673,9 @@ styleElement.innerHTML = `
       .stat-name {
         font-weight: bold;
       }
+      .explanation {
+        margin-right: -4px;
+      }
       .stats-sub-header {
         font-weight: bold;
       }

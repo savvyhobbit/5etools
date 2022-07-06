@@ -12,10 +12,9 @@ class DndPsionicsView extends PolymerElement {
         enable-hash-routing
         model-id="psionics"
         columns='[
-          {"id":"name","label":"Name"},
           {"id":"source","label":"Source"}, 
           {"id":"psy-type","label":"Type"},
-          {"id":"psy-order","label":"Order","cssClass":"hidden-mobile-down"},
+          {"id":"psy-order","label":"Order","hideMobile":true},
           {"id":"psy-mode-list","label":"Mode List","cssClass":"hidden"}
         ]'
       >

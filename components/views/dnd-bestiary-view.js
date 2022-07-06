@@ -13,7 +13,6 @@ class DndBestiaryView extends PolymerElement {
         enable-hash-routing
         model-id="bestiary"
         columns='[
-          {"id":"name","label":"Name"},
           {"id":"source","label":"Source"}, 
           {"id":"monster-type","label":"Type"},
           {"id":"cr","label":"CR"}

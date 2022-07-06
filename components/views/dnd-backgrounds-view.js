@@ -12,8 +12,7 @@ class DndBackgroundsView extends PolymerElement {
         enable-hash-routing
         model-id="backgrounds"
         columns='[
-          {"id":"name","label":"Name"},
-          {"id":"source","label":"Source","cssClass":"hidden-mobile-down"},
+          {"id":"source","label":"Source","hideMobile":true},
           {"id":"proficiencies","label":"Proficiencies"}
         ]'
       >

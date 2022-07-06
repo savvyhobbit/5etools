@@ -12,12 +12,11 @@ class DndSpellsView extends PolymerElement {
         enable-hash-routing
         model-id="spells"
         columns='[
-          {"id":"name","label":"Name"},
           {"id":"source","label":"Source"},
           {"id":"level","label":"Level"},
-          {"id":"school","label":"School","cssClass":"hidden-mobile-down"},
-          {"id":"range","label":"Range","cssClass":"hidden-mobile-down"},
-          {"id":"time","label":"Time","cssClass":"hidden-mobile-down"},
+          {"id":"school","label":"School","hideMobile":true},
+          {"id":"range","label":"Range","hideMobile":true},
+          {"id":"time","label":"Time","hideMobile":true},
           {"id":"classes","label":"Classes","cssClass":"hidden"},
           {"id":"subclasses","label":"Subclasses","cssClass":"hidden"},
           {"id":"spell-meta","label":"Tag","cssClass":"hidden"}

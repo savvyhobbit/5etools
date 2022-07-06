@@ -4,7 +4,7 @@ import {
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { renderSelection } from "../../../js/items";
-import { DAMAGE_TYPES } from "../../../util/consts";
+import { DAMAGE_TYPES, RARITY_TYPES } from "../../../util/consts";
 import { findInPath, util_capitalizeAll } from "../../../js/utils";
 import "@vaadin/vaadin-text-field/vaadin-text-field";
 import "@vaadin/vaadin-text-field/vaadin-text-area";
@@ -16,9 +16,6 @@ import Parser from '../../../util/Parser';
 // DC+
 // Proficiency?
 // Spells known
-
-//// BANES
-// Armor stealth disadvantage?
 class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
   
   static get properties() {
@@ -119,15 +116,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
       'Wand'
     ];
 
-    this.rarityTypes = [
-      'None',
-      'Common',
-      'Uncommon',
-      'Rare',
-      'Very Rare',
-      'Legendary',
-      'Artifact'
-    ];
+    this.rarityTypes = RARITY_TYPES;
     this.damageTypes = DAMAGE_TYPES;
     this.resistTypes = ['<None>', ...DAMAGE_TYPES];
     this.weaponPropertyOptions = [

@@ -12,7 +12,6 @@ class DndFeaturesView extends PolymerElement {
         enable-hash-routing
         model-id="features"
         columns='[
-          {"id":"name","label":"Name"},
           {"id": "feature-type", "label":"Type"},
           {"id":"prerequisite","label":"Prerequisite"},
           {"id": "source", "label":"Source"}

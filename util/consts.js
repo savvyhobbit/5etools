@@ -181,4 +181,13 @@ export const
   UA_PREFIX = "Unearthed Arcana: ",
   UA_PREFIX_SHORT = "UA: ",
   PP3_SUFFIX = " (3pp)",
-  DAMAGE_TYPES = ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Radiant', 'Slashing', 'Thunder'];
+  DAMAGE_TYPES = ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Radiant', 'Slashing', 'Thunder'],
+  RARITY_TYPES = [
+    'None',
+    'Common',
+    'Uncommon',
+    'Rare',
+    'Very Rare',
+    'Legendary',
+    'Artifact'
+  ];

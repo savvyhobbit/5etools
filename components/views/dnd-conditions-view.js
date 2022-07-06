@@ -12,9 +12,7 @@ class DndConditionsView extends PolymerElement {
       <dnd-selection-list
         enable-hash-routing
         model-id="conditions"
-        columns='[
-          {"id":"name","label":"Name"}
-        ]'
+        columns='[]'
       >
       </dnd-selection-list>
     `;

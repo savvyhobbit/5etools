@@ -12,7 +12,6 @@ class DndVariantrulesView extends PolymerElement {
         enable-hash-routing
         model-id="variantrules"
         columns='[
-          {"id":"name","label":"Name"},
           {"id":"source","label":"Source"},
           {"id":"rules-search","label":"Rules","cssClass":"hidden"}
         ]'

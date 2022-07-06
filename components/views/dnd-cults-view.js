@@ -11,9 +11,7 @@ class DndCultsView extends PolymerElement {
       <dnd-selection-list
         enable-hash-routing
         model-id="cults"
-        columns='[
-          {"id":"name","label":"Name"}
-        ]'
+        columns='[]'
       >
       </dnd-selection-list>
     `;

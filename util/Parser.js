@@ -134,7 +134,7 @@ let Parser = {};
 Parser._parse_aToB = function(abMap, a) {
   a = a.trim();
   if (abMap[a] !== undefined) return abMap[a];
-  console.error(a, abMap);
+  console.warn(a, abMap);
   return a;
 };
 
@@ -387,7 +387,7 @@ Parser.spClassesToFull = function(classes) {
 };
 
 Parser.spMainClassesToFull = function(classes) {
-  return classes.fromClassList ? classes.fromClassList
+  return classes && classes.fromClassList ? classes.fromClassList
     .sort((a, b) => ascSort(a.name, b.name))
     .map(c => `<span title="Source: ${Parser.sourceJsonToFull(c.source)}">${c.name}</span>`)
     .join(", ") : '';

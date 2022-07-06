@@ -324,7 +324,7 @@ function utils_makePrerequisite(prereqList, shorthand, makeAsArray) {
 				for (const att in pre.ability[j]) {
 					if (!pre.ability[j].hasOwnProperty(att)) continue;
 					if (shorthand) {
-						outStack.push(att.uppercaseFirst() + (attCount === pre.ability.length -1 ? " 13+" : ""));
+						outStack.push(att.uppercaseFirst());
 					} else {
 						outStack.push(Parser.attAbvToFull(att) + (attCount === pre.ability.length -1 ? " 13 or higher" : ""));
 					}
@@ -339,9 +339,16 @@ function utils_makePrerequisite(prereqList, shorthand, makeAsArray) {
 					if (!pre.proficiency[j].hasOwnProperty(type)) continue;
 					if (type === "armor") {
 						if (shorthand) {
-							outStack.push("prof " + Parser.armorFullToAbv(pre.proficiency[j][type]) + " armor");
+							outStack.push("Armor Prof: " + util_capitalizeAll(pre.proficiency[j][type]));
 						} else {
-							outStack.push("Proficiency with " + pre.proficiency[j][type] + " armor");
+							outStack.push("Proficiency with " + util_capitalizeAll(pre.proficiency[j][type]) + " Armor");
+						}
+					}
+					if (type ===  "weapon") {
+						if (shorthand) {
+							outStack.push("Weapon Prof: " + Parser.armorFullToAbv(util_capitalizeAll(pre.proficiency[j][type])));
+						} else {
+							outStack.push("Proficiency with " + util_capitalizeAll(pre.proficiency[j][type]) + " Weapons");
 						}
 					}
 				}
@@ -392,16 +399,26 @@ function utils_makePrerequisite(prereqList, shorthand, makeAsArray) {
 		}
 		if (pre.otherSummary !== undefined) {
 			if (shorthand) {
-				outStack.push(pre.otherSummary);
+				outStack.push(pre.otherSummary.entrySummary);
 			} else {
-				outStack.push(pre.otherSummary);
+				outStack.push(pre.otherSummary.entry);
 			}
 		}
-		if (pre.spellcasting === "YES") {
+		if (pre.other) {
+			outStack.push(pre.other);
+		}
+		if (pre.spellcasting || pre.spellcasting2020) {
 			if (shorthand) {
 				outStack.push("Spellcasting");
 			} else {
 				outStack.push("The ability to cast at least one spell");
+			}
+		}
+		if (pre.psionics) {
+			if (shorthand) {
+				outStack.push("Psionics");
+			} else {
+				outStack.push("The ability to use Psionics");
 			}
 		}
 	}
@@ -1008,14 +1025,25 @@ function getItemTypeText(curItem) {
 }
 
 function downloadObjectAsJson(exportObj, exportName) {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+	var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+	var downloadAnchorNode = document.createElement('a');
+	downloadAnchorNode.setAttribute("href",     dataStr);
+	downloadAnchorNode.setAttribute("download", exportName + ".json");
+	document.body.appendChild(downloadAnchorNode); // required for firefox
+	downloadAnchorNode.click();
+	downloadAnchorNode.remove();
 }
+
+function getInnerText(str) {
+	const div = document.createElement('div');
+	div.innerHTML = str;
+	return div.innerText;
+}
+
+function isFirstCharNum(str) {
+	return str && str.match && str.match(new RegExp(/^\d/)) !== null;
+}
+
 
 export {
   throttle,
@@ -1097,4 +1125,6 @@ export {
 	getItemTypes,
 	getItemTypeText,
 	downloadObjectAsJson,
+	getInnerText,
+	isFirstCharNum,
 };

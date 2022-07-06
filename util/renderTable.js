@@ -1,12 +1,8 @@
 import {
   getSourceFilter,
   getAsiFilter,
-  initFilterBox,
   utils_makePrerequisite,
-  search,
-  debounce,
   ascSort,
-  parseHTML,
   getHiddenModeList,
   parse_psionicTypeToFull,
   parse_psionicOrderToFull,
@@ -19,14 +15,12 @@ import {
   getTimeDisplay,
   getRuleSearchStackNames,
   uppercaseFirst,
-  getFromPath,
   decodeForHash,
-  encodeForHash,
-  getItemTypes
+  getItemTypes,
+  getInnerText
 } from "../js/utils.js";
 import { parse_abilityShort, parse_abilityCollection } from "../util/ability.js";
 import {
-  FLTR_ID,
   STR_NONE,
   STR_EMPTY,
   SZ_FINE,
@@ -41,17 +35,13 @@ import {
   SZ_VARIES
 } from "./consts.js";
 import Parser from "./Parser.js";
-import { Filter, FilterBox } from "./Filter.js";
-import { readRouteSelection } from "./routing.js";
+import { Filter } from "./Filter.js";
 
-function renderTable(data, rootEl, columns) {
+function parseListData(data, columns) {
   const filters = {};
 
-  // Generates html and filter settings for each item by each column
 	for (let i = 0; i < data.length; i++) {
 		const curItem = data[i];
-    const name = curItem.name;
-    let columnsHtmlString = '';
   
 		for (let col of columns) {
 			switch (col.id) {
@@ -63,13 +53,7 @@ function renderTable(data, rootEl, columns) {
           }
           const ability = parse_abilityShort(curItem.ability) || STR_NONE;
           curItem._fAbility = parse_abilityCollection(curItem.ability);
-          columnsHtmlString += `<td class='table-cell ability ${
-            ability === STR_NONE ? "list-entry-none " : ""
-          } ${col.cssClass}'>${ability}</td>`;
-          break;
-
-        case "name":
-          columnsHtmlString += `<td class='table-cell table-cell--border name ${col.cssClass}'>${name}</td>`;
+          curItem['render-ability'] = ability;
           break;
 
         case "source":
@@ -79,26 +63,21 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = sourceFilter;
           }
           filters[col.id].addIfAbsent(curItem.source);
-
-          columnsHtmlString += `<td class='table-cell source source${curItem.source} ${
-            col.cssClass
-          }' title='${Parser.sourceJsonToFull(curItem.source)}'>${Parser.sourceJsonToAbv(curItem.source)}</td>`;
+          curItem['render-source'] = Parser.sourceJsonToAbv(curItem.source);
           break;
 
         case "prerequisite":
-          let prereqText = utils_makePrerequisite(curItem.prerequisite, true);
+          let prereqText = getInnerText(utils_makePrerequisite(curItem.prerequisite, true));
           if (!prereqText) {
-            prereqText = '--';
+            prereqText = '';
           }
-          columnsHtmlString += `<td class='table-cell prerequisite ${
-            prereqText === STR_NONE ? "list-entry-none " : ""
-          } ${col.cssClass}'>${prereqText}</td>`;
+          curItem['render-prerequisite'] = prereqText;
           break;
 
         case "proficiencies":
           const prof = curItem.skillProficiencies && curItem.skillProficiencies.length > 0
-            ? parse_backgroundSkills(curItem.skillProficiencies) : "--";
-          columnsHtmlString += `<td class="table-cell proficiencies ${col.cssClass}">${prof}</td>`;
+            ? parse_backgroundSkills(curItem.skillProficiencies) : "";
+          curItem['render-proficiencies'] = prof;
           break;
 
         case "psy-type":
@@ -107,9 +86,7 @@ function renderTable(data, rootEl, columns) {
             typeFilter.metric = "type";
             filters[col.id] = typeFilter;
           }
-          columnsHtmlString += `<td class='psy-type table-cell ${col.cssClass}'>${parse_psionicTypeToFull(
-            curItem.type
-          )}</td>`;
+          curItem['render-psy-type'] = parse_psionicTypeToFull(curItem.type);
           break;
 
         case "psy-order":
@@ -122,13 +99,11 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = orderFilter;
           }
           curItem.order = parse_psionicOrderToFull(curItem.order);
-          columnsHtmlString += `<td class='psy-order table-cell  ${col.cssClass} ${
-            curItem.order === STR_NONE ? "list-entry-none" : STR_EMPTY
-          }'>${curItem.order}</td>`;
+          curItem['render-order'] = curItem.order;
           break;
 
         case "psy-mode-list":
-          columnsHtmlString += `<td class='psy-mode-list ${col.cssClass}'>${getHiddenModeList(curItem)}</td>`;
+          curItem['render-psy-mode-list'] = getHiddenModeList(curItem);
           break;
 
         case "size":
@@ -139,7 +114,7 @@ function renderTable(data, rootEl, columns) {
           }
           filters[col.id].addIfAbsent(curItem.size);
           const renderedSize = curItem.size && curItem.size.length ? Parser.sizeAbvToFull(curItem.size) : ''
-          columnsHtmlString += `<td class='table-cell ${col.cssClass} size'>${renderedSize}</td>`;
+          curItem['render-size'] = renderedSize
           break;
 
         case "reward-type":
@@ -151,7 +126,7 @@ function renderTable(data, rootEl, columns) {
             typeFilter.metric = "type";
             filters[col.id] = typeFilter;
           }
-          columnsHtmlString += `<td class='table-cell type ${col.cssClass}'>${curItem.type}</td>`;
+          curItem['render-reward-type'] = curItem.type;
           break;
 
         case "level":
@@ -161,7 +136,7 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = levelFilter;
           }
           filters[col.id].addIfAbsent(curItem.level);
-          columnsHtmlString += `<td class='table-cell level ${col.cssClass}'>${Parser.spLevelToFull(curItem.level)}</td>`;
+          curItem['render-level'] = Parser.spLevelToFull(curItem.level);
           break;
 
         case "time":
@@ -175,7 +150,7 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = timeFilter;
           }
           curItem._fTimeType = curItem.time.map(t => t.unit);
-          columnsHtmlString += `<td class='table-cell ${col.cssClass} time' title='${Parser.spTimeListToFull(curItem.time)}'>${getTblTimeStr(curItem.time[0])}</td>`;
+          curItem['render-time'] = getTblTimeStr(curItem.time[0]);
           break;
 
         case "school":
@@ -185,7 +160,7 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = schoolFilter;
           }
           filters[col.id].addIfAbsent(curItem.school);
-          columnsHtmlString += `<td class='table-cell ${col.cssClass} school school_${curItem.school}' title="${Parser.spSchoolAbvToFull(curItem.school)}">${Parser.spSchoolAbvToFull(curItem.school)}</td>`;
+          curItem['render-school'] = Parser.spSchoolAbvToFull(curItem.school);
           break;
 
         case "range":
@@ -198,7 +173,7 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = rangeFilter;
           }
           curItem._fRangeType = getRangeType(curItem.range);
-          columnsHtmlString += `<td class='table-cell ${col.cssClass} range'>${Parser.spRangeToFull(curItem.range)}</td>`;
+          curItem['render-range'] = Parser.spRangeToFull(curItem.range);
           break;
 
         case "classes":
@@ -209,7 +184,8 @@ function renderTable(data, rootEl, columns) {
           }
           curItem._fClasses = curItem.classes && curItem.classes.fromClassList ? curItem.classes.fromClassList.map(c => getClassFilterStr(c)) : [];
 		      curItem._fClasses.forEach(c => filters[col.id].addIfAbsent(c));
-          columnsHtmlString += `<td class='table-cell ${col.cssClass} classes'>${Parser.spClassesToFull(curItem.classes)}</td>`;
+          const classesEl = Parser.spMainClassesToFull(curItem.classes);
+          curItem['render-classes'] = getInnerText(classesEl);
           break;
 
         case "subclasses":
@@ -220,7 +196,7 @@ function renderTable(data, rootEl, columns) {
           }
           curItem._fSubclasses = curItem.classes && curItem.classes.fromSubclass ? curItem.classes.fromSubclass.map(c => getClassFilterStr(c.subclass)) : [];
 		      curItem._fSubclasses.forEach(sc => filters[col.id].addIfAbsent(sc));
-          columnsHtmlString += `<td class='table-cell subclasses ${col.cssClass}'>${curItem._fSubclasses.join(", ")}</td>`;
+          curItem['render-subclasses'] = curItem._fSubclasses.join(", ");
           break;
 
         case "spell-meta":
@@ -233,7 +209,7 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = metaFilter;
           }
           curItem._fMeta = getMetaFilterObj(curItem);
-          columnsHtmlString += `<td class='table-cell spell-meta ${col.cssClass}'>${curItem._fMeta}</td>`;
+          curItem['render-spell-meta'] = curItem._fMeta;
           break;
         
         case "rules-search":
@@ -241,7 +217,7 @@ function renderTable(data, rootEl, columns) {
           for (const e1 of curItem.entries) {
             getRuleSearchStackNames(searchStack, e1);
           }
-          columnsHtmlString += `<td class='table-cell rules-search ${col.cssClass}'>${searchStack.join(",")}</td>`;
+          curItem['render-rules-search'] = searchStack.join(",");
           break;
         
         case "monster-type":
@@ -256,7 +232,7 @@ function renderTable(data, rootEl, columns) {
           }
           curItem._pTypes = Parser.monTypeToFullObj(curItem.type);
           curItem._pTypes.tags.forEach(t => filters[col.id].addIfAbsent(t));
-          columnsHtmlString += `<td class='table-cell type ${col.cssClass}'>${curItem._pTypes.asText.uppercaseFirst()}</td>`;
+          curItem['render-monster-type'] = curItem._pTypes.asText.uppercaseFirst();
           break;
         
 
@@ -281,12 +257,12 @@ function renderTable(data, rootEl, columns) {
           curItem.cr = curItem.cr === undefined ? "Unknown" : curItem.cr;
           let adjCR = curItem.cr === "Unknown" ? "--" : curItem.cr;
           filters[col.id].addIfAbsent(curItem.cr);
-          columnsHtmlString += `<td class='table-cell cr ${col.cssClass}'>${adjCR}</td>`;
+          curItem['render-cr'] = curItem.cr ;
           break;
 
         case "item-type":
           if (!filters[col.id]) {
-            let typeFilter = new Filter({header: "Type", deselFn: deselectFilter("type", "$")});;
+            let typeFilter = new Filter({header: "Type"});;
             typeFilter.metric = "_fTypes";
             filters[col.id] = typeFilter;
           }
@@ -294,7 +270,7 @@ function renderTable(data, rootEl, columns) {
           curItem.typeText = type.join(", "); // for loadhash to use
           curItem._fTypes = type;
           type.forEach(t => filters[col.id].addIfAbsent(t));
-          columnsHtmlString += `<td class='table-cell item-type ${col.cssClass}'>${type.join(", ")}</td>`;
+          curItem['render-item-type'] = type.join(", ");
           break;
 
         // adds additional filters for item table
@@ -331,7 +307,7 @@ function renderTable(data, rootEl, columns) {
           // tierTags.forEach(tt => filters.tierFilter.addIfAbsent(tt));
           // curItem._fTier = tierTags;
           curItem._fAttunement = attunement;
-          columnsHtmlString += `<td class='table-cell item-rarity ${col.cssClass}'>${curItem.rarity}</td>`;
+          curItem['render-item-rarity'] = curItem.rarity;
           break;
 
         case "feature-type":
@@ -341,97 +317,27 @@ function renderTable(data, rootEl, columns) {
             filters[col.id] = typeFilter;
           }
           let typeArray = curItem.featureType ? Array.isArray(curItem.featureType) ? curItem.featureType : [curItem.featureType] : [];
+          const typeArrayLong = typeArray.map(t => Parser.featureJsonToAbv(t));
           curItem._fType = typeArray.map(t => Parser.featureJsonToAbv(t));
 		      curItem._fType.forEach(t => filters[col.id].addIfAbsent(t));
-          columnsHtmlString += `<td class='table-cell feature-type ${col.cssClass}'>
-              ${typeArray.map(t => { return `<span title="${Parser.featureJsonToAbv(t)}">${t}</span>` }).join(' ')}
-            </td>`;
+          curItem['render-feature-type'] = typeArrayLong.join(', ');
           break;
       } // End Column Switch
     } // End Column Loop
-    let linkData = [curItem.name];
-    if (curItem.source) {
-      linkData.push(curItem.source);
-    }
-    let dataLink = encodeForHash(linkData);
-		let tempString = `
-			<tr class='table-row history-link' data-link='${dataLink}' data-title='${name}' ${FLTR_ID}='${i}' id='${i}'>
-				${columnsHtmlString}
-			</tr>`;
-
-		const rowEl = parseHTML(tempString, true);
-		rootEl.querySelector(".list").append(rowEl);
   } // End Item (row) Loop
-
-  return filters;
-  
-  function deselectFilter(deselectProperty, deselectValue) {
-    return function(val) {
-      let selectionHash = readRouteSelection();
-      if (selectionHash.length) {
-        const itemProperty = resolveHash(data, selectionHash)[deselectProperty];
-        if (itemProperty === deselectValue) {
-          return deselNoHash();
-        } else {
-          return val === deselectValue && itemProperty !== val;
-        }
-      } else {
-        return deselNoHash();
-      }
-
-      function deselNoHash() {
-        return val === deselectValue;
-      }
-    };
-  }
-}
-
-function renderFilters(data, rootEl, columns, filters) {
-  // Initialize search
-	const list = search({
-		valueNames: columns.map(col => col.id),
-		listClass: "list"
-  }, rootEl);
 
   // Initialize filters for table sorting
   if (Object.keys(filters).length > 0) {
     Object.values(filters).forEach(filter => {
       filter.items.sort(ascSort);
     });
-    const filterBox = initFilterBox(
-      rootEl,
-      ...Object.values(filters)
-    );
-
-    filterBox.render();
-    // Debounce this as it runs waayyy too often....TODO
-    let handleFilterChange = debounce(() => {
-      list.filter(function(item) {
-        const f = filterBox.getValues();
-        let filterId = item.elm.getAttribute(FLTR_ID);
-        if (filterId) {
-          const ft = data[item.elm.getAttribute(FLTR_ID)];
-
-          for (let filter of Object.values(filters)) {
-            let gfpResult = getFromPath(ft, filter.metric);
-            let toDisplay = filter.toDisplay(f, gfpResult);
-            if (!toDisplay) {
-              return false;
-            }
-          }
-        }
-        return true;
-      });
-    }, 200);
-
-    filterBox.addEventListener(FilterBox.EVNT_VALCHANGE, handleFilterChange);
-    handleFilterChange();
   }
+  return filters;
 }
 
 /**
  * Breaks the hash apart and finds the matching item in 
- * data, compairing "name" and sometimes "source"
+ * data, comparing "name" and sometimes "source"
  * @param {Array} data - List of items to search
  * @param {String} hash - hash used to ID the selected item
  * @returns The found item based on hash or undefined.
@@ -453,4 +359,4 @@ function resolveHash(data, hash) {
   return undefined;
 }
 
-export {renderTable, renderFilters, resolveHash};
+export {parseListData, resolveHash};

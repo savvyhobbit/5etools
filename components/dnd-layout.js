@@ -94,12 +94,12 @@ class DndLayout extends PolymerElement {
         if (!this.drawer.open) {
           this.drawer.open = true;
         }
-      }, null, ".character-builder--tabs-wrapper");
+      }, null, ".character-builder--tabs-wrapper, vaadin-grid");
       registerSwipe(document.body, "left", () => {
         if (this.drawer.open) {
           this.drawer.open = false;
         }
-      }, null, ".character-builder--tabs-wrapper");
+      }, null, ".character-builder--tabs-wrapper, vaadin-grid");
     }
   }
 
@@ -230,7 +230,7 @@ class DndLayout extends PolymerElement {
           <div class="breadcrumbs mdc-theme--on-primary">
             <div class="container breadcrumbs__list">
               <div class="breadcrumbs__crumb" hidden$="[[_exists(selectedTitle)]]">
-                <a on-click="_resetHashClickHandler">[[header]]</a>
+                <a on-click="_resetHashClickHandler" class="headasdf">[[header]]</a>
               </div>
               <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span>[[selectedTitle]]</span></div>
             </div>

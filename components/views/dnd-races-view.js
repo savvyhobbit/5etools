@@ -12,10 +12,9 @@ class DndRacesView extends PolymerElement {
         enable-hash-routing
         model-id="races"
         columns='[
-          {"id":"name","label":"Name"},
           {"id":"ability","label":"Ability"},
-          {"id":"source","label":"Source","cssClass":"hidden-mobile-down"},
-          {"id":"size","label":"Size","cssClass":"hidden-mobile-down"}
+          {"id":"source","label":"Source","hideMobile":true},
+          {"id":"size","label":"Size","hideMobile":true}
         ]'
       >
       </dnd-selection-list>
