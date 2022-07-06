@@ -15,7 +15,7 @@
 			"time": [
 				{
 					"number": 1,
-					"unit": "bonus"
+					"unit": "bonus action"
 				}
 			],
 			"range": {
@@ -657,7 +657,7 @@
 			"time": [
 				{
 					"number": 1,
-					"unit": "bonus"
+					"unit": "bonus action"
 				}
 			],
 			"range": {
@@ -1654,7 +1654,7 @@
 			"time": [
 				{
 					"number": 1,
-					"unit": "bonus"
+					"unit": "bonus action"
 				}
 			],
 			"range": {
