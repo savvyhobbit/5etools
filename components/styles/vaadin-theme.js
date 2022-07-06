@@ -249,6 +249,10 @@ registerStyles('vaadin-grid', css`
   #scroller {
     touch-action: unset !important;
   }
+
+  vaadin-grid-outer-scroller[passthrough] {
+    pointer-events: unset !important;
+  }
 `);
 
 registerStyles('vaadin-grid-tree-toggle', css`
@@ -257,5 +261,11 @@ registerStyles('vaadin-grid-tree-toggle', css`
   }
   :host([theme~="no-children"]) [part~="toggle"]:before {
     color: var(--lumo-tint-10pct);
+  }
+`);
+
+registerStyles('vaadin-grid-outer-scroller', css`
+  :host([passthrough]) {
+    pointer-events: unset !important;
   }
 `);

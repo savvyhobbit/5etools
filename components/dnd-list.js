@@ -34,6 +34,9 @@ class DndList extends PolymerElement {
       },
       selectedFilters: {
         type: Object
+      },
+      resultsCount: {
+        type: Number
       }
     };
   }
@@ -66,7 +69,7 @@ class DndList extends PolymerElement {
   }
 
   _checkBreakpoint() {
-    this.isMobile = window.innerWidth <= 920;
+    this.isMobile = window.innerWidth <= 768;
   }
 
   _adjustHeight() {
@@ -86,10 +89,6 @@ class DndList extends PolymerElement {
 
   _getPathValue(item, col) {
     return item && item[`render-${col.id}`];
-  }
-
-  _renderCol(col) {
-    return !this.isMobile || !col.hideMobile;
   }
 
   _filterOptions(listItems, id) {
@@ -239,12 +238,23 @@ class DndList extends PolymerElement {
           display: block;
           padding-top: 12px;
           font-size: 16px;
+          color: var(--lumo-secondary-text-color);
         }
 
         .search-wrap {
           margin-bottom: 20px;
           display: flex;
           align-items: flex-end;
+          flex-wrap: wrap;
+        }
+        .search-count {
+          margin-top: 16px;
+          color: var(--lumo-secondary-text-color);
+          margin-left: auto;
+          margin-bottom: 6px;
+        }
+        .search-reset {
+          margin-top: 16px;
         }
 
         .col-header-wrap {
@@ -282,10 +292,11 @@ class DndList extends PolymerElement {
 
       <div class="search-wrap">
         <vaadin-text-field on-keyup="_selectFilter" label="Search"></vaadin-text-field>
-        <dnd-button on-click="_clearFilters" label="Clear"></dnd-button>
+        <dnd-button class="search-reset" on-click="_clearFilters" label="Clear Filters"></dnd-button>
+        <span class="search-count">[[resultsCount]] result(s)</span>
       </div>
 
-      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders">
+      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders" size="{{resultsCount}}">
         <vaadin-grid-column frozen width="[[_nameColWidth(isMobile)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">
