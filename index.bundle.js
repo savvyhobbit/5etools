@@ -2218,12 +2218,20 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
   #scroller {
     touch-action: unset !important;
   }
+
+  vaadin-grid-outer-scroller[passthrough] {
+    pointer-events: unset !important;
+  }
 `),re("vaadin-grid-tree-toggle",Z`
   [part~="toggle"] {
     cursor: pointer;
   }
   :host([theme~="no-children"]) [part~="toggle"]:before {
     color: var(--lumo-tint-10pct);
+  }
+`),re("vaadin-grid-outer-scroller",Z`
+  :host([passthrough]) {
+    pointer-events: unset !important;
   }
 `);class oe extends i.a{static get properties(){return{viewId:{type:String,value:"index",observer:"viewIdChange"},loadingRender:{type:Boolean,value:!1},loadingData:{type:Boolean,value:!1},loadingView:{type:Boolean,value:!0},loading:{type:Boolean,value:!0,computed:"anyLoading(loadingRender, loadingData, loadingView)"}}}anyLoading(e,t,n){return e||t||n}ready(){super.ready(),Object(o.b)(this.shadowRoot);let e=Object(o.d)();e&&(this.viewId=e),Object(o.e)().addEventListener("view-change",e=>{this.viewId=e.detail.view})}connectedCallback(){super.connectedCallback(),this.loadingRenderEventHandler=e=>{e.detail&&void 0!==e.detail.loading&&e.detail.loading!==this.loadingRender&&(this.loadingRender=e.detail.loading)},this.loadingDataEventHandler=e=>{e.detail&&void 0!==e.detail.loading&&e.detail.loading!==this.loadingData&&(this.loadingData=e.detail.loading)},this.addEventListener("loading-render",this.loadingRenderEventHandler),this.addEventListener("loading-data",this.loadingDataEventHandler)}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("loading-render",this.loadingRenderEventHandler),this.removeEventListener("loading-data",this.loadingDataEventHandler)}async viewIdChange(){this.loadingView=!0,Object(r.jqEmpty)(this.$.routeTarget),await n(85)(`./dnd-${this.viewId}-view.js`),Object(r.jqEmpty)(this.$.routeTarget),this.$.routeTarget.appendChild(document.createElement(`dnd-${this.viewId}-view`)),this.loadingView=!1,this.triggerTitleChange(this.viewId),window.scrollTo(0,0)}triggerTitleChange(e){let t;switch(e){case"variantrules":t="Variant Rules";case"index":t=void 0;case"dice":t="Dice Roller";case"character-builder":t="Character Sheets";default:t=e?Object(r.util_capitalize)(e):""}this.$.titleEl.dispatchEvent(new CustomEvent("title-change",{bubbles:!0,composed:!0,detail:{name:t}}))}static get template(){return i.b`
       <dnd-layout id="titleEl" header="[[header]]">
