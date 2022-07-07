@@ -144,7 +144,7 @@ class DndList extends PolymerElement {
             options = options.concat(val.map(valItem => ({label: valItem, value: valItem})));
           } else if (id === 'prerequisite' && val.includes('/')) {
             options = options.concat(val.split('/').map(i => ({label: i.trim(), value: i.trim()})));
-          } else if ((id === 'subclasses' || id === 'classes' || id === 'spell-meta') && val.includes(',')) {
+          } else if ((id !== 'monster-type') && val.includes(',')) {
             options = options.concat(val.split(',').map(i => ({label: i.trim(), value: i.trim()})));
           } else {
             options.push({label: val, value: val});
@@ -212,7 +212,14 @@ class DndList extends PolymerElement {
   }
 
   _nameColWidth(isMobile) {
-    return isMobile ? '150px' : '300px'
+    return isMobile ? '175px' : '300px';
+  }
+
+  _colWidth(index, columns) {
+    if (columns.length && index === columns.length - 1) {
+      return '200px';
+    }
+    return '175px'
   }
 
   _optionValue(option) {
@@ -231,13 +238,6 @@ class DndList extends PolymerElement {
     return columns.length && index === columns.length - 1
   }
 
-  columnWidth(index, columns) {
-    if (columns.length && index === columns.length - 1) {
-      return '200px';
-    }
-    return '175px'
-  }
-
   static get template() {
     return html`
       <style include="material-styles">
@@ -245,24 +245,12 @@ class DndList extends PolymerElement {
           display: block;
         }
 
-        .name-label {
-          display: block;
-          padding-top: 12px;
-          font-size: 16px;
-          color: var(--lumo-secondary-text-color);
-        }
 
         .search-wrap {
           margin-bottom: 20px;
           display: flex;
           align-items: flex-end;
           flex-wrap: wrap;
-        }
-        .search-count {
-          margin-top: 16px;
-          color: var(--lumo-secondary-text-color);
-          margin-left: auto;
-          margin-bottom: 6px;
         }
         .search-reset {
           margin-top: 16px;
@@ -271,18 +259,39 @@ class DndList extends PolymerElement {
         .col-header-wrap {
           display: flex;
           justify-content: space-between;
+          width: 100%;
+          height: 44px;
         }
 
         .col-header-wrap[last-item] {
           margin-right: 20px;
         }
 
+        .col-header-wrap--name {
+          align-items: center;
+        }
+
         .col-header-wrap--name vaadin-grid-sorter {
-          margin-top: 10px;
+          position: absolute;
+          right: 0px;
+          top: 16px;
+          padding-right: 0;
+          width:100%;
+        }
+        .name-label {
+          display: inline-flex;
+          font-size: 16px;
+          color: var(--lumo-secondary-text-color);
+        }
+        .search-count {
+          color: var(--lumo-secondary-text-color);
+          margin-left: auto;
+          font-size: 12px;
+          margin-top: 4px;
         }
 
         vaadin-grid-sorter {
-          margin-left: 8px;
+          padding: 0 8px;
         }
 
         vaadin-text-field {
@@ -317,8 +326,7 @@ class DndList extends PolymerElement {
 
       <div class="search-wrap">
         <vaadin-text-field on-keyup="_selectFilter" label="Search"></vaadin-text-field>
-        <dnd-button class="search-reset" on-click="_clearFilters" label="Clear Filters"></dnd-button>
-        <span class="search-count">[[resultsCount]] result(s)</span>
+        <dnd-button class="search-reset" on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 
       <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders" size="{{resultsCount}}">
@@ -326,15 +334,18 @@ class DndList extends PolymerElement {
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">
               <span class="name-label">Name</span>
+              <span class="search-count">[[resultsCount]] result(s)</span>
               <vaadin-grid-sorter path="name" ></vaadin-grid-sorter>
               <vaadin-grid-filter path="name" value='[[_filterValue("name", selectedFilters)]]'></vaadin-grid-filter>
             </div>
           </template>
-          <template>[[item.name]]</template>
+          <template>
+            <span>[[item.name]]</span>
+          </template>
         </vaadin-grid-column>
 
         <template is="dom-repeat" items="[[columns]]" as="col">
-          <vaadin-grid-column width="[[columnWidth(index, columns)]]" >
+          <vaadin-grid-column width="[[_colWidth(index, columns)]]" >
             <template class="header">
               <div class="col-header-wrap" last-item$="[[_isLast(index, columns)]]">
                 <vaadin-grid-filter aria-label="[[col.label]]" path="[[_renderPath(col.id)]]" value="[[_filterValue(col.id, selectedFilters)]]">
@@ -352,7 +363,11 @@ class DndList extends PolymerElement {
                 <vaadin-grid-sorter path="[[_renderPath(col.id)]]" ></vaadin-grid-sorter>
               </div>
             </template>
-            <template>[[_getPathValue(item, col)]]</template>
+            <template>
+              <div class="data-item">
+                <span>[[_getPathValue(item, col)]]</span>
+              </div>
+            </template>
           </vaadin-grid-column>
         </template>
       </vaadin-grid>

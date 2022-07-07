@@ -16,11 +16,11 @@ function renderSelection(spell, rootEl) {
 
 function spellHtml(spell) {
 	const renderStack = [];
-	renderStack.push(`<div class="margin-bottom_med"><span class="stats-source source${spell.source}" title="${Parser.sourceJsonToFull(spell.source)}">${Parser.sourceJsonToAbv(spell.source)}</div>`);
-	renderStack.push(`<div class="margin-bottom_med"><span>${Parser.spLevelSchoolMetaToFull(spell.level, spell.school, spell.meta)}</span></div>`);
-	renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Casting Time: </span>${Parser.spTimeListToFull(spell.time)}</div>`);
-	renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Range: </span>${Parser.spRangeToFull(spell.range)}</div>`);
-	renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Components: </span>${Parser.spComponentsToFull(spell.components)}</div>`);
+	renderStack.push(`<div class="margin-bottom_small"><span class="stats-source source${spell.source}" title="${Parser.sourceJsonToFull(spell.source)}">${Parser.sourceJsonToAbv(spell.source)}</div>`);
+	renderStack.push(`<div class="margin-bottom_small"><span>${Parser.spLevelSchoolMetaToFull(spell.level, spell.school, spell.meta)}</span></div>`);
+	renderStack.push(`<div class="margin-bottom_small"><span class="stat-name">Casting Time: </span>${Parser.spTimeListToFull(spell.time)}</div>`);
+	renderStack.push(`<div class="margin-bottom_small"><span class="stat-name">Range: </span>${Parser.spRangeToFull(spell.range)}</div>`);
+	renderStack.push(`<div class="margin-bottom_small"><span class="stat-name">Components: </span>${Parser.spComponentsToFull(spell.components)}</div>`);
 	renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Duration: </span>${Parser.spDurationToFull(spell.duration)}</div>`);
 	renderStack.push(`<div class='text'>`);
 

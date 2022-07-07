@@ -203,7 +203,6 @@ class DndLayout extends PolymerElement {
       <style include="material-styles my-styles">
         :host {}
         .page-title {
-          display: none;
         }
         .title-text-wrap {
           display: flex;
@@ -237,10 +236,9 @@ class DndLayout extends PolymerElement {
         <div class="mdc-top-app-bar__row">
           <div class="breadcrumbs mdc-theme--on-primary">
             <div class="container breadcrumbs__list">
-              <div class="breadcrumbs__crumb hidden-mobile-down" hidden$="[[_same(selectedTitle, lastTitle)]]">
+              <div class="breadcrumbs__crumb" >
                 <a on-click="_resetHashClickHandler" class="headasdf">[[lastTitle]]</a>
               </div>
-              <div class="breadcrumbs__crumb"><span>[[selectedTitle]]</span></div>
             </div>
           </div>
           <div class="nav-button">
@@ -383,7 +381,7 @@ class DndLayout extends PolymerElement {
         class="main mdc-top-app-bar--fixed-adjust mdc-typography--body1 mdc-theme--background mdc-theme--text-primary-on-background"
       >
         <div class="container content-wrap">
-          <h1 class="page-title mdc-typography--headline2">
+          <h1 class="page-title mdc-typography--headline2" hidden$="[[_same(selectedTitle, lastTitle)]]">
             <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
             <div class="title-text-wrap">
               <span class="title-text">[[selectedTitle]]</span>

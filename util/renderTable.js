@@ -17,7 +17,8 @@ import {
   uppercaseFirst,
   decodeForHash,
   getItemTypes,
-  getInnerText
+  getInnerText,
+  isNonstandardSource
 } from "../js/utils.js";
 import { parse_abilityShort, parse_abilityCollection } from "../util/ability.js";
 import {
@@ -63,6 +64,7 @@ function parseListData(data, columns) {
             filters[col.id] = sourceFilter;
           }
           filters[col.id].addIfAbsent(curItem.source);
+          curItem.isNonStandardSource = isNonstandardSource(curItem.source);
           curItem['render-source'] = Parser.sourceJsonToAbv(curItem.source);
           break;
 
@@ -327,11 +329,11 @@ function parseListData(data, columns) {
   } // End Item (row) Loop
 
   // Initialize filters for table sorting
-  if (Object.keys(filters).length > 0) {
-    Object.values(filters).forEach(filter => {
-      filter.items.sort(ascSort);
-    });
-  }
+  // if (Object.keys(filters).length > 0) {
+  //   Object.values(filters).forEach(filter => {
+  //     filter.items.sort(ascSort);
+  //   });
+  // }
   return filters;
 }
 

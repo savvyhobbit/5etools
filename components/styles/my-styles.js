@@ -1636,26 +1636,26 @@ styleElement.innerHTML = `
         .breadcrumbs__list {
           height: 64px;
           padding: 0;
-        }
-        .breadcrumbs__crumb:last-of-type::before {
-          content: 'chevron_right';
-          font-family: 'Material Icons';
-          font-weight: normal;
-          font-style: normal;
-          font-size: 24px;
-          line-height: 1;
-          letter-spacing: normal;
-          text-transform: none;
-          white-space: nowrap;
-          word-wrap: normal;
-          direction: ltr;
-          -moz-font-feature-settings: 'liga';
-          -moz-osx-font-smoothing: grayscale;
-          left: -2px;
-          margin: 0 .5em;
-          position: relative;
-          display: inline;
-        }
+        // }
+        // .breadcrumbs__crumb:last-of-type::before {
+        //   content: 'chevron_right';
+        //   font-family: 'Material Icons';
+        //   font-weight: normal;
+        //   font-style: normal;
+        //   font-size: 24px;
+        //   line-height: 1;
+        //   letter-spacing: normal;
+        //   text-transform: none;
+        //   white-space: nowrap;
+        //   word-wrap: normal;
+        //   direction: ltr;
+        //   -moz-font-feature-settings: 'liga';
+        //   -moz-osx-font-smoothing: grayscale;
+        //   left: -2px;
+        //   margin: 0 .5em;
+        //   position: relative;
+        //   display: inline;
+        // }
         .main.item-opened #listcontainer {
           display: block !important;
         }

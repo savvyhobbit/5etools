@@ -243,16 +243,17 @@ registerStyles('vaadin-grid', css`
     min-height: 2px;
   }
 
+  [part~="row"]:hover {
+    color: var(--mdc-theme-primary);
+  }
+
   :host {
     touch-action: unset !important;
   }
   #scroller {
     touch-action: unset !important;
   }
-
-  // vaadin-grid-outer-scroller[passthrough] {
-  //   pointer-events: unset !important;
-  // }
+  
 `);
 
 registerStyles('vaadin-grid-tree-toggle', css`

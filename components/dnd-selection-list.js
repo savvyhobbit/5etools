@@ -111,6 +111,7 @@ class DndSelectionList extends PolymerElement {
         .then(result => {
           const filters = parseListData(result, this.columns);
           this.set("_data", result);
+          console.error('loadedModel', filters);
           this.set("_filters", filters);
           this._checkHashForSelection();
           this.loading = false;
