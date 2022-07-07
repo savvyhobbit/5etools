@@ -144,7 +144,7 @@ class DndList extends PolymerElement {
             options = options.concat(val.map(valItem => ({label: valItem, value: valItem})));
           } else if (id === 'prerequisite' && val.includes('/')) {
             options = options.concat(val.split('/').map(i => ({label: i.trim(), value: i.trim()})));
-          } else if ((id === 'subclasses' || id === 'classes') && val.includes(',')) {
+          } else if ((id === 'subclasses' || id === 'classes' || id === 'spell-meta') && val.includes(',')) {
             options = options.concat(val.split(',').map(i => ({label: i.trim(), value: i.trim()})));
           } else {
             options.push({label: val, value: val});
@@ -227,6 +227,17 @@ class DndList extends PolymerElement {
     }
   }
 
+  _isLast(index, columns) {
+    return columns.length && index === columns.length - 1
+  }
+
+  columnWidth(index, columns) {
+    if (columns.length && index === columns.length - 1) {
+      return '200px';
+    }
+    return '175px'
+  }
+
   static get template() {
     return html`
       <style include="material-styles">
@@ -262,6 +273,10 @@ class DndList extends PolymerElement {
           justify-content: space-between;
         }
 
+        .col-header-wrap[last-item] {
+          margin-right: 20px;
+        }
+
         .col-header-wrap--name vaadin-grid-sorter {
           margin-top: 10px;
         }
@@ -279,6 +294,11 @@ class DndList extends PolymerElement {
           width: 120px;
         }
 
+        vaadin-grid {
+          width: calc(100% + 32px);
+          margin-left: -16px;
+        }
+
         vaadin-grid-filter[path="name"] {
           display: none;
         }
@@ -286,6 +306,11 @@ class DndList extends PolymerElement {
         @media(min-width: 921px) {
           vaadin-select {
             width: 134px;
+          }
+
+          vaadin-grid {
+            width: 100%;
+            margin-left: 0;
           }
         }
       </style>
@@ -309,9 +334,9 @@ class DndList extends PolymerElement {
         </vaadin-grid-column>
 
         <template is="dom-repeat" items="[[columns]]" as="col">
-          <vaadin-grid-column width="175px">
+          <vaadin-grid-column width="[[columnWidth(index, columns)]]" >
             <template class="header">
-              <div class="col-header-wrap">
+              <div class="col-header-wrap" last-item$="[[_isLast(index, columns)]]">
                 <vaadin-grid-filter aria-label="[[col.label]]" path="[[_renderPath(col.id)]]" value="[[_filterValue(col.id, selectedFilters)]]">
                   <vaadin-select placeholder="[[col.label]]" on-change="_selectFilter">
                     <template>

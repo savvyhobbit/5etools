@@ -250,9 +250,9 @@ registerStyles('vaadin-grid', css`
     touch-action: unset !important;
   }
 
-  vaadin-grid-outer-scroller[passthrough] {
-    pointer-events: unset !important;
-  }
+  // vaadin-grid-outer-scroller[passthrough] {
+  //   pointer-events: unset !important;
+  // }
 `);
 
 registerStyles('vaadin-grid-tree-toggle', css`

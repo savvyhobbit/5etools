@@ -140,7 +140,7 @@ class DndSelectionList extends PolymerElement {
         if (!this.disableScrollBack) {
           window.scrollTo(0, 0);
         }
-        this.dispatchEvent(new CustomEvent("title-change", {
+        routeEventChannel().dispatchEvent(new CustomEvent("title-change", {
           bubbles: true,
           composed: true,
           detail: itemFromHash

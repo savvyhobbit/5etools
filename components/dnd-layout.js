@@ -20,6 +20,9 @@ class DndLayout extends PolymerElement {
         value: "",
         observer: 'selectedTitleChange'
       },
+      lastTitle: {
+        type: String,
+      },
       selectedSource: {
         type: String,
         value: ""
@@ -127,15 +130,19 @@ class DndLayout extends PolymerElement {
    * Adds listeners for updating the breadcrumbs / title
    */
   _initSelectionEvents() {
-    this.addEventListener("title-change", e => {
+    routeEventChannel().addEventListener("title-change", e => {
       if (e.detail) {
-        this.selectedTitle = e.detail.name || '';
+        if (e.detail.title) {
+          this.lastTitle = e.detail.title;
+        }
+        this.selectedTitle = e.detail.name || e.detail.title || '';
         this.selectedSource = e.detail.source || '';
       }
     });
 
     routeEventChannel().addEventListener("selection-deselected", () => {
-      this.selectedTitle = "";
+      this.selectedTitle = this.lastTitle || "";
+      this.selectedSource = '';
     });
   }
 
@@ -187,6 +194,10 @@ class DndLayout extends PolymerElement {
     return a || b;
   }
 
+  _same(a, b) {
+    return a === b;
+  }
+
   static get template() {
     return html`
       <style include="material-styles my-styles">
@@ -219,9 +230,6 @@ class DndLayout extends PolymerElement {
           }
           .container {
           }
-          .breadcrumbs__crumb[hidden] {
-            display: flex !important;
-          }
         }
       </style>
 
@@ -229,10 +237,10 @@ class DndLayout extends PolymerElement {
         <div class="mdc-top-app-bar__row">
           <div class="breadcrumbs mdc-theme--on-primary">
             <div class="container breadcrumbs__list">
-              <div class="breadcrumbs__crumb" hidden$="[[_exists(selectedTitle)]]">
-                <a on-click="_resetHashClickHandler" class="headasdf">[[header]]</a>
+              <div class="breadcrumbs__crumb hidden-mobile-down" hidden$="[[_same(selectedTitle, lastTitle)]]">
+                <a on-click="_resetHashClickHandler" class="headasdf">[[lastTitle]]</a>
               </div>
-              <div class="breadcrumbs__crumb" hidden$="[[!_exists(selectedTitle)]]"><span>[[selectedTitle]]</span></div>
+              <div class="breadcrumbs__crumb"><span>[[selectedTitle]]</span></div>
             </div>
           </div>
           <div class="nav-button">

@@ -149,7 +149,7 @@ class DndClasses extends PolymerElement {
         if (selectedSubclass) {
           onSubChange(selectedSubclass, this.hash, this.shadowRoot);
         }
-        this.dispatchEvent(new CustomEvent("title-change", {
+        routeEventChannel().dispatchEvent(new CustomEvent("title-change", {
           bubbles: true,
           composed: true,
           detail: selectedClass

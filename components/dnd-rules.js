@@ -42,7 +42,7 @@ class DndRules extends PolymerElement {
 
   _selectedRuleChange() {
     if (this.selectedRule && this.selectedRule.htmlcontent) {
-      this.dispatchEvent(new CustomEvent("title-change", {
+      routeEventChannel().dispatchEvent(new CustomEvent("title-change", {
         bubbles: true,
         composed: true,
         detail: this.selectedRule

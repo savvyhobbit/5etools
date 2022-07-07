@@ -208,7 +208,7 @@ function parseListData(data, columns) {
             metaFilter.metric = "_fMeta";
             filters[col.id] = metaFilter;
           }
-          curItem._fMeta = getMetaFilterObj(curItem);
+          curItem._fMeta = getMetaFilterObj(curItem).join(', ');
           curItem['render-spell-meta'] = curItem._fMeta;
           break;
         

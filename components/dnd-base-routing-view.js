@@ -107,10 +107,10 @@ class DndBaseRoutingView extends PolymerElement {
         title = viewId ? util_capitalize(viewId) : '';
     }
     
-    this.$.titleEl.dispatchEvent(new CustomEvent("title-change", {
+    routeEventChannel().dispatchEvent(new CustomEvent("title-change", {
       bubbles: true,
       composed: true,
-      detail: { name: title }
+      detail: { title }
     }));
   }
   

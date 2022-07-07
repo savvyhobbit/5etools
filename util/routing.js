@@ -119,6 +119,13 @@ function clearRouteSelection(noHistory) {
 	// } else {
 		window.location.hash = "#/" + hashView;
 	// }
+	
+	let titleChangeEvent = new CustomEvent("title-change", {
+		bubbles: true,
+		composed: true,
+		detail: { }
+	});
+	routingChannel.dispatchEvent(titleChangeEvent);
 }
 
 function setRouteView(newRoute) {
