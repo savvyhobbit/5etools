@@ -132,6 +132,7 @@ import { ascSort, hasBeenReprinted } from "../js/utils.js";
 
 let Parser = {};
 Parser._parse_aToB = function(abMap, a) {
+  if (!a || !a.trim) return a;
   a = a.trim();
   if (abMap[a] !== undefined) return abMap[a];
   console.warn(a, abMap);
@@ -139,6 +140,7 @@ Parser._parse_aToB = function(abMap, a) {
 };
 
 Parser._parse_bToA = function(abMap, b) {
+  if (!b || !b.trim) return b;
   b = b.trim();
   for (const v in abMap) {
     if (!abMap.hasOwnProperty(v)) continue;
@@ -203,15 +205,18 @@ Parser.armorFullToAbv = function(armor) {
 };
 
 Parser.sourceJsonToFull = function(source) {
-  return Parser._parse_aToB(Parser.SOURCE_JSON_TO_FULL, source).replace("'", STR_APOSTROPHE);
+  const parsed = Parser._parse_aToB(Parser.SOURCE_JSON_TO_FULL, source)
+  if (parsed && parsed.replace) return parsed.replace("'", STR_APOSTROPHE);
+  return source
 };
 
 Parser.sourceJsonToFullCompactPrefix = function(source) {
-  return Parser._parse_aToB(Parser.SOURCE_JSON_TO_FULL, source)
-    .replace("'", STR_APOSTROPHE)
+  const parsed = Parser._parse_aToB(Parser.SOURCE_JSON_TO_FULL, source)
+  if (parsed && parsed.replace) return parsed.replace("'", STR_APOSTROPHE)
     .replace(UA_PREFIX, UA_PREFIX_SHORT)
     .replace(AL_PREFIX, AL_PREFIX_SHORT)
     .replace(PS_PREFIX, PS_PREFIX_SHORT);
+  return source
 };
 
 Parser.sourceJsonToAbv = function(source) {

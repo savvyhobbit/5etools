@@ -36,7 +36,7 @@ function renderSelection(curbg, rootEl, allBgs) {
   const sourceEl = rootEl.querySelector(".stats-wrapper .source");
   sourceEl.classList.add(`source${sourceAbv}`);
 	sourceEl.setAttribute("title", sourceFull);
-	sourceEl.innerHTML = sourceAbv;
+	sourceEl.innerHTML = sourceFull;
 
   const entries = curbg.entries;
 

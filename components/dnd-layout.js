@@ -8,6 +8,7 @@ import "./dnd-character-popup.js";
 import registerSwipe from '../util/swipe.js';
 import { setDarkmode } from "../util/darkmode.js";
 import { clearRouteSelection, routeEventChannel, readRouteView } from '../util/routing.js';
+import Parser from '../util/Parser.js';
 
 class DndLayout extends PolymerElement {
   static get properties() {
@@ -132,17 +133,22 @@ class DndLayout extends PolymerElement {
   _initSelectionEvents() {
     routeEventChannel().addEventListener("title-change", e => {
       if (e.detail) {
-        if (e.detail.title) {
-          this.lastTitle = e.detail.title;
+        const {title, name, source} = e.detail;
+        if (title) {
+          this.lastTitle = title
         }
-        this.selectedTitle = e.detail.name || e.detail.title || '';
-        this.selectedSource = e.detail.source || '';
+        this.selectedTitle = name || title || '';
+        this.selectedSource = source;
+        this.selectedSourceFull = Parser.sourceJsonToFull(source);
+        this.selectedSourceAbv = Parser.sourceJsonToAbv(source);
       }
     });
 
     routeEventChannel().addEventListener("selection-deselected", () => {
       this.selectedTitle = this.lastTitle || "";
       this.selectedSource = '';
+      this.selectedSourceFull = '';
+      this.selectedSourceAbv = '';
     });
   }
 
@@ -186,6 +192,10 @@ class DndLayout extends PolymerElement {
     clearRouteSelection();
   }
 
+  _selectedSourceClass(selectedSource) {
+    return `asource${selectedSource}`;
+  }
+
   _exists(a) {
     return !!a;
   }
@@ -209,8 +219,8 @@ class DndLayout extends PolymerElement {
           flex-direction: column;
         }
         .source-text {
-          font-size: 16px;
-          color: var(--lumo-contrast-50pct);
+          font-size: 17px;
+          color: var(--lumo-contrast-70pct);
         }
         dnd-svg:not([hide]) + .title-text-wrap  {
           margin-left: 110px;
@@ -385,7 +395,7 @@ class DndLayout extends PolymerElement {
             <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
             <div class="title-text-wrap">
               <span class="title-text">[[selectedTitle]]</span>
-              <span class="source-text" hidden$=[[!selectedSource]]>([[selectedSource]])</span>
+              <span class="source-text" hidden$=[[!selectedSourceFull]]><span class$="[[_selectedSourceClass(selectedSource)]]">[[selectedSourceFull]]<span hidden hiddens$="[[_same(selectedSourceFull, selectedSourceAbv)]]"> ([[selectedSourceAbv]])</span><span></span>
             </div>
           </h1>
 

@@ -61,14 +61,18 @@ function onDataLoad(classes, rootEl) {
 	// alphabetically sort subclasses
 	for (const c of classes) {
     if (c.subclasses) {
-      c.subclasses = c.subclasses.sort((a, b) => ascSort(a.name, b.name));
+      c.subclasses = c.subclasses.sort((a, b) => {
+        return ascSort(a.name, b.name)
+      });
     }
 	}
+
+  const sortedClasses = classes.filter(c => !c.name.includes('Sidekick'));
 
   // store classTable template from inital dom
   window.classTableDefault = rootEl.querySelector("#classtable").innerHTML;
   
-  renderList(rootEl, classes);
+  renderList(rootEl, sortedClasses);
 }
 
 function onClassChange(curClass, rootEl) {
@@ -289,6 +293,7 @@ function onClassChange(curClass, rootEl) {
     const lvlFeatureList = curClass.classFeatures[i];
     for (let j = 0; j < lvlFeatureList.length; j++) {
       const feature = lvlFeatureList[j];
+      console.error('feature', feature);
       const featureId = HASH_FEATURE + encodeForHash(feature.name) + "_" + i;
       const featureLinkPart = HASH_FEATURE + encodeForHash(feature.name) + i;
       const featureLinkClasses = [CLSS_FEATURE_LINK];
@@ -316,7 +321,7 @@ function onClassChange(curClass, rootEl) {
         feature,
         renderStack,
         0,
-        `<div id="${featureId}" class="${styleClasses.join(" ")}">`,
+        `<div id="${featureId}" class="${styleClasses.join(" ")}" level="${feature.level}">`,
         `</div>`,
         true
       );

@@ -20,8 +20,8 @@ function renderSelection(race, rootEl) {
   }
   const sourceEl = rootEl.querySelector(".stats-wrapper .source");
   sourceEl.classList.add(`source${race.source}`);
-  sourceEl.setAttribute("title", Parser.sourceJsonToFull(race.source));
-  sourceEl.innerHTML = `${Parser.sourceJsonToAbv(race.source)}`;
+  sourceEl.setAttribute("title", Parser.sourceJsonToAbv(race.source));
+  sourceEl.innerHTML = Parser.sourceJsonToFull(race.source);
 
   const size = Parser.sizeAbvToFull(race.size);
   rootEl.querySelector(".stats-wrapper .size").innerHTML = size;

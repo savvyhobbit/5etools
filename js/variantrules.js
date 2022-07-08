@@ -12,8 +12,8 @@ function renderSelection(curRule, rootEl) {
   rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
   const sourceEl = rootEl.querySelector(".stats-wrapper .source");
   sourceEl.classList.add(`source${curRule.source}`);
-  sourceEl.setAttribute("title", Parser.sourceJsonToFull(curRule.source));
-	sourceEl.innerHTML = `${Parser.sourceJsonToAbv(curRule.source)}`;
+  sourceEl.setAttribute("title", Parser.sourceJsonToAbv(curRule.source));
+	sourceEl.innerHTML =  Parser.sourceJsonToFull(reward.source)
 
   const textStack = [];
   entryRenderer.recursiveEntryRender(curRule, textStack);

@@ -16,9 +16,11 @@ function renderSelection(feat, rootEl) {
 	rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
 
 	let sourceEl = rootEl.querySelector('.stats-wrapper .source');
+	let sourceAbr = Parser.sourceJsonToAbv(feat.source);
+	let sourceFull =  Parser.sourceJsonToFull(feat.source);
 	sourceEl.classList.add(`source${feat.source}`);
-	sourceEl.setAttribute("title", Parser.sourceJsonToFull(feat.source));
-	sourceEl.innerHTML = `${Parser.sourceJsonToAbv(feat.source)}`;
+	sourceEl.setAttribute("title", sourceAbr);
+	sourceEl.innerHTML = sourceFull;
 
 	const prerequisite = utils_makePrerequisite(feat.prerequisite);
 	rootEl.querySelector('.stats-wrapper .prerequisite').innerHTML = (prerequisite ? "Prerequisite: " + prerequisite : "");

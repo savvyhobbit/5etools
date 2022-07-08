@@ -233,6 +233,20 @@ class DndList extends PolymerElement {
       return option;
     }
   }
+  
+  _optionLabelClass(option, col) {
+    if (option && option.value && col && col.id === 'source') {
+      return `source${option.value}`
+    }
+    return '';
+  }
+
+  _dataItemClass(item, col) {
+    if (col && item && col.id === 'source') {
+      return `source${item.source}`
+    }
+    return '';
+  }
 
   _isLast(index, columns) {
     return columns.length && index === columns.length - 1
@@ -240,7 +254,7 @@ class DndList extends PolymerElement {
 
   static get template() {
     return html`
-      <style include="material-styles">
+      <style include="material-styles my-styles">
         :host {
           display: block;
         }
@@ -288,6 +302,13 @@ class DndList extends PolymerElement {
           margin-left: auto;
           font-size: 12px;
           margin-top: 4px;
+        }
+
+        .data-item {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         vaadin-grid-sorter {
@@ -365,7 +386,8 @@ class DndList extends PolymerElement {
             </template>
             <template>
               <div class="data-item">
-                <span>[[_getPathValue(item, col)]]</span>
+                [[_getPathValue(item, col)]]
+                <!-- <span class$="[[_dataItemClass(item, col)]]">[[_getPathValue(item, col)]]</span> -->
               </div>
             </template>
           </vaadin-grid-column>

@@ -11,8 +11,8 @@ function renderSelection(reward, rootEl) {
 	rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;	
 	const sourceEl = rootEl.querySelector('.stats-wrapper .source');
 	sourceEl.classList.add(`source${reward.source}`);
-	sourceEl.setAttribute('title', Parser.sourceJsonToFull(reward.source));
-	sourceEl.innerHTML = `${Parser.sourceJsonToAbv(reward.source)}`;
+	sourceEl.setAttribute('title',Parser.sourceJsonToAbv(reward.source));
+	sourceEl.innerHTML =  Parser.sourceJsonToFull(reward.source);
 
 	const textlist = reward.text;
 	let texthtml = "";

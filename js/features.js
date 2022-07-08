@@ -16,10 +16,12 @@ const stats_wrapper = `
 function renderSelection(feature, rootEl) {
 	rootEl.querySelector(".selection-wrapper").innerHTML = stats_wrapper;
 
-	let sourceEl = rootEl.querySelector('.stats-wrapper .source');
+	const sourceEl = rootEl.querySelector('.stats-wrapper .source'),
+		sourceAbr = Parser.sourceJsonToAbv(feature.source),
+		sourceFull =  Parser.sourceJsonToFull(feature.source);
 	sourceEl.classList.add(`source${feature.source}`);
-	sourceEl.setAttribute("title", Parser.sourceJsonToFull(feature.source));
-	sourceEl.innerHTML = `${Parser.sourceJsonToAbv(feature.source)}`;
+	sourceEl.setAttribute("title", sourceAbr);
+	sourceEl.innerHTML = sourceFull;
 
   let typeArray = feature.featureType ? Array.isArray(feature.featureType) ? feature.featureType : [feature.featureType] : [];
 	rootEl.querySelector('.stats-wrapper .type').innerHTML = utils_joinPhraseArray(typeArray.map(t => {return Parser.featureJsonToAbv(t)}), ", ", " and ")

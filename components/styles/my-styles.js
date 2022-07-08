@@ -648,17 +648,25 @@ styleElement.innerHTML = `
       .stats-wrapper ul {
         margin-bottom: 24px;
       }
-
       .stats-wrapper ul {
         padding-left: 16px;
         list-style: unset;
       }
-
+      .stats-wrapper h5 {
+        margin-top: 34px;
+        display: block;
+        font-size: 1.8rem;
+        font-weight: normal;
+        margin-bottom: 22px;
+      }
       .stats-wrapper .prerequisite {
         font-weight: bold;
       }
       .stats-wrapper .type {
         font-weight: bold;
+      }
+      .stats-wrapper .source {
+        display: none;
       }
 
       ul.list-hang-notitle {
@@ -684,112 +692,90 @@ styleElement.innerHTML = `
       }
 
       .sourcePHB {
-        font-weight: bold;
         color: #4a6898;
       }
 
       .sourceDMG {
-        font-weight: bold;
         color: purple;
       }
 
       .sourceMM {
-        font-weight: bold;
         color: green;
       }
 
       .sourceSCAG {
-        font-weight: bold;
         color: #76af76;
       }
 
       .sourceVGM {
-        font-weight: bold;
         color: grey;
       }
 
       .sourceXGE {
-        font-weight: bold;
         color: #ba7c00;
       }
 
       .sourceToD {
-        font-weight: bold;
         color: orangered;
       }
 
       .sourceCoS {
-        font-weight: bold;
         color: purple;
       }
 
       .sourceOotA {
-        font-weight: bold;
         color: grey;
       }
 
       .sourceSKT {
-        font-weight: bold;
         color: darkcyan;
       }
 
       .sourcePotA {
-        font-weight: bold;
         color: blue;
       }
 
       .sourceLMoP {
-        font-weight: bold;
         color: lightgreen;
       }
 
       .sourceTYP {
-        font-weight: bold;
         color: red;
       }
 
       .sourceEEPC {
-        font-weight: bold;
         color: #57b6c6;
       }
 
       .sourceMOT {
-        font-weight: bold;
         color: #556b2e;
       }
 
       .sourceBGDIA {
-        font-weight: bold;
         color: #752418;
       }
 
       .sourceGGR {
-        font-weight: bold;
         color: #bfa76c;
       }
 
       .sourceAI {
-        font-weight: bold;
         color: #5baf04;
       }
 
       .sourceEGW {
-        font-weight: bold;
         color: #855a6e;
       }
 
       .sourceERLW {
-        font-weight: bold;
         color: #983426;
       }
 
       .sourceGoS {
-        font-weight: bold;
         color: #3d695a;
       }
 
       .sourceMTF {
-        font-weight: bold;
         color: #1f6e7b;
       }
 
@@ -1196,7 +1182,6 @@ styleElement.innerHTML = `
 
       .feature-link {
         color: var(--mdc-theme-secondary, '#018786');
-        font-weight: bold;
       }
       .feature-link + .feature-link:before {
         content: ', ';
@@ -1229,13 +1214,15 @@ styleElement.innerHTML = `
         border-radius: 4px;
         box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
         background-color: var(--mdc-theme-surface);
+        margin-bottom: 50px;
       }
       #classtable .table-cell {
-        font-size: 12.8px;
+        font-size: 16px;
       }
       #classtable .centred-col {
         text-align: center;
         min-width: 1em;
+        font-size: 16px;
       }
       #classtable table .pb {
         text-align: center;
@@ -1278,26 +1265,6 @@ styleElement.innerHTML = `
       }
       .spicy-sauce .stat-name {
         color: var(--mdc-theme-secondary);
-      }
-      #stats i {
-        font-style: italic;
-      }
-      #statsprof ul {
-        padding-left: 16px;
-        list-style: unset;
-      }
-      #statsprof h5 {
-        margin-top: 24px;
-        margin-bottom: 4px;
-        display: block;
-        font-size: 1.6rem;
-        font-weight: normal;
-      }
-      #statsprof {
-        font-size: 12.8px;
-      }
-      #statsprof strong {
-        font-size: 14px;
       }
       #subclasses {
         position: relative;
@@ -1392,73 +1359,75 @@ styleElement.innerHTML = `
         color: var(--mdc-theme-on-primary, #fff);
         background-color: var(--mdc-theme-primary, #6200ee);
       }
-      #stats {
+      .stats-wrapper {
         margin-top: 24px;
+        font-size: 16px;
       }
-      #stats p {
+      .stats-wrapper p {
         margin-top: 4px;
         margin-bottom: 16px;
       }
-      #stats {
-        font-size: 12.8px;
+      .stats-wrapper i {
+        font-style: italic;
       }
-      #stats .table {
+      .stats-wrapper .table {
         margin-bottom: 24px;
         border-radius: 4px;
         box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
       }
-      #stats .subclass-feature .stat-name {
+      .stats-wrapper .subclass-feature .stat-name {
         color: var(--mdc-theme-primary, '#6200ee');
       }
-      #stats .statsBlockHead .stat-name {
+      .stats-wrapper .statsBlockHead .stat-name {
         display: block;
-        font-size: 1.6rem;
+        font-size: 2rem;
         font-weight: normal;
         line-height: 1.2;
-        margin: 8px 0;
+        margin: 16px 0;
       }
-      #stats .statsBlockSubHead .stat-name {
-        font-size: 1.2rem;
+      .stats-wrapper .statsBlockSubHead .stat-name {
+        font-size: 1.5rem;
         font-weight: normal;
       }
-      #stats .statsInlineHead {
+      .stats-wrapper .statsInlineHead {
         margin-bottom: 16px;
       }
-      #stats .statsInlineHead .stat-name {
-        font-size: .8rem;
+      .stats-wrapper .statsInlineHead .stat-name {
+        font-size: 1rem;
         font-weight: bold;
         display: inline;
       }
-      #stats .statsInlineHead .stat-name + p {
+      .stats-wrapper .statsInlineHead .stat-name + p {
         display: inline;
       }
-      #stats .spell-ability {
+      .stats-wrapper .spell-ability {
         margin: 0 24px;
         display: block;
       }
-      #stats .subclass-feature,
-      #stats .class-feature {
-        padding-top: 24px;
-        border-top: 1px solid var(--mdc-theme-text-divider-on-background, 'rgba(0, 0, 0, 0.12)');
+      .stats-wrapper .subclass-feature,
+      .stats-wrapper .class-feature {
+        padding: 24px 0;
+        border-top: 1px solid var(--lumo-contrast-50pct);
       }
-      #stats .subclass-feature.referenced-subclass-feature {
+
+      .stats-wrapper .subclass-feature.referenced-subclass-feature {
         padding-top: 8px;
         border-top: none;
       }
-      #stats .subclass-feature.referenced-subclass-feature .stat-name {
-        font-size: 1.3rem;
+      .stats-wrapper .subclass-feature.referenced-subclass-feature .stat-name {
+        font-size: 1.75rem;
       }
-      #stats .subclass-feature.referenced-subclass-feature .statsBlockSubHead  .stat-name {
-        font-size: 1.1rem;
+      .stats-wrapper .subclass-feature.referenced-subclass-feature .statsBlockSubHead  .stat-name {
+        font-size: 1.5rem;
       }
-      #stats a {
+      .stats-wrapper a {
         color: var(--mdc-theme-secondary, '#018786') !important;
       }
-      #stats ul {
+      .stats-wrapper ul {
         padding-left: 24px;
         list-style: disc;
       }
-      #stats ul li {
+      .stats-wrapper ul li {
         margin-bottom: 8px;
       }
       .roller {

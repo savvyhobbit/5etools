@@ -1,5 +1,6 @@
 import { setRouteSelection } from "./routing";
 import { encodeForHash, parseHTML } from "../js/utils";
+import Parser from "./Parser";
 
 export default function renderList(rootEl, items) {
   const container = rootEl.querySelector('.class-container');
@@ -18,7 +19,7 @@ export default function renderList(rootEl, items) {
 					<dnd-svg id='${svg}' default-color class='list-item--image grid-item__${svg}'></dnd-svg>
 					<span class='list-item--text'>${curItem.name}</span>
 				</div>
-				<div class="list-item--subtext">${curItem.source}</div>
+				<div class="list-item--subtext">${Parser.sourceJsonToFull(curItem.source)}</div>
 			</div>`
 	}
 	let itemElements = parseHTML(htmlString);

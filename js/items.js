@@ -17,18 +17,18 @@ const stats_wrapper = `
 			<span class="properties"></span>
 		</div>
 		<div class="text"></div>
-		<div class="margin-bottom_small">Source: <span class="source"></span></div>
 	</div>`;
 
 const renderer = new EntryRenderer();
-function renderSelection(item, rootEl, hideFirstLine) {
+function renderSelection(item, rootEl) {
 	adjustItem(item);
 	const wrap = rootEl.querySelector(".selection-wrapper") || rootEl;
 	wrap.innerHTML = stats_wrapper;
 	
-	const source = item.source;
-	const sourceFull = Parser.sourceJsonToFull(source);
-	rootEl.querySelector(".stats-wrapper .source").innerHTML = (`${sourceFull}, page ${item.page}`);
+	// const sourceEl = rootEl.querySelector(".stats-wrapper .source")
+	// const source = item.source;
+	// const sourceFull = Parser.sourceJsonToFull(source);
+	// sourceEl.innerHTML = (`<span class="source${item.source}">${sourceFull},</span> page ${item.page}`);
 
 	rootEl.querySelector(".stats-wrapper .value").innerHTML = (item.value ? item.value+(item.weight ? ", " : "") : "");
 	rootEl.querySelector(".stats-wrapper .weight").innerHTML = (item.weight ? item.weight+(item.weight == 1 ? " lb." : " lbs.") : "");
@@ -57,13 +57,16 @@ function renderSelection(item, rootEl, hideFirstLine) {
 	} else if (type === "S") {
 		rootEl.querySelector(".stats-wrapper .damage").innerHTML = ("AC +"+item.ac);
 	} else if (type === "MNT" || type === "VEH") {
-		const speed=item.speed;
-		const capacity=item.carryingcapacity;
+		const speed = item.speed;
+		const capacity = item.carryingcapacity;
 		if (speed) rootEl.querySelector(".stats-wrapper .damage").append("Speed="+speed);
-		if (speed && capacity) rootEl.querySelector(".stats-wrapper .damage").append(type === "MNT" ? ", " : "<br>");
+		if (speed && capacity) rootEl.querySelector(".stats-wrapper .damage").append(type === "MNT" ? ", " : "<br/>");
 		if (capacity) {
 			rootEl.querySelector(".stats-wrapper .damage").append("Carrying Capacity="+capacity);
-			if (capacity.indexOf("ton") === -1 && capacity.indexOf("passenger") === -1) rootEl.querySelector(".stats-wrapper .damage").append(capacity == 1 ? " lb." : " lbs.");
+
+			if (capacity.indexOf("ton") === -1 && capacity.indexOf("passenger") === -1) {
+				rootEl.querySelector(".stats-wrapper .damage").append(capacity == 1 ? " lb." : " lbs.");
+			}
 		}
 	}
 
@@ -85,9 +88,6 @@ function renderSelection(item, rootEl, hideFirstLine) {
 	const renderStack = [];
 	renderer.recursiveEntryRender(entryList, renderStack, 1);
 	rootEl.querySelector(".stats-wrapper .text").innerHTML = (utils_makeRoller(renderStack.join("")).split(item.name.toLowerCase()).join("<i>"+item.name.toLowerCase()+"</i>"));
-	if (hideFirstLine) {
-		rootEl.querySelector(".margin-bottom_small").remove();
-	}
 }
 
 function adjustItem(item) {
