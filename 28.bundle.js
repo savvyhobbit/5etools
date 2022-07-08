@@ -7,7 +7,7 @@
 
         <div class="class-container"></div>
 
-        <div class="class-page--class-container">
+        <div class="class-page--class-container stats-wrapper">
 
           <div id="subclassHeight"></div>
           <div id="subclasses"></div>
@@ -126,7 +126,7 @@
             </table>
           </div>
 
-          <div id="statsprof" class="stats">
+          <div id="statsprof" class="stats margin-bottom_large">
             <div id="hp" colspan="6">
               <h5>Hit Points</h5>
               <div id="hitdice">
