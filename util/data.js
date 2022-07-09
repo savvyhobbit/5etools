@@ -30,7 +30,7 @@ export async function loadModel(modelId) {
 						break;
 
 					case "spells":
-						cache[modelId] = await loadModelFromIndex(modelId);
+						cache[modelId] = await loadModelFromIndex(modelId, true);
 						break;
 
 					case "races":
@@ -73,7 +73,7 @@ async function loadModelFromSingleJSON(modelId) {
 	}
 }
 
-async function loadModelFromIndex(modelId) {
+async function loadModelFromIndex(modelId, isSpells) {
 	const modelData = await loadJSON(`${DATA_ROOT}${modelId}/index.json`);
 	if (modelData.index) {
 		let promises = [];
@@ -85,7 +85,24 @@ async function loadModelFromIndex(modelId) {
 			let allData = [];
 
 			for (let srcData of data) {
-				allData = allData.concat(srcData.spell);
+				allData = allData.concat(srcData.spell).map(spell => {
+					if (isSpells && spell.classes && spell.classes.fromClassListVariant) {
+						if (!spell.classes.fromClassList) {
+							spell.classes.fromClassList = spell.classes.fromClassListVariant
+						} else {
+							spell.classes.fromClassList = spell.classes.fromClassList.concat(spell.classes.fromClassListVariant);
+						}
+						const uniqueVals = [];
+						spell.classes.fromClassList = spell.classes.fromClassList.filter(clazz => {
+							if (!uniqueVals.includes(clazz.name)) {
+								uniqueVals.push(clazz.name);
+								return true;
+							}
+							return false;
+						});
+					}
+					return spell;
+				});
 			}
 
 			return allData;

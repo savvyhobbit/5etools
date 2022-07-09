@@ -797,7 +797,8 @@ Parser.ITEM_TYPE_JSON_TO_ABV = {
   TAH: "Tack and Harness",
   TG: "Trade Good",
   VEH: "Vehicle",
-  WD: "Wand"
+  WD: "Wand",
+  $: "Currency"
 };
 
 Parser.OPT_FEATURE_TYPE_TO_FULL = {

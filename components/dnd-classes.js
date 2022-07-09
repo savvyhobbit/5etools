@@ -303,46 +303,44 @@ class DndClasses extends PolymerElement {
           <div id="statsprof" class="stats margin-bottom_large">
             <div id="hp" colspan="6">
               <h5>Hit Points</h5>
-              <div id="hitdice">
+              <div id="hitdice" class="margin-bottom_small">
                 <strong>Hit Dice:</strong>
                 <span> </span>
               </div>
-              <div id="hp1stlevel">
+              <div id="hp1stlevel" class="margin-bottom_small">
                 <strong>Hit Points at 1st Level:</strong>
                 <span> </span>
               </div>
-              <div id="hphigherlevels">
+              <div id="hphigherlevels" class="margin-bottom_small">
                 <strong>Hit Points at Higher Levels:</strong>
                 <span> </span>
               </div>
             </div>
-            <div id="prof" colspan="6">
+            <div id="prof" class="margin-bottom_small">
               <h5>Proficiencies</h5>
-              <span
-                >You are proficient with the following items, in addition to any proficiencies provided by your race or
-                background.</span
-              >
-              <div id="armor">
+              <div class="margin-bottom_med">You are proficient with the following items, in addition to any proficiencies provided by your race or
+                background.</div>
+              <div id="armor" class="margin-bottom_small">
                 <strong>Armor:</strong>
                 <span> </span>
               </div>
-              <div id="weapons">
+              <div id="weapons" class="margin-bottom_small">
                 <strong>Weapons:</strong>
                 <span> </span>
               </div>
-              <div id="tools">
+              <div id="tools" class="margin-bottom_small">
                 <strong>Tools:</strong>
                 <span> </span>
               </div>
-              <div id="saves">
+              <div id="saves" class="margin-bottom_small">
                 <strong>Saving Throws:</strong>
                 <span> </span>
               </div>
-              <div id="skills">
+              <div id="skills" class="margin-bottom_small">
                 <strong>Skills:</strong>
                 <span> </span>
               </div>
-              <div id="equipment" colspan="6">
+              <div id="equipment">
                 <h5>Starting Equipment</h5>
                 <div></div>
               </div>

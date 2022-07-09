@@ -501,62 +501,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           border-radius: 4px;
           padding: 14px;
         }
-        #stats {
-          margin-top: 24px;
-          font-size: 12px;
-        }
-        #stats p {
-          margin-top: 4px;
-          margin-bottom: 16px;
-        }
-        #stats .table {
-          margin-bottom: 24px;
-          border-radius: 4px;
-          box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
-        }
-        #stats .subclass-feature .stat-name {
-          color: var(--mdc-theme-primary, '#6200ee');
-        }
-        #stats .statsBlockHead .stat-name {
-          display: block;
-          font-size: 1.6rem;
-          font-weight: normal;
-          line-height: 1.2;
-        }
-        #stats .statsBlockSubHead .stat-name {
-          font-size: 1.2rem;
-          font-weight: normal;
-        }
-        #stats .statsInlineHead {
-          margin-bottom: 16px;
-        }
-        #stats .statsInlineHead .stat-name {
-          font-size: .8rem;
-          font-weight: bold;
-          display: inline;
-        }
-        #stats .statsInlineHead .stat-name + p {
-          display: inline;
-        }
-        #stats .spell-ability {
-          margin: 0 24px;
-          display: block;
-        }
-        #stats .subclass-feature,
-        #stats .class-feature {
-          padding-top: 24px;
-          border-top: 1px solid var(--mdc-theme-text-divider-on-background, 'rgba(0, 0, 0, 0.12)');
-        }
-        #stats a {
-          color: var(--mdc-theme-secondary, '#018786') !important;
-        }
-        #stats ul {
-          padding-left: 24px;
-          list-style: disc;
-        }
-        #stats ul li {
-          margin-bottom: 8px;
-        }
 
         @media(min-width: 420px) {
           .heading {

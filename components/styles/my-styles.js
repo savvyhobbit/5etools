@@ -155,7 +155,6 @@ styleElement.innerHTML = `
         line-height: 1.4;
         margin: 24px 0 24px;
         position: relative;
-        width: calc(100% - 110px);
       }
       .page-title dnd-svg {
         display: inline-block;
@@ -659,6 +658,9 @@ styleElement.innerHTML = `
         font-weight: normal;
         margin-bottom: 22px;
       }
+      .stats-wrapper.small-font h5 {
+        font-size: 1.5rem;
+      }
       .stats-wrapper .prerequisite {
         font-weight: bold;
       }
@@ -666,6 +668,10 @@ styleElement.innerHTML = `
         font-weight: bold;
       }
       .stats-wrapper .source {
+        display: none;
+      }
+
+      .variantrules .statsBlockHead:first-child > .stat-name {
         display: none;
       }
 
@@ -1259,6 +1265,7 @@ styleElement.innerHTML = `
       #classtable .table-row--header .table-cell {
         padding: 8px 3px;
         max-width: 52px;
+        font-size: 14px;
       }
       .mobile-clone-spells #classtable .table-row--header .table-cell {
         padding: 8px 1px;
@@ -1363,6 +1370,9 @@ styleElement.innerHTML = `
         margin-top: 24px;
         font-size: 16px;
       }
+      .stats-wrapper.small {
+        font-size: 12.8px;
+      }
       .stats-wrapper p {
         margin-top: 4px;
         margin-bottom: 16px;
@@ -1383,11 +1393,19 @@ styleElement.innerHTML = `
         font-size: 2rem;
         font-weight: normal;
         line-height: 1.2;
+        margin: 24px 0 16px;
+      }
+      .stats-wrapper.small .statsBlockHead .stat-name {
+        font-size: 1.6rem;
         margin: 16px 0;
       }
       .stats-wrapper .statsBlockSubHead .stat-name {
         font-size: 1.5rem;
         font-weight: normal;
+        margin-bottom: 12px;
+      }
+      .stats-wrapper.small .statsBlockSubHead .stat-name {
+        font-size: 1.2rem;
       }
       .stats-wrapper .statsInlineHead {
         margin-bottom: 16px;
@@ -1396,6 +1414,9 @@ styleElement.innerHTML = `
         font-size: 1rem;
         font-weight: bold;
         display: inline;
+      }
+      .stats-wrapper.small .statsInlineHead .stat-name {
+        font-size: 12.8px;
       }
       .stats-wrapper .statsInlineHead .stat-name + p {
         display: inline;
@@ -1415,10 +1436,16 @@ styleElement.innerHTML = `
         border-top: none;
       }
       .stats-wrapper .subclass-feature.referenced-subclass-feature .stat-name {
-        font-size: 1.75rem;
+        font-size: 1.4rem;
+      }
+      .stats-wrapper.small .subclass-feature.referenced-subclass-feature .stat-name {
+        font-size: 1rem;
       }
       .stats-wrapper .subclass-feature.referenced-subclass-feature .statsBlockSubHead  .stat-name {
         font-size: 1.5rem;
+      }
+      .stats-wrapper.small .subclass-feature.referenced-subclass-feature .statsBlockSubHead  .stat-name {
+        font-size: 1.2rem;
       }
       .stats-wrapper a {
         color: var(--mdc-theme-secondary, '#018786') !important;

@@ -7,6 +7,7 @@ import { renderSelection } from "../../../js/items";
 import { DAMAGE_TYPES, RARITY_TYPES } from "../../../util/consts";
 import { findInPath, util_capitalizeAll } from "../../../js/utils";
 import "@vaadin/vaadin-text-field/vaadin-text-field";
+import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "@vaadin/vaadin-text-field/vaadin-text-area";
 import Parser from '../../../util/Parser';
 
@@ -91,6 +92,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     super();
 
     this.itemTypes = [
+      'Currency',
       'Armor (Light)',
       'Armor (Medium)',
       'Armor (Heavy)',
@@ -168,7 +170,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
 
     if (this.item.itemRef && !this.item.lookupFailed) {
       this.hasRenderedOutput = true;
-      renderSelection(this.item, this.$.renderedOutput, true);
+      renderSelection(this.item, this.$.renderedOutput, undefined, true);
     } else {
       this.hasRenderedOutput = false;
     }
@@ -221,7 +223,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
   }
 
   _selectItemType() {
-    const newType = this.$.typeSelect.value;
+    const newType = this.root.querySelector('#typeSelect').value
     this.storedItem.armor = false;
     this.storedItem.weapon = false;
     this.storedItem.type = '';
@@ -267,6 +269,13 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         this.storedItem.type = 'G';
         this.storedItem.resist = null;
         break;
+      case 'Currency':
+        this.storedItem.weaponCategory = null;
+        this.storedItem.type = '$'
+        this.storedItem.resist = null;
+        this.storedItem.quantity = 1;
+        this.storedItem.hasQuantity = true;
+        break;
       default:
         const typeVal = Object.entries(Parser.ITEM_TYPE_JSON_TO_ABV).find(([key, value]) => value === newType);
         if (typeVal) {
@@ -277,7 +286,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         }
         break;
     }
-    if (!(this.storedItem.type === 'P' || this.storedItem.type === 'A' || this.storedItem.type === 'EXP')) {
+    if (!(this.storedItem.type === 'P' || this.storedItem.type === 'A' || this.storedItem.type === 'EXP' || this.storedItem.type === '$')) {
       this.storedItem.hasQuantity = false;
     }
     setItem(this.item);
@@ -430,6 +439,12 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           margin-right: 10px;
         }
 
+        .damage_heading {
+          margin: 16px 0 0px;
+          font-size: 16px;
+          color: var(--mdc-theme-secondary);
+        }
+
         .roll__damages {
           display: flex;
           flex-direction: column;
@@ -507,8 +522,8 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
 
         <template is="dom-if" if="[[isEditMode]]">
           <div class="edit__wrap">
-            <vaadin-text-field class="edit__name" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
-            <vaadin-number-field has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
+            <vaadin-text-field class="edit__name" theme="label--secondary" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
+            <vaadin-number-field theme="label--secondary" has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
 
             <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
               <template>
@@ -531,17 +546,18 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
             </vaadin-select>
 
             <div class="edit__weapon" hidden$="[[!item.weapon]]">
-              <vaadin-integer-field  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+              <vaadin-integer-field theme="label--secondary"  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
 
               <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
 
               <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
 
+              <h4 class="damage_heading">Damage</h4>
               <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
                 <div class="roll__damage" index$="[[index]]">
                   <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
                   <div class="roll__damage-roll--edit">
-                    <vaadin-text-field value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
+                    <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
                   </div>
                   <div class="roll__damage-type--edit">
                     <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
@@ -559,9 +575,9 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
               <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
             </div>
 
-            <vaadin-integer-field hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
+            <vaadin-integer-field theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
             
-            <vaadin-integer-field hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
+            <vaadin-integer-field theme="label--secondary"  hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
 
             <!-- <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
               <template>
@@ -581,7 +597,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
               <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference?</vaadin-checkbox>
             </div>
 
-            <vaadin-text-area class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
+            <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
           </div>
         </template>
       </div>

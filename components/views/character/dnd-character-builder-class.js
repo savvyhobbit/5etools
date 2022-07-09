@@ -82,7 +82,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         
         if (features && features.length) {
           if (!root.firstElementChild) {
-            root.innerHTML = '<div class="details" id="stats"></div>';
+            root.innerHTML = '<div class="details stats-wrapper "></div>';
           }
 
           for (let feature of features) {
@@ -496,13 +496,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .something {
           display: block;
         }
-        #stats {
-          margin-top: 16px;
-          line-height: 1.9;
-        }
-        .details {
-          padding: 0 24px;
-        }
 
         #classGrid {
           margin-bottom: 144px;
@@ -552,7 +545,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .row {
           position: relative;
           min-height: 80px;
-          padding-bottom: 30px;
+          padding: 12px 0 12px;
         }
         .row:after {
           content: "";
@@ -744,7 +737,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
 
         .details {
-          font-size: 14px;
+          font-size: 15px;
           width: calc(100% - 30px);
           margin: 0 auto 13px !important;
           background: var(--lumo-contrast-10pct);
@@ -752,9 +745,8 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           white-space: pre-line;
           padding: 14px 14px 1px;
         }
-
-        .details#stats p {
-          line-height: 1.5;
+        .details > .statsBlockHead:first-child > .stat-name {
+          margin-top: 0;
         }
 
         @media(min-width: 921px) {

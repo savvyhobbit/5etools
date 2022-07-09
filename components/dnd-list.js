@@ -1,7 +1,9 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import "@polymer/polymer/lib/elements/dom-repeat.js";
+import '@polymer/polymer/lib/elements/dom-if.js';
 import "@vaadin/vaadin-select";
 import "@vaadin/vaadin-grid";
+import "@vaadin/vaadin-combo-box";
 import "@vaadin/vaadin-grid/vaadin-grid-filter";
 import "@vaadin/vaadin-grid/vaadin-grid-filter-column"
 import "@vaadin/vaadin-grid/vaadin-grid-sorter";
@@ -184,8 +186,6 @@ class DndList extends PolymerElement {
         return (labelA < labelB) ? -1 : (labelA > labelB) ? 1 : 0;
       });
     }
-
-    console.error('_filterOptions', options);
     return options;
   }
 
@@ -197,18 +197,26 @@ class DndList extends PolymerElement {
 
   _selectFilter(e) {
     const id = e.model ? e.model.__data.col.id : 'name';
-    console.error('_selectFilter', e)
-    
     const newFilters = this.selectedFilters ? cloneDeep(this.selectedFilters) : {};
     newFilters[id] = e.target.value;
     this.set('selectedFilters', newFilters);
   }
 
   _clearFilters() {
-    const filters = this.root.querySelectorAll('vaadin-select, vaadin-grid-filter, vaadin-text-field');
+    const filters = this.root.querySelectorAll('vaadin-select, vaadin-combo-box, vaadin-grid-filter, vaadin-text-field');
     filters.forEach(filter => {
       filter.value = '';
     });
+  }
+
+  _isComboBoxFilter(colId) {
+    switch (colId) {
+      case 'subclasses':
+      case 'source':
+      case 'rules-search':
+        return true;
+    }
+    return false;
   }
 
   _nameColWidth(isMobile) {
@@ -273,16 +281,17 @@ class DndList extends PolymerElement {
         .col-header-wrap {
           display: flex;
           justify-content: space-between;
-          width: 100%;
+          width: calc(100% - 20px);
           height: 44px;
         }
 
         .col-header-wrap[last-item] {
-          margin-right: 20px;
+          margin-right: 40px;
         }
 
         .col-header-wrap--name {
           align-items: center;
+          width: 100%;
         }
 
         .col-header-wrap--name vaadin-grid-sorter {
@@ -316,12 +325,20 @@ class DndList extends PolymerElement {
         }
 
         vaadin-text-field {
+          flex-grow: 1;
+          max-width: 350px;
           margin-bottom: -4px;
           margin-right: 16px;
+          padding-top: 0;
         }
 
+        vaadin-combo-box,
         vaadin-select {
-          width: 120px;
+          width: 100%;
+        }
+
+        vaadin-combo-box {
+          --vaadin-combo-box-overlay-width: 250px;
         }
 
         vaadin-grid {
@@ -329,15 +346,11 @@ class DndList extends PolymerElement {
           margin-left: -16px;
         }
 
-        vaadin-grid-filter[path="name"] {
+        vaadin-grid-filter {
           display: none;
         }
 
         @media(min-width: 921px) {
-          vaadin-select {
-            width: 134px;
-          }
-
           vaadin-grid {
             width: 100%;
             margin-left: 0;
@@ -346,11 +359,11 @@ class DndList extends PolymerElement {
       </style>
 
       <div class="search-wrap">
-        <vaadin-text-field on-keyup="_selectFilter" label="Search"></vaadin-text-field>
+        <vaadin-text-field theme="label--secondary" on-keyup="_selectFilter" label="Search"></vaadin-text-field>
         <dnd-button class="search-reset" on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 
-      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders" size="{{resultsCount}}">
+      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" size="{{resultsCount}}">
         <vaadin-grid-column frozen width="[[_nameColWidth(isMobile)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">
@@ -369,7 +382,9 @@ class DndList extends PolymerElement {
           <vaadin-grid-column width="[[_colWidth(index, columns)]]" >
             <template class="header">
               <div class="col-header-wrap" last-item$="[[_isLast(index, columns)]]">
-                <vaadin-grid-filter aria-label="[[col.label]]" path="[[_renderPath(col.id)]]" value="[[_filterValue(col.id, selectedFilters)]]">
+                <vaadin-grid-filter path="[[_renderPath(col.id)]]" value="[[_filterValue(col.id, selectedFilters)]]"></vaadin-grid-filter>
+                    
+                <template is="dom-if" if="[[!_isComboBoxFilter(col.id)]]">
                   <vaadin-select placeholder="[[col.label]]" on-change="_selectFilter">
                     <template>
                       <vaadin-list-box>
@@ -379,7 +394,12 @@ class DndList extends PolymerElement {
                       </vaadin-list-box>
                     </template>
                   </vaadin-select>
-                </vaadin-grid-filter>
+                </template>
+
+                <template is="dom-if" if="[[_isComboBoxFilter(col.id)]]">
+                  <vaadin-combo-box placeholder="[[col.label]]" on-change="_selectFilter" items="[[_filterOptions(listItems, col.id)]]">
+                  </vaadin-combo-box>
+                </template>
 
                 <vaadin-grid-sorter path="[[_renderPath(col.id)]]" ></vaadin-grid-sorter>
               </div>

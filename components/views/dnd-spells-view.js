@@ -12,14 +12,14 @@ class DndSpellsView extends PolymerElement {
         enable-hash-routing
         model-id="spells"
         columns='[
-          {"id":"source","label":"Source"},
           {"id":"level","label":"Level"},
-          {"id":"school","label":"School","hideMobile":true},
-          {"id":"range","label":"Range","hideMobile":true},
           {"id":"time","label":"Time","hideMobile":true},
+          {"id":"spell-meta","label":"Tag","cssClass":"hidden"},
+          {"id":"source","label":"Source"},
+          {"id":"range","label":"Range","hideMobile":true},
+          {"id":"school","label":"School","hideMobile":true},
           {"id":"classes","label":"Classes","cssClass":"hidden"},
-          {"id":"subclasses","label":"Subclasses","cssClass":"hidden"},
-          {"id":"spell-meta","label":"Tag","cssClass":"hidden"}
+          {"id":"subclasses","label":"Subclasses","cssClass":"hidden"}
         ]'
       >
       </dnd-selection-list>

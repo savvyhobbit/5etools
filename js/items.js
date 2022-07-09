@@ -20,10 +20,14 @@ const stats_wrapper = `
 	</div>`;
 
 const renderer = new EntryRenderer();
-function renderSelection(item, rootEl) {
+function renderSelection(item, rootEl, data, makeSmall) {
 	adjustItem(item);
 	const wrap = rootEl.querySelector(".selection-wrapper") || rootEl;
 	wrap.innerHTML = stats_wrapper;
+
+	if (makeSmall) {
+		wrap.querySelector('.stats-wrapper').classList.add('small');
+	}
 	
 	// const sourceEl = rootEl.querySelector(".stats-wrapper .source")
 	// const source = item.source;

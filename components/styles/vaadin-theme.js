@@ -59,6 +59,28 @@ registerStyles('vaadin-text-field', css`
     -webkit-text-fill-color: var(--lumo-body-text-color);
     margin-left: -16px;
   }
+
+  :host([theme~="label--secondary"]) [part="label"] {
+    color: var(--mdc-theme-primary);
+  }
+`);
+
+registerStyles('vaadin-text-area', css`
+  :host([theme~="label--secondary"]) [part="label"] {
+    color: var(--mdc-theme-primary);
+  }
+`);
+
+registerStyles('vaadin-integer-field', css`
+  :host([theme~="label--secondary"]) [part="label"] {
+    color: var(--mdc-theme-primary);
+  }
+`);
+
+registerStyles('vaadin-number-field', css`
+  :host([theme~="label--secondary"]) [part="label"] {
+    color: var(--mdc-theme-primary);
+  }
 `);
 
 registerStyles('vaadin-select-overlay', css`
@@ -243,7 +265,7 @@ registerStyles('vaadin-grid', css`
     min-height: 2px;
   }
 
-  [part~="row"]:hover {
+  :host([theme~="hover"]) [part~="row"]:hover {
     color: var(--mdc-theme-primary);
   }
 

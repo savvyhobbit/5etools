@@ -34,7 +34,7 @@ function spellHtml(spell) {
 	renderStack.push(`</div>`);
 	renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Classes: </span>${Parser.spMainClassesToFull(spell.classes)}</div>`);
 
-	if (spell.classes.fromSubclass) {
+	if (spell.classes && spell.classes.fromSubclass) {
 		const currentAndLegacy = Parser.spSubclassesToCurrentAndLegacyFull(spell.classes);
 		renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Subclasses: </span>${currentAndLegacy[0]}</div>`);
 		if (currentAndLegacy[1]) {

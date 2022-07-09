@@ -203,9 +203,9 @@ class DndSelectAdd extends PolymerElement {
     if (label) {
       result = label;
       if (choices && choices !== 1) {
-        result += ` (${choices})`;
+        result += ` (pick ${choices})`;
       }
-       if (paren) {
+      if (paren) {
         result += ` (${paren})`;
       }
     }
@@ -236,6 +236,7 @@ class DndSelectAdd extends PolymerElement {
           <span class="prefix">[[multiValue]]</span>
         </div>
       </vaadin-select>
+      
     `;
   }
 }
