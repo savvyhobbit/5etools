@@ -1,10 +1,10 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{138:function(e,t,i){"use strict";i(155)},139:function(e,t,i){"use strict";i(45),i(39),i(33),i(88);var s=i(13);const o=s.a`<dom-module id="lumo-vaadin-overlay" theme-for="vaadin-overlay">
+(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{138:function(e,t,i){"use strict";i(154)},139:function(e,t,i){"use strict";i(45),i(39),i(33),i(89);var s=i(13);const o=s.a`<dom-module id="lumo-vaadin-overlay" theme-for="vaadin-overlay">
   <template>
     <style include="lumo-overlay">
       /* stylelint-disable no-empty-source */
     </style>
   </template>
-</dom-module>`;document.head.appendChild(o.content);var n=i(78);i(87);const a=s.a`<dom-module id="lumo-combo-box-overlay" theme-for="vaadin-combo-box-overlay">
+</dom-module>`;document.head.appendChild(o.content);var n=i(78);i(88);const a=s.a`<dom-module id="lumo-combo-box-overlay" theme-for="vaadin-combo-box-overlay">
   <template>
     <style include="lumo-overlay lumo-menu-overlay-core">
       [part="content"] {
@@ -95,7 +95,7 @@
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(a.content);i(91);const r=s.a`<dom-module id="lumo-combo-box-item" theme-for="vaadin-combo-box-item">
+</dom-module>`;document.head.appendChild(a.content);i(92);const r=s.a`<dom-module id="lumo-combo-box-item" theme-for="vaadin-combo-box-item">
   <template>
     <style include="lumo-item">
       /* TODO partly duplicated from vaadin-list-box styles. Should find a way to make it DRY */
@@ -141,7 +141,7 @@
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(r.content);i(51),i(74),i(84);const l=s.a`<dom-module id="lumo-combo-box" theme-for="vaadin-combo-box">
+</dom-module>`;document.head.appendChild(r.content);i(51),i(74),i(85);const l=s.a`<dom-module id="lumo-combo-box" theme-for="vaadin-combo-box">
   <template>
     <style include="lumo-field-button">
       :host {
@@ -194,7 +194,7 @@ This program is available under Apache License Version 2.0, available at https:/
 @license
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/var F=i(76),$=i(153),L=i(90),z=i(34),H=i(89),M=i(4),D=navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/),j=D&&D[1]>=8;Object(v.a)({_template:s.a`
+*/var F=i(76),$=i(152),L=i(91),z=i(34),H=i(90),M=i(4),D=navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/),j=D&&D[1]>=8;Object(v.a)({_template:s.a`
     <style>
       :host {
         display: block;
@@ -379,7 +379,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(o.content);i(73),i(32);var n=i(19),a=i(42),r=i(7);
+</dom-module>`;document.head.appendChild(o.content);i(73),i(31);var n=i(19),a=i(42),r=i(7);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
@@ -432,7 +432,7 @@ const l=document.createElement("template");l.innerHTML="<custom-style>\n  <style
     <div part="indicators">
       <span part="order">[[_getDisplayOrder(_order)]]</span>
     </div>
-`}static get is(){return"vaadin-grid-sorter"}static get properties(){return{path:String,direction:{type:String,reflectToAttribute:!0,notify:!0,value:null},_order:{type:Number,value:null},_isConnected:{type:Boolean,value:!1}}}static get observers(){return["_pathOrDirectionChanged(path, direction, _isConnected)","_directionOrOrderChanged(direction, _order)"]}ready(){super.ready(),this.addEventListener("click",this._onClick.bind(this))}connectedCallback(){super.connectedCallback(),this._isConnected=!0}disconnectedCallback(){super.disconnectedCallback(),this._isConnected=!1}_pathOrDirectionChanged(e,t,i){void 0!==e&&void 0!==t&&void 0!==i&&i&&this.dispatchEvent(new CustomEvent("sorter-changed",{bubbles:!0,composed:!0}))}_getDisplayOrder(e){return null===e?"":e+1}_onClick(e){const t=this.getRootNode().activeElement;this!==t&&this.contains(t)||(e.preventDefault(),"asc"===this.direction?this.direction="desc":"desc"===this.direction?this.direction=null:this.direction="asc")}_directionOrOrderChanged(e,t){void 0!==e&&void 0!==t&&(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)&&this.root&&this.root.querySelectorAll("*").forEach((function(e){e.style["-webkit-backface-visibility"]="visible",e.style["-webkit-backface-visibility"]=""})))}}customElements.define(h.is,h)},141:function(e,t,i){"use strict";i(155);var s=i(149),o=(i(156),i(13));
+`}static get is(){return"vaadin-grid-sorter"}static get properties(){return{path:String,direction:{type:String,reflectToAttribute:!0,notify:!0,value:null},_order:{type:Number,value:null},_isConnected:{type:Boolean,value:!1}}}static get observers(){return["_pathOrDirectionChanged(path, direction, _isConnected)","_directionOrOrderChanged(direction, _order)"]}ready(){super.ready(),this.addEventListener("click",this._onClick.bind(this))}connectedCallback(){super.connectedCallback(),this._isConnected=!0}disconnectedCallback(){super.disconnectedCallback(),this._isConnected=!1}_pathOrDirectionChanged(e,t,i){void 0!==e&&void 0!==t&&void 0!==i&&i&&this.dispatchEvent(new CustomEvent("sorter-changed",{bubbles:!0,composed:!0}))}_getDisplayOrder(e){return null===e?"":e+1}_onClick(e){const t=this.getRootNode().activeElement;this!==t&&this.contains(t)||(e.preventDefault(),"asc"===this.direction?this.direction="desc":"desc"===this.direction?this.direction=null:this.direction="asc")}_directionOrOrderChanged(e,t){void 0!==e&&void 0!==t&&(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)&&this.root&&this.root.querySelectorAll("*").forEach((function(e){e.style["-webkit-backface-visibility"]="visible",e.style["-webkit-backface-visibility"]=""})))}}customElements.define(h.is,h)},141:function(e,t,i){"use strict";i(154);var s=i(148),o=(i(155),i(13));
 /**
 @license
 Copyright (c) 2018 Vaadin Ltd.
@@ -444,7 +444,7 @@ class n extends s.a{static get template(){return o.a`
         <vaadin-text-field theme="small" focus-target="" style="max-width: 100%;" slot="filter" value="{{_filterValue}}" label="[[_getHeader(header, path)]]"></vaadin-text-field>
       </vaadin-grid-filter>
     </template>
-`}static get is(){return"vaadin-grid-filter-column"}static get properties(){return{path:String,header:String}}_prepareHeaderTemplate(){const e=this._prepareTemplatizer(this.$.headerTemplate);return e.templatizer.dataHost=this,e}_getHeader(e,t){return e||this._generateHeader(t)}}customElements.define(n.is,n)},155:function(e,t,i){"use strict";i(84),i(156)},156:function(e,t,i){"use strict";i(73),i(65);var s=i(13),o=i(34),n=i(15),a=i(9),r=i(7);
+`}static get is(){return"vaadin-grid-filter-column"}static get properties(){return{path:String,header:String}}_prepareHeaderTemplate(){const e=this._prepareTemplatizer(this.$.headerTemplate);return e.templatizer.dataHost=this,e}_getHeader(e,t){return e||this._generateHeader(t)}}customElements.define(n.is,n)},154:function(e,t,i){"use strict";i(85),i(155)},155:function(e,t,i){"use strict";i(73),i(65);var s=i(13),o=i(34),n=i(15),a=i(9),r=i(7);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.

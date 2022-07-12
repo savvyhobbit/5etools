@@ -216,7 +216,7 @@
 					]
 				},
 				{
-					"title": "Spell Slots per Spell Level",
+					"title": "Spell Slots",
 					"colLabels": [
 						"{@filter 1st|spells|level=1|class=Ranger}",
 						"{@filter 2nd|spells|level=2|class=Ranger}",
@@ -1521,7 +1521,7 @@
 					]
 				},
 				{
-					"title": "Spell Slots per Spell Level",
+					"title": "Spell Slots",
 					"colLabels": [
 						"{@filter 1st|spells|level=1|class=Ranger}",
 						"{@filter 2nd|spells|level=2|class=Ranger}",

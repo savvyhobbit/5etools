@@ -1,4 +1,123 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{118:function(e,t,s){"use strict";s.r(t),s.d(t,"renderSelection",(function(){return p})),s.d(t,"SKILL_TO_ATB_ABV",(function(){return c}));var i=s(1),n=s(71),l=s(5),a=s(30);function r(e){return o[e]?o[e]:0}const o={0:2,"1/8":2,"1/4":2,"1/2":2,1:2,2:2,3:2,4:2,5:3,6:3,7:3,8:3,9:4,10:4,11:4,12:4,13:5,14:5,15:5,16:5,17:6,18:6,19:6,20:6,21:7,22:7,23:7,24:7,25:8,26:8,27:8,28:8,29:9,30:9},c={athletics:"dex",acrobatics:"dex","sleight of hand":"dex",stealth:"dex",arcana:"int",history:"int",investigation:"int",nature:"int",religion:"int","animal handling":"wis",insight:"wis",medicine:"wis",perception:"wis",survival:"wis",deception:"cha",intimidation:"cha",performance:"cha",persuasion:"cha"};const d=new n.a;function p(e,t){t.querySelector(".selection-wrapper").innerHTML='\n\t<div class="margin-bottom_large stats-wrapper">\n\t\t<div id="stats" class="monster">\n\t\t\t<div id="name">\n\t\t\t\tName <span class="source" title="Source book">SRC</span>\n\t\t\t</div>\n\t\t\t<div id="sizetypealignment">\n\t\t\t\t<span id="size">Size</span> <span id="type">type</span>, <span id="alignment">alignment</span>\n\t\t\t</div>\n\t\t\t<div class="divider"></div>\n\t\t\t<div>\n\t\t\t\t<strong>Armor Class</strong> <span id="ac">## (source)</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Hit Points</strong> <span id="hp">hp</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Speed</strong> <span id="speed">30 ft.</span>\n\t\t\t</div>\n\t\t\t<div id="abilitynames">\n\t\t\t\t<div>STR</div>\n\t\t\t\t<div>DEX</div>\n\t\t\t\t<div>CON</div>\n\t\t\t\t<div>INT</div>\n\t\t\t\t<div>WIS</div>\n\t\t\t\t<div>CHA</div>\n\t\t\t</div>\n\t\t\t<div id="abilityscores">\n\t\t\t\t<div id="str"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="dex"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="con"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="int"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="wis"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="cha"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Saving Throws</strong> <span id="saves">Str +0</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Skills</strong> <span id="skills">Perception +0</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Damage Vulnerabilities</strong> <span id="dmgvuln">fire</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Damage Resistances</strong> <span id="dmgres">cold</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Damage Immunities</strong> <span id="dmgimm">lightning</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Condition Immunities</strong> <span id="conimm">exhaustion</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Senses</strong> <span id="senses">darkvision 30 ft.</span> passive Perception <span id="pp">10</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Languages</strong> <span id="languages">Common</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Challenge</strong> <span id="cr">1</span> (<span id="xp">450</span> XP)\n\t\t\t</div>\n\t\t\t<div id="traits">\n\t\t\t</div>\n\t\t\t<div id="actions">\n\t\t\t\t<span>Actions</span>\n\t\t\t</div>\n\t\t\t<div id="reactions">\n\t\t\t\t<span>Reactions</span>\n\t\t\t</div>\n\t\t\t<div id="legendaries">\n\t\t\t\t<span>Legendary Actions</span>\n\t\t\t</div>\n\t\t\t<div id="lairactions">\n\t\t\t\t<span>Lair Actions</span>\n\t\t\t</div>\n\t\t\t<div id="regionaleffects">\n\t\t\t\t<span>Regional Effects</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div id="output"></div>\n\t</div>';let s=[],n={};var o=e.name;window.monsterName=o;var p=e.source,u=e._pTypes.asText;t.querySelector("#name").innerHTML=`<span class="source source${p}" title="${l.a.sourceJsonToAbv(p)}">${l.a.sourceJsonToFull(p)}</span>`,t.querySelector("#size").innerHTML=l.a.sizeAbvToFull(e.size),t.querySelector("#type").innerHTML=u,t.querySelector("#alignment").innerHTML=e.alignment,t.querySelector("#ac").innerHTML=e.ac,t.querySelector("#hp").innerHTML=e.hp,t.querySelector("#speed").innerHTML=e.speed,t.querySelector("#str span.score").innerHTML=e.str,t.querySelector("#str span.mod").innerHTML=l.a.getAbilityModifier(e.str),t.querySelector("#dex span.score").innerHTML=e.dex,t.querySelector("#dex span.mod").innerHTML=l.a.getAbilityModifier(e.dex),t.querySelector("#con span.score").innerHTML=e.con,t.querySelector("#con span.mod").innerHTML=l.a.getAbilityModifier(e.con),t.querySelector("#int span.score").innerHTML=e.int,t.querySelector("#int span.mod").innerHTML=l.a.getAbilityModifier(e.int),t.querySelector("#wis span.score").innerHTML=e.wis,t.querySelector("#wis span.mod").innerHTML=l.a.getAbilityModifier(e.wis),t.querySelector("#cha span.score").innerHTML=e.cha,t.querySelector("#cha span.mod").innerHTML=l.a.getAbilityModifier(e.cha);var h=e.save;h?(t.querySelector("#saves").parentElement.style.display="block",t.querySelector("#saves").innerHTML=h):t.querySelector("#saves").parentElement.style.display="none";var m=e.skill;let v=0;var y;m?(t.querySelector("#skills").parentElement.style.display="block",t.querySelector("#skills").innerHTML=(y=m,Object.keys(y).map((function(e){return e.uppercaseFirst()+" "+y[e]})).join(", ")),m.perception&&(v=parseInt(m.perception))):t.querySelector("#skills").parentElement.style.display="none";var f=e.vulnerable;f?(t.querySelector("#dmgvuln").parentElement.style.display="block",t.querySelector("#dmgvuln").innerHTML=f):t.querySelector("#dmgvuln").parentElement.style.display="none";var b=e.resist;b?(t.querySelector("#dmgres").parentElement.style.display="block",t.querySelector("#dmgres").innerHTML=b):t.querySelector("#dmgres").parentElement.style.display="none";var g=e.immune;g?(t.querySelector("#dmgimm").parentElement.style.display="block",t.querySelector("#dmgimm").innerHTML=g):t.querySelector("#dmgimm").parentElement.style.display="none";var S=e.conditionImmune;S?(t.querySelector("#conimm").parentElement.style.display="block",t.querySelector("#conimm").innerHTML=S):t.querySelector("#conimm").parentElement.style.display="none";var k=e.senses;t.querySelector("#senses").innerHTML=k?k+", ":"";var $=e.passive||(10+v).toString;t.querySelector("#pp").innerHTML=$;var A=e.languages;t.querySelector("#languages").innerHTML=A||"—";var M=void 0===e.cr?"Unknown":e.cr;t.querySelector("#cr").innerHTML=M,t.querySelector("#xp").innerHTML=l.a.crToXp(M);var q=e.trait;if(t.querySelector("#traits").style.display="none",q&&q.length>0){t.querySelector("#traits").style.display="block";for(var x=q.length-1;x>=0;x--){for(var L=q[x].name,O=q[x].text,T="",H=0,C=0;C<O.length;C++)if(O[C]){var j="";1===++H&&(j="first "),2===H&&(j="second ");var w="";-1!==L.indexOf("Spellcasting")&&-1!==O[C].indexOf(": ")&&(w="spells"),-1!==L.indexOf("Variant")&&-1!==L.indexOf("Coven")&&-1!==O[C].indexOf(": ")&&(w="spells"),T=T+"<p class='"+j+w+"'>"+O[C].replace(/\u2022\s?(?=C|\d|At\swill)/g,"")+"</p>"}const e=Object(i.parseHTML)("<div class='trait'><div class='trait"+x+"'><span class='name'>"+L+".</span> "+T+"</div></div>");Object(i.jqAfter)(t.querySelector("#traits"),e);const s=t.querySelectorAll(".trait div p.spells");for(let e of s){let t=e.innerHTML;if("*"===t[0])return;t=t.split(": ")[1].split(/\, (?!\+|\dd|appears|inside gems)/g);for(let e=0;e<t.length;e++)t[e]="<a href='#/spells/"+encodeURIComponent(t[e].replace(/(\*)| \(([^\)]+)\)/g,"")).toLowerCase().replace("'","%27")+"_phb'>"+t[e]+"</a>",e!==t.length-1&&(t[e]=t[e]+", ");e.innerHTML=e.innerHTML.split(": ")[0]+": "+t.join("")}}}const E=e.action;if(E&&E.length)for(let e=E.length-1;e>=0;e--){const s=E[e].name,n=E[e].text;let l="",a=0;for(let e=0;e<n.length;e++){if(!n[e])continue;a++;let t="";1===a&&(t="first "),2===a&&(t="second "),l=l+"<p class='"+t+"'>"+n[e]+"</p>"}const r=Object(i.parseHTML)("<div class='action'><div class='action"+e+"'><span class='name'>"+s+".</span> "+l+"</div></div>");Object(i.jqAfter)(t.querySelector("#actions"),r)}const P=e.reaction;if(t.querySelector("#reactions").style.display="none",P&&(P.text||P.length)){if(t.querySelector("#reactions").style.display="block",!P.length){const e=P.name,s=P.text;let n="",l=0;for(let e=0;e<s.length;e++){if(!s[e])continue;l++;let t="";1===l&&(t="first "),2===l&&(t="second "),n=n+"<p class='"+t+"'>"+s[e]+"</p>"}const a=Object(i.parseHTML)("<div class='reaction'><div class='reaction0'><span class='name'>"+e+".</span> "+n+"</div></div>");Object(i.jqAfter)(t.querySelector("#reactions"),a)}if(P.length)for(let e=P.length-1;e>=0;e--){const s=P[e].name,n=P[e].text;let l="<span>"+n+"</span>";for(let e=1;e<n.length;e++)n[e]&&(l=l+"<p>"+n[e]+"</p>");const a=Object(i.parseHTML)("<div class='reaction'><div class='reaction"+e+"'><span class='name'>"+s+".</span> "+l+"</div></div>");Object(i.jqAfter)(t.querySelector("#reactions"),a)}}const I=e.legendary;if(t.querySelector("#legendaries").style.display="none",I){t.querySelector("#legendaries").style.display="block";let s=I.length>0;for(let e=I.length-1;e>=0;e--){const n=I[e].name?I[e].name+".":"",l=I[e].text;let a="",r=0;for(let e=0;e<l.length;e++){if(!l[e])continue;r++;let t="";1===r&&(t="first "),2===r&&(t="second "),a+=`<p class='${t}'>${l[e]}</p>`}const o=Object(i.parseHTML)(`<div class='legendary'><div class='legendary'><span class='name'>${n}</span> ${a}</div></div>`);Object(i.jqAfter)(t.querySelector("#legendaries"),o),(""===n.trim()||n.indexOf("Legendary Actions")>-1)&&(s=!1)}if(s){const s=e.legendaryActions||3,n=o.split(","),l=Object(i.parseHTML)(`<div class='legendary'><div class='legendary'><span class='name'></span> <span>${n[0]} can take ${s} legendary action${s>1?"s":""}, choosing from the options below. Only one legendary action can be used at a time and only at the end of another creature's turn. ${n[0]} regains spent legendary actions at the start of its turn.</span></div></div>`);Object(i.jqAfter)(t.querySelector("#legendaries"),l)}}function _(e,l){t.querySelector(`#${e}s`).style.display="block",n={type:"entries",entries:l},s=[],d.recursiveEntryRender(n,s);const a=Object(i.parseHTML)(`<div class='${e}'><div class='legendary'>${Object(i.utils_makeRoller)(s.join(""))}</div></div>`);Object(i.jqAfter)(t.querySelector(`#${e}s`),a)}function B(e,t,s,i){return`<span class='roller' title="${e} ${i?" save":""}" data-roll-alt="1d20;${s}" data-roll='1d20${t}' mode='bonus' profDiceStr="+${s}" profBonusStr="${t}">${t}</span>`}t.querySelector("#lairactions").style.display="none",t.querySelector("#regionaleffects").style.display="none",e.lairActions&&_("lairaction",e.lairActions),e.regionalEffects&&_("regionaleffect",e.regionalEffects),e.skill&&function(t){const s=t,i=s.innerHTML.split(/,\s*(?![^()]*\))/g).map(e=>e.trim()),n=[];i.map(t=>{const s=t.match(/(\-|\+)?\d+|(?:[^\+]|\n(?!\+))+/g),i=s[0].trim();var a="";s.map(t=>{if(t.match(/(\-|\+)?\d+/)){const n=Number(t),o=l.a.getAbilityModNumber(e[(s=i,c[s.toLowerCase().trim()])]),d=n-o,p=d===2*r(e.cr)?2:1;a+=B(i,"+"+n,`${p}d${d*(3-p)}${o>=0?"+":""}${o}`,!1)}else a+=t;var s}),n.push(a)}),s.innerHTML=n.join(", ")}(t.querySelector("#skills")),e.save&&function(t){const s=t,i=s.innerHTML.split(",").map(e=>e.trim()),n=[];i.map(t=>{const s=t.split("+").map(e=>e.trim()),i=Number(s[1]),a=l.a.getAbilityModNumber(e[s[0].toLowerCase()]),o=i-a,c=o===2*r(e.cr)?2:1,d="+"+i,p=`${c}d${o*(3-c)}${a>=0?"+":""}${a}`;n.push(s[0]+" "+B(s[0],d,p,!0))}),s.innerHTML=n.join(", ")}(t.querySelector("#saves"));const N=t.querySelectorAll("#stats p");for(let t of N){V(t);const s=F(t),i="bonus";t.innerHTML=t.innerHTML.replace(/(\-|\+)?\d+(?= to hit)/g,(function(t){const n=Number(t),l=r(e.cr),a=n-l;if(l>0){const e=`1d${2*l}${a>=0?"+":""}${a}`;return`<span class='roller' ${s?`title="${s}"`:""} data-roll-alt='1d20;${e}' data-roll='1d20${t}' mode='${i}' profDiceStr="+${e}" profBonusStr="${t}">${t}</span>`}return`<span class='roller' data-roll='1d20${t}'>${t}</span>`})),t.innerHTML=t.innerHTML.replace(/DC\s*(\d+)/g,(function(t,n){const l=Number(n),a=r(e.cr);if(a>0){const e=l-a,t=`1d${2*a}${e>=0?"+":""}${e}`;return`DC <span class="dc-roller" ${s?`title="${s}"`:""} mode="${i}" data-roll-alt="${t}" data-bonus="${n}" profDiceStr="+${t}" profBonusStr="${n}">${n}</span>`}return t}))}function V(e){e.innerHTML=e.innerHTML.replace(/\d+d\d+(\s?(\-|\+)\s?\d+\s?)?/g,(function(t){const s=F(e);return`<span class='roller' ${s?`title="${s}"`:""} data-roll='${t}'>${t}</span>`}))}function F(e){let t=e.parentElement.querySelector(".name");return t&&(t=t.innerHTML,t&&(t=t.substring(0,t.length-1).trim())),t}V(t.querySelector("#stats #hp"));let z=t.querySelectorAll("#stats span.roller");for(let e of z)e.addEventListener("click",()=>{const t=e;let s,i;if("dice"===t.getAttribute("mode")){s=t.getAttribute("data-roll-alt").replace(/\s+/g,"");const e=s.split(";");s=s.replace(";","+"),i=a.a.roll(e[0]);const n=a.a.roll(e[1]);i.rolls=i.rolls.concat(n.rolls),i.total+=n.total}else s=t.getAttribute("data-roll").replace(/\s+/g,""),i=a.a.roll(s);U(t,s,i)});let D=t.querySelectorAll("#stats span.roller");for(let e of D){const t=e;let s,i;"dice"===t.getAttribute("mode")&&(s=t.getAttribute("data-roll-alt").replace(/\s+/g,""),i=a.a.roll(s),U(t,s,i))}function U(e,s,n){const l=window.monsterName,a=Object(i.parseHTML)(`<span>${l}: <em>${s}</em> rolled ${e.getAttribute("title")?e.getAttribute("title")+" ":""}for <strong>${n.total}</strong> (<em>${n.rolls.join(", ")}</em>)<br></span>`),r=t.querySelector("#output");Object(i.jqPrepend)(r,a),r.style.display="block",6===r.children.length&&r.children[5].remove()}}},147:function(e,t,s){"use strict";var i=s(7),n=s(17),l=s(1),a=(s(83),s(31));class r extends i.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},paren:{type:String},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(l.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(a.b)(this.model)),this.$.select.renderer=(e,t)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",e=>{t.opened=!0;let s=null!==e.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!s&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(l.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],s=document.createElement("vaadin-item"),i=t.name||Object(l.util_capitalizeAll)(t);s.innerHTML=`<span>${i}</span> ${t.name?`<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${t.source}</span>`:""}`,s.setAttribute("value",e),this.listBox.appendChild(s)}e.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(n.O)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t,s){let i="";return e&&(i=e,t&&1!==t&&(i+=` (pick ${t})`),s&&(i+=` (${s})`)),i}static get template(){return i.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{116:function(e,t,i){"use strict";var a=i(7),s=i(69);i(81),i(133);class n extends a.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new s.a(this.$.button)},10)}_exists(e){return!!e}_styleStr(e,t,i){let a="";return e&&(a+=`background: ${e}; `),t&&(a+=`border: ${t}; `),a}_svgStyleStr(e,t){let i="";return e&&(i+=`fill: ${e}; `),t&&(i+=`stroke: ${t}; `),i}static get template(){return a.b`
+      <style include="material-styles">
+        .mdc-tab-scroller__scroll-area--scroll {
+          overflow-x: auto;
+          background-color: var(--mdc-theme-surface);
+          border: 1px solid var(--mdc-theme-text-divider-on-background);
+          border-bottom: none;
+        }
+        :host {
+          display: inline;
+          overflow: hidden;
+          white-space: nowrap;
+          border-radius: 6px;
+        }
+        .mdc-button {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        }
+        .mdc-button .mdc-button__icon {
+          margin-right: 0px;
+          margin-left: 8px;
+        }
+        .mdc-button [background] {
+          background: var(--lumo-contrast-10pct);
+        }
+        dnd-svg {
+          height: 20px;
+          width: 20px;
+          flex-shrink: 0;
+          flex-grow: 0;
+          padding-left: 8px;
+          fill: var(--mdc-theme-primary);
+          stroke: var(--mdc-theme-primary);
+        }
+        i {
+          flex-shrink: 0;
+          flex-grow: 0;
+        }
+
+        
+        :host(.btn-field__btn) dnd-svg {
+          padding-left: 0;
+        }
+        :host(.btn-field__btn) i {
+          margin-left: 0;
+        }
+
+        :host(.icon-only) dnd-svg {
+          margin-left: -24px;
+          padding-left: 0;
+        }
+        :host(.icon-only) i {
+          margin-left: 0;
+          padding-left: 0;
+        }
+        :host(.hard-left) i {
+          margin-left: -24px;
+        }
+
+        :host(.link) .mdc-button__label {
+          text-transform: none;
+          color: var(--lumo-body-text-color);
+          letter-spacing: normal;
+        }
+        :host(.link) i {
+          color: var(--lumo-body-text-color);
+        }
+        :host(.link) button:hover::before {
+          background: none;
+        }
+        :host(.link) button:hover i,
+        :host(.link) button:hover .mdc-button__label {
+          color: var(--mdc-theme-secondary);
+        }
+
+        :host([edit-mode]) button {
+          background-color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-on-secondary)
+        }
+        :host([edit-mode]) .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([edit-mode]) i {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([edit-mode]) button:hover i,
+        :host([edit-mode]) button:hover .mdc-button__label {
+          color: var(--mdc-theme-on-secondary);
+        }
+
+        :host([not-edit-mode]) button {
+          background-color: var(--mdc-theme-primary);
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) i {
+          color: var(--mdc-theme-on-primary);
+        }
+        :host([not-edit-mode]) button:hover i,
+        :host([not-edit-mode]) button:hover .mdc-button__label {
+          color: var(--mdc-theme-on-primary);
+        }
+
+      </style>
+      <button id="button" class="mdc-button" style$="[[_styleStr(background, border, label)]]">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">[[label]]</span>
+        <slot name="label"></slot>
+        <template is="dom-if" if="[[_exists(icon)]]">
+          <i class="material-icons mdc-button__icon" aria-hidden="true">[[icon]]</i>
+        </template>
+        <template is="dom-if" if="[[_exists(svg)]]">
+          <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
+        </template>
+      </button>
+    `}}customElements.define("dnd-button",n)},119:function(e,t,i){"use strict";i.r(t),i.d(t,"renderSelection",(function(){return o}));var a=i(71),s=i(5),n=i(1);const r=new a.a;function o(e,t,i,a){!function(e){if(e.hasParsed)return;if(e.hasParsed=!0,e.noDisplay)return;"GV"===e.type&&(e.category="Generic Variant");void 0===e.category&&(e.category="Other");void 0===e.entries?e.entries=[]:e.entries=Object(n.cloneDeep)(e.entries);if(e.type&&window.itemTypeList[e.type])for(let t=0;t<window.itemTypeList[e.type].entries.length;t++)e.entries.push(window.itemTypeList[e.type].entries[t]);if(e.property){const t=e.property.split(",");for(let i=0;i<t.length;i++)if(window.itemPropertyList[t[i]].entries)for(let a=0;a<window.itemPropertyList[t[i]].entries.length;a++)e.entries.push(window.itemPropertyList[t[i]].entries[a])}e.armor?(e.resist&&e.entries.push("You have resistance to "+e.resist+" damage while you wear this armor."),e.armor&&e.stealth&&e.entries.push("The wearer has disadvantage on Stealth (Dexterity) checks."),"HA"===e.type&&e.strength&&e.entries.push("If the wearer has a Strength score lower than "+e.strength+", their speed is reduced by 10 feet.")):e.resist&&("P"===e.type&&e.entries.push("When you drink this potion, you gain resistance to "+e.resist+" damage for 1 hour."),"RG"===e.type&&e.entries.push("You have resistance to "+e.resist+" damage while wearing this ring."));"SCF"===e.type&&("arcane"===e.scfType&&e.entries.push("An arcane focus is a special item designed to channel the power of arcane spells. A sorcerer, warlock, or wizard can use such an item as a spellcasting focus, using it in place of any material component which does not list a cost."),"druid"===e.scfType&&e.entries.push("A druid can use such a druidic focus as a spellcasting focus, using it in place of any material component that does not have a cost."),"holy"===e.scfType&&(e.entries.push("A holy symbol is a representation of a god or pantheon."),e.entries.push("A cleric or paladin can use a holy symbol as a spellcasting focus, using it in place of any material components which do not list a cost. To use the symbol in this way, the caster must hold it in hand, wear it visibly, or bear it on a shield.")))}(e);const o=t.querySelector(".selection-wrapper")||t;o.innerHTML='\n\t<div class="stats-wrapper margin-bottom_large">\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="type"></span><span class="rarity"></span>\n\t\t\t<span class="attunement"></span>\n\t\t</div>\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="value"></span><span class="weight"></span>\n\t\t</div>\n\t\t<div class="margin-bottom_small">\n\t\t\t<span class="damage"></span>\n\t\t\t<span class="damageType"></span>\n\t\t\t<span class="properties"></span>\n\t\t</div>\n\t\t<div class="text"></div>\n\t</div>',a&&o.querySelector(".stats-wrapper").classList.add("small"),t.querySelector(".stats-wrapper .value").innerHTML=e.value?e.value+(e.weight?", ":""):"",t.querySelector(".stats-wrapper .weight").innerHTML=e.weight?e.weight+(1==e.weight?" lb.":" lbs."):"",t.querySelector(".stats-wrapper .rarity").innerHTML=(e.tier?", "+e.tier:"")+(e.rarity?", "+e.rarity:""),t.querySelector(".stats-wrapper .attunement").innerHTML=e.reqAttune?e.reqAttune:"",t.querySelector(".stats-wrapper .type").innerHTML=e.typeText,t.querySelector(".stats-wrapper .damage").innerHTML="",t.querySelector(".stats-wrapper .damageType").innerHTML="";const l=e.type||"";if(e.weaponCategory)if(e.damages&&e.damages.length)for(let i=0;i<e.damages.length;i++){const a=e.damages[i],r=i===e.damages.length-1;a.roll&&a.type&&(t.querySelector(".stats-wrapper .damage").innerHTML+=`<span>${Object(n.utils_makeRoller)(a.roll)} ${s.a.dmgTypeToFull(a.type)}</span>${r?"":" + "}`)}else e.dmg1&&(t.querySelector(".stats-wrapper .damage").innerHTML=Object(n.utils_makeRoller)(e.dmg1)),e.dmgType&&(t.querySelector(".stats-wrapper .damageType").innerHTML=s.a.dmgTypeToFull(e.dmgType));else if("LA"===l||"MA"===l||"HA"===l)t.querySelector(".stats-wrapper .damage").innerHTML="AC "+e.ac+("LA"===l?" + Dex":"MA"===l?" + Dex (max 2)":"");else if("S"===l)t.querySelector(".stats-wrapper .damage").innerHTML="AC +"+e.ac;else if("MNT"===l||"VEH"===l){const i=e.speed,a=e.carryingcapacity;i&&t.querySelector(".stats-wrapper .damage").append("Speed="+i),i&&a&&t.querySelector(".stats-wrapper .damage").append("MNT"===l?", ":"<br/>"),a&&(t.querySelector(".stats-wrapper .damage").append("Carrying Capacity="+a),-1===a.indexOf("ton")&&-1===a.indexOf("passenger")&&t.querySelector(".stats-wrapper .damage").append(1==a?" lb.":" lbs."))}if(t.querySelector(".stats-wrapper .properties").innerHTML="",e.property){const i=e.property.split(",");for(let a=0;a<i.length;a++){const s=i[a];let n=window.itemPropertyList[s].name;"V"===s&&e.dmg2&&(n=`${n} (${e.dmg2})`),"T"!==s&&"A"!==s&&"AF"!==s||(n=`${n} (${e.range}ft.)`),"RLD"===s&&(n=`${n} (${e.reload} shots)`),n=(a>0?", ":e.dmg1?"- ":"")+n,t.querySelector(".stats-wrapper .properties").append(n)}}const d={type:"entries",entries:e.entries},m=[];r.recursiveEntryRender(d,m,1),t.querySelector(".stats-wrapper .text").innerHTML=Object(n.utils_makeRoller)(m.join("")).split(e.name.toLowerCase()).join("<i>"+e.name.toLowerCase()+"</i>")}},146:function(e,t,i){"use strict";var a=i(7),s=i(17),n=i(1),r=(i(83),i(32));class o extends a.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},paren:{type:String},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(n.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(r.b)(this.model)),this.$.select.renderer=(e,t)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",e=>{t.opened=!0;let i=null!==e.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!i&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(n.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],i=document.createElement("vaadin-item"),a=t.name||Object(n.util_capitalizeAll)(t);i.innerHTML=`<span>${a}</span> ${t.name?`<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${t.source}</span>`:""}`,i.setAttribute("value",e),this.listBox.appendChild(i)}e.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(s.O)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t,i){let a="";return e&&(a=e,t&&1!==t&&100!==t&&(a+=` (pick ${t})`),i&&(a+=` (${i})`)),a}static get template(){return a.b`
       <style>
         :host {
           display: inline-block;
@@ -22,58 +141,199 @@
         </div>
       </vaadin-select>
       
-    `}}customElements.define("dnd-select-add",r)},150:function(e,t,s){"use strict";s.r(t);var i=s(7),n=s(17),l=s(142),a=s(1),r=s(31),o=(s(147),s(118));s(80);class c extends i.a{static get properties(){return{storageKey:{type:String},selectedItem:{type:Object},skillProfOptions:{type:Array,value:[]},skillProfChoices:{type:Number},selectedSkillProfs:{type:Array},defaultSkillProfs:{type:String,value:""},attributeOptions:{type:Array,value:[]},attributeChoices:{type:Number},attributeMod:{type:Number},selectedAttributes:{type:Array},defaultAttributes:{type:String,value:""},featOptions:{type:Array,value:[]},featChoices:{type:Number},selectedFeat:{type:Array},isEditMode:{type:Boolean,value:!1}}}static get observers(){return["updateOptions(selectedItem, storageKey, character)"]}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.set("character",t),this.updateOptions()},this.set("character",Object(n.F)()),Object(n.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(l.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(l.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(l.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateOptions(){if(this.character&&this.storageKey&&this.selectedItem){const e=this.storageKey.split(".");this.character.choices||(this.character.choices={});let t=this.character.choices;for(let s=0;s<e.length;s++){const i=e[s];t[i]||(e.length<s+1&&!isNaN(parseInt(e[s+1],10))?t[i]=new Array(20):t[i]={}),t=t[i]}if(this.storedItem=t,this.attributeOptions=[],this.attributeChoices=null,this.attributeMod=1,this.selectedAttributes=null,this.defaultAttributes=null,this.selectedItem.ability&&this.selectedItem.ability.length){const e=this.selectedItem.ability[0];e.choose&&(this.attributeOptions=e.choose.from.map(e=>e.toUpperCase()),this.attributeChoices=e.choose.count||1,this.attributeMod=e.choose.amount||1,this.selectedAttributes=this.storedItem.selectedAttributes?this.storedItem.selectedAttributes.split(","):null),this.defaultAttributes=Object.entries(e).map(e=>{if("choose"!==e[0]&&"any"!==e[0]){let t=e[0].toLowerCase(),s=e[1];return t.toUpperCase()+" "+Object(a.absInt)(s)}}).filter(e=>!!e).join(", "),this.storedItem.defaultAttributes=this.defaultAttributes,this.storedItem.attributeMod=this.attributeMod}if(this.skillProfOptions=[],this.skillProfChoices=null,this.selectedSkillProfs=null,this.defaultSkillProfs=null,this.selectedItem.skillProficiencies&&this.selectedItem.skillProficiencies.length){const e=this.selectedItem.skillProficiencies[0];e.choose&&(this.skillProfOptions=e.choose.from,this.skillProfChoices=e.choose.count||1,this.selectedSkillProfs=this.storedItem.selectedSkillProfs?this.storedItem.selectedSkillProfs.split(","):null),e.any&&(this.skillProfOptions=Object.keys(o.SKILL_TO_ATB_ABV),this.skillProfChoices=e.any,this.selectedSkillProfs=this.storedItem.selectedSkillProfs?this.storedItem.selectedSkillProfs.split(","):null),this.defaultSkillProfs=Object.keys(e).map(e=>{if("choose"!==e&&"any"!==e)return Object(a.util_capitalizeAll)(e)}).filter(e=>!!e).join(", "),this.storedItem.defaultSkillProfs=this.defaultSkillProfs}this.featOptions=[],this.featChoices=null,this.selectedFeat=null,this.selectedItem.feats&&(this.featOptions=await Object(r.b)("feats"),this.featChoices=this.selectedItem.feats,this.selectedFeat=this.storedItem.selectedFeat),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_skillProficiencyAddCallback(){return(e=>{this.storedItem.selectedSkillProfs=e.join(","),Object(n.W)(this.character)}).bind(this)}_attributeAddCallback(){return(e=>{this.storedItem.selectedAttributes=e.join(","),Object(n.W)(this.character)}).bind(this)}_featAddCallback(){return(e=>{this.storedItem.selectedFeat=e,Object(n.W)(this.character)}).bind(this)}_suboptionStorageKey(e){return e+".suboptions"}_showEmpty(e,t){return!e&&!t}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}_plusPrefix(e){return console.error(e),"+"+e}_plural(e,t){return t>1?e+"s":e}static get template(){return i.b`
-            <style include="material-styles">
-                [hidden] {
-                    display: none !important;
-                }
-                dnd-select-add {
-                    width: 100%;
-                }
-                @media(min-width: 420px) {
-                    dnd-select-add {
-                        width: calc(50% - 20px);
-                    }
-                }
+    `}}customElements.define("dnd-select-add",o)},150:function(e,t,i){"use strict";i.r(t);var a=i(7),s=i(17),n=i(142),r=i(119),o=i(0),l=i(1),d=(i(147),i(143),i(163),i(5));i(146),i(116);class m extends a.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},hasRenderedOutput:{type:Boolean,value:!1},hasAC:{type:Boolean,value:!1},armorAC:{type:Number,value:0},isArmor:{type:Boolean,value:!1},isMartial:{type:Boolean,value:!1},weaponMagicModifier:{type:Number,value:0},itemRarity:{type:String},itemName:{type:String},itemWeight:{type:Number,value:0},weaponProperties:{type:Array},itemResist:{type:String},itemQuantity:{type:Number,value:0},item:{type:Object},storedItem:{type:Object},itemType:{type:String,value:""},smallRender:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get observers(){return["_itemChanged(item)"]}constructor(){super(),this.itemTypes=["Currency","Armor (Light)","Armor (Medium)","Armor (Heavy)","Melee Weapon","Ranged Weapon","Shield","Adventuring Gear","Ammunition","Artisan Tool","Explosive","Gaming Set","Instrument","Mount","Potion","Rod","Ring","Scroll","Spellcasting Focus","Tool","Tack and Harness","Trade Good","Vehicle","Wand"],this.rarityTypes=o.z,this.damageTypes=o.k,this.resistTypes=["<None>",...o.k],this.weaponPropertyOptions=[{name:"Two-Handed",value:"2H"},{name:"Ammunition",value:"A"},{name:"Finesse",value:"F"},{name:"Heavy",value:"H"},{name:"Light",value:"L"},{name:"Loading",value:"LD"},{name:"Reach",value:"R"},{name:"Reload",value:"RLD"},{name:"Special",value:"S"},{name:"Thrown",value:"T"},{name:"Versatile",value:"V"}],this.weaponPropertyValues=["Two-Handed","Ammunition","Finesse","Heavy","Light","Loading","Reach","Reload","Special","Thrown","Versatile"]}connectedCallback(){super.connectedCallback(),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}_itemChanged(){if(this.item){if(console.error("itemDetail:",this.item),this.item.itemRef&&!this.item.lookupFailed?(this.hasRenderedOutput=!0,Object(r.renderSelection)(this.item,this.$.renderedOutput,void 0,this.smallRender)):this.hasRenderedOutput=!1,this.itemType=this._getItemType(),this.hasAC="S"===this.item.type||!!this.item.armor,this.hasAC&&(this.armorAC=this.item.ac),this.isArmor=!!this.item.armor,this.isMartial="Martial"===this.item.weaponCategory,this.item.weapon){this.weaponMagicModifier=parseInt(this.item.genericBonus,10);const e=this.item.property;if(e){const t=e.split(",").map(e=>{const t=this.weaponPropertyOptions.find(t=>t.value===e.trim());if(t)return t.name}).filter(e=>!!e);this.weaponProperties=t,this.item.damages||(this.item.dmg1?this.item.storedItem.damages=[{roll:this.item.dmg1,type:Object(l.util_capitalizeAll)(d.a.dmgTypeToFull(this.item.dmgType))}]:this.item.storedItem.damages=[])}}this.itemRarity=this.item.rarity,this.itemName=this.item.name,this.itemWeight=this.item.weight,this.canHaveResist=this.item.armor||"P"===this.item.type||"RG"===this.item.type,this.itemResist=this.item.resist,this.canHaveQuantity="P"===this.item.type||"A"===this.item.type||"EXP"===this.item.type,this.itemQuantity=this.item.quantity,this.canHaveSpell="SC"===this.item.type,this.item.storedItem&&(this.storedItem=this.item.storedItem)}}_getItemType(){return this.item?d.a.ITEM_TYPE_JSON_TO_ABV[this.item.type]:""}_selectItemType(){const e=this.root.querySelector("#typeSelect").value;switch(this.storedItem.armor=!1,this.storedItem.weapon=!1,this.storedItem.type="",this.storedItem.isEquipped=!1,this.storedItem.isAttuned=!1,e){case"Armor (Light)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="LA";break;case"Armor (Medium)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="MA";break;case"Armor (Heavy)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="HA";break;case"Ranged Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="R",this.storedItem.resist=null;break;case"Melee Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="M",this.storedItem.resist=null;break;case"Shield":this.storedItem.type="S",this.storedItem.weaponCategory=null,this.storedItem.ac=2,this.storedItem.resist=null;break;case"Adventuring Gear":this.storedItem.weaponCategory=null,this.storedItem.type="G",this.storedItem.resist=null;break;case"Currency":this.storedItem.weaponCategory=null,this.storedItem.type="$",this.storedItem.resist=null,this.storedItem.quantity=1,this.storedItem.hasQuantity=!0;break;default:const t=Object.entries(d.a.ITEM_TYPE_JSON_TO_ABV).find(([t,i])=>i===e);t&&(this.storedItem.type=t[0]),"P"===e&&"RG"===e||(this.storedItem.resist=null)}"P"!==this.storedItem.type&&"A"!==this.storedItem.type&&"EXP"!==this.storedItem.type&&"$"!==this.storedItem.type&&(this.storedItem.hasQuantity=!1),Object(s.kb)(this.item)}_updateItem(){Object(s.kb)(this.item)}_addDamage(){this.storedItem.damages||(this.storedItem.damages=[]),this.storedItem.damages.push({roll:"",type:""}),Object(s.kb)(this.item)}_removeDamage(e){const t=Object(l.findInPath)(".roll__damage",e).getAttribute("index"),i=parseInt(t,10);this.storedItem.damages.splice(i,1),Object(s.kb)(this.item)}_changeWeaponType(){this.item.weapon&&(this.isMartial?this.storedItem.weaponCategory="Martial":this.storedItem.weaponCategory="Simple",Object(s.kb)(this.item))}_weaponMagicModifierChange(){let e=parseInt(this.weaponMagicModifier,10);isNaN(e)&&(e=0),this.storedItem.genericBonus=e>0?"+"+e:e,Object(s.kb)(this.item)}_itemRarityChange(){this.itemRarity&&(this.storedItem.rarity=this.itemRarity,Object(s.kb)(this.item))}_itemNameChange(){this.itemName&&(this.storedItem.name=this.itemName,Object(s.kb)(this.item))}_addWeaponProperty(){return(e=>{if(e&&e.length){const t=e.map(e=>{const t=this.weaponPropertyOptions.find(t=>t.name===e.trim());if(t)return t.value}).filter(e=>!!e);this.storedItem.property=t.join(","),Object(s.kb)(this.item)}}).bind(this)}_armorACChange(){let e=parseInt(this.armorAC,10);isNaN(e)&&(e=0),this.storedItem.ac=e,Object(s.kb)(this.item)}_itemWeightChange(){let e=parseFloat(this.itemWeight,10);isNaN(e)&&(e=0),this.storedItem.weight=e,Object(s.kb)(this.item)}_itemResistChange(){this.itemResist&&(this.storedItem.resist="<None>"===this.itemResist?null:this.itemResist,Object(s.kb)(this.item))}_itemQuantityChange(){let e=parseInt(this.itemQuantity,10);isNaN(e)&&(e=0),this.storedItem.quantity=e,this.storedItem.hasQuantity=!0,Object(s.kb)(this.item)}_or(...e){for(let t of e)if(t)return!0;return!1}static get template(){return a.b`
+      <style include="material-styles my-styles"></style>
+      <style>
+        :host {}
+        [hidden] {
+          display: none !important;
+        }
 
-                @media(min-width: 921px) {
-                }
-            </style>
+        .edit__wrap {
+          margin-right: -10px;
+        }
+        .edit__name {
+          width: calc(65% - 10px);
+          padding-top: 0;
+        }
+        .edit__notes {
+          width: calc(100% - 10px);
+          min-height: 200px;
+        }
+        .edit__checkboxes {
+          display: flex;
+          flex-direction: column;
+          margin: 10px 10px 0 0;
+        }
 
-            <div class="col-wrap">
-                <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection">Default Attributes: <span>[[defaultAttributes]]</span></div>
+        .section_heading {
+          margin: 16px 0 0px;
+          font-size: 17px;
+          color: var(--mdc-theme-secondary);
+        }
 
-                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skills: <span>[[defaultSkillProfs]]</span></div>
+        .roll__damages {
+          display: flex;
+          flex-direction: column;
+        }
+        .roll__damage {
+          display: flex;
+          margin-right: 10px;
+        }
+        .roll__damage vaadin-text-field,
+        .roll__damage vaadin-select {
+          max-width: 100%;
+        }
+        .roll__damage-roll--edit,
+        .roll__damage-type--edit {
+          width: calc(50% - 40px);
+        }
+        .roll__damage-roll--edit {
+          margin: 0 16px;
+        }
+        .roll__damage-remove {
+          margin: auto -5px 4px;
+        }
 
-                <template is="dom-if" if="[[_exists(attributeOptions)]]">
-                    <dnd-select-add disabled$="[[!isEditMode]]" 
-                        placeholder="<Select Attribute>" label='[[_plural("Selected Attribute", attributeChoices)]]'
-                        choices="[[attributeChoices]]" paren="[[_plusPrefix(attributeMod)]]" options="[[attributeOptions]]"
-                        value="[[selectedAttributes]]" add-callback="[[_attributeAddCallback()]]">
-                    </dnd-select-add>
-                </template>
+        dnd-switch {
+          margin: 10px auto 0;
+          display: block;
+        }
 
-                <template is="dom-if" if="[[_exists(skillProfOptions)]]">
-                    <dnd-select-add disabled$="[[!isEditMode]]"
-                        placeholder="<Select Skill>" label='[[_plural("Selected Skill", skillProfChoices)]]'
-                        choices="[[skillProfChoices]]" options="[[skillProfOptions]]"
-                        value="[[selectedSkillProfs]]" add-callback="[[_skillProficiencyAddCallback()]]">
-                    </dnd-select-add>
-                </template>
+        h2 {
+          margin-top: 0;
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
 
-                <!-- Todo: add language and tool proficiencies -->
+        vaadin-checkbox {
+          width: fit-content;
+        }
 
-                <template is="dom-if" if="[[_exists(featOptions)]]">
-                    <dnd-select-add disabled$="[[!isEditMode]]"
-                        placeholder="<Select Feat>" label="Selected Feat"
-                        options="[[featOptions]]" value="[[selectedFeat]]"
-                        add-callback="[[_featAddCallback()]]">
-                    </dnd-select-add>
-                    
-                    <template is="dom-if" if="[[_exists(selectedFeat)]]"></template>
-                        <dnd-character-builder-suboptions storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
-                    </template>
-                </template>
+        vaadin-select {
+          max-width: calc(50% - 14px);
+        }
+        vaadin-number-field,
+        vaadin-integer-field {
+          width: calc(33% - 10px);
+        }
+        vaadin-text-field,
+        vaadin-text-area,
+        vaadin-integer-field,
+        vaadin-number-field,
+        vaadin-select {
+          margin-right: 10px;
+        }
+        dnd-select-add {
+          width: calc(66% - 22px);
+          margin-right: 10px;
+          margin-left: 10px;
+        }
+
+        .margin-bottom_large {
+          margin-bottom: 0 !important;
+        }
+
+        @media(min-width: 921px) {
+          h2 {
+            font-size: 24px;
+          }
+        }
+      </style>
+
+      <div hidden$="[[!item]]">
+        <div hidden$="[[isEditMode]]">
+          <div hidden$="[[!hasRenderedOutput]]">
+            <h2>[[item.name]]</h4>
+            <div>[[item.notes]]</div>
+            <div hidden$="[[item.hideRef]]" id="renderedOutput"></div>
+          </div>
+
+          <div hidden$="[[hasRenderedOutput]]">
+            <h2>[[item.name]]</h4>
+            <div>[[item.notes]]</div>
+          </div>
+        </div>
+
+        <template is="dom-if" if="[[isEditMode]]">
+          <div class="edit__wrap">
+            <vaadin-text-field class="edit__name" theme="label--secondary" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
+            <vaadin-number-field theme="label--secondary" has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
+
+            <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[itemTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
+
+            <vaadin-select id="raritySelect" value="{{itemRarity}}" on-change="_itemRarityChange" label="Rarity" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[rarityTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
+
+            <div class="edit__weapon" hidden$="[[!item.weapon]]">
+              <h4 class="section_heading">Weapon</h4>
+              <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
+              <vaadin-integer-field theme="label--secondary"  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+              <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
+
+              <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
+                <div class="roll__damage" index$="[[index]]">
+                  <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                  <div class="roll__damage-roll--edit">
+                    <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
+                  </div>
+                  <div class="roll__damage-type--edit">
+                    <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
+                      <template>
+                        <vaadin-list-box>
+                          <template is="dom-repeat" items="[[damageTypes]]">
+                            <vaadin-item>[[item]]</vaadin-item>
+                          </template>
+                        </vaadin-list-box>
+                      </template>
+                    </vaadin-select>
+                  </div>
+                </div>
+              </template>
+              <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
             </div>
-        `}}customElements.define("dnd-character-builder-suboptions",c)}}]);
+
+            <vaadin-integer-field theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
+            
+            <vaadin-integer-field theme="label--secondary"  hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
+
+            <!-- <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[resistTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select> -->
+
+            <div class="edit__checkboxes">
+              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference</vaadin-checkbox>
+            </div>
+
+            <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
+          </div>
+        </template>
+      </div>
+    `}}customElements.define("dnd-character-builder-equipment-item-detail",m)}}]);
 //# sourceMappingURL=4.bundle.js.map

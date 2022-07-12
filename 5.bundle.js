@@ -1,594 +1,79 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{116:function(e,t,i){"use strict";var n=i(7),a=i(69);i(80),i(133);class s extends n.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new a.a(this.$.button)},10)}_exists(e){return!!e}_styleStr(e,t,i){let n="";return e&&(n+=`background: ${e}; `),t&&(n+=`border: ${t}; `),n}_svgStyleStr(e,t){let i="";return e&&(i+=`fill: ${e}; `),t&&(i+=`stroke: ${t}; `),i}static get template(){return n.b`
-      <style include="material-styles">
-        .mdc-tab-scroller__scroll-area--scroll {
-          overflow-x: auto;
-          background-color: var(--mdc-theme-surface);
-          border: 1px solid var(--mdc-theme-text-divider-on-background);
-          border-bottom: none;
-        }
+(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{117:function(e,t,s){"use strict";s.r(t),s.d(t,"renderSelection",(function(){return p})),s.d(t,"SKILL_TO_ATB_ABV",(function(){return c}));var i=s(1),n=s(71),l=s(5),a=s(30);function r(e){return o[e]?o[e]:0}const o={0:2,"1/8":2,"1/4":2,"1/2":2,1:2,2:2,3:2,4:2,5:3,6:3,7:3,8:3,9:4,10:4,11:4,12:4,13:5,14:5,15:5,16:5,17:6,18:6,19:6,20:6,21:7,22:7,23:7,24:7,25:8,26:8,27:8,28:8,29:9,30:9},c={athletics:"dex",acrobatics:"dex","sleight of hand":"dex",stealth:"dex",arcana:"int",history:"int",investigation:"int",nature:"int",religion:"int","animal handling":"wis",insight:"wis",medicine:"wis",perception:"wis",survival:"wis",deception:"cha",intimidation:"cha",performance:"cha",persuasion:"cha"};const d=new n.a;function p(e,t){t.querySelector(".selection-wrapper").innerHTML='\n\t<div class="margin-bottom_large stats-wrapper">\n\t\t<div id="stats" class="monster">\n\t\t\t<div id="name">\n\t\t\t\tName <span class="source" title="Source book">SRC</span>\n\t\t\t</div>\n\t\t\t<div id="sizetypealignment">\n\t\t\t\t<span id="size">Size</span> <span id="type">type</span>, <span id="alignment">alignment</span>\n\t\t\t</div>\n\t\t\t<div class="divider"></div>\n\t\t\t<div>\n\t\t\t\t<strong>Armor Class</strong> <span id="ac">## (source)</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Hit Points</strong> <span id="hp">hp</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Speed</strong> <span id="speed">30 ft.</span>\n\t\t\t</div>\n\t\t\t<div id="abilitynames">\n\t\t\t\t<div>STR</div>\n\t\t\t\t<div>DEX</div>\n\t\t\t\t<div>CON</div>\n\t\t\t\t<div>INT</div>\n\t\t\t\t<div>WIS</div>\n\t\t\t\t<div>CHA</div>\n\t\t\t</div>\n\t\t\t<div id="abilityscores">\n\t\t\t\t<div id="str"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="dex"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="con"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="int"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="wis"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t\t<div id="cha"><span class="score">10</span> (<span class="mod">0</span>)</div>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Saving Throws</strong> <span id="saves">Str +0</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Skills</strong> <span id="skills">Perception +0</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Damage Vulnerabilities</strong> <span id="dmgvuln">fire</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Damage Resistances</strong> <span id="dmgres">cold</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Damage Immunities</strong> <span id="dmgimm">lightning</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Condition Immunities</strong> <span id="conimm">exhaustion</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Senses</strong> <span id="senses">darkvision 30 ft.</span> passive Perception <span id="pp">10</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Languages</strong> <span id="languages">Common</span>\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<strong>Challenge</strong> <span id="cr">1</span> (<span id="xp">450</span> XP)\n\t\t\t</div>\n\t\t\t<div id="traits">\n\t\t\t</div>\n\t\t\t<div id="actions">\n\t\t\t\t<span>Actions</span>\n\t\t\t</div>\n\t\t\t<div id="reactions">\n\t\t\t\t<span>Reactions</span>\n\t\t\t</div>\n\t\t\t<div id="legendaries">\n\t\t\t\t<span>Legendary Actions</span>\n\t\t\t</div>\n\t\t\t<div id="lairactions">\n\t\t\t\t<span>Lair Actions</span>\n\t\t\t</div>\n\t\t\t<div id="regionaleffects">\n\t\t\t\t<span>Regional Effects</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<div id="output"></div>\n\t</div>';let s=[],n={};var o=e.name;window.monsterName=o;var p=e.source,u=e._pTypes.asText;t.querySelector("#name").innerHTML=`<span class="source source${p}" title="${l.a.sourceJsonToAbv(p)}">${l.a.sourceJsonToFull(p)}</span>`,t.querySelector("#size").innerHTML=l.a.sizeAbvToFull(e.size),t.querySelector("#type").innerHTML=u,t.querySelector("#alignment").innerHTML=e.alignment,t.querySelector("#ac").innerHTML=e.ac,t.querySelector("#hp").innerHTML=e.hp,t.querySelector("#speed").innerHTML=e.speed,t.querySelector("#str span.score").innerHTML=e.str,t.querySelector("#str span.mod").innerHTML=l.a.getAbilityModifier(e.str),t.querySelector("#dex span.score").innerHTML=e.dex,t.querySelector("#dex span.mod").innerHTML=l.a.getAbilityModifier(e.dex),t.querySelector("#con span.score").innerHTML=e.con,t.querySelector("#con span.mod").innerHTML=l.a.getAbilityModifier(e.con),t.querySelector("#int span.score").innerHTML=e.int,t.querySelector("#int span.mod").innerHTML=l.a.getAbilityModifier(e.int),t.querySelector("#wis span.score").innerHTML=e.wis,t.querySelector("#wis span.mod").innerHTML=l.a.getAbilityModifier(e.wis),t.querySelector("#cha span.score").innerHTML=e.cha,t.querySelector("#cha span.mod").innerHTML=l.a.getAbilityModifier(e.cha);var h=e.save;h?(t.querySelector("#saves").parentElement.style.display="block",t.querySelector("#saves").innerHTML=h):t.querySelector("#saves").parentElement.style.display="none";var m=e.skill;let v=0;var y;m?(t.querySelector("#skills").parentElement.style.display="block",t.querySelector("#skills").innerHTML=(y=m,Object.keys(y).map((function(e){return e.uppercaseFirst()+" "+y[e]})).join(", ")),m.perception&&(v=parseInt(m.perception))):t.querySelector("#skills").parentElement.style.display="none";var f=e.vulnerable;f?(t.querySelector("#dmgvuln").parentElement.style.display="block",t.querySelector("#dmgvuln").innerHTML=f):t.querySelector("#dmgvuln").parentElement.style.display="none";var b=e.resist;b?(t.querySelector("#dmgres").parentElement.style.display="block",t.querySelector("#dmgres").innerHTML=b):t.querySelector("#dmgres").parentElement.style.display="none";var g=e.immune;g?(t.querySelector("#dmgimm").parentElement.style.display="block",t.querySelector("#dmgimm").innerHTML=g):t.querySelector("#dmgimm").parentElement.style.display="none";var S=e.conditionImmune;S?(t.querySelector("#conimm").parentElement.style.display="block",t.querySelector("#conimm").innerHTML=S):t.querySelector("#conimm").parentElement.style.display="none";var k=e.senses;t.querySelector("#senses").innerHTML=k?k+", ":"";var $=e.passive||(10+v).toString;t.querySelector("#pp").innerHTML=$;var A=e.languages;t.querySelector("#languages").innerHTML=A||"—";var M=void 0===e.cr?"Unknown":e.cr;t.querySelector("#cr").innerHTML=M,t.querySelector("#xp").innerHTML=l.a.crToXp(M);var q=e.trait;if(t.querySelector("#traits").style.display="none",q&&q.length>0){t.querySelector("#traits").style.display="block";for(var x=q.length-1;x>=0;x--){for(var L=q[x].name,O=q[x].text,T="",H=0,C=0;C<O.length;C++)if(O[C]){var j="";1===++H&&(j="first "),2===H&&(j="second ");var w="";-1!==L.indexOf("Spellcasting")&&-1!==O[C].indexOf(": ")&&(w="spells"),-1!==L.indexOf("Variant")&&-1!==L.indexOf("Coven")&&-1!==O[C].indexOf(": ")&&(w="spells"),T=T+"<p class='"+j+w+"'>"+O[C].replace(/\u2022\s?(?=C|\d|At\swill)/g,"")+"</p>"}const e=Object(i.parseHTML)("<div class='trait'><div class='trait"+x+"'><span class='name'>"+L+".</span> "+T+"</div></div>");Object(i.jqAfter)(t.querySelector("#traits"),e);const s=t.querySelectorAll(".trait div p.spells");for(let e of s){let t=e.innerHTML;if("*"===t[0])return;t=t.split(": ")[1].split(/\, (?!\+|\dd|appears|inside gems)/g);for(let e=0;e<t.length;e++)t[e]="<a href='#/spells/"+encodeURIComponent(t[e].replace(/(\*)| \(([^\)]+)\)/g,"")).toLowerCase().replace("'","%27")+"_phb'>"+t[e]+"</a>",e!==t.length-1&&(t[e]=t[e]+", ");e.innerHTML=e.innerHTML.split(": ")[0]+": "+t.join("")}}}const E=e.action;if(E&&E.length)for(let e=E.length-1;e>=0;e--){const s=E[e].name,n=E[e].text;let l="",a=0;for(let e=0;e<n.length;e++){if(!n[e])continue;a++;let t="";1===a&&(t="first "),2===a&&(t="second "),l=l+"<p class='"+t+"'>"+n[e]+"</p>"}const r=Object(i.parseHTML)("<div class='action'><div class='action"+e+"'><span class='name'>"+s+".</span> "+l+"</div></div>");Object(i.jqAfter)(t.querySelector("#actions"),r)}const P=e.reaction;if(t.querySelector("#reactions").style.display="none",P&&(P.text||P.length)){if(t.querySelector("#reactions").style.display="block",!P.length){const e=P.name,s=P.text;let n="",l=0;for(let e=0;e<s.length;e++){if(!s[e])continue;l++;let t="";1===l&&(t="first "),2===l&&(t="second "),n=n+"<p class='"+t+"'>"+s[e]+"</p>"}const a=Object(i.parseHTML)("<div class='reaction'><div class='reaction0'><span class='name'>"+e+".</span> "+n+"</div></div>");Object(i.jqAfter)(t.querySelector("#reactions"),a)}if(P.length)for(let e=P.length-1;e>=0;e--){const s=P[e].name,n=P[e].text;let l="<span>"+n+"</span>";for(let e=1;e<n.length;e++)n[e]&&(l=l+"<p>"+n[e]+"</p>");const a=Object(i.parseHTML)("<div class='reaction'><div class='reaction"+e+"'><span class='name'>"+s+".</span> "+l+"</div></div>");Object(i.jqAfter)(t.querySelector("#reactions"),a)}}const I=e.legendary;if(t.querySelector("#legendaries").style.display="none",I){t.querySelector("#legendaries").style.display="block";let s=I.length>0;for(let e=I.length-1;e>=0;e--){const n=I[e].name?I[e].name+".":"",l=I[e].text;let a="",r=0;for(let e=0;e<l.length;e++){if(!l[e])continue;r++;let t="";1===r&&(t="first "),2===r&&(t="second "),a+=`<p class='${t}'>${l[e]}</p>`}const o=Object(i.parseHTML)(`<div class='legendary'><div class='legendary'><span class='name'>${n}</span> ${a}</div></div>`);Object(i.jqAfter)(t.querySelector("#legendaries"),o),(""===n.trim()||n.indexOf("Legendary Actions")>-1)&&(s=!1)}if(s){const s=e.legendaryActions||3,n=o.split(","),l=Object(i.parseHTML)(`<div class='legendary'><div class='legendary'><span class='name'></span> <span>${n[0]} can take ${s} legendary action${s>1?"s":""}, choosing from the options below. Only one legendary action can be used at a time and only at the end of another creature's turn. ${n[0]} regains spent legendary actions at the start of its turn.</span></div></div>`);Object(i.jqAfter)(t.querySelector("#legendaries"),l)}}function _(e,l){t.querySelector(`#${e}s`).style.display="block",n={type:"entries",entries:l},s=[],d.recursiveEntryRender(n,s);const a=Object(i.parseHTML)(`<div class='${e}'><div class='legendary'>${Object(i.utils_makeRoller)(s.join(""))}</div></div>`);Object(i.jqAfter)(t.querySelector(`#${e}s`),a)}function B(e,t,s,i){return`<span class='roller' title="${e} ${i?" save":""}" data-roll-alt="1d20;${s}" data-roll='1d20${t}' mode='bonus' profDiceStr="+${s}" profBonusStr="${t}">${t}</span>`}t.querySelector("#lairactions").style.display="none",t.querySelector("#regionaleffects").style.display="none",e.lairActions&&_("lairaction",e.lairActions),e.regionalEffects&&_("regionaleffect",e.regionalEffects),e.skill&&function(t){const s=t,i=s.innerHTML.split(/,\s*(?![^()]*\))/g).map(e=>e.trim()),n=[];i.map(t=>{const s=t.match(/(\-|\+)?\d+|(?:[^\+]|\n(?!\+))+/g),i=s[0].trim();var a="";s.map(t=>{if(t.match(/(\-|\+)?\d+/)){const n=Number(t),o=l.a.getAbilityModNumber(e[(s=i,c[s.toLowerCase().trim()])]),d=n-o,p=d===2*r(e.cr)?2:1;a+=B(i,"+"+n,`${p}d${d*(3-p)}${o>=0?"+":""}${o}`,!1)}else a+=t;var s}),n.push(a)}),s.innerHTML=n.join(", ")}(t.querySelector("#skills")),e.save&&function(t){const s=t,i=s.innerHTML.split(",").map(e=>e.trim()),n=[];i.map(t=>{const s=t.split("+").map(e=>e.trim()),i=Number(s[1]),a=l.a.getAbilityModNumber(e[s[0].toLowerCase()]),o=i-a,c=o===2*r(e.cr)?2:1,d="+"+i,p=`${c}d${o*(3-c)}${a>=0?"+":""}${a}`;n.push(s[0]+" "+B(s[0],d,p,!0))}),s.innerHTML=n.join(", ")}(t.querySelector("#saves"));const N=t.querySelectorAll("#stats p");for(let t of N){V(t);const s=F(t),i="bonus";t.innerHTML=t.innerHTML.replace(/(\-|\+)?\d+(?= to hit)/g,(function(t){const n=Number(t),l=r(e.cr),a=n-l;if(l>0){const e=`1d${2*l}${a>=0?"+":""}${a}`;return`<span class='roller' ${s?`title="${s}"`:""} data-roll-alt='1d20;${e}' data-roll='1d20${t}' mode='${i}' profDiceStr="+${e}" profBonusStr="${t}">${t}</span>`}return`<span class='roller' data-roll='1d20${t}'>${t}</span>`})),t.innerHTML=t.innerHTML.replace(/DC\s*(\d+)/g,(function(t,n){const l=Number(n),a=r(e.cr);if(a>0){const e=l-a,t=`1d${2*a}${e>=0?"+":""}${e}`;return`DC <span class="dc-roller" ${s?`title="${s}"`:""} mode="${i}" data-roll-alt="${t}" data-bonus="${n}" profDiceStr="+${t}" profBonusStr="${n}">${n}</span>`}return t}))}function V(e){e.innerHTML=e.innerHTML.replace(/\d+d\d+(\s?(\-|\+)\s?\d+\s?)?/g,(function(t){const s=F(e);return`<span class='roller' ${s?`title="${s}"`:""} data-roll='${t}'>${t}</span>`}))}function F(e){let t=e.parentElement.querySelector(".name");return t&&(t=t.innerHTML,t&&(t=t.substring(0,t.length-1).trim())),t}V(t.querySelector("#stats #hp"));let z=t.querySelectorAll("#stats span.roller");for(let e of z)e.addEventListener("click",()=>{const t=e;let s,i;if("dice"===t.getAttribute("mode")){s=t.getAttribute("data-roll-alt").replace(/\s+/g,"");const e=s.split(";");s=s.replace(";","+"),i=a.a.roll(e[0]);const n=a.a.roll(e[1]);i.rolls=i.rolls.concat(n.rolls),i.total+=n.total}else s=t.getAttribute("data-roll").replace(/\s+/g,""),i=a.a.roll(s);U(t,s,i)});let D=t.querySelectorAll("#stats span.roller");for(let e of D){const t=e;let s,i;"dice"===t.getAttribute("mode")&&(s=t.getAttribute("data-roll-alt").replace(/\s+/g,""),i=a.a.roll(s),U(t,s,i))}function U(e,s,n){const l=window.monsterName,a=Object(i.parseHTML)(`<span>${l}: <em>${s}</em> rolled ${e.getAttribute("title")?e.getAttribute("title")+" ":""}for <strong>${n.total}</strong> (<em>${n.rolls.join(", ")}</em>)<br></span>`),r=t.querySelector("#output");Object(i.jqPrepend)(r,a),r.style.display="block",6===r.children.length&&r.children[5].remove()}}},146:function(e,t,s){"use strict";var i=s(7),n=s(17),l=s(1),a=(s(83),s(32));class r extends i.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},paren:{type:String},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(l.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(a.b)(this.model)),this.$.select.renderer=(e,t)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",e=>{t.opened=!0;let s=null!==e.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!s&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(l.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],s=document.createElement("vaadin-item"),i=t.name||Object(l.util_capitalizeAll)(t);s.innerHTML=`<span>${i}</span> ${t.name?`<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${t.source}</span>`:""}`,s.setAttribute("value",e),this.listBox.appendChild(s)}e.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(n.O)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t,s){let i="";return e&&(i=e,t&&1!==t&&100!==t&&(i+=` (pick ${t})`),s&&(i+=` (${s})`)),i}static get template(){return i.b`
+      <style>
         :host {
-          display: inline;
-          overflow: hidden;
-          white-space: nowrap;
+          display: inline-block;
         }
-        .mdc-button {
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-        }
-        .mdc-button .mdc-button__icon {
-          margin-right: 0px;
-          margin-left: 8px;
-        }
-        .mdc-button [background] {
-          background: var(--lumo-contrast-10pct);
-        }
-        dnd-svg {
-          height: 20px;
-          width: 20px;
-          flex-shrink: 0;
-          flex-grow: 0;
-          padding-left: 8px;
-          fill: var(--mdc-theme-primary);
-          stroke: var(--mdc-theme-primary);
-        }
-        i {
-          flex-shrink: 0;
-          flex-grow: 0;
-        }
-
-        
-        :host(.btn-field__btn) dnd-svg {
-          padding-left: 0;
-        }
-        :host(.btn-field__btn) i {
-          margin-left: 0;
-        }
-
-        :host(.icon-only) dnd-svg {
-          margin-left: -24px;
-          padding-left: 0;
-        }
-        :host(.icon-only) i {
-          margin-left: -18px;
-          padding-left: 0;
-        }
-
-        :host(.link) .mdc-button__label {
-          text-transform: none;
-          color: var(--lumo-body-text-color);
-          letter-spacing: normal;
-        }
-        :host(.link) i {
-          color: var(--lumo-body-text-color);
-        }
-        :host(.link) button:hover::before {
-          background: none;
-        }
-        :host(.link) button:hover i,
-        :host(.link) button:hover .mdc-button__label {
-          color: var(--mdc-theme-secondary);
-        }
-
-        :host([edit-mode]) button {
-          background-color: var(--mdc-theme-secondary);
-          color: var(--mdc-theme-on-secondary)
-        }
-        :host([edit-mode]) .mdc-button__label {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([edit-mode]) i {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([edit-mode]) button:hover i,
-        :host([edit-mode]) button:hover .mdc-button__label {
-          color: var(--mdc-theme-on-secondary);
-        }
-
-        :host([not-edit-mode]) button {
-          background-color: var(--mdc-theme-primary);
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([not-edit-mode]) .mdc-button__label {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([not-edit-mode]) i {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([not-edit-mode]) button:hover i,
-        :host([not-edit-mode]) button:hover .mdc-button__label {
-          color: var(--mdc-theme-on-primary);
-        }
-
-      </style>
-      <button id="button" class="mdc-button" style$="[[_styleStr(background, border, label)]]">
-        <div class="mdc-button__ripple"></div>
-        <span class="mdc-button__label">[[label]]</span>
-        <slot name="label"></slot>
-        <template is="dom-if" if="[[_exists(icon)]]">
-          <i class="material-icons mdc-button__icon" aria-hidden="true">[[icon]]</i>
-        </template>
-        <template is="dom-if" if="[[_exists(svg)]]">
-          <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
-        </template>
-      </button>
-    `}}customElements.define("dnd-button",s)},135:function(e,t,i){"use strict";var n=i(7),a=i(53),s=i(19),o=i(54),r=i(41),l=i(13);
-/**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-class d extends(Object(r.a)(Object(o.a)(Object(s.a)(Object(a.a)(n.a))))){static get template(){return l.a`
-    <style>
-      :host {
-        display: inline-block;
-      }
-
-      :host([hidden]) {
-        display: none !important;
-      }
-
-      label {
-        display: inline-flex;
-        align-items: baseline;
-        outline: none;
-      }
-
-      [part="checkbox"] {
-        position: relative;
-        display: inline-block;
-        flex: none;
-      }
-
-      input[type="checkbox"] {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: inherit;
-        margin: 0;
-      }
-
-      :host([disabled]) {
-        -webkit-tap-highlight-color: transparent;
-      }
-    </style>
-
-    <label>
-      <span part="checkbox">
-        <input type="checkbox" checked="{{checked::change}}" disabled\$="[[disabled]]" indeterminate="{{indeterminate::change}}" role="presentation" tabindex="-1">
-      </span>
-
-      <span part="label">
-        <slot></slot>
-      </span>
-    </label>
-`}static get is(){return"vaadin-checkbox"}static get version(){return"2.5.0"}static get properties(){return{checked:{type:Boolean,value:!1,notify:!0,observer:"_checkedChanged",reflectToAttribute:!0},indeterminate:{type:Boolean,notify:!0,observer:"_indeterminateChanged",reflectToAttribute:!0,value:!1},value:{type:String,value:"on"},_nativeCheckbox:{type:Object}}}constructor(){super(),this.name}get name(){return this.checked?this._storedName:""}set name(e){this._storedName=e}ready(){super.ready(),this.setAttribute("role","checkbox"),this._nativeCheckbox=this.shadowRoot.querySelector('input[type="checkbox"]'),this.addEventListener("click",this._handleClick.bind(this)),this._addActiveListeners();const e=this.getAttribute("name");e&&(this.name=e),this.shadowRoot.querySelector('[part~="label"]').querySelector("slot").addEventListener("slotchange",this._updateLabelAttribute.bind(this)),this._updateLabelAttribute()}_updateLabelAttribute(){const e=this.shadowRoot.querySelector('[part~="label"]'),t=e.firstElementChild.assignedNodes();this._isAssignedNodesEmpty(t)?e.setAttribute("empty",""):e.removeAttribute("empty")}_isAssignedNodesEmpty(e){return 0===e.length||1==e.length&&e[0].nodeType==Node.TEXT_NODE&&""===e[0].textContent.trim()}_checkedChanged(e){this.indeterminate?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",Boolean(e))}_indeterminateChanged(e){e?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",this.checked)}_addActiveListeners(){this._addEventListenerToNode(this,"down",e=>{this.__interactionsAllowed(e)&&this.setAttribute("active","")}),this._addEventListenerToNode(this,"up",()=>this.removeAttribute("active")),this.addEventListener("keydown",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this.setAttribute("active",""))}),this.addEventListener("keyup",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this._toggleChecked(),this.removeAttribute("active"),this.indeterminate&&(this.indeterminate=!1))})}get focusElement(){return this.shadowRoot.querySelector("input")}__interactionsAllowed(e){return!this.disabled&&"a"!==e.target.localName}_handleClick(e){this.__interactionsAllowed(e)&&(this.indeterminate?(this.indeterminate=!1,e.preventDefault(),this._toggleChecked()):e.composedPath()[0]!==this._nativeCheckbox&&(e.preventDefault(),this._toggleChecked()))}_toggleChecked(){this.checked=!this.checked,this.dispatchEvent(new CustomEvent("change",{composed:!1,bubbles:!0}))}}customElements.define(d.is,d)},143:function(e,t,i){"use strict";i(51),i(50),i(74);const n=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
-  <template>
-    <style include="lumo-field-button">
-      :host {
-        width: 8em;
-      }
-
-      :host([has-controls]:not([theme~="align-right"])) [part="value"] {
-        text-align: center;
-      }
-
-      [part="decrease-button"][disabled],
-      [part="increase-button"][disabled] {
-        opacity: 0.2;
-      }
-
-      :host([has-controls]) [part="input-field"] {
-        padding: 0;
-      }
-
-      [part="decrease-button"],
-      [part="increase-button"] {
-        cursor: pointer;
-        font-size: var(--lumo-icon-size-s);
-        width: 1.6em;
-        height: 1.6em;
-      }
-
-      [part="decrease-button"]::before,
-      [part="increase-button"]::before {
-        margin-top: 0.2em;
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) [part="value"],
-      :host([dir="rtl"]) [part="input-field"] ::slotted(input) {
-        --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(n.content);i(84),i(7),i(32);var a=i(65),s=i(20);
-/**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-const o=document.createElement("template");let r;o.innerHTML='<dom-module id="vaadin-number-field-template">\n  <template>\n    <style>\n      :host([readonly]) [part$="button"] {\n        pointer-events: none;\n      }\n\n      [part="decrease-button"]::before {\n        content: "−";\n      }\n\n      [part="increase-button"]::before {\n        content: "+";\n      }\n\n      [part="decrease-button"],\n      [part="increase-button"] {\n        -webkit-user-select: none;\n        -moz-user-select: none;\n        -ms-user-select: none;\n        user-select: none;\n      }\n\n      /* Hide the native arrow icons */\n      [part="value"]::-webkit-outer-spin-button,\n      [part="value"]::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n      }\n\n      [part="value"] {\n        /* Older Firefox versions (v47.0) requires !important */\n        -moz-appearance: textfield !important;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] {\n        direction: ltr;\n      }\n\n      :host([dir="rtl"]) [part="value"]::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input)::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input)::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        text-align: left;\n      }\n    </style>\n\n    <div disabled$="[[!_allowed(-1, value, min, max, step)]]" part="decrease-button" on-click="_decreaseValue" on-touchend="_decreaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n\n    <div disabled$="[[!_allowed(1, value, min, max, step)]]" part="increase-button" on-click="_increaseValue" on-touchend="_increaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n  </template>\n\n  \n</dom-module>',document.head.appendChild(o.content);class l extends a.a{static get is(){return"vaadin-number-field"}static get version(){return"2.6.2"}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number,reflectToAttribute:!0,observer:"_minChanged"},max:{type:Number,reflectToAttribute:!0,observer:"_maxChanged"},step:{type:Number,value:1,observer:"_stepChanged"}}}ready(){super.ready(),this.__previousValidInput=this.value||"",this.inputElement.type="number",this.inputElement.addEventListener("change",this.__onInputChange.bind(this))}_decreaseButtonTouchend(e){e.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(e){e.preventDefault(),this._increaseValue()}static get template(){if(!r){r=super.template.cloneNode(!0);const e=s.a.import(this.is+"-template","template"),t=e.content.querySelector('[part="decrease-button"]'),i=e.content.querySelector('[part="increase-button"]'),n=e.content.querySelector("style"),a=r.content.querySelector('[part="input-field"]'),o=r.content.querySelector('[name="prefix"]');a.insertBefore(t,o),a.appendChild(i),r.content.appendChild(n)}return r}_createConstraintsObserver(){this._createMethodObserver("_constraintsChanged(required, minlength, maxlength, pattern, min, max, step)")}_constraintsChanged(e,t,i,n,a,s,o){if(!this.invalid)return;const r=e=>!e&&0!==e;r(a)&&r(s)?super._constraintsChanged(e,t,i,n):this.validate()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(e){if(this.disabled||this.readonly)return;let t=parseFloat(this.value);this.value?t<this.min?(e=0,t=this.min):t>this.max&&(e=0,t=this.max):0==this.min&&e<0||0==this.max&&e>0||0==this.max&&0==this.min?(e=0,t=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?t=0:this.min>0?(t=this.min,this.max<0&&e<0&&(t=this.max),e=0):this.max<0&&(t=this.max,e<0?e=0:this._getIncrement(1,t-this.step)>this.max?t-=2*this.step:t-=this.step);const i=this._getIncrement(e,t);this.value&&0!=e&&!this._incrementIsInsideTheLimits(e,t)||this._setValue(i)}_setValue(e){this.value=this.inputElement.value=String(parseFloat(e)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(e,t){let i=this.step||1,n=this.min||0;const a=Math.max(this._getMultiplier(t),this._getMultiplier(i),this._getMultiplier(n));i*=a,n*=a;const s=((t=Math.round(t*a))-n)%i;return e>0?(t-s+i)/a:e<0?(t-(s||i))/a:t/a}_getDecimalCount(e){const t=String(e),i=t.indexOf(".");return-1===i?1:t.length-i-1}_getMultiplier(e){if(!isNaN(e))return Math.pow(10,this._getDecimalCount(e))}_incrementIsInsideTheLimits(e,t){return e<0?null==this.min||this._getIncrement(e,t)>=this.min:e>0?null==this.max||this._getIncrement(e,t)<=this.max:this._getIncrement(e,t)<=this.max&&this._getIncrement(e,t)>=this.min}_allowed(e){const t=e*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(t,i)}_stepChanged(e){this.__validateByStep=this.__stepChangedCalled||null!==this.getAttribute("step"),this.inputElement.step=this.__validateByStep?e:"any",this.__stepChangedCalled=!0,this.setAttribute("step",e)}_minChanged(e){this.inputElement.min=e}_maxChanged(e){this.inputElement.max=e}_valueChanged(e,t){e&&isNaN(parseFloat(e))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,t)}_onKeyDown(e){38==e.keyCode?(e.preventDefault(),this._increaseValue()):40==e.keyCode&&(e.preventDefault(),this._decreaseValue()),super._onKeyDown(e)}__onInputChange(){this.validate()}checkValidity(){return void 0!==this.min||void 0!==this.max||this.__validateByStep?this.inputElement.checkValidity():super.checkValidity()}}window.customElements.define(l.is,l);
-/**
-@license
-Copyright (c) 2019 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(d.content);class c extends l{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(!this.__hasOnlyDigits(e))return console.warn(`Trying to set invalid step size "${e}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d*$/.test(String(e))}}window.customElements.define(c.is,c)},144:function(e,t,i){"use strict";i(45),i(33);const n=i(13).a`<dom-module id="lumo-checkbox" theme-for="vaadin-checkbox">
-  <template>
-    <style include="lumo-checkbox-style lumo-checkbox-effects">
-      /* IE11 only */
-      ::-ms-backdrop,
-      [part="checkbox"] {
-        line-height: 1;
-      }
-    </style>
-  </template>
-</dom-module><dom-module id="lumo-checkbox-style">
-  <template>
-    <style>
-      :host {
-        -webkit-tap-highlight-color: transparent;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        cursor: default;
-        outline: none;
-      }
-
-      [part="label"]:not([empty]) {
-        margin: 0.1875em 0.875em 0.1875em 0.375em;
-      }
-
-      [part="checkbox"] {
-        width: calc(1em + 2px);
-        height: calc(1em + 2px);
-        margin: 0.1875em;
-        position: relative;
-        border-radius: var(--lumo-border-radius-s);
-        background-color: var(--lumo-contrast-20pct);
-        transition: transform 0.2s cubic-bezier(.12, .32, .54, 2), background-color 0.15s;
-        pointer-events: none;
-        line-height: 1.2;
-      }
-
-      :host([indeterminate]) [part="checkbox"],
-      :host([checked]) [part="checkbox"] {
-        background-color: var(--lumo-primary-color);
-      }
-
-      /* Needed to align the checkbox nicely on the baseline */
-      [part="checkbox"]::before {
-        content: "\\2003";
-      }
-
-      /* Checkmark */
-      [part="checkbox"]::after {
-        content: "";
-        display: inline-block;
-        width: 0;
-        height: 0;
-        border: 0 solid var(--lumo-primary-contrast-color);
-        border-width: 0.1875em 0 0 0.1875em;
-        box-sizing: border-box;
-        transform-origin: 0 0;
-        position: absolute;
-        top: 0.8125em;
-        left: 0.5em;
-        transform: scale(0.55) rotate(-135deg);
-        opacity: 0;
-      }
-
-      :host([checked]) [part="checkbox"]::after {
-        opacity: 1;
-        width: 0.625em;
-        height: 1.0625em;
-      }
-
-      /* Indeterminate checkmark */
-
-      :host([indeterminate]) [part="checkbox"]::after {
-        transform: none;
-        opacity: 1;
-        top: 45%;
-        height: 10%;
-        left: 22%;
-        right: 22%;
-        width: auto;
-        border: 0;
-        background-color: var(--lumo-primary-contrast-color);
-        transition: opacity 0.25s;
-      }
-
-      /* Focus ring */
-
-      :host([focus-ring]) [part="checkbox"] {
-        box-shadow: 0 0 0 3px var(--lumo-primary-color-50pct);
-      }
-
-      /* Disabled */
-
-      :host([disabled]) {
-        pointer-events: none;
-        color: var(--lumo-disabled-text-color);
-      }
-
-      :host([disabled]) [part="label"] ::slotted(*) {
-        color: inherit;
-      }
-
-      :host([disabled]) [part="checkbox"] {
-        background-color: var(--lumo-contrast-10pct);
-      }
-
-      :host([disabled]) [part="checkbox"]::after {
-        border-color: var(--lumo-contrast-30pct);
-      }
-
-      :host([indeterminate][disabled]) [part="checkbox"]::after {
-        background-color: var(--lumo-contrast-30pct);
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) [part="label"]:not([empty]) {
-        margin: 0.1875em 0.375em 0.1875em 0.875em;
-      }
-    </style>
-  </template>
-</dom-module><dom-module id="lumo-checkbox-effects">
-  <template>
-    <style>
-      /* Transition the checkmark if activated with the mouse (disabled for grid select-all this way) */
-      :host(:hover) [part="checkbox"]::after {
-        transition: width 0.1s, height 0.25s;
-      }
-
-      /* Used for activation "halo" */
-      [part="checkbox"]::before {
-        color: transparent;
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        border-radius: inherit;
-        background-color: inherit;
-        transform: scale(1.4);
-        opacity: 0;
-        transition: transform 0.1s, opacity 0.8s;
-      }
-
-      /* Hover */
-
-      :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
-        background-color: var(--lumo-contrast-30pct);
-      }
-
-      /* Disable hover for touch devices */
-      @media (pointer: coarse) {
-        :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
-          background-color: var(--lumo-contrast-20pct);
-        }
-      }
-
-      /* Active */
-
-      :host([active]) [part="checkbox"] {
-        transform: scale(0.9);
-        transition-duration: 0.05s;
-      }
-
-      :host([active][checked]) [part="checkbox"] {
-        transform: scale(1.1);
-      }
-
-      :host([active]:not([checked])) [part="checkbox"]::before {
-        transition-duration: 0.01s, 0.01s;
-        transform: scale(0);
-        opacity: 0.4;
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(n.content);i(135)},145:function(e,t,i){"use strict";i(144),i(135)},146:function(e,t,i){"use strict";i(84)},158:function(e,t,i){"use strict";i.r(t);var n=i(7),a=(i(145),i(146),i(143),i(83),i(116),i(17)),s=i(142),o=i(1);class r extends n.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},abilities:{type:Array}}}constructor(){super(),this.resetOptions=["","Short Rest","Long Rest"]}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(a.F)()),Object(a.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(s.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(s.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(a.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(s.b)().removeEventListener("editModeChange",this.editModeHandler)}updateFromCharacter(e){e&&e.customAbilities?this.set("abilities",Object(o.cloneDeep)(e.customAbilities)):this.set("abilities",[]),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}_addAbility(){Object(a.Z)({name:"",currentSlots:0,slots:1},this.abilities.length),this.isEditMode||Object(s.a)(!0),setTimeout(()=>{const e=this.shadowRoot.querySelectorAll(".ability");e[e.length-1].scrollIntoView()},1)}_deleteAbility(e){const t=e.model.index;Object(a.Q)(t)}_updateAbility(e){const t=e.model.index;Object(a.Z)(e.model.item,t)}_toggleSlot(e){e.preventDefault(),e.stopPropagation();const t=Object(o.findInPath)(".checkbox-wrap",e),i=e.model.item,n=i.slots,s=e.model.index;if("number"!=typeof i.currentSlots&&(i.currentSlots=parseInt(i.currentSlots,10),isNaN(i.currentSlots)&&(i.currentSlots=0)),t){!t.children[0].checked&&i.currentSlots<n?i.currentSlots=i.currentSlots+1:i.currentSlots>0&&(i.currentSlots=i.currentSlots-1)}else i.currentSlots<n?i.currentSlots=i.currentSlots+1:i.currentSlots>0&&(i.currentSlots=i.currentSlots-1);this._setSlotsChecked(i.currentSlots,Object(o.findInPath)(".ability__slots-label-wrap",e)),Object(a.Z)(i,s)}_setSlotsChecked(e,t){const i=t.querySelectorAll("vaadin-checkbox");for(let t=0;t<i.length;t++)i[t].checked=t<e}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}_countToArray(e){const t=[];for(var i=0;i<e;i++)t.push(null);return t}_shortRest(){this.abilities&&this.abilities.forEach((e,t)=>{"Short Rest"===e.reset&&(e.currentSlots=0,Object(a.Z)(e,t))})}_longRest(){this.abilities&&this.abilities.forEach((e,t)=>{"Long Rest"===e.reset&&(e.currentSlots=0,Object(a.Z)(e,t))})}_isSlotChecked(e,t){return t<e}static get template(){return n.b`
-      <style include="material-styles">
-        :host {
-          display: block;
-          padding: 14px;
-        }
-        [hidden] {
-          display: none !important;
-        }
-
-        h2 {
-          display: block;
-          font-size: 1.5em;
-          margin-block-start: 0.83em;
-          margin-block-end: 0.83em;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-          font-weight: bold;
-        }
-
-        h3 {
-          font-size: 24px;
-          font-weight: bold;
-          margin-bottom: 8px;
-        }
-
-        .col-wrap {
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
-        }
-
-        .heading {
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          border-bottom: 1px solid var(--lumo-contrast-10pct);
-        }
-        
-        .rest-buttons {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
-
-        .short-rest { 
-          margin-left: 10px;
-        }
-
-        .abilities {
-          width: 100%;
-          margin-bottom: 200px;
-        }
-
-        .ability {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
-          padding: 8px 0;
-          position: relative;
-          flex-wrap: wrap;
-        }
-
-        [edit-mode] .ability__name {
-          width: 100%;
-        }
-
-        .ability__slots-label-wrap {
-          display: flex;
-          align-items: center;
-        }
-
-        .ability__slots-label-wrap vaadin-integer-field {
-          width: 90px;
-        }
-
-        .col-wrap:not([edit-mode]) .ability__slots-wrap {
-          margin-left: auto;
-        }
-
-        .ability__slots {
-          cursor: pointer;
-          display: flex;
-          padding: 4px;
-          max-width: 120px;
-          flex-wrap: wrap;
-        }
-
-        .ability__slots span {
-          -youbkit-touch-callout: none;
-          -youbkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-
-        .ability__slots-label {
-          padding-left: 8px;
-          width: 64px;
-          text-align: center;
-          font-size: 12px;
+        [slot="prefix"] {
+          width: calc(100% - 46px);
+          padding: 12px;
           line-height: 1.4;
-          user-select: none;
-        }
-
-        .ability__slots-label-suffix {
-          user-select: none;
-          font-size: 16px;
-          padding-left: 6px;
-        }
-
-        .ability__delete {
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
-
-        .add-ability {
-          display: inline-flex;
-        }
-
-        vaadin-checkbox {
-          pointer-events: none;
         }
         vaadin-select {
-          margin-right: 10px;
+          width: 100%;
         }
-
-        @media (min-width: 420px) {
-        }
-
-        @media (min-width: 921px) {
+        .prefix {
+          white-space: normal;
+          color: var(--lumo-body-text-color);
         }
       </style>
-
-      <div class="col-wrap" edit-mode$=[[isEditMode]]>
-        <div class="heading">
-          <h2>Abilities</h2>
-          <div class='rest-buttons'>
-            <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
-            <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
-            <dnd-button class="add-ability link" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add an Ability" icon="edit"  on-click="_addAbility"></dnd-button>
-          </div>
+      <vaadin-select test$="[[test]]" theme="dark" add id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+        <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
+          <span class="prefix">[[multiValue]]</span>
         </div>
+      </vaadin-select>
+      
+    `}}customElements.define("dnd-select-add",r)},149:function(e,t,s){"use strict";s.r(t);var i=s(7),n=s(17),l=s(142),a=s(1),r=s(32),o=(s(146),s(117));s(81);class c extends i.a{static get properties(){return{storageKey:{type:String},selectedItem:{type:Object},skillProfOptions:{type:Array,value:[]},skillProfChoices:{type:Number},selectedSkillProfs:{type:Array},defaultSkillProfs:{type:String,value:""},attributeOptions:{type:Array,value:[]},attributeChoices:{type:Number},attributeMod:{type:Number},selectedAttributes:{type:Array},defaultAttributes:{type:String,value:""},featOptions:{type:Array,value:[]},featChoices:{type:Number},selectedFeat:{type:Array},isEditMode:{type:Boolean,value:!1}}}static get observers(){return["updateOptions(selectedItem, storageKey, character)"]}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.set("character",t),this.updateOptions()},this.set("character",Object(n.F)()),Object(n.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(l.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(l.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(l.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateOptions(){if(this.character&&this.storageKey&&this.selectedItem){const e=this.storageKey.split(".");this.character.choices||(this.character.choices={});let t=this.character.choices;for(let s=0;s<e.length;s++){const i=e[s];t[i]||(e.length<s+1&&!isNaN(parseInt(e[s+1],10))?t[i]=new Array(20):t[i]={}),t=t[i]}if(this.storedItem=t,this.attributeOptions=[],this.attributeChoices=null,this.attributeMod=1,this.selectedAttributes=null,this.defaultAttributes=null,this.selectedItem.ability&&this.selectedItem.ability.length){const e=this.selectedItem.ability[0];e.choose&&(this.attributeOptions=e.choose.from.map(e=>e.toUpperCase()),this.attributeChoices=e.choose.count||1,this.attributeMod=e.choose.amount||1,this.selectedAttributes=this.storedItem.selectedAttributes?this.storedItem.selectedAttributes.split(","):null),this.defaultAttributes=Object.entries(e).map(e=>{if("choose"!==e[0]&&"any"!==e[0]){let t=e[0].toLowerCase(),s=e[1];return t.toUpperCase()+" "+Object(a.absInt)(s)}}).filter(e=>!!e).join(", "),this.storedItem.defaultAttributes=this.defaultAttributes,this.storedItem.attributeMod=this.attributeMod}if(this.skillProfOptions=[],this.skillProfChoices=null,this.selectedSkillProfs=null,this.defaultSkillProfs=null,this.selectedItem.skillProficiencies&&this.selectedItem.skillProficiencies.length){const e=this.selectedItem.skillProficiencies[0];e.choose&&(this.skillProfOptions=e.choose.from,this.skillProfChoices=e.choose.count||1,this.selectedSkillProfs=this.storedItem.selectedSkillProfs?this.storedItem.selectedSkillProfs.split(","):null),e.any&&(this.skillProfOptions=Object.keys(o.SKILL_TO_ATB_ABV),this.skillProfChoices=e.any,this.selectedSkillProfs=this.storedItem.selectedSkillProfs?this.storedItem.selectedSkillProfs.split(","):null),this.defaultSkillProfs=Object.keys(e).map(e=>{if("choose"!==e&&"any"!==e)return Object(a.util_capitalizeAll)(e)}).filter(e=>!!e).join(", "),this.storedItem.defaultSkillProfs=this.defaultSkillProfs}this.featOptions=[],this.featChoices=null,this.selectedFeat=null,this.selectedItem.feats&&(this.featOptions=await Object(r.b)("feats"),this.featChoices=this.selectedItem.feats,this.selectedFeat=this.storedItem.selectedFeat),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_skillProficiencyAddCallback(){return(e=>{this.storedItem.selectedSkillProfs=e.join(","),Object(n.W)(this.character)}).bind(this)}_attributeAddCallback(){return(e=>{this.storedItem.selectedAttributes=e.join(","),Object(n.W)(this.character)}).bind(this)}_featAddCallback(){return(e=>{this.storedItem.selectedFeat=e,Object(n.W)(this.character)}).bind(this)}_suboptionStorageKey(e){return e+".suboptions"}_showEmpty(e,t){return!e&&!t}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}_plusPrefix(e){return console.error(e),"+"+e}_plural(e,t){return t>1?e+"s":e}static get template(){return i.b`
+            <style include="material-styles">
+                [hidden] {
+                    display: none !important;
+                }
+                dnd-select-add {
+                    width: 100%;
+                }
+                @media(min-width: 420px) {
+                    dnd-select-add {
+                        
+                    }
+                }
 
-        <div class="abilities">
-          <template is="dom-repeat" items="[[abilities]]">
-            <div class="ability">
-              <div class="ability__name">
-                <span hidden$="[[isEditMode]]">[[item.name]]</span>
-                <vaadin-text-field hidden$="[[!isEditMode]]" label="Name" value="{{item.name}}" on-change="_updateAbility"></vaadin-text-field>
-              </div>
+                @media(min-width: 921px) {
+                }
+            </style>
 
-              <vaadin-select hidden$="[[!isEditMode]]" value="{{item.reset}}" on-change="_updateAbility" label="Reset" >
-                <template>
-                  <vaadin-list-box>
-                    <template is="dom-repeat" items="[[resetOptions]]">
-                      <vaadin-item>[[item]]</vaadin-item>
-                    </template>
-                  </vaadin-list-box>
+            <div class="col-wrap">
+                <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection">Default Attributes: <span>[[defaultAttributes]]</span></div>
+
+                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skills: <span>[[defaultSkillProfs]]</span></div>
+
+                <template is="dom-if" if="[[_exists(attributeOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]" 
+                        placeholder="<Select Attribute>" label='[[_plural("Selected Attribute", attributeChoices)]]'
+                        choices="[[attributeChoices]]" paren="[[_plusPrefix(attributeMod)]]" options="[[attributeOptions]]"
+                        value="[[selectedAttributes]]" add-callback="[[_attributeAddCallback()]]">
+                    </dnd-select-add>
                 </template>
-              </vaadin-select>
 
-              <div hidden$="[[!isEditMode]]" class="ability__usage">
-                <vaadin-integer-field min="1" value="{{item.slots}}" on-change="_updateAbility" has-controls label="Usages"></vaadin-integer-field>
-              </div>
-              
-              <div class="ability__slots-wrap" hidden$="[[isEditMode]]">
-                <div hidden$="[[item.useNumberField]]" on-click="_toggleSlot" class="ability__slots-label-wrap">
-                  <div class="ability__slots">
-                    <template is='dom-repeat' items='[[_countToArray(item.slots)]]' as="thing">
-                      <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSlotChecked(item.currentSlots, index)]]"></vaadin-checkbox></span>
+                <template is="dom-if" if="[[_exists(skillProfOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Skill>" label='[[_plural("Selected Skill", skillProfChoices)]]'
+                        choices="[[skillProfChoices]]" options="[[skillProfOptions]]"
+                        value="[[selectedSkillProfs]]" add-callback="[[_skillProficiencyAddCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <!-- Todo: add language and tool proficiencies -->
+
+                <template is="dom-if" if="[[_exists(featOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Feat>" label="Selected Feat"
+                        options="[[featOptions]]" value="[[selectedFeat]]"
+                        add-callback="[[_featAddCallback()]]">
+                    </dnd-select-add>
+                    
+                    <template is="dom-if" if="[[_exists(selectedFeat)]]"></template>
+                        <dnd-character-builder-suboptions storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
                     </template>
-                  </div>
-                  <span class="ability__slots-label">Uses <span hidden$="[[!item.reset]]"> per </span>[[item.reset]]</span>
-                </div>
-
-                <div hidden$="[[!item.useNumberField]]" class="ability__slots-label-wrap">
-                  <div>
-                    <vaadin-integer-field min="0" max="[[item.slots]]" value="{{item.currentSlots}}" on-change="_updateAbility" has-controls></vaadin-integer-field>
-                    <span class="ability__slots-label-suffix"> / [[item.slots]]</span>
-                  </div>
-                  <span class="ability__slots-label">Uses <span hidden$="[[!item.reset]]"> per </span>[[item.reset]]</span>
-                </div>
-              </div>
-              
-              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete link" label="Delete" icon="close" on-click="_deleteAbility"></dnd-button>
-
+                </template>
             </div>
-          </template>
-        </div>
-      </div>
-    `}}customElements.define("dnd-character-builder-abilities",r)}}]);
+        `}}customElements.define("dnd-character-builder-suboptions",c)}}]);
 //# sourceMappingURL=5.bundle.js.map
