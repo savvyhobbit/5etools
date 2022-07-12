@@ -25,7 +25,9 @@ import {
   toggleCustomInitiative,
   setCustomInitiativeVal,
   toggleCustomAC,
-  setCustomACVal
+  toggleCustomHealth,
+  setCustomACVal,
+  setCustomHealthVal
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, findInPath } from "../../../js/utils";
@@ -122,6 +124,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       },
       customACVal: {
         type: Number
+      },
+      customACHealth: {
+        type: Number
       }
     };
   }
@@ -130,7 +135,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     return [
       "updateCharAttr(str, dex, con, int, wis, cha)",
       "updateCustomInitiative(customInitiativeVal)",
-      "updateCustomAC(customACVal)"
+      "updateCustomAC(customACVal)",
+      "updateCustomHealth(customHealthVal)"
     ]
   }
 
@@ -149,6 +155,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
   updateCustomAC(customACVal) {
     if (customACVal !== undefined && customACVal !== "") {
       setCustomACVal(customACVal);
+    }
+  }
+
+  updateCustomHealth(customHealthVal) {
+    if (customHealthVal !== undefined && customHealthVal !== "") {
+      setCustomHealthVal(customHealthVal);
     }
   }
 
@@ -220,6 +232,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
       this.skillProfs = (await getSkillProfs()).join(',');
 
+      this.customHealth = !!character.customHealth;
+      this.customHealthVal = character.customHealthVal;
       this.maxHP = await getMaxHP();
       this.currentHP = await getCurrentHP();
       this.tempHP = await getTempHp();
@@ -306,6 +320,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     const buttonComp = element.querySelector('dnd-button');
     element.classList.toggle('btn-field--open');
     buttonComp.classList.toggle('icon-only');
+    buttonComp.classList.toggle('hard-left');
 
     if (isTemp) {
       if (isOpen) {
@@ -344,7 +359,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   _useHitDice(e) {
     const element = e.target.closest('.hit-dice__item');
-    if (e.model.__data.item.current > 0 && this.currentHP < this.maxHP) {
+    if (e.model.__data.item.current > 0 && this.currentHP < this._maxHP(this.customHealthVal, this.maxHP, this.customHealth)) {
       const className = element.dataset.className;
       useHitDice(className);
     } else {
@@ -422,6 +437,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     toggleCustomAC();
   }
 
+  _swapCustomHealth(e) {
+    toggleCustomHealth();
+  }
+
   _plusMinus(val) {
     if (val) {
       if (val > 0) { 
@@ -438,6 +457,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   }
 
+  _maxHP(customHealthVal, maxHP, customHealth) {
+    return customHealth ? customHealthVal : maxHP;
+  }
+
   static get template() {
     return html`
       <style include="material-styles">
@@ -447,7 +470,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         }
 
         [hidden] {
-          visibility: hidden;
+          display: none !important;
         }
 
         .wrap {
@@ -592,6 +615,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           justify-content: space-between;
           flex-wrap: wrap;
           height: fit-content;
+          height: 148px;
+          cursor: unset;
         }
         .stat-box__total {
           font-size: 14px;
@@ -630,9 +655,26 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .stat-box--hp .btn-field:not(:last-child) {
           margin-bottom: 12px
         }
-        
-
-
+        .edit-mode .stat-box--hp {
+          justify-content: center;
+          align-items: center;
+        }
+        .stat-box--hp-edit {
+          height: 100%;
+          width: 100%;
+          margin-top: 4px;
+          align-items: center;
+          justify-content: center;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          font-size: 18px;
+        }
+        .stat-box--hp-edit .custom-val__swap {
+          top: 0px;
+          right: 0;
+          position: absolute;
+        }
 
 
         /* Button Field */
@@ -671,7 +713,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           margin-top: -40px;
         }
         .btn-field--heal.btn-field--open .btn-field__btn-label {
-          margin-left: -8px;
+          margin-left: -16px;
         }
         .btn-field vaadin-integer-field {
           --lumo-contrast-10pct: transparent;
@@ -705,7 +747,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           text-align: center;
           margin-bottom: 8px;
           color: var(--mdc-theme-primary);
-          text-transform: uppercase;
           font-size: 14px;
         }
         .hit-dice__item {
@@ -773,6 +814,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           border-radius: 4px;
           cursor: pointer;
         }
+        .custom-val__swap .material-icons {
+          font-size: 11px;
+        }
 
         /* Rest Buttons */
         .rest-btn {
@@ -791,10 +835,26 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           <div class="health-wrap">
             <!-- Hit Points -->
             <div class="stat-box stat-box--hp">
-              <vaadin-integer-field id="hpField" theme="hp" value={{currentHP}} on-change="hpBlurHandler" on-blur="hpChangeHandler" min="0" max="[[maxHP]]" has-controls label="Hit Points">
-                <span class="stat-box__adj--hp" slot="suffix">/ [[maxHP]] [[_tempHpStr(tempHP)]]</span>
+
+              <vaadin-integer-field hidden$=[[isEditMode]] id="hpField" theme="hp" value={{currentHP}} on-change="hpBlurHandler" on-blur="hpChangeHandler" min="0" max="[[_maxHP(customHealthVal, maxHP, customHealth)]]" has-controls label="Hit Points">
+                <span class="stat-box__adj--hp" slot="suffix">/ [[_maxHP(customHealthVal, maxHP, customHealth)]] [[_tempHpStr(tempHP)]]</span>
               </vaadin-integer-field>
-              <div class="stat-box__side">
+
+              <div class="stat-box--hp-edit" hidden$=[[!isEditMode]]>
+                <div class="custom-val__swap" on-click="_swapCustomHealth" hidden$=[[!isEditMode]]>
+                  <span class="custom-val__option" hidden$=[[customHealth]]><span class="material-icons">edit</span> Edit</span>
+                  <span class="custom-val__option" hidden$=[[!customHealth]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                </div>
+                <div class="basic-box__label">Max HP</div>
+
+                <div hidden$=[[!customHealth]]>
+                  <vaadin-integer-field  value={{customHealthVal}} min="0" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <span hidden$="[[isEditMode]]">[[customHealthVal]]</span>
+                </div>
+                <div hidden$=[[customHealth]]>[[maxHP]]</div>
+              </div>
+
+              <div class="stat-box__side" hidden$=[[isEditMode]]>
                 <!--  Healing / Damage -->
                 <div class="btn-field btn-field--heal">
                     <dnd-button icon="favorite" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
@@ -837,8 +897,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             <div class="basic-box basic-box--short ac">
               <div class="basic-box__value">
                 <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
-                  <span hidden$=[[customAC]]>Standard</span>
-                  <span hidden$=[[!customAC]]>Custom</span>
+                  <span class="custom-val__option" hidden$=[[customAC]]><span class="material-icons">edit</span> Edit</span>
+                  <span class="custom-val__option" hidden$=[[!customAC]]><span class="material-icons">restart_alt</span> Use Standard</span>
                 </div>
 
                 <div hidden$=[[!customAC]]>
@@ -853,8 +913,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             <div class="basic-box basic-box--short initiative" on-click="_roll">
               <div class="basic-box__value">
                 <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
-                  <span hidden$=[[customInitiative]]>Standard</span>
-                  <span hidden$=[[!customInitiative]]>Custom</span>
+                  <span class="custom-val__option" hidden$=[[customInitiative]]><span class="material-icons">edit</span> Edit</span>
+                  <span class="custom-val__option" hidden$=[[!customInitiative]]><span class="material-icons">restart_alt</span> Use Standard</span>
                 </div>
 
                 <div hidden$=[[!customInitiative]]>

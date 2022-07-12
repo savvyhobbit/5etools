@@ -39,6 +39,23 @@ class DndList extends PolymerElement {
       },
       resultsCount: {
         type: Number
+      },
+      nonGlobal: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
+      halfWidth: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      selectedItem: {
+        type: Object,
+        notify: true,
+      },
+      listTitle: {
+        type: String,
+        value: ''
       }
     };
   }
@@ -54,7 +71,10 @@ class DndList extends PolymerElement {
         if (item.source) {
           linkData.push(item.source);
         }
-        setRouteSelection(encodeForHash(linkData));
+        if (!this.nonGlobal) {
+          setRouteSelection(encodeForHash(linkData));
+        }
+        this.set('selectedItem', item);
       });
     }, 0);
 
@@ -75,7 +95,7 @@ class DndList extends PolymerElement {
   }
 
   _adjustHeight() {
-    if (window.innerWidth < 921) {
+    if (window.innerWidth < 921 || this.nonGlobal) {
       const top = this.$.grid.getBoundingClientRect().top;
       if (top) {
         this.$.grid.style.height = `${window.innerHeight - top - 85}px`;
@@ -219,8 +239,8 @@ class DndList extends PolymerElement {
     return false;
   }
 
-  _nameColWidth(isMobile) {
-    return isMobile ? '175px' : '300px';
+  _nameColWidth(isMobile, halfWidth) {
+    return isMobile || halfWidth ? '175px' : '300px';
   }
 
   _colWidth(index, columns) {
@@ -267,6 +287,27 @@ class DndList extends PolymerElement {
           display: block;
         }
 
+        :host([half-width]) .search-wrap {
+          width: calc(100% - 70px);
+        }
+
+        .title-text-wrap {
+          display: flex;
+          flex-direction: column;
+        }
+        .source-text {
+          font-size: 17px;
+          color: var(--lumo-contrast-70pct);
+          height: 44px;
+        }
+
+        :host([non-global]) .page-title {
+          font-size: 24px;
+          line-height: 1.5;
+        }
+        :host([non-global]) .source-text {
+          font-size: 16px;
+        }
 
         .search-wrap {
           margin-bottom: 20px;
@@ -357,6 +398,13 @@ class DndList extends PolymerElement {
           }
         }
       </style>
+      <div hidden$="[[selectedItem]]">
+        <h1 class="page-title mdc-typography--headline2" hidden$="[[!listTitle]]">
+          <div class="title-text-wrap">
+            <span class="title-text">[[listTitle]]</span>
+          </div>
+        </h1>
+      </div>
 
       <div class="search-wrap">
         <vaadin-text-field theme="label--secondary" on-keyup="_selectFilter" label="Search"></vaadin-text-field>
@@ -364,7 +412,7 @@ class DndList extends PolymerElement {
       </div>
 
       <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" size="{{resultsCount}}">
-        <vaadin-grid-column frozen width="[[_nameColWidth(isMobile)]]">
+        <vaadin-grid-column frozen width="[[_nameColWidth(isMobile, halfWidth)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">
               <span class="name-label">Name</span>

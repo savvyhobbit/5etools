@@ -3,7 +3,8 @@ import "./styles/material-styles.js";
 import "./styles/my-styles.js";
 import "./dnd-spinner.js";
 import {initCollapseToggles} from '../js/utils.js';
-import { clearRouteSelection } from '../util/routing.js';
+import Parser from '../util/Parser.js';
+import { routeEventChannel } from '../util/routing.js';
 
 class DndSelectedItem extends PolymerElement {
   static get properties() {
@@ -13,7 +14,9 @@ class DndSelectedItem extends PolymerElement {
         observer: "_modelChange"
       },
       selectedItem: {
-        type: Object
+        type: Object,
+        notify: true,
+        observer: "_selectedItemChange"
       },
       allItems: {
         type: Array
@@ -29,12 +32,53 @@ class DndSelectedItem extends PolymerElement {
       characterOption: {
         type: Boolean,
         value: false
-      }
+      },
+      nonGlobal: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
     };
   }
 
   static get observers() {
     return ["__renderSelection(_modelsRenderSelection, selectedItem)"];
+  }
+
+  connectedCallback() {
+    if (!this.nonGlobal) {
+      routeEventChannel().addEventListener("selection-deselected", this.clearSelection.bind(this));
+    }
+  }
+
+  ready() {
+    super.ready();
+
+    this._adjustHeight();
+    window.addEventListener('resize', () => {
+      this._adjustHeight();
+    });
+    setInterval(() => {
+      this._adjustHeight();
+    }, 500);
+  }
+
+  /**
+   * Adds listeners for updating the breadcrumbs / title
+   */
+  _selectedItemChange() {
+    if (this.selectedItem) {
+      const {name, source} = this.selectedItem;
+      this.selectedTitle = name;
+      this.selectedSource = source;
+      this.selectedSourceFull = Parser.sourceJsonToFull(source);
+      this.selectedSourceAbv = Parser.sourceJsonToAbv(source);
+    } else {
+      this.selectedTitle = '';
+      this.selectedSource = '';
+      this.selectedSourceFull = '';
+      this.selectedSourceAbv = '';
+    }
   }
   
   _loadingChange() {
@@ -76,23 +120,57 @@ class DndSelectedItem extends PolymerElement {
     }
   }
 
+  clearSelection() {
+    this.set('selectedItem', null);
+  }
+
+  _adjustHeight() {
+    if (this.nonGlobal) {
+      const top = this.$.scroll.getBoundingClientRect().top;
+      if (top) {
+        this.$.scroll.style.height = `${window.innerHeight - top - 85}px`;
+      }
+    } else {
+      this.$.scroll.style.height = null;
+    }
+  }
+
   _exists(thing) {
     return !!thing;
   }
 
-  _mainClass() {
-    return this.selectedItem ? "main item-opened" : "main";
+  _mainClass(selectedItem, nonGlobal) {
+    let cls = selectedItem ? "main item-opened" : "main";
+    cls += nonGlobal ? " non-global": '';
+    return cls;
   }
 
-  clearSelection() {
-    clearRouteSelection(true);
+  _selectedSourceClass(selectedSource) {
+    return `asource${selectedSource}`;
   }
+
+  _same(a, b) {
+    return a === b;
+  }
+
 
   static get template() {
     return html`
       <style include="material-styles my-styles">
         :host {
           display: block;
+        }
+        .title-text-wrap {
+          display: flex;
+          flex-direction: column;
+        }
+        .source-text {
+          font-size: 17px;
+          color: var(--lumo-contrast-70pct);
+          height: 44px;
+        }
+        dnd-svg:not([hide]) + .title-text-wrap  {
+          margin-left: 110px;
         }
         .main {
           max-width: 100vw;
@@ -118,6 +196,16 @@ class DndSelectedItem extends PolymerElement {
         .main:not(.item-opened) .selection-wrapper {
           display: none;
         }
+        .main.non-global .close-item {
+          position: absolute;
+        }
+        .main .page-title {
+          display: none;
+        }
+        .main.item-opened .page-title {
+          display: block;
+        }
+        
         .close-item {
           position: fixed;
           height: 64px;
@@ -128,19 +216,40 @@ class DndSelectedItem extends PolymerElement {
           top: -4px;
           z-index: 12;
         }
-        .main.item-opened {
+        .main.item-opened:not(.non-global) {
           margin-bottom: 120px;
+        }
+        .non-global #scroll {
+          overflow: scroll;
+        }
+        .non-global .page-title {
+          font-size: 24px;
+          margin-bottom: 0;
+          line-height: 1.5;
+        }
+        .non-global .source-text {
+          font-size: 16px;
         }
         @media(min-width: 921px) {
           .main.item-opened {
             padding-bottom: 0;
           }
+          .non-global.item-opened .close-item {
+            display: block !important;
+          }
         }
       </style>
 
-      <div class$="[[_mainClass(selectedItem)]]">
+      <div class$="[[_mainClass(selectedItem, nonGlobal)]]">
         <button class="mdc-icon-button close-item material-icons" on-click="clearSelection">close</button>
-        <div class="selection-wrapper"></div>
+        <h1 class="page-title mdc-typography--headline2" hidden$="[[!selectedItem]]">
+          <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
+          <div class="title-text-wrap">
+            <span class="title-text">[[selectedTitle]]</span>
+            <span class="source-text"><span class$="[[_selectedSourceClass(selectedSource)]]">[[selectedSourceFull]]<span hidden hiddens$="[[_same(selectedSourceFull, selectedSourceAbv)]]"> ([[selectedSourceAbv]])</span><span></span>
+          </div>
+        </h1>
+        <div id="scroll" class="selection-wrapper"></div>
       </div>
     `;
   }

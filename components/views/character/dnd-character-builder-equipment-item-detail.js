@@ -10,6 +10,8 @@ import "@vaadin/vaadin-text-field/vaadin-text-field";
 import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "@vaadin/vaadin-text-field/vaadin-text-area";
 import Parser from '../../../util/Parser';
+import "../../dnd-select-add";
+import "../../dnd-button";
 
 
 //// BOONS
@@ -78,6 +80,11 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
       itemType: {
         type: String,
         value: ''
+      },
+      smallRender: {
+        type: Boolean,
+        reflectToAttribute: true,
+        value: false
       }
     };
   }
@@ -166,11 +173,14 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
   }
 
   _itemChanged() {
+    if (!this.item) {
+      return;
+    }
     console.error('itemDetail:', this.item);
 
     if (this.item.itemRef && !this.item.lookupFailed) {
       this.hasRenderedOutput = true;
-      renderSelection(this.item, this.$.renderedOutput, undefined, true);
+      renderSelection(this.item, this.$.renderedOutput, undefined, this.smallRender);
     } else {
       this.hasRenderedOutput = false;
     }
@@ -435,13 +445,10 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           flex-direction: column;
           margin: 10px 10px 0 0;
         }
-        .edit__weapon {
-          margin-right: 10px;
-        }
 
-        .damage_heading {
+        .section_heading {
           margin: 16px 0 0px;
-          font-size: 16px;
+          font-size: 17px;
           color: var(--mdc-theme-secondary);
         }
 
@@ -451,6 +458,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         }
         .roll__damage {
           display: flex;
+          margin-right: 10px;
         }
         .roll__damage vaadin-text-field,
         .roll__damage vaadin-select {
@@ -461,10 +469,10 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           width: calc(50% - 40px);
         }
         .roll__damage-roll--edit {
-          margin-right: 16px;
+          margin: 0 16px;
         }
         .roll__damage-remove {
-          margin: auto 16px 4px;
+          margin: auto -5px 4px;
         }
 
         dnd-switch {
@@ -484,7 +492,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         }
 
         vaadin-select {
-          max-width: calc(50% - 12px);
+          max-width: calc(50% - 14px);
         }
         vaadin-number-field,
         vaadin-integer-field {
@@ -497,16 +505,24 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         vaadin-select {
           margin-right: 10px;
         }
+        dnd-select-add {
+          width: calc(66% - 22px);
+          margin-right: 10px;
+          margin-left: 10px;
+        }
 
         .margin-bottom_large {
           margin-bottom: 0 !important;
         }
 
         @media(min-width: 921px) {
+          h2 {
+            font-size: 24px;
+          }
         }
       </style>
 
-      <div>
+      <div hidden$="[[!item]]">
         <div hidden$="[[isEditMode]]">
           <div hidden$="[[!hasRenderedOutput]]">
             <h2>[[item.name]]</h4>
@@ -546,13 +562,11 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
             </vaadin-select>
 
             <div class="edit__weapon" hidden$="[[!item.weapon]]">
-              <vaadin-integer-field theme="label--secondary"  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
-
+              <h4 class="section_heading">Weapon</h4>
               <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
-
+              <vaadin-integer-field theme="label--secondary"  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
               <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
 
-              <h4 class="damage_heading">Damage</h4>
               <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
                 <div class="roll__damage" index$="[[index]]">
                   <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
@@ -590,11 +604,11 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
             </vaadin-select> -->
 
             <div class="edit__checkboxes">
-              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity?</vaadin-checkbox>
-              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth?</vaadin-checkbox>
-              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement?</vaadin-checkbox>
-              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous?</vaadin-checkbox>
-              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference?</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference</vaadin-checkbox>
             </div>
 
             <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>

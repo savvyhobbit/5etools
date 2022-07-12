@@ -82,6 +82,7 @@ class DndButton extends PolymerElement {
           display: inline;
           overflow: hidden;
           white-space: nowrap;
+          border-radius: 6px;
         }
         .mdc-button {
           display: inline-flex;
@@ -123,8 +124,11 @@ class DndButton extends PolymerElement {
           padding-left: 0;
         }
         :host(.icon-only) i {
-          margin-left: -18px;
+          margin-left: 0;
           padding-left: 0;
+        }
+        :host(.hard-left) i {
+          margin-left: -24px;
         }
 
         :host(.link) .mdc-button__label {

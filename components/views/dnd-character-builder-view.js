@@ -5,7 +5,8 @@ import "../dnd-tabs.js";
 import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-switch";
-import { downloadObjectAsJson, jqEmpty } from "../../js/utils.js";
+import { jqEmpty } from "../../js/utils.js";
+import { saveAs } from 'file-saver';
 import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
@@ -284,14 +285,14 @@ class DndCharacterBuilderView extends PolymerElement {
     removeSelectedCharacter();
   }
 
-  downloadCharacter() {
+  downloadCharacter(e) {
     const char = getSelectedCharacter();
-    downloadObjectAsJson(char, `${char.name} - ${new Date().toLocaleString()}`);
+    saveAs(new Blob([JSON.stringify(char, null, 2)], {type: "application/json;charset=utf-8"}), `${char.name} - ${new Date().toLocaleString()}`);
   }
   
   downloadCharacters() {
     const chars = getCharacters();
-    downloadObjectAsJson(chars, `Character Export - ${new Date().toLocaleString()}`);
+    saveAs(new Blob([JSON.stringify(chars, null, 2)], {type: "application/json;charset=utf-8"}), `Character Export - ${new Date().toLocaleString()}`);
   }
 
   processUpload(event) {
@@ -422,6 +423,7 @@ class DndCharacterBuilderView extends PolymerElement {
         }
         .thumb-menu__btn {
           border-radius: 50%;
+          box-shadow: 0px 0px 20px -5px var(--mdc-theme-text-primary-on-background);
         }
         .edit-mode .edit-button {
           background: var(--mdc-theme-secondary) !important;
@@ -447,6 +449,7 @@ class DndCharacterBuilderView extends PolymerElement {
         .buttons {
           display: flex;
           margin-left: auto;
+          margin-top: -30px;
         }
 
         .not-edit-mode .delete-char,
@@ -463,6 +466,12 @@ class DndCharacterBuilderView extends PolymerElement {
         .upload-char {
           display: none;
         }
+        .download-all-char .material-icons {
+          font-size: 16px;
+          position: absolute;
+          right: 4px;
+          top: 8px;
+        }
 
         .upload-char input {
           display: none;
@@ -470,10 +479,6 @@ class DndCharacterBuilderView extends PolymerElement {
 
         .upload-char .mdc-icon-button {
           overflow: hidden;
-        }
-        .upload-char .material-icons {
-          position: absolute;
-          left: -132px;
         }
 
 
@@ -485,7 +490,7 @@ class DndCharacterBuilderView extends PolymerElement {
             position: fixed;
             top: 56px;
             z-index: 2;
-            box-shadow: 0px 0px 30px -5px rgba(0,0,0,0.75);
+            box-shadow: 0px 0px 20px -5px var(--mdc-theme-text-primary-on-background);
             border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
           }
           #tabs.fixed + .tab-wrap {
@@ -495,7 +500,7 @@ class DndCharacterBuilderView extends PolymerElement {
             position: fixed;
             bottom: 0;
             z-index: 2;
-            box-shadow: 0px 0px 30px -10px rgba(0,0,0,0.75);
+            box-shadow: 0px 0px 30px -10px var(--mdc-theme-text-primary-on-background);
             border-top: 1px solid var(--mdc-theme-text-divider-on-background);
             height: 64px
           }
@@ -514,11 +519,19 @@ class DndCharacterBuilderView extends PolymerElement {
           .thumb-menu {
             position: static;
           }
+          .thumb-menu__btn {
+            margin-left: auto;
+            position: relative;
+            top: -20px;
+          }
           .download-char {
             display: block;
           }
           .download-mobile {
             display: none;
+          }
+          .buttons {
+            margin-top: 0;
           }
         }
       </style>
@@ -544,14 +557,11 @@ class DndCharacterBuilderView extends PolymerElement {
               <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
               <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
               <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
-              
-              <button class="mdc-icon-button download-all-char" on-click="downloadCharacters">
-                <span class=" material-icons">save</span>
-              </button>
+              <button class="mdc-icon-button material-icons download-all-char" on-click="downloadCharacters">file_download <span class="material-icons">playlist_add</span></button>
 
               <label class="upload-char">
                 <span class="mdc-icon-button">
-                  <span class=" material-icons">drive_folder_upload</span>
+                  <span class=" material-icons">file_upload</span>
                 </span>
                 <input type="file" id="file-selector" accept=".json" on-change="processUpload" />
               </label>

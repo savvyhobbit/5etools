@@ -8,7 +8,7 @@ import "./dnd-character-popup.js";
 import registerSwipe from '../util/swipe.js';
 import { setDarkmode } from "../util/darkmode.js";
 import { clearRouteSelection, routeEventChannel, readRouteView } from '../util/routing.js';
-import Parser from '../util/Parser.js';
+import { jqEmpty, timeout, util_capitalize } from '../js/utils.js';
 
 class DndLayout extends PolymerElement {
   static get properties() {
@@ -31,7 +31,11 @@ class DndLayout extends PolymerElement {
       hideCharacterPopup: {
         type: Boolean,
         value: true
-      }
+      },
+      hasPreview: {
+        type: Boolean,
+        value: false
+      },
     };
   }
 
@@ -133,22 +137,11 @@ class DndLayout extends PolymerElement {
   _initSelectionEvents() {
     routeEventChannel().addEventListener("title-change", e => {
       if (e.detail) {
-        const {title, name, source} = e.detail;
+        const {title} = e.detail;
         if (title) {
           this.lastTitle = title
         }
-        this.selectedTitle = name || title || '';
-        this.selectedSource = source;
-        this.selectedSourceFull = Parser.sourceJsonToFull(source);
-        this.selectedSourceAbv = Parser.sourceJsonToAbv(source);
       }
-    });
-
-    routeEventChannel().addEventListener("selection-deselected", () => {
-      this.selectedTitle = this.lastTitle || "";
-      this.selectedSource = '';
-      this.selectedSourceFull = '';
-      this.selectedSourceAbv = '';
     });
   }
 
@@ -183,6 +176,34 @@ class DndLayout extends PolymerElement {
           this.hideCharacterPopup = true;
       }
     }
+  }
+
+  async _openDrawerPreview(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let viewId = new URL(e.target.closest('a').href).hash.split('/')[1];
+    console.error('_openDrawerPreview', e, viewId);
+    const newWidth = Math.min(window.innerWidth - 50, 400);
+    this.$.drawer.style.width = `${newWidth}px`
+
+    this.$.drawer.classList.add('mdc-drawer__content--transition');
+  
+    await timeout(200);
+    await import(`./views/dnd-${viewId}-view.js`);
+
+    jqEmpty(this.$.previewTarget);
+    const previewEl = document.createElement(`dnd-${viewId}-view`);
+    previewEl.nonGlobal = true;
+    this.$.previewTarget.appendChild(previewEl);
+    this.hasPreview = true;
+    await timeout(100);
+    this.$.drawer.classList.remove('mdc-drawer__content--transition');
+  }
+
+  async _closeDrawerPreview() {
+    this.$.drawer.style.width = `250px`;
+    jqEmpty(this.$.previewTarget);
+    this.hasPreview = false;
   }
 
   /**
@@ -221,6 +242,7 @@ class DndLayout extends PolymerElement {
         .source-text {
           font-size: 17px;
           color: var(--lumo-contrast-70pct);
+          height: 44px;
         }
         dnd-svg:not([hide]) + .title-text-wrap  {
           margin-left: 110px;
@@ -233,11 +255,41 @@ class DndLayout extends PolymerElement {
         }
         .container {
         }
+        .mdc-drawer__content {
+          width: 250px;
+          transition: width 200ms, opacity 200ms;
+          opacity: 1;
+        }
+        .mdc-drawer__content[preview] {
+          max-width: 400px;
+        }
+        .mdc-drawer__content.mdc-drawer__content--transition {
+          opacity: 0;
+        }
+        .preview-wrap {
+          padding: 0 14px;
+          overflow: hidden;
+          transition: width .5s;
+        }
+        .preview-link {
+          margin-left: auto;
+        }
+        .preview-bar {
+          display: flex;
+          border-top: 1px solid var(--mdc-theme-text-divider-on-background);
+        }
+        .preview-close {
+          font-size: 36px;
+          margin-right: 20px;
+          margin-left: auto;
+        }
+
         @media(min-width: 921px) {
-          .page-title {
-            display: block;
+          .page-title[hidden] {
+            display: block !important;
           }
-          .container {
+          .mdc-drawer__content[preview] {
+            max-width: 670px;
           }
         }
       </style>
@@ -247,7 +299,7 @@ class DndLayout extends PolymerElement {
           <div class="breadcrumbs mdc-theme--on-primary">
             <div class="container breadcrumbs__list">
               <div class="breadcrumbs__crumb" >
-                <a on-click="_resetHashClickHandler" class="headasdf">[[lastTitle]]</a>
+                <a on-click="_resetHashClickHandler">[[lastTitle]]</a>
               </div>
             </div>
           </div>
@@ -268,119 +320,137 @@ class DndLayout extends PolymerElement {
         </div>
       </header>
 
-      <aside class="mdc-drawer mdc-drawer--modal mdc-theme--surface">
-        <div class="mdc-drawer__content">
+      <aside class="mdc-drawer mdc-drawer--modal mdc-theme--surface" preview$="[[hasPreview]]">
+        <div class="mdc-drawer__content" id="drawer" >
           <nav class="mdc-list">
-            <div class="mdc-drawer__header hidden-desktop-up">
-              <a href="#/index"
-                ><h3 class="mdc-drawer__title mdc-theme--on-surface typography_mono">
-                  <div class="logo margin-right_small"></div>
-                  5e Tools
-                </h3>
-                <h6
-                  class="mdc-drawer__subtitle mdc-theme--text-secondary-on-background margin-top_small typography_mono"
+            <div hidden$="[[hasPreview]]">
+              <div class="mdc-drawer__header hidden-desktop-up">
+                <a href="#/index"
+                  ><h3 class="mdc-drawer__title mdc-theme--on-surface typography_mono">
+                    <div class="logo margin-right_small"></div>
+                    5e Tools
+                  </h3>
+                  <h6
+                    class="mdc-drawer__subtitle mdc-theme--text-secondary-on-background margin-top_small typography_mono"
+                  >
+                    A D&amp;D Players Companion
+                  </h6></a
                 >
-                  A D&amp;D Players Companion
-                </h6></a
-              >
-            </div>
+              </div>
 
-            <a class="mdc-list-item mdc-theme--on-surface">
-              <label class="darkmode-label" for="dark-mode-switch">Dark Mode</label>
-              <div class="mdc-switch mdc-list-item__meta">
-                <div class="mdc-switch__track"></div>
-                <div class="mdc-switch__thumb-underlay">
-                  <div class="mdc-switch__thumb">
-                    <input type="checkbox" id="dark-mode-switch" class="mdc-switch__native-control" role="switch" />
+              <a class="mdc-list-item mdc-theme--on-surface">
+                <label class="darkmode-label" for="dark-mode-switch">Dark Mode</label>
+                <div class="mdc-switch mdc-list-item__meta">
+                  <div class="mdc-switch__track"></div>
+                  <div class="mdc-switch__thumb-underlay">
+                    <div class="mdc-switch__thumb">
+                      <input type="checkbox" id="dark-mode-switch" class="mdc-switch__native-control" role="switch" />
+                    </div>
                   </div>
                 </div>
+              </a>
+
+              <hr class="mdc-list-divider" />
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/rules" tabindex="0">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
+                  >library_books</i
+                >
+                <span class="mdc-list-item__text">Rules</span>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/variantrules">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">description</i>
+
+                <span class="mdc-list-item__text">Variant Rules</span>
+              </a>
+
+              <hr class="mdc-list-divider" />
+              <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Player Options</h6>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/classes">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">class</i>
+                <span class="mdc-list-item__text">Classes</span>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/spells">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">flash_on</i>
+                <span class="mdc-list-item__text">Spells</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/races">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">face</i>
+                <span class="mdc-list-item__text">Races</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/backgrounds">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">public</i>
+                <span class="mdc-list-item__text">Backgrounds</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/feats">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
+                  >fitness_center</i
+                >
+                <span class="mdc-list-item__text">Feats</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+
+              <hr class="mdc-list-divider" />
+              <h6 class="mdc-list-group__subheader mdc-theme--on-surface">References</h6>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/bestiary">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">warning</i>
+                <span class="mdc-list-item__text">Bestiary</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/items">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">restaurant</i>
+                <span class="mdc-list-item__text">Items</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/features">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
+                <span class="mdc-list-item__text">Class Features</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/conditions">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
+                  >sentiment_very_dissatisfied</i
+                >
+                <span class="mdc-list-item__text">Conditions</span>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+              </a>
+              <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">toll</i>
+                <span class="mdc-list-item__text">Other Rewards</span>
+              </a> -->
+              <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/psionics">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
+                  >record_voice_over</i
+                >
+                <span class="mdc-list-item__text">Psionics</span>
+              </a> -->
+              <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/cults">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">group</i>
+                <span class="mdc-list-item__text">Cults</span>
+              </a> -->
+
+              <hr class="mdc-list-divider" />
+              <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Tools</h6>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/dice">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">casino</i>
+                <span class="mdc-list-item__text">Dice Roller</span>
+              </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
+                <span class="mdc-list-item__text">Character Sheets</span>
+              </a>
+              <span class="version mdc-typography--caption">v2.1.0</span>
+
+            </div>
+            <div hidden$="[[!hasPreview]]">
+              <div class="preview-wrap" id="previewTarget"></div>
+              <div class="preview-bar">
+                <button class="preview-close mdc-icon-button material-icons" on-click="_closeDrawerPreview">arrow_back</button> 
+                <sdnd-character-popup small></dnd-character-popup>
               </div>
-            </a>
-
-            <hr class="mdc-list-divider" />
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/rules" tabindex="0">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                >library_books</i
-              >
-              <span class="mdc-list-item__text">Rules</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/variantrules">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">description</i>
-
-              <span class="mdc-list-item__text">Variant Rules</span>
-            </a>
-
-            <hr class="mdc-list-divider" />
-            <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Player Options</h6>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/classes">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">class</i>
-              <span class="mdc-list-item__text">Classes</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/spells">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">flash_on</i>
-              <span class="mdc-list-item__text">Spells</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/races">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">face</i>
-              <span class="mdc-list-item__text">Races</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/backgrounds">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">public</i>
-              <span class="mdc-list-item__text">Backgrounds</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/feats">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                >fitness_center</i
-              >
-              <span class="mdc-list-item__text">Feats</span>
-            </a>
-
-            <hr class="mdc-list-divider" />
-            <h6 class="mdc-list-group__subheader mdc-theme--on-surface">References</h6>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/bestiary">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">warning</i>
-              <span class="mdc-list-item__text">Bestiary</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/items">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">restaurant</i>
-              <span class="mdc-list-item__text">Items</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/features">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
-              <span class="mdc-list-item__text">Class Features</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/conditions">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                >sentiment_very_dissatisfied</i
-              >
-              <span class="mdc-list-item__text">Conditions</span>
-            </a>
-            <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">toll</i>
-              <span class="mdc-list-item__text">Other Rewards</span>
-            </a> -->
-            <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/psionics">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                >record_voice_over</i
-              >
-              <span class="mdc-list-item__text">Psionics</span>
-            </a> -->
-            <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/cults">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">group</i>
-              <span class="mdc-list-item__text">Cults</span>
-            </a> -->
-
-            <hr class="mdc-list-divider" />
-            <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Tools</h6>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/dice">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">casino</i>
-              <span class="mdc-list-item__text">Dice Roller</span>
-            </a>
-            <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
-              <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
-              <span class="mdc-list-item__text">Character Sheets</span>
-            </a>
-            <span class="version mdc-typography--caption">v2.1.0</span>
+            </div>
           </nav>
         </div>
       </aside>
@@ -391,15 +461,7 @@ class DndLayout extends PolymerElement {
         class="main mdc-top-app-bar--fixed-adjust mdc-typography--body1 mdc-theme--background mdc-theme--text-primary-on-background"
       >
         <div class="container content-wrap">
-          <h1 class="page-title mdc-typography--headline2" hidden$="[[_same(selectedTitle, lastTitle)]]">
-            <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
-            <div class="title-text-wrap">
-              <span class="title-text">[[selectedTitle]]</span>
-              <span class="source-text" hidden$=[[!selectedSourceFull]]><span class$="[[_selectedSourceClass(selectedSource)]]">[[selectedSourceFull]]<span hidden hiddens$="[[_same(selectedSourceFull, selectedSourceAbv)]]"> ([[selectedSourceAbv]])</span><span></span>
-            </div>
-          </h1>
-
-          <slot></slot>
+          <slot name="default"></slot>
         </div>
 
         <dnd-character-popup hidden$=[[hideCharacterPopup]]></dnd-character-popup>

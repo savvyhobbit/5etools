@@ -1057,7 +1057,8 @@ async function setCurrentHp(currentHp, character = selectedCharacter) {
     }
     // maxing out health
     if (character.currentHp >= 0) {
-      character.currentHp = Math.min(character.currentHp, (await getMaxHP(character)));
+      const maxHP = character.customHealth ? character.customHealthVal : await getMaxHP(character);
+      character.currentHp = Math.min(character.currentHp, maxHP);
     } else {
       character.currentHp = Math.max(character.currentHp, 0);
     }
@@ -1599,6 +1600,21 @@ function setCustomACVal(customACVal, character = selectedCharacter) {
   saveCharacter(character);
 }
 
+function toggleCustomHealth(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customHealth = toggle;
+  } else {
+    toggleCustomHealth(!character.customHealth, character);
+    saveCharacter(character);
+  }
+}
+
+function setCustomHealthVal(customHealthVal, character = selectedCharacter) {
+  character.customHealthVal = customHealthVal;
+  saveCharacter(character);
+}
+
+
 async function getCharacterInitiative(character = selectedCharacter) {
   if (character) {
     if (character.customInitiative) {
@@ -1845,6 +1861,8 @@ export {
   getCharacterAC,
   toggleCustomAC,
   setCustomACVal,
+  toggleCustomHealth,
+  setCustomHealthVal,
   getCharacterSpeed,
   getCharacterInitiative,
   toggleCustomInitiative,

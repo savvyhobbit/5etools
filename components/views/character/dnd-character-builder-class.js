@@ -1,6 +1,6 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import { MutableData } from '@polymer/polymer/lib/mixins/mutable-data.js';
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, setClassSkillProficiencies, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll } from "../../../util/charBuilder";
+import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, setClassSkillProficiencies, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll, getClassString } from "../../../util/charBuilder";
 import "@vaadin/vaadin-grid";
 import "../../dnd-select-add";
 import "../../dnd-switch";
@@ -14,6 +14,7 @@ import { } from '@polymer/polymer/lib/elements/dom-if.js';
 import { } from '@polymer/polymer/lib/elements/dom-repeat.js';
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import {filterModel} from "../../../util/data";
+import '@vaadin/vaadin-text-field/vaadin-integer-field'
 
 class DndCharacterBuilderClass extends MutableData(PolymerElement) {
   
@@ -131,7 +132,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
       this.character = character;
       this.classes = await getClassReferences(character);
       this.subclasses = JSON.parse(JSON.stringify(character.subclasses));
-
+      this.classLevel = getClassString(character);
       this.classChoices = await this._findLevelChoices(character, this.classes);
 
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
@@ -501,16 +502,13 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           margin-bottom: 144px;
         }
 
-        .not-edit-mode .heading-wrap {
-          display: none;
-        }
-
         .heading-wrap {
           display: flex;
           justify-content: space-between;
           margin: 22px 14px 12px;
           align-items: center;
           border-bottom: 1px solid var(--lumo-contrast-10pct);
+          flex-wrap: wrap;
         }
         .heading {
           width: 100%;
@@ -518,6 +516,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+        }
+        .class-levels {
+          font-size: 16px;
+          padding-left: 8px;
+          font-weight: normal;
+          display: none;
         }
 
         h2 {
@@ -537,6 +541,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           flex-wrap: wrap;
           align-items: center;
           padding: 10px;
+          width: 100%;
         }
         .button-wrap > * {
           margin: 4px;
@@ -635,12 +640,14 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
 
         .delete-col {
+          margin-right: 16px;
         }
         .delete-btn {
           height: 24px;
           width: 24px;
           font-size: 18px;
           padding: 0;
+          margin-right: 16px;
         }
         .delete-btn:hover {
           color: var(--mdc-theme-secondary);
@@ -713,6 +720,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .hp-col__non-edit {
           display: block;
         }
+        .hp-col .hp-col__non-edit .hp-roll-icon {
+          left: 33px;
+        }
         .edit-mode .hp-col__non-edit {
           display: none;
         }
@@ -758,6 +768,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           #classGrid {
             margin-bottom: 0;
           }
+          .class-levels {
+            display: inline;
+          }
         }
 
         .no-content-message {
@@ -767,89 +780,90 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
       </style>
 
-      <div class="heading-wrap">
-        <h2>Levels</h2>
-        <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
-      </div>
-
       <div class$="[[_editModeClass(isEditMode)]]">
-        <div class="button-wrap">
-          <template is="dom-repeat" items="[[_objArray(classes)]]">
-            <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
-          </template>
+        <div class="heading-wrap">
+          <h2>Levels <span class="class-levels">[[classLevel]]</span></h2> 
+          <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
+
+          <div class="button-wrap">
+            <template is="dom-repeat" items="[[_objArray(classes)]]">
+              <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
+            </template>
+          </div>
         </div>
 
+        <div>
+          <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
 
-        <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
+          <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows>
+            <vaadin-grid-column flex-grow="1">
+              <template>
+                <div class="row">
+                  <div class="open-details" on-click="_expandDetails">
+                    <div class="level-col">
+                      <span class="level-col__level">[[_level(index)]]</span>
+                      <span class="level-col__image-wrap" ><dnd-svg class="level-col__image" default-color id="[[_svgFromClass(item.name)]]"></dnd-svg></span>
+                      <span class="level-col__class">[[item.name]]</span>
+                    </div>
 
-        <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows>
-          <vaadin-grid-column flex-grow="1">
-            <template>
-              <div class="row">
-                <div class="open-details" on-click="_expandDetails">
-                  <div class="level-col">
-                    <span class="level-col__level">[[_level(index)]]</span>
-                    <span class="level-col__image-wrap" ><dnd-svg class="level-col__image" default-color id="[[_svgFromClass(item.name)]]"></dnd-svg></span>
-                    <span class="level-col__class">[[item.name]]</span>
-                  </div>
-
-                  <div class="features-col">
-                    <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses)]]">
-                      <span class="class-feature" subclass$="[[item.isSubclass]]">[[item.name]]</span>
-                    </template>
-                  </div>
-                </div>
-
-                <div class="choices-col">
-                  <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
-                    <div class="choices-col__choice">
-                      <template is="dom-if" if="[[_equal(choice.id, 'subclass')]]">
-                        <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
-                        <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'profs')]]">
-                        <dnd-select-add choices="[[choice.count]]" label="Skill Proficiency" placeholder="<Choose Skills>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classSkillAddCallback]]"></dnd-select-add>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
-                        <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
-                      </template>
-                      <template is="dom-if" if="[[_equal(choice.id, 'subclassFeature')]]">
-                        <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                          options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
+                    <div class="features-col">
+                      <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses)]]">
+                        <span class="class-feature" subclass$="[[item.isSubclass]]">[[item.name]]</span>
                       </template>
                     </div>
-                  </template>
-                </div>
+                  </div>
 
-                <div class="hp-col">
-                  <div class="delete-col">
-                    <dnd-button class="delete-btn link icon-only" icon="delete" on-click="_deleteLevel"></dnd-button>
+                  <div class="choices-col">
+                    <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
+                      <div class="choices-col__choice">
+                        <template is="dom-if" if="[[_equal(choice.id, 'subclass')]]">
+                          <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
+                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
+                        </template>
+                        <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
+                          <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
+                        </template>
+                        <template is="dom-if" if="[[_equal(choice.id, 'profs')]]">
+                          <dnd-select-add choices="[[choice.count]]" label="Skill Proficiency" placeholder="<Choose Skills>" disabled$="[[!isEditMode]]"
+                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classSkillAddCallback]]"></dnd-select-add>
+                        </template>
+                        <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
+                          <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                        </template>
+                        <template is="dom-if" if="[[_equal(choice.id, 'subclassFeature')]]">
+                          <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
+                        </template>
+                      </div>
+                    </template>
                   </div>
-                  <div class="hp-col__non-edit">
-                    <span class="material-icons " aria-hidden="true">casino</span>
-                    <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
-                    [[_levelHp(item.name, index)]]
-                  </div>
-                  <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
-                    <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
-                      <span class="btn-field__btn-label" slot="label">
-                        <span class="material-icons " aria-hidden="true">casino</span>
-                        <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
-                        <span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span>
-                      </span>
-                    </dnd-button>
-                    <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]"></vaadin-integer-field>
+
+                  <div class="hp-col">
+                    <div class="delete-col">
+                      <dnd-button class="delete-btn link icon-only" icon="delete" on-click="_deleteLevel"></dnd-button>
+                    </div>
+                    <div class="hp-col__non-edit">
+                      <span class="material-icons " aria-hidden="true">casino</span>
+                      <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
+                      [[_levelHp(item.name, index)]]
+                    </div>
+                    <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
+                      <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
+                        <span class="btn-field__btn-label" slot="label">
+                          <span class="material-icons " aria-hidden="true">casino</span>
+                          <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
+                          <span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span>
+                        </span>
+                      </dnd-button>
+                      <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]"></vaadin-integer-field>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </vaadin-grid-column>
-        </vaadin-grid>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
       </div>
     `;
   }

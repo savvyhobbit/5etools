@@ -1,9 +1,11 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import "./dnd-list.js";
+import "./dnd-button.js";
 import "./dnd-selected-item.js";
-import {loadModel} from "../util/data.js";
-import { parseListData, resolveHash } from "../util/renderTable.js";
-import { readRouteSelection, routeEventChannel, clearRouteSelection } from '../util/routing.js';
+import { loadModel } from "../util/data.js";
+import { parseListData } from "../util/renderTable.js";
+import { routeEventChannel } from '../util/routing.js';
+import { util_capitalize } from '../js/utils.js';
 
 class DndSelectionList extends PolymerElement {
   static get properties() {
@@ -37,7 +39,8 @@ class DndSelectionList extends PolymerElement {
         type: Array
       },
       _selectedItem: {
-        type: Object
+        type: Object,
+        observer: '_selectedItemChange'
       },
       _selectedHash: {
         type: String
@@ -50,18 +53,50 @@ class DndSelectionList extends PolymerElement {
       characterOption: {
         type: Boolean,
         value: false
+      },
+      viewSideBySide: {
+        type: Boolean,
+        value: false
+      },
+      nonGlobal: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
+      listTitle: {
+        type: String,
+        value: ''
       }
     };
   }
 
+  constructor() {
+    super();
+    this.viewSideBySide = !!window.localStorage.getItem("viewSideBySide");
+  }
+
   _loadingChange() {
-    this.dispatchEvent(new CustomEvent("loading-data", {
-      bubbles: true,
-      composed: true,
-      detail: {
-        loading: this.loading
+    if (!this.nonGlobal) {
+      this.dispatchEvent(new CustomEvent("loading-data", {
+        bubbles: true,
+        composed: true,
+        detail: {
+          loading: this.loading
+        }
+      }));
+    }
+  }
+
+  _selectedItemChange() {
+    console.error('_selectedItemChange', this._selectedItem)
+    if (this._selectedItem) {
+      this.hasSelection = true;
+      if (!this.disableScrollBack) {
+        window.scrollTo(0, 0);
       }
-    }));
+    } else {
+      this.hasSelection = false;
+    }
   }
 
   /**
@@ -71,30 +106,9 @@ class DndSelectionList extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
 
-    this.selectionEventHandler = (e) => {
-      this._checkHashForSelection(e.detail.selection);
-    };
-
-    this.deselectionEventHandler = () => {
-      this._selectedItem = undefined;
+    routeEventChannel().addEventListener("view-change", () => {
       this.hasSelection = false;
-    };
-
-    // In case the list data has already been loaded, check if the hash is there
-    this._checkHashForSelection();
-
-    routeEventChannel().addEventListener("selection-change", this.selectionEventHandler);
-    routeEventChannel().addEventListener("selection-deselected", this.deselectionEventHandler);
-    routeEventChannel().addEventListener("view-change", this.deselectionEventHandler);
-  }
-
-  /**
-   * Disconnects from route eventing channel.
-   */
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    routeEventChannel().removeEventListener("selection-change", this.selectionEventHandler);
-    routeEventChannel().removeEventListener("selection-deselected", this.deselectionEventHandler);
+    });
   }
 
   /**
@@ -106,15 +120,29 @@ class DndSelectionList extends PolymerElement {
       this.set("_data", undefined);
       this.set("_filters", undefined);
       this.loading = true;
+      let title;
+  
+      switch (this.modelId) {
+        case 'variantrules':
+          title = 'Variant Rules';
+        case 'index':
+          title = undefined;
+        case 'dice':
+          title = 'Dice Roller';
+        case 'character-builder':
+          title = 'Character Sheets'
+        default:
+          title = this.modelId ? util_capitalize(this.modelId) : '';
+      }
+      this.listTitle = title;
 
       loadModel(this.modelId)
         .then(result => {
           const filters = parseListData(result, this.columns);
           this.set("_data", result);
-          console.error('loadedModel', filters);
           this.set("_filters", filters);
-          this._checkHashForSelection();
           this.loading = false;
+          console.error('loadedModel', filters);
         })
         .catch(e => {
           console.error("Model requested for list did not return.", e);
@@ -122,34 +150,24 @@ class DndSelectionList extends PolymerElement {
     }
   }
 
-  /**
-   * Looks through the loaded Data array for an item that matches the 
-   * selection string.
-   * @param {String} [newSelection] Optional. If selection isn't provided,
-   * checks the current hash for the second pathed variable.
-   */
-  _checkHashForSelection(newSelection) {
-    let hashSelection = newSelection;
-    if (!hashSelection) {
-      hashSelection = readRouteSelection();
+  _changeView() {
+    this.set('viewSideBySide', !this.viewSideBySide);
+    window.localStorage.setItem("viewSideBySide", this.viewSideBySide);
+  }
+
+  _viewClass(viewSideBySide, hasSelection) {
+    let clas = 'list';
+    if (viewSideBySide) {
+      clas += ' list--sidebyside'
     }
-    if (hashSelection && this.enableHashRouting && Array.isArray(this._data)) {
-      const itemFromHash = resolveHash(this._data, hashSelection);
-      if (itemFromHash) {
-        this.set("_selectedItem", itemFromHash);
-        this.hasSelection = true;
-        if (!this.disableScrollBack) {
-          window.scrollTo(0, 0);
-        }
-        routeEventChannel().dispatchEvent(new CustomEvent("title-change", {
-          bubbles: true,
-          composed: true,
-          detail: itemFromHash
-        }));
-      } else {
-        clearRouteSelection(true);
-      }
+    if (hasSelection) {
+      clas += ' list--selected'
     }
+    return clas;
+  }
+
+  _and(a, b) {
+    return a && b;
   }
 
   static get template() {
@@ -158,14 +176,55 @@ class DndSelectionList extends PolymerElement {
         :host([has-selection]) dnd-list {
           display: none;
         }
+        .list {
+          display: block;
+        }
+        .list-wrap {
+          position: relative;
+          flex-grow: 1;
+        }
+        dnd-button {
+          display: none;
+        }
+
         @media(min-width: 921px) {
-          dnd-list {
+          :host(:not([non-global])) dnd-list {
             display: block !important;
+          }
+          
+          :host(:not([non-global])) dnd-button {
+            position: absolute;
+            top: 22px;
+            right: 0;
+            display: block;
+          }
+          :host(:not([non-global])) .list--sidebyside {
+            display: flex;
+            flex-direction: row;
+          }
+          :host(:not([non-global])) .list--sidebyside.list--selected .list-wrap {
+            width: 50%;
+            margin-left: 32px;
+          }
+          :host(:not([non-global])) .list--sidebyside.list--selected dnd-selected-item {
+            width: 50%;
+            margin-top: -24px;
+          }
+
+          :host(:not([non-global])) .list--sidebyside dnd-button {
+            transform: rotate(180deg);
           }
         }
       </style>
-      <dnd-selected-item model-id="[[modelId]]" selected-item="[[_selectedItem]]" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
-      <dnd-list list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
+
+      <div class$="[[_viewClass(viewSideBySide, hasSelection)]]">
+        <dnd-selected-item non-global$="[[nonGlobal]]" model-id="[[modelId]]" selected-item="{{_selectedItem}}" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
+
+        <div class="list-wrap">
+          <dnd-button icon="launch" class="icon-only" on-click="_changeView"></dnd-button>
+          <dnd-list non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{_selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
+        </div>
+      </div>
     `;
   }
 }

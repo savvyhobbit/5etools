@@ -70,7 +70,7 @@
     },
     "classTableGroups": [
       {
-        "title": "Spell Slots per Spell Level",
+        "title": "Spell Slots",
         "colLabels": [
           "{@filter 1st|spells|level=1|class=Paladin}",
           "{@filter 2nd|spells|level=2|class=Paladin}",

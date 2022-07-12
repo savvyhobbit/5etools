@@ -343,8 +343,8 @@ class DndCharacterBuilderAbilities extends PolymerElement {
           <template is="dom-repeat" items="[[abilities]]">
             <div class="ability">
               <div class="ability__name">
-                <span hidden$="[[isEditMode]]">[[item.name]]</span>
-                <vaadin-text-field hidden$="[[!isEditMode]]" label="Name" value="{{item.name}}" on-change="_updateAbility"></vaadin-text-field>
+                <span hidden$="[[isEditMode]]">[[item.name]]<span hidden$="[[_exists(item.name)]]">&lt;No Name&gt;</span></span>
+                <vaadin-text-field theme="label--secondary" hidden$="[[!isEditMode]]" label="Name" value="{{item.name}}" on-change="_updateAbility"></vaadin-text-field>
               </div>
 
               <vaadin-select hidden$="[[!isEditMode]]" value="{{item.reset}}" on-change="_updateAbility" label="Reset" >
@@ -380,7 +380,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
                 </div>
               </div>
               
-              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete link" label="Delete" icon="close" on-click="_deleteAbility"></dnd-button>
+              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete link" icon="delete" on-click="_deleteAbility"></dnd-button>
 
             </div>
           </template>

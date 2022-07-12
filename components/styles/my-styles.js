@@ -688,7 +688,7 @@ styleElement.innerHTML = `
         font-weight: bold;
       }
       .explanation {
-        margin-right: -4px;
+        //margin-right: -4px;
       }
       .stats-sub-header {
         font-weight: bold;
@@ -1266,12 +1266,10 @@ styleElement.innerHTML = `
         padding: 8px 3px;
         max-width: 52px;
         font-size: 14px;
+        line-height: 1.2;
       }
       .mobile-clone-spells #classtable .table-row--header .table-cell {
         padding: 8px 1px;
-      }
-      .spicy-sauce .stat-name {
-        color: var(--mdc-theme-secondary);
       }
       #subclasses {
         position: relative;
@@ -1366,6 +1364,7 @@ styleElement.innerHTML = `
         color: var(--mdc-theme-on-primary, #fff);
         background-color: var(--mdc-theme-primary, #6200ee);
       }
+      
       .stats-wrapper {
         margin-top: 24px;
         font-size: 16px;
@@ -1384,6 +1383,10 @@ styleElement.innerHTML = `
         margin-bottom: 24px;
         border-radius: 4px;
         box-shadow: 0 0 0 1px var(--mdc-theme-text-divider-on-background);
+      }
+
+      .non-standard-source .stat-name {
+        color: var(--mdc-theme-secondary);
       }
       .stats-wrapper .subclass-feature .stat-name {
         color: var(--mdc-theme-primary, '#6200ee');

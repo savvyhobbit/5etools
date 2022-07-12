@@ -2085,7 +2085,6 @@ styleElement.innerHTML = `
           background-color: #fff;
           border-radius: 0 0 0 0;
           z-index: 6;
-          width: 256px;
           display: flex;
           flex-direction: column;
           flex-shrink: 0;
@@ -2093,7 +2092,8 @@ styleElement.innerHTML = `
           height: 100%;
           transition-property: -webkit-transform;
           transition-property: transform;
-          transition-property: transform, -webkit-transform;
+          transition-property: width;
+          transition-property: width, transform, -webkit-transform;
           transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
           border-right-width: 1px;
           border-right-style: solid;

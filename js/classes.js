@@ -273,7 +273,7 @@ function onClassChange(curClass, rootEl) {
       } else if (colHeaderEl.textContent.toLowerCase().indexOf("sorcery points") > -1) {
         colHeaderEl.innerHTML = '<span title="Sorcery Points">SP</span>';
       } else if (colHeaderEl.textContent.toLowerCase().indexOf("spells known") > -1) {
-        colHeaderEl.innerHTML = '<span title="Spells Known">S</span>';
+        colHeaderEl.innerHTML = '<span title="Spells Known">Spells<br/>Known</span>';
       } else if (colHeaderEl.textContent.toLowerCase().indexOf("cantrips known") > -1) {
         colHeaderEl.innerHTML = '<span title="Cantrips Known">C</span>';
       }

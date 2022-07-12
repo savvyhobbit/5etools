@@ -341,7 +341,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           }
 
           // Getting spell slots per level array
-          const spellTable = tableGroups.find((tableGroup) => tableGroup.title === "Spell Slots per Spell Level");
+          const spellTable = tableGroups.find((tableGroup) => tableGroup.title === "Spell Slots");
           let spellSlotEntries;
           if (spellTable) {
             spellSlotEntries = spellTable.rowsSpellProgression[level - 1].filter((spellSlots) => spellSlots !== 0);

@@ -36,7 +36,7 @@ export const
   STL_DISPLAY_INITIAL = "display: initial",
   STL_DISPLAY_NONE = "display: none",
   FLTR_ID = "filterId",
-  CLSS_NON_STANDARD_SOURCE = "spicy-sauce",
+  CLSS_NON_STANDARD_SOURCE = "non-standard-source",
   CLSS_SUBCLASS_FEATURE = "subclass-feature",
   ATB_DATA_LIST_SEP = "||",
   ATB_DATA_PART_SEP = "::",

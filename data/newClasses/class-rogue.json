@@ -859,7 +859,7 @@
 					]
 				},
 				{
-					"title": "Spell Slots per Spell Level",
+					"title": "Spell Slots",
 					"subclasses": [
 						{
 							"name": "Arcane Trickster",

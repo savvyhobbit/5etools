@@ -117,8 +117,10 @@ class DndBaseRoutingView extends PolymerElement {
   static get template() {
     return html`
       <dnd-layout id="titleEl" header="[[header]]">
-        <dnd-spinner loading$="[[loading]]"></dnd-spinner>
-        <div hidden$="[[loading]]" id="routeTarget"></div>
+        <div slot="default">
+          <dnd-spinner loading$="[[loading]]"></dnd-spinner>
+          <div hidden$="[[loading]]" id="routeTarget"></div>
+        </div>
       </dnd-layout>
     `;
   }

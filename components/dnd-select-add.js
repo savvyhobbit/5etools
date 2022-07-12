@@ -202,7 +202,7 @@ class DndSelectAdd extends PolymerElement {
     let result = '';
     if (label) {
       result = label;
-      if (choices && choices !== 1) {
+      if (choices && choices !== 1 && choices !== 100) {
         result += ` (pick ${choices})`;
       }
       if (paren) {

@@ -256,7 +256,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 }
                 @media(min-width: 420px) {
                     dnd-select-add {
-                        width: calc(50% - 20px);
+                        
                     }
                 }
 

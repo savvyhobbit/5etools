@@ -222,7 +222,6 @@ class DndCharacterBuilderRolls extends PolymerElement {
 
       @media(min-width: 921px) {
         :host {
-          padding-right: 0px;
         }
         .roll {
           max-width: 380px;
@@ -281,10 +280,10 @@ class DndCharacterBuilderRolls extends PolymerElement {
         width: calc(50% - 40px);
       }
       .roll__damage-roll--edit {
-        margin-right: 16px;
+        margin: 0 16px;
       }
       .roll__damage-remove {
-        margin: auto 16px 4px;
+        margin: auto -5px 4px;
       }
 
       .rolls__toolbar {
@@ -350,13 +349,13 @@ class DndCharacterBuilderRolls extends PolymerElement {
             <template is="dom-if" if="[[isEditMode]]">
               <div class="roll" on-click="_makeRoll" index$="[[index]]">
                 <div class="roll-header">
-                  <vaadin-text-field value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
-                  <dnd-button label="Remove" icon="remove" on-click="_removeRoll"></dnd-button>
+                  <vaadin-text-field theme="label--secondary" value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
+                  <dnd-button icon="delete" class="icon-only" on-click="_removeRoll"></dnd-button>
                 </div>
 
                 <div class="roll-footer">
                   <div class="roll__to-hit">
-                    <vaadin-integer-field hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
+                    <vaadin-integer-field theme="label--secondary" hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
                     <dnd-switch label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
                   </div>
 
@@ -365,10 +364,10 @@ class DndCharacterBuilderRolls extends PolymerElement {
                       <div class="roll__damage" index$="[[index]]">
                         <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
                         <div class="roll__damage-roll--edit">
-                          <vaadin-text-field value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
+                          <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
                         </div>
                         <div class="roll__damage-type--edit">
-                          <vaadin-select value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
+                          <vaadin-select theme="label--secondary" value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
                             <template>
                               <vaadin-list-box>
                                 <template is="dom-repeat" items="[[damageTypes]]">

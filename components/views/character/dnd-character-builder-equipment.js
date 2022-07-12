@@ -21,16 +21,6 @@ import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "@vaadin/vaadin-grid/vaadin-grid-column";
 import "./dnd-character-builder-equipment-item-detail";
 
-
-// TODO:
-// https://www.google.com/maps/place/7143+Billy+Goat+Dr,+New+Albany,+OH+43054/@40.1050273,-82.8250067,3a,18.1y,193.97h,87.13t/data=!3m7!1e1!3m5!1slpGo1R5kmFJTnA3yjtJYlQ!2e0!5s20151001T000000!7i13312!8i6656!4m7!3m6!1s0x88385e0b74c51a19:0x75954c845587a43b!8m2!3d40.1048551!4d-82.8250649!14m1!1BCgIgAQ
-// http://www.brosco.com/uploads/Price%20Pages%20and%20Forms/Doors/Larson1.pdf
-// Equipment choices from class
-// Parse equipment packs
-// Money counter
-// Ammunition / Potion / Other consumable counts
-// Magic Weapon modifier in entries
-// 
 class DndCharacterBuilderEquipment extends PolymerElement {
   
   static get properties() {
@@ -50,7 +40,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       },
       expandedIds: {
         type: Array
-      }
+      },
+      activeItem: {
+        type: Object,
+      },
+      isMobile: {
+        type: Boolean
+      },
     };
   }
 
@@ -73,7 +69,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     window.scrollTo(0, this.originalScrollHeight);
   }
 
-  _recordScrollHeight() {
+  _recordScrollHeight(e) {
     // Fix reposition issue after tree expand/collapse toggle
     this.originalScrollHeight = window.scrollY;
   }
@@ -110,24 +106,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
   ready() {
     super.ready();
+    this._checkBreakpoint();
+    window.addEventListener('resize', () => {
+      this._checkBreakpoint();
+    });
     
     setTimeout(() => {
       const grid = this.$.grid;
-
-      // Define Row Details
-      grid.rowDetailsRenderer = ((root, grid, rowData) => {
-        if (rowData.detailsOpened) {
-          if (!root.firstElementChild) {
-            root.innerHTML = '<div class="details" id="stats"></div>';
-          }
-          if (!this.detailEl) {
-            this.detailEl = document.createElement('dnd-character-builder-equipment-item-detail');
-            this.detailEl.unique = Date.now();
-          }
-          root.querySelector('.details').appendChild(this.detailEl);
-          this.detailEl.item = rowData.item;
-        }
-      }).bind(this);
 
       // Add Drag and Drop
       let draggedItem;
@@ -224,6 +209,9 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         });
         this.expandedItems = expandedItems;
       }
+      if (this.activeItem) {
+        this.activeItem = getItemAtId(this.inventory, this.activeItem.uniqueId);
+      }
       window.scrollTo(0, originalScrollHeight);
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
@@ -303,7 +291,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   }
 
   _quantityChange(e) {
-    console.log(e);
     const item = this.$.grid.getEventContext(e).item;
     let newQuantity = parseInt(item.quantity, 10);
     if (isNaN(newQuantity)) {
@@ -338,6 +325,35 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
   _toggleTheme(item) {
     return item.children && item.children.length === 0 ? 'no-children' : '';
+  }
+
+  _checkBreakpoint() {
+    const grid = this.$.grid;
+    this.isMobile = window.innerWidth < 921;
+    // Define Row Details
+    if (this.isMobile) {
+      grid.rowDetailsRenderer = ((root, grid, rowData) => {
+        if (rowData.detailsOpened) {
+          if (!root.firstElementChild) {
+            root.innerHTML = '<div class="details"></div>';
+          }
+          if (!this.detailEl) {
+            this.detailEl = document.createElement('dnd-character-builder-equipment-item-detail');
+            this.detailEl.smallRender = true;
+            this.detailEl.unique = Date.now();
+          }
+          root.querySelector('.details').appendChild(this.detailEl);
+          this.detailEl.item = rowData.item;
+        }
+      }).bind(this);
+    } else if (grid.rowDetailsRenderer) {
+      console.error('removing rowDetailsRenderer')
+      grid.rowDetailsRenderer = () => {};
+    }
+  }
+  
+  _isActive(activeItem, item) {
+    return activeItem === item;
   }
 
   static get template() {
@@ -501,6 +517,19 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           border-radius: 4px;
           padding: 14px;
         }
+        
+        .details-row {
+          padding-top: 14px;
+        }
+
+        .details-wrap {
+          display: none;
+          font-size: 14px;
+          background: var(--lumo-contrast-10pct);
+          border-radius: 4px;
+          line-height: 1.5;
+          padding: 14px;
+        }
 
         @media(min-width: 420px) {
           .heading {
@@ -512,26 +541,34 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
 
         @media(min-width: 921px) {
+          .item-wrap[active] {
+            background: var(--_lumo-grid-selected-row-color);
+          }
           .row-wrap {
             width: calc(50% - 10px);
           }
           .row-wrap:first-child {
             margin-bottom: 0;
           }
+          .details {
+            display: none;
+          }
+          .details-wrap {
+            display: block;
+          }
         }
       </style>
 
+      <div class="heading">
+        <h2>Inventory</h2>
+        <a class="reference-link mdc-icon-button material-icons" href="#/items">launch</a>
+      </div>
       <div class="col-wrap">
-
         <div class="row-wrap">
-          <div class="heading">
-            <h2>Inventory</h2>
-            <a class="reference-link mdc-icon-button material-icons" href="#/items">launch</a>
-          </div>
-          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
+          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" active-item="{{activeItem}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>
-                <div class="item-wrap">
+                <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
                   <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
                   <div class="item-wrap__name-wrap" on-click="_expandDetails">
                     <span class="item-wrap__name">[[item.name]]
@@ -540,7 +577,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                     <span class="item-wrap__type">
                       <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
                       <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
-                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity)]]">, [[item.rarity]]</span></span>
+                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity, item)]]">, [[item.rarity]]</span></span>
                     </span>
                   </div>
                   <div hidden$="[[item.hasQuantity]]" class="item-wrap__checkboxes">
@@ -560,6 +597,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             </vaadin-grid-column>
           </vaadin-grid>
         </div>
+        <template is="dom-if" if="[[!isMobile]]">
+          <div class="row-wrap details-row" hidden$="[[!activeItem]]">
+            <div class="details-wrap">          
+              <dnd-character-builder-equipment-item-detail small-render item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
+            </div>
+          </div>
+        </template>
       </div>
     `;
   }

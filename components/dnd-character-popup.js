@@ -126,6 +126,12 @@ class DndCharacterPopup extends PolymerElement {
           right: 0;
           z-index: 2;
         }
+        :host([small]) {
+          position: static;
+        }
+        :host([small]) .open-char-button {
+          display: none;
+        }
         [hidden] {
           display: none !important;
         }
@@ -195,7 +201,6 @@ class DndCharacterPopup extends PolymerElement {
           <button class="mdc-button add-character-option" on-click="addFeatureToCharacter" hidden$="[[!_exists(selection)]]">
             <div class="mdc-button__ripple"></div>
             <i class="material-icons mdc-button__icon" aria-hidden="true">person_add</i>
-            <span class="mdc-button__label">Add [[_viewString(view)]]</span>
           </button>
         </div>
       </div>
