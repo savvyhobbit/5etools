@@ -66,6 +66,10 @@ class DndSelectionList extends PolymerElement {
       listTitle: {
         type: String,
         value: ''
+      },
+      hideCharacterPopup: {
+        type: Boolean,
+        value: false
       }
     };
   }
@@ -73,6 +77,21 @@ class DndSelectionList extends PolymerElement {
   constructor() {
     super();
     this.viewSideBySide = !!window.localStorage.getItem("viewSideBySide");
+  }
+
+  /**
+   * Connects to route eventing channel and checks for loaded selection
+   * from hash.
+   */
+  connectedCallback() {
+    super.connectedCallback();
+
+    routeEventChannel().addEventListener("view-change", () => {
+      this.hasSelection = false;
+    });
+    this.addEventListener("asdf", (e) => {
+      console.error('asdf', e);
+    } )
   }
 
   _loadingChange() {
@@ -100,18 +119,6 @@ class DndSelectionList extends PolymerElement {
   }
 
   /**
-   * Connects to route eventing channel and checks for loaded selection
-   * from hash.
-   */
-  connectedCallback() {
-    super.connectedCallback();
-
-    routeEventChannel().addEventListener("view-change", () => {
-      this.hasSelection = false;
-    });
-  }
-
-  /**
    * Loads the JSON data for the given modelId, then checks to see if 
    * the current routed selection is present in the data.
    */
@@ -135,6 +142,17 @@ class DndSelectionList extends PolymerElement {
           title = this.modelId ? util_capitalize(this.modelId) : '';
       }
       this.listTitle = title;
+
+      switch (this.modelId) {
+        case "feats":
+        case "races":
+        case "backgrounds":
+        case "items":
+          this.hideCharacterPopup = false;
+          break;
+        default:
+          this.hideCharacterPopup = true;
+      }
 
       loadModel(this.modelId)
         .then(result => {
@@ -166,13 +184,32 @@ class DndSelectionList extends PolymerElement {
     return clas;
   }
 
+  _closeDrawerPreview(e) {
+    console.error('_closeDrawerPreview click');
+    if (this.hasSelection) {
+      this.set('_selectedItem', null)
+    } else {
+      this.dispatchEvent(new CustomEvent("close-preview", { 
+        bubbles: true,
+        composed: true,
+        detail: {
+          loading: this.loading
+        }
+      }));
+    }
+  }
+
   _and(a, b) {
     return a && b;
   }
 
+  _toHideFooter(hideCharacterPopup, nonGlobal) {
+    return !nonGlobal && hideCharacterPopup;
+  }
+
   static get template() {
     return html`
-      <style>
+      <style include="my-styles material-styles">
         :host([has-selection]) dnd-list {
           display: none;
         }
@@ -185,6 +222,30 @@ class DndSelectionList extends PolymerElement {
         }
         dnd-button {
           display: none;
+        }
+
+        .preview-close {
+          font-size: 36px;
+          margin-right: 20px;
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .footer-bar {
+          display: flex;
+          align-items: center;
+          position: fixed;
+          width: calc(100% - 48px);
+          max-width: 400px;
+          height: 85px;
+          bottom: 0;
+          margin-left: -16px;
+          background: var(--mdc-theme-surface);
+        }
+        :host([non-global]) .footer-bar {
+          border-top: 1px solid var(--mdc-theme-text-divider-on-background);
         }
 
         @media(min-width: 921px) {
@@ -214,6 +275,9 @@ class DndSelectionList extends PolymerElement {
           :host(:not([non-global])) .list--sidebyside dnd-button {
             transform: rotate(180deg);
           }
+          :host([non-global]) .footer-bar {
+            max-width: 670px;
+          }
         }
       </style>
 
@@ -223,6 +287,11 @@ class DndSelectionList extends PolymerElement {
         <div class="list-wrap">
           <dnd-button icon="launch" class="icon-only" on-click="_changeView"></dnd-button>
           <dnd-list non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{_selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
+        </div>
+
+        <div class="footer-bar" hidden$="[[_toHideFooter(hideCharacterPopup, nonGlobal)]]" >
+          <dnd-character-popup hidden$="[[hideCharacterPopup]]" small$="[[nonGlobal]]" view-id="[[modelId]]" selected-item="[[_selectedItem]]"></dnd-character-popup>
+          <button class="preview-close mdc-icon-button material-icons" on-click="_closeDrawerPreview">arrow_back</button> 
         </div>
       </div>
     `;

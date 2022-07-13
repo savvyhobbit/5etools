@@ -395,6 +395,7 @@ class DndList extends PolymerElement {
           vaadin-grid {
             width: 100%;
             margin-left: 0;
+            margin-bottom: 100px;
           }
         }
       </style>

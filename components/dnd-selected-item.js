@@ -58,9 +58,6 @@ class DndSelectedItem extends PolymerElement {
     window.addEventListener('resize', () => {
       this._adjustHeight();
     });
-    setInterval(() => {
-      this._adjustHeight();
-    }, 500);
   }
 
   /**
@@ -221,6 +218,7 @@ class DndSelectedItem extends PolymerElement {
         }
         .non-global #scroll {
           overflow: scroll;
+          height: calc(100 * var(--vh) - 220px);
         }
         .non-global .page-title {
           font-size: 24px;

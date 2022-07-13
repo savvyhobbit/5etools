@@ -9,6 +9,17 @@ import registerSwipe from '../util/swipe.js';
 import { setDarkmode } from "../util/darkmode.js";
 import { clearRouteSelection, routeEventChannel, readRouteView } from '../util/routing.js';
 import { jqEmpty, timeout, util_capitalize } from '../js/utils.js';
+import './views/dnd-backgrounds-view';
+import './views/dnd-bestiary-view';
+import './views/dnd-conditions-view';
+import './views/dnd-feats-view';
+import './views/dnd-features-view';
+import './views/dnd-items-view';
+import './views/dnd-races-view';
+import './views/dnd-spells-view';
+import './views/dnd-variantrules-view';
+
+
 
 class DndLayout extends PolymerElement {
   static get properties() {
@@ -48,6 +59,14 @@ class DndLayout extends PolymerElement {
 
     this._resetActiveLink({detail: { view: readRouteView()}});
     routeEventChannel().addEventListener("view-change", this._resetActiveLink.bind(this));
+
+    this.addEventListener("open-preview", this._openDrawerPreview.bind(this));
+    this.addEventListener("close-preview", this._closeDrawerPreview.bind(this));
+  }
+
+  ready() {
+    super.ready();
+
   }
 
   disconnectedCallback() {
@@ -163,44 +182,36 @@ class DndLayout extends PolymerElement {
         link.classList.add("list-item--activated");
       }
     }
-
-    if (e && e.detail) {
-      switch (e.detail.view) {
-        case "feats":
-        case "races":
-        case "backgrounds":
-        case "items":
-          this.hideCharacterPopup = false;
-          break;
-        default:
-          this.hideCharacterPopup = true;
-      }
-    }
   }
 
-  async _openDrawerPreview(e) {
+  async _openDrawerPreviewEvent(e) {
     e.preventDefault();
     e.stopPropagation();
     let viewId = new URL(e.target.closest('a').href).hash.split('/')[1];
-    console.error('_openDrawerPreview', e, viewId);
-    const newWidth = Math.min(window.innerWidth - 50, 400);
+    this._openDrawerPreview(viewId);
+  }
+
+  async _openDrawerPreview(viewId) {
+    jqEmpty(this.$.previewTarget);
+    console.error('_openDrawerPreview', viewId);
+    const newWidth = Math.min(window.innerWidth - 50, window.innerWidth > 920 ? 670 : 400);
     this.$.drawer.style.width = `${newWidth}px`
 
-    this.$.drawer.classList.add('mdc-drawer__content--transition');
+    // this.$.drawer.classList.add('mdc-drawer__content--transition');
   
     await timeout(200);
-    await import(`./views/dnd-${viewId}-view.js`);
+    // await import(`./views/dnd-${viewId}-view.js`);
 
     jqEmpty(this.$.previewTarget);
     const previewEl = document.createElement(`dnd-${viewId}-view`);
     previewEl.nonGlobal = true;
     this.$.previewTarget.appendChild(previewEl);
     this.hasPreview = true;
-    await timeout(100);
     this.$.drawer.classList.remove('mdc-drawer__content--transition');
   }
 
   async _closeDrawerPreview() {
+    console.error('_closeDrawerPreview');
     this.$.drawer.style.width = `250px`;
     jqEmpty(this.$.previewTarget);
     this.hasPreview = false;
@@ -278,10 +289,9 @@ class DndLayout extends PolymerElement {
           display: flex;
           border-top: 1px solid var(--mdc-theme-text-divider-on-background);
         }
-        .preview-close {
-          font-size: 36px;
-          margin-right: 20px;
-          margin-left: auto;
+        .hide-me {
+          background: transparent;
+          border: none;
         }
 
         @media(min-width: 921px) {
@@ -372,24 +382,24 @@ class DndLayout extends PolymerElement {
               <a class="mdc-list-item mdc-theme--on-surface" href="#/spells">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">flash_on</i>
                 <span class="mdc-list-item__text">Spells</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/races">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">face</i>
                 <span class="mdc-list-item__text">Races</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/backgrounds">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">public</i>
                 <span class="mdc-list-item__text">Backgrounds</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/feats">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
                   >fitness_center</i
                 >
                 <span class="mdc-list-item__text">Feats</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
 
               <hr class="mdc-list-divider" />
@@ -397,24 +407,24 @@ class DndLayout extends PolymerElement {
               <a class="mdc-list-item mdc-theme--on-surface" href="#/bestiary">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">warning</i>
                 <span class="mdc-list-item__text">Bestiary</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/items">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">restaurant</i>
                 <span class="mdc-list-item__text">Items</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/features">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
                 <span class="mdc-list-item__text">Class Features</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/conditions">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
                   >sentiment_very_dissatisfied</i
                 >
                 <span class="mdc-list-item__text">Conditions</span>
-                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreview" on-click="_openDrawerPreview" on-click="_openDrawerPreview">login</button>
+                <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">toll</i>
@@ -446,10 +456,7 @@ class DndLayout extends PolymerElement {
             </div>
             <div hidden$="[[!hasPreview]]">
               <div class="preview-wrap" id="previewTarget"></div>
-              <div class="preview-bar">
-                <button class="preview-close mdc-icon-button material-icons" on-click="_closeDrawerPreview">arrow_back</button> 
-                <sdnd-character-popup small></dnd-character-popup>
-              </div>
+              <button class="hide-me"></button>
             </div>
           </nav>
         </div>

@@ -8,13 +8,12 @@ import { util_capitalize } from '../js/utils.js';
 class DndCharacterPopup extends PolymerElement {
   static get properties() {
     return {
-      view: {
+      viewId: {
         type: String,
         value: ''
       },
-      selection: {
-        type: String,
-        value: ''
+      selectedItem: {
+        type: Object
       },
       selectedCharacter: {
         type: Object,
@@ -31,36 +30,12 @@ class DndCharacterPopup extends PolymerElement {
 
     getCharacterChannel().addEventListener("character-selected", this.characterChangeHandler);
     initSelectedCharacter();
-
-    this.viewChangeHandler = (e) => {
-      if (e && e.detail) {
-        this.view = e.detail.view;
-      }
-    };
-    routeEventChannel().addEventListener("view-change", this.viewChangeHandler);
-    this.view = readRouteView();
-
-    this.selectionChangeHandler = (e) => {
-      if (e && e.detail) {
-        this.selection = e.detail.selection;
-      }
-    };
-    routeEventChannel().addEventListener("selection-change", this.selectionChangeHandler);
-    this.selection = readRouteSelection();
-
-    this.deselectionHandler = () => {
-      this.selection = '';
-    }
-    routeEventChannel().addEventListener("selection-deselected", this.deselectionHandler);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
 
     getCharacterChannel().removeEventListener("character-selected", this.characterChangeHandler);
-    routeEventChannel().removeEventListener("view-change", this.viewChangeHandler);
-    routeEventChannel().removeEventListener("selection-change", this.selectionChangeHandler);
-    routeEventChannel().removeEventListener("selection-deselected", this.deselectionHandler);
   }
 
   classString(selectedCharacter) {
@@ -72,22 +47,23 @@ class DndCharacterPopup extends PolymerElement {
   }
   
   addFeatureToCharacter() {
-    addFeatureById();
+    console.error('addFeatureToCharacter');
+    addFeatureById(this.viewId, undefined, undefined, this.selectedItem);
   }
 
-  _viewString(view) {
-    switch (view) {
+  _viewIdString(viewId) {
+    switch (viewId) {
       case "classes":
         return "Class";
       default:
-        return util_capitalize(view.substring(0, view.length - 1));
+        return util_capitalize(viewId.substring(0, viewId.length - 1));
     }
   }
 
-  _charBuilderLink(view) {
+  _charBuilderLink(viewId) {
     let charBuilderView;
 
-    switch(view) {
+    switch(viewId) {
       case 'items':
         charBuilderView = 'equipment';
         break;
@@ -137,10 +113,12 @@ class DndCharacterPopup extends PolymerElement {
         }
         .wrapper {
           display: flex;
-          justify-content: space-between;
           align-items: center;
           border-top: 1px solid var(--mdc-theme-text-divider-on-background);
           padding: 8px;
+        }
+        :host([small]) .wrapper {
+          border-top: none;
         }
         .left-wrap {
           display: flex;
@@ -171,6 +149,7 @@ class DndCharacterPopup extends PolymerElement {
           margin-left: 8px;
         }
         .add-character-option {
+          border-radius: 50%;
           margin-left: 10px;
           flex-grow: 0;
           flex-shrink: 0;
@@ -190,18 +169,15 @@ class DndCharacterPopup extends PolymerElement {
 
       <div class="wrapper">
         <div class="left-wrap">
-          <a class="open-char-button mdc-icon-button material-icons" href="[[_charBuilderLink(view)]]">launch</a>
-          <div class="char-select-wrap" smaller$="[[_exists(selection)]]">
+          <a class="open-char-button mdc-icon-button material-icons" href="[[_charBuilderLink(viewId)]]">launch</a>
+          <div class="char-select-wrap" smaller$="[[_exists(selectedItem)]]">
             <dnd-character-select></dnd-character-select>
-            <div class="class" hidden$="[[!_equal(view, 'classes')]]">[[classString(selectedCharacter)]]</div>
-            <div class="feature" hidden$="[[_equal(view, 'classes')]]">[[featureString(view, selectedCharacter)]]</div>
+            <div class="class" hidden$="[[!_equal(viewId, 'classes')]]">[[classString(selectedCharacter)]]</div>
+            <div class="feature" hidden$="[[_equal(viewId, 'classes')]]">[[featureString(viewId, selectedCharacter)]]</div>
           </div>
         </div>
         <div class="feature-button">
-          <button class="mdc-button add-character-option" on-click="addFeatureToCharacter" hidden$="[[!_exists(selection)]]">
-            <div class="mdc-button__ripple"></div>
-            <i class="material-icons mdc-button__icon" aria-hidden="true">person_add</i>
-          </button>
+          <button class="mdc-icon-button material-icons mdc-button--raised add-character-option" on-click="addFeatureToCharacter" hidden$="[[!_exists(selectedItem)]]">person_add</button>
         </div>
       </div>
     `;

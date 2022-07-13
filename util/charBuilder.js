@@ -185,15 +185,20 @@ function addFeature(type, feature, character = selectedCharacter) {
   }
 }
 
-async function addFeatureById(type = readRouteView(), id = readRouteSelection(), character = selectedCharacter) {
+async function addFeatureById(type = readRouteView(), id = readRouteSelection(), character = selectedCharacter, selectedItemIn) {
   if (character && id) {
     let truncId = id;
     if (truncId.indexOf(',') > -1) {
       truncId = truncId.substring(0, truncId.indexOf(','));
     }
 
-    let data = await loadModel(type),
+    let selectedItem;
+    if (selectedItemIn) {
+      selectedItem = selectedItemIn;
+    } else {
+      let data = await loadModel(type);
       selectedItem = resolveHash(data, truncId);
+    }
 
     if (selectedItem) {
       mergeFeature(character, selectedItem, type);
