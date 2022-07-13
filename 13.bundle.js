@@ -1,130 +1,186 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{159:function(e,t,a){"use strict";a.r(t);var d=a(7),c=a(17),r=(a(149),a(142)),i=a(1);class n extends d.a{static get properties(){return{selectedBackground:{type:String,value:""},selectedBackgroundRef:{type:Object},selectedRace:{type:String,value:""},selectedRaceRef:{type:Object},isEditMode:{type:Boolean,value:!1},backgroundName:{type:String,value:""},raceName:{type:String,value:""}}}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(c.F)()),Object(c.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(r.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(r.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(c.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(r.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateFromCharacter(e){this.selectedBackground=e.background,this.selectedBackgroundRef=await Object(c.j)(),this.backgroundName=this.selectedBackground.name,this.selectedRace=e.race,this.selectedRaceRef=await Object(c.E)(),this.raceName=this.selectedRace.name,this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}_getRaceLink(e){let t=[e.name];e.source&&t.push(e.source);let a=Object(i.encodeForHash)(t);return e?"#/races/"+a:"#/races"}_getBackgroundLink(e){let t=[e.name];e.source&&t.push(e.source);let a=Object(i.encodeForHash)(t);return e?"#/backgrounds/"+a:"#/backgrounds"}_showEmpty(e,t){return!e&&!t}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}static get template(){return d.b`
-      <style include="material-styles my-styles">
-        body {}
-        :host {
-          display: block;
-          padding: 14px;
-        }
-        [hidden] {
-          display: none !important;
-        }
+(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{133:function(e,t,l){"use strict";l.r(t);var s=l(3),a=(l(26),l(28),l(81),l(107),l(40)),c=l(30),d=l(114),i=l(11);function o(e,t=0,l=document.scrollingElement){if(l.scrollTop===e)return;const s=(l.scrollTop-e)/2;let a=0,c=null;window.requestAnimationFrame((function d(i){if(null!==c){if(a+=Math.PI*(i-c)/t,a>=Math.PI)return l.scrollTop=e;l.scrollTop=s+e+s*Math.cos(a)}c=i,window.requestAnimationFrame(d)}))}var n=l(1);class r extends s.a{static get properties(){return{classes:{type:Object,observer:"_dataLoaded"},hash:{type:String,value:""},itemOpened:{value:!1},loading:{type:Boolean,value:!0,observer:"_loadingChange"}}}static get observers(){return["_updateClassFromHash(classes, hash)"]}constructor(){super(),this.loading=!0,Object(a.b)("class-all").then(e=>{this.set("classes",e),this.loading=!1})}connectedCallback(){super.connectedCallback(),this.populateHandlers(),Object(i.e)().addEventListener("selection-change",this.selectionChangeEventHandler),Object(i.e)().addEventListener("selection-deselected",this.deselectionChangeEventHandler),this.$.backToTop.addEventListener("click",this.backToTopEventHandler),window.addEventListener("scroll",this.subclassScrollRepositionHandler)}disconnectedCallback(){super.disconnectedCallback(),this.deselectionChangeEventHandler(),Object(i.e)().removeEventListener("selection-change",this.selectionChangeEventHandler),Object(i.e)().removeEventListener("selection-deselected",this.deselectionChangeEventHandler),this.$.backToTop.removeEventListener("click",this.backToTopEventHandler),window.removeEventListener("scroll",this.subclassScrollRepositionHandler,{passive:!0})}populateHandlers(){this.selectionChangeEventHandler=e=>{let t=e?e.detail.selection:Object(i.c)();t&&this.set("hash",t)},this.selectionChangeEventHandler(),this.deselectionChangeEventHandler=()=>{this.set("hash","")},this.backToTopEventHandler=()=>{!function(e=0){o(0,e,document.scrollingElement)}(400)},this.subclassScrollRepositionHandler=()=>{window.scrollY>850?this.$.backToTop.classList.remove("hidden"):this.$.backToTop.classList.add("hidden");const e=this.shadowRoot.querySelector("#subclasses"),t=this.shadowRoot.querySelector("#subclassHeight");e.classList.contains("closed")&&e.classList.contains("fixed")||(this.subclassOffsetHeight=Object(n.jqHeight)(e)+55+"px"),Object(n.jqOffset)(t).top-document.body.scrollTop<64?e.classList.contains("fixed")||(e.classList.add("fixed"),t.style.height=this.subclassOffsetHeight):(e.classList.remove("fixed"),t.style.height="0")}}_loadingChange(){this.dispatchEvent(new CustomEvent("loading-data",{bubbles:!0,composed:!0,detail:{loading:this.loading}}))}_dataLoaded(){Object(d.onDataLoad)(this.classes,this.shadowRoot)}_updateClassFromHash(){if(this.classes&&this.hash){let e,t;if(this.hash.indexOf(",")>-1){let l=this.hash.split(",");e=Object(c.b)(this.classes,l[0]),t=l.slice(1)}else e=Object(c.b)(this.classes,this.hash);if(e){this.itemOpened=!0;let l=e!==this.prevClass;this.prevClass=e,l&&(window.scrollTo(0,0),Object(d.onClassChange)(e,this.shadowRoot)),t&&Object(d.onSubChange)(t,this.hash,this.shadowRoot)}else Object(i.a)(!0)}this.hash||(this.itemOpened=!1)}_clearSelectionHandler(){Object(i.a)(!0)}_mainClass(){return this.itemOpened?"main item-opened":"main"}static get template(){return s.b`
+      <style include="material-styles my-styles"></style>
+      <div class$="[[_mainClass(itemOpened)]]">
 
-        .col-wrap {
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          margin-bottom: 200px;
-        }
+        <button class="mdc-icon-button close-item material-icons" on-click="_clearSelectionHandler">close</button>
+        <button id="backToTop" class="mdc-icon-button mdc-button--raised back-to-top material-icons hidden">arrow_upward</button>
 
-        .row-wrap {
-          width: 100%;
-        }
-        .row-wrap:first-child {
-          margin-bottom: 24px;
-        }
+        <div class="class-container"></div>
 
-        .row-wrap > *:not(h2):not(:last-child) {
-          margin-bottom: 10px;
-        }
+        <div class="class-page--class-container stats-wrapper">
 
-        .heading {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          border-bottom: 1px solid var(--lumo-contrast-10pct);
-        }
-        .reference-link:hover {
-          color: var(--mdc-theme-secondary);
-        }
+          <div id="subclassHeight"></div>
+          <div id="subclasses"></div>
 
-        .default-selection {
-          font-size: 14px;
-          margin-bottom: 0 !important;
-        }
-
-        .default-selection span {
-          color: var(--mdc-theme-secondary)
-        }
-
-        .missing-text {
-          font-style: italic;
-          font-size: 14px;
-        }
-
-        @media(min-width: 420px) {
-          .heading {
-            justify-content: flex-start;
-          }
-          .reference-link {
-            margin-left: 8px;
-          }
-        }
-
-        @media(min-width: 921px) {
-          .row-wrap {
-            width: calc(50% - 10px);
-          }
-          .row-wrap:first-child {
-            margin-bottom: 0;
-          }
-        }
-
-        h2 {
-          display: block;
-          font-size: 1.5em;
-          margin-block-start: 0.83em;
-          margin-block-end: 0.83em;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-          font-weight: bold;
-        }
-
-        h3 {
-          font-size: 24px;
-          font-weight: bold;
-          margin-bottom: 8px;
-        }
-        .details-container  {
-          background: var(--lumo-contrast-10pct);
-          padding: 14px;
-          border-radius: 4px;
-          font-size: 14px;
-        }
-        .stats-wrapper.margin-bottom_large {
-          margin-bottom: 0px !important;
-        }
-        dnd-select-add {
-          --lumo-font-size-m: 20px;
-          width: 100%;
-        }
-
-        dnd-character-builder-suboptions {
-          display: block;
-          margin-left: 30px;
-        }
-      </style>
-
-      <div class="col-wrap">
-        <div class="row-wrap">
-          <div class="heading">
-            <h2>Race</h2>
-            <a class="reference-link mdc-icon-button material-icons" href="[[_getRaceLink(selectedRace)]]">launch</a>
+          <div id="classtable">
+            <table class="table">
+              <tr id="groupHeaders" class="table-row table-row--header">
+                <th colspan="3"></th>
+                <!-- spacer to match the 3 default cols (level, prof, features) -->
+              </tr>
+              <tr id="colHeaders" class="table-row table-row--header">
+                <th class="level table-cell">Level</th>
+                <th class="pb table-cell">Proficiency Bonus</th>
+                <th class="features table-cell">Features</th>
+              </tr>
+              <tr id="level1" class="table-row">
+                <td class="level table-cell">1st</td>
+                <td class="pb table-cell">+2</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level2" class="table-row">
+                <td class="level table-cell">2nd</td>
+                <td class="pb table-cell">+2</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level3" class="table-row">
+                <td class="level table-cell">3rd</td>
+                <td class="pb table-cell">+2</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level4" class="table-row">
+                <td class="level table-cell">4th</td>
+                <td class="pb table-cell">+2</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level5" class="table-row">
+                <td class="level table-cell">5th</td>
+                <td class="pb table-cell">+3</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level6" class="table-row">
+                <td class="level table-cell">6th</td>
+                <td class="pb table-cell">+3</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level7" class="table-row">
+                <td class="level table-cell">7th</td>
+                <td class="pb table-cell">+3</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level8" class="table-row">
+                <td class="level table-cell">8th</td>
+                <td class="pb table-cell">+3</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level9" class="table-row">
+                <td class="level table-cell">9th</td>
+                <td class="pb table-cell">+4</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level10" class="table-row">
+                <td class="level table-cell">10th</td>
+                <td class="pb table-cell">+4</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level11" class="table-row">
+                <td class="level table-cell">11th</td>
+                <td class="pb table-cell">+4</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level12" class="table-row">
+                <td class="level table-cell">12th</td>
+                <td class="pb table-cell">+4</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level13" class="table-row">
+                <td class="level table-cell">13th</td>
+                <td class="pb table-cell">+5</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level14" class="table-row">
+                <td class="level table-cell">14th</td>
+                <td class="pb table-cell">+5</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level15" class="table-row">
+                <td class="level table-cell">15th</td>
+                <td class="pb table-cell">+5</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level16" class="table-row">
+                <td class="level table-cell">16th</td>
+                <td class="pb table-cell">+5</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level17" class="table-row">
+                <td class="level table-cell">17th</td>
+                <td class="pb table-cell">+6</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level18" class="table-row">
+                <td class="level table-cell">18th</td>
+                <td class="pb table-cell">+6</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level19" class="table-row">
+                <td class="level table-cell">19th</td>
+                <td class="pb table-cell">+6</td>
+                <td class="features table-cell"></td>
+              </tr>
+              <tr id="level20" class="table-row">
+                <td class="level table-cell">20th</td>
+                <td class="pb table-cell">+6</td>
+                <td class="features table-cell"></td>
+              </tr>
+            </table>
           </div>
-          <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
-          <div class="missing-text" hidden$="[[_exists(selectedRace)]]">Select Race to add Attribute Bonuses</div>
-          <dnd-character-builder-suboptions storage-key="race" selected-item="[[selectedRaceRef]]"></dnd-character-builder-suboptions>
-        </div>
 
-        <div class="row-wrap">
-          <div class="heading">
-            <h2>Background</h2>
-            <a class="mdc-icon-button material-icons" href="[[_getBackgroundLink(selectedBackground)]]">launch</a>
+          <div id="statsprof" class="stats margin-bottom_large">
+            <div id="hp" colspan="6">
+              <h5>Hit Points</h5>
+              <div id="hitdice" class="margin-bottom_small">
+                <strong>Hit Dice:</strong>
+                <span> </span>
+              </div>
+              <div id="hp1stlevel" class="margin-bottom_small">
+                <strong>Hit Points at 1st Level:</strong>
+                <span> </span>
+              </div>
+              <div id="hphigherlevels" class="margin-bottom_small">
+                <strong>Hit Points at Higher Levels:</strong>
+                <span> </span>
+              </div>
+            </div>
+            <div id="prof" class="margin-bottom_small">
+              <h5>Proficiencies</h5>
+              <div class="margin-bottom_med">You are proficient with the following items, in addition to any proficiencies provided by your race or
+                background.</div>
+              <div id="armor" class="margin-bottom_small">
+                <strong>Armor:</strong>
+                <span> </span>
+              </div>
+              <div id="weapons" class="margin-bottom_small">
+                <strong>Weapons:</strong>
+                <span> </span>
+              </div>
+              <div id="tools" class="margin-bottom_small">
+                <strong>Tools:</strong>
+                <span> </span>
+              </div>
+              <div id="saves" class="margin-bottom_small">
+                <strong>Saving Throws:</strong>
+                <span> </span>
+              </div>
+              <div id="skills" class="margin-bottom_small">
+                <strong>Skills:</strong>
+                <span> </span>
+              </div>
+              <div id="equipment">
+                <h5>Starting Equipment</h5>
+                <div></div>
+              </div>
+            </div>
           </div>
-          <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
-          <div class="missing-text" hidden$="[[_exists(selectedBackground)]]">Select Background to add Skill Proficiencies</div>
-          <dnd-character-builder-suboptions storage-key="background" selected-item="[[selectedBackgroundRef]]"></dnd-character-builder-suboptions>
+
+          <div id="stats" class="stats">
+            <!-- populate with JS -->
+          </div>
         </div>
       </div>
-    `}}customElements.define("dnd-character-builder-background-race",n)}}]);
+    `}}customElements.define("dnd-classes",r);class b extends s.a{static get template(){return s.b`
+      <style include="material-styles my-styles"></style>
+      
+      <dnd-classes></dnd-classes>
+    `}}customElements.define("dnd-classes-view",b)}}]);
 //# sourceMappingURL=13.bundle.js.map

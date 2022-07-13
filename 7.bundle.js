@@ -1,636 +1,468 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[7],{116:function(e,t,i){"use strict";var n=i(7),a=i(69);i(81),i(133);class o extends n.a{static get properties(){return{label:{type:String,value:""},icon:{type:String,value:""},svg:{type:String,value:""},background:{type:String,value:""},border:{type:String,value:""},svgFill:{type:String,value:""},svgStroke:{type:String,value:""}}}connectedCallback(){setTimeout(()=>{this.button=new a.a(this.$.button)},10)}_exists(e){return!!e}_styleStr(e,t,i){let n="";return e&&(n+=`background: ${e}; `),t&&(n+=`border: ${t}; `),n}_svgStyleStr(e,t){let i="";return e&&(i+=`fill: ${e}; `),t&&(i+=`stroke: ${t}; `),i}static get template(){return n.b`
-      <style include="material-styles">
-        .mdc-tab-scroller__scroll-area--scroll {
-          overflow-x: auto;
-          background-color: var(--mdc-theme-surface);
-          border: 1px solid var(--mdc-theme-text-divider-on-background);
-          border-bottom: none;
-        }
+(window.webpackJsonp=window.webpackJsonp||[]).push([[7],{143:function(e,t,i){"use strict";var a=i(3),s=i(32),n=i(1),d=(i(89),i(40));class r extends a.a{static get properties(){return{test:{type:Boolean,reflectToAttribute:!0,value:!1},options:{type:Array,observer:"optionsUpdated"},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},paren:{type:String},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}optionsUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.render()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(n.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(d.b)(this.model)),this.$.select.renderer=(e,t)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",e=>{t.opened=!0;let i=null!==e.srcElement.getAttribute("selected");setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!i&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(n.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],i=document.createElement("vaadin-item"),a=t.name||Object(n.util_capitalizeAll)(t);i.innerHTML=`<span>${a}</span> ${t.name?`<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${t.source}</span>`:""}`,i.setAttribute("value",e),this.listBox.appendChild(i)}e.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(s.O)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t,i){let a="";return e&&(a=e,t&&1!==t&&100!==t&&(a+=` (pick ${t})`),i&&(a+=` (${i})`)),a}static get template(){return a.b`
+      <style>
         :host {
-          display: inline;
-          overflow: hidden;
-          white-space: nowrap;
-          border-radius: 6px;
+          display: inline-block;
         }
-        .mdc-button {
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
+        [slot="prefix"] {
+          width: calc(100% - 46px);
+          padding: 12px;
+          line-height: 1.4;
+        }
+        vaadin-select {
           width: 100%;
         }
-        .mdc-button .mdc-button__icon {
-          margin-right: 0px;
-          margin-left: 8px;
-        }
-        .mdc-button [background] {
-          background: var(--lumo-contrast-10pct);
-        }
-        dnd-svg {
-          height: 20px;
-          width: 20px;
-          flex-shrink: 0;
-          flex-grow: 0;
-          padding-left: 8px;
-          fill: var(--mdc-theme-primary);
-          stroke: var(--mdc-theme-primary);
-        }
-        i {
-          flex-shrink: 0;
-          flex-grow: 0;
-        }
-
-        
-        :host(.btn-field__btn) dnd-svg {
-          padding-left: 0;
-        }
-        :host(.btn-field__btn) i {
-          margin-left: 0;
-        }
-
-        :host(.icon-only) dnd-svg {
-          margin-left: -24px;
-          padding-left: 0;
-        }
-        :host(.icon-only) i {
-          margin-left: 0;
-          padding-left: 0;
-        }
-        :host(.hard-left) i {
-          margin-left: -24px;
-        }
-
-        :host(.link) .mdc-button__label {
-          text-transform: none;
-          color: var(--lumo-body-text-color);
-          letter-spacing: normal;
-        }
-        :host(.link) i {
+        .prefix {
+          white-space: normal;
           color: var(--lumo-body-text-color);
         }
-        :host(.link) button:hover::before {
-          background: none;
+      </style>
+      <vaadin-select test$="[[test]]" theme="dark" add id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+        <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
+          <span class="prefix">[[multiValue]]</span>
+        </div>
+      </vaadin-select>
+      
+    `}}customElements.define("dnd-select-add",r)},148:function(e,t,i){"use strict";i.r(t);var a=i(3),s=i(32),n=i(142),d=i(110),r=i(0),o=i(1),l=(i(146),i(144),i(149),i(2));i(143),i(88);class m extends a.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},hasRenderedOutput:{type:Boolean,value:!1},hasAC:{type:Boolean,value:!1},armorAC:{type:Number,value:0},isArmor:{type:Boolean,value:!1},isMartial:{type:Boolean,value:!1},weaponMagicModifier:{type:Number,value:0},itemRarity:{type:String},itemName:{type:String},itemWeight:{type:Number,value:0},weaponProperties:{type:Array},itemResist:{type:String},itemQuantity:{type:Number,value:0},item:{type:Object},storedItem:{type:Object},itemType:{type:String,value:""},smallRender:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get observers(){return["_itemChanged(item)"]}constructor(){super(),this.itemTypes=["Currency","Armor (Light)","Armor (Medium)","Armor (Heavy)","Melee Weapon","Ranged Weapon","Shield","Adventuring Gear","Ammunition","Artisan Tool","Explosive","Gaming Set","Instrument","Mount","Potion","Rod","Ring","Scroll","Spellcasting Focus","Tool","Tack and Harness","Trade Good","Vehicle","Wand"],this.rarityTypes=r.z,this.damageTypes=r.k,this.resistTypes=["<None>",...r.k],this.weaponPropertyOptions=[{name:"Two-Handed",value:"2H"},{name:"Ammunition",value:"A"},{name:"Finesse",value:"F"},{name:"Heavy",value:"H"},{name:"Light",value:"L"},{name:"Loading",value:"LD"},{name:"Reach",value:"R"},{name:"Reload",value:"RLD"},{name:"Special",value:"S"},{name:"Thrown",value:"T"},{name:"Versatile",value:"V"}],this.weaponPropertyValues=["Two-Handed","Ammunition","Finesse","Heavy","Light","Loading","Reach","Reload","Special","Thrown","Versatile"]}connectedCallback(){super.connectedCallback(),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}_itemChanged(){if(this.item){if(console.error("itemDetail:",this.item),this.item.itemRef&&!this.item.lookupFailed?(this.hasRenderedOutput=!0,Object(d.renderSelection)(this.item,this.$.renderedOutput,void 0,this.smallRender)):this.hasRenderedOutput=!1,this.itemType=this._getItemType(),this.hasAC="S"===this.item.type||!!this.item.armor,this.hasAC&&(this.armorAC=this.item.ac),this.isArmor=!!this.item.armor,this.isMartial="Martial"===this.item.weaponCategory,this.item.weapon){this.weaponMagicModifier=parseInt(this.item.genericBonus,10);const e=this.item.property;if(e){const t=e.split(",").map(e=>{const t=this.weaponPropertyOptions.find(t=>t.value===e.trim());if(t)return t.name}).filter(e=>!!e);this.weaponProperties=t,this.item.damages||(this.item.dmg1?this.item.storedItem.damages=[{roll:this.item.dmg1,type:Object(o.util_capitalizeAll)(l.a.dmgTypeToFull(this.item.dmgType))}]:this.item.storedItem.damages=[])}}this.itemRarity=this.item.rarity,this.itemName=this.item.name,this.itemWeight=this.item.weight,this.canHaveResist=this.item.armor||"P"===this.item.type||"RG"===this.item.type,this.itemResist=this.item.resist,this.canHaveQuantity="P"===this.item.type||"A"===this.item.type||"EXP"===this.item.type,this.itemQuantity=this.item.quantity,this.canHaveSpell="SC"===this.item.type,this.item.storedItem&&(this.storedItem=this.item.storedItem)}}_getItemType(){return this.item?l.a.ITEM_TYPE_JSON_TO_ABV[this.item.type]:""}_selectItemType(){const e=this.root.querySelector("#typeSelect").value;switch(this.storedItem.armor=!1,this.storedItem.weapon=!1,this.storedItem.type="",this.storedItem.isEquipped=!1,this.storedItem.isAttuned=!1,e){case"Armor (Light)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="LA";break;case"Armor (Medium)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="MA";break;case"Armor (Heavy)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="HA";break;case"Ranged Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="R",this.storedItem.resist=null;break;case"Melee Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="M",this.storedItem.resist=null;break;case"Shield":this.storedItem.type="S",this.storedItem.weaponCategory=null,this.storedItem.ac=2,this.storedItem.resist=null;break;case"Adventuring Gear":this.storedItem.weaponCategory=null,this.storedItem.type="G",this.storedItem.resist=null;break;case"Currency":this.storedItem.weaponCategory=null,this.storedItem.type="$",this.storedItem.resist=null,this.storedItem.quantity=1,this.storedItem.hasQuantity=!0;break;default:const t=Object.entries(l.a.ITEM_TYPE_JSON_TO_ABV).find(([t,i])=>i===e);t&&(this.storedItem.type=t[0]),"P"===e&&"RG"===e||(this.storedItem.resist=null)}"P"!==this.storedItem.type&&"A"!==this.storedItem.type&&"EXP"!==this.storedItem.type&&"$"!==this.storedItem.type&&(this.storedItem.hasQuantity=!1),Object(s.kb)(this.item)}_updateItem(){Object(s.kb)(this.item)}_addDamage(){this.storedItem.damages||(this.storedItem.damages=[]),this.storedItem.damages.push({roll:"",type:""}),Object(s.kb)(this.item)}_removeDamage(e){const t=Object(o.findInPath)(".roll__damage",e).getAttribute("index"),i=parseInt(t,10);this.storedItem.damages.splice(i,1),Object(s.kb)(this.item)}_changeWeaponType(){this.item.weapon&&(this.isMartial?this.storedItem.weaponCategory="Martial":this.storedItem.weaponCategory="Simple",Object(s.kb)(this.item))}_weaponMagicModifierChange(){let e=parseInt(this.weaponMagicModifier,10);isNaN(e)&&(e=0),this.storedItem.genericBonus=e>0?"+"+e:e,Object(s.kb)(this.item)}_itemRarityChange(){this.itemRarity&&(this.storedItem.rarity=this.itemRarity,Object(s.kb)(this.item))}_itemNameChange(){this.itemName&&(this.storedItem.name=this.itemName,Object(s.kb)(this.item))}_addWeaponProperty(){return(e=>{if(e&&e.length){const t=e.map(e=>{const t=this.weaponPropertyOptions.find(t=>t.name===e.trim());if(t)return t.value}).filter(e=>!!e);this.storedItem.property=t.join(","),Object(s.kb)(this.item)}}).bind(this)}_armorACChange(){let e=parseInt(this.armorAC,10);isNaN(e)&&(e=0),this.storedItem.ac=e,Object(s.kb)(this.item)}_itemWeightChange(){let e=parseFloat(this.itemWeight,10);isNaN(e)&&(e=0),this.storedItem.weight=e,Object(s.kb)(this.item)}_itemResistChange(){this.itemResist&&(this.storedItem.resist="<None>"===this.itemResist?null:this.itemResist,Object(s.kb)(this.item))}_itemQuantityChange(){let e=parseInt(this.itemQuantity,10);isNaN(e)&&(e=0),this.storedItem.quantity=e,this.storedItem.hasQuantity=!0,Object(s.kb)(this.item)}_or(...e){for(let t of e)if(t)return!0;return!1}static get template(){return a.b`
+      <style include="material-styles my-styles"></style>
+      <style>
+        :host {}
+        [hidden] {
+          display: none !important;
         }
-        :host(.link) button:hover i,
-        :host(.link) button:hover .mdc-button__label {
+
+        .edit__wrap {
+          margin-right: -10px;
+        }
+        .edit__name {
+          width: calc(65% - 10px);
+          padding-top: 0;
+        }
+        .edit__notes {
+          width: calc(100% - 10px);
+          min-height: 200px;
+        }
+        .edit__checkboxes {
+          display: flex;
+          flex-direction: column;
+          margin: 10px 10px 0 0;
+        }
+
+        .section_heading {
+          margin: 16px 0 0px;
+          font-size: 17px;
           color: var(--mdc-theme-secondary);
         }
 
-        :host([edit-mode]) button {
-          background-color: var(--mdc-theme-secondary);
-          color: var(--mdc-theme-on-secondary)
-        }
-        :host([edit-mode]) .mdc-button__label {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([edit-mode]) i {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([edit-mode]) button:hover i,
-        :host([edit-mode]) button:hover .mdc-button__label {
-          color: var(--mdc-theme-on-secondary);
-        }
-
-        :host([not-edit-mode]) button {
-          background-color: var(--mdc-theme-primary);
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([not-edit-mode]) .mdc-button__label {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([not-edit-mode]) i {
-          color: var(--mdc-theme-on-primary);
-        }
-        :host([not-edit-mode]) button:hover i,
-        :host([not-edit-mode]) button:hover .mdc-button__label {
-          color: var(--mdc-theme-on-primary);
-        }
-
-      </style>
-      <button id="button" class="mdc-button" style$="[[_styleStr(background, border, label)]]">
-        <div class="mdc-button__ripple"></div>
-        <span class="mdc-button__label">[[label]]</span>
-        <slot name="label"></slot>
-        <template is="dom-if" if="[[_exists(icon)]]">
-          <i class="material-icons mdc-button__icon" aria-hidden="true">[[icon]]</i>
-        </template>
-        <template is="dom-if" if="[[_exists(svg)]]">
-          <dnd-svg id="[[svg]]" style$="[[_svgStyleStr(svgFill, svgStroke)]]"></dnd-svg>
-        </template>
-      </button>
-    `}}customElements.define("dnd-button",o)},135:function(e,t,i){"use strict";var n=i(7),a=i(53),o=i(19),r=i(54),l=i(41),s=i(13);
-/**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-class d extends(Object(l.a)(Object(r.a)(Object(o.a)(Object(a.a)(n.a))))){static get template(){return s.a`
-    <style>
-      :host {
-        display: inline-block;
-      }
-
-      :host([hidden]) {
-        display: none !important;
-      }
-
-      label {
-        display: inline-flex;
-        align-items: baseline;
-        outline: none;
-      }
-
-      [part="checkbox"] {
-        position: relative;
-        display: inline-block;
-        flex: none;
-      }
-
-      input[type="checkbox"] {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: inherit;
-        margin: 0;
-      }
-
-      :host([disabled]) {
-        -webkit-tap-highlight-color: transparent;
-      }
-    </style>
-
-    <label>
-      <span part="checkbox">
-        <input type="checkbox" checked="{{checked::change}}" disabled\$="[[disabled]]" indeterminate="{{indeterminate::change}}" role="presentation" tabindex="-1">
-      </span>
-
-      <span part="label">
-        <slot></slot>
-      </span>
-    </label>
-`}static get is(){return"vaadin-checkbox"}static get version(){return"2.5.0"}static get properties(){return{checked:{type:Boolean,value:!1,notify:!0,observer:"_checkedChanged",reflectToAttribute:!0},indeterminate:{type:Boolean,notify:!0,observer:"_indeterminateChanged",reflectToAttribute:!0,value:!1},value:{type:String,value:"on"},_nativeCheckbox:{type:Object}}}constructor(){super(),this.name}get name(){return this.checked?this._storedName:""}set name(e){this._storedName=e}ready(){super.ready(),this.setAttribute("role","checkbox"),this._nativeCheckbox=this.shadowRoot.querySelector('input[type="checkbox"]'),this.addEventListener("click",this._handleClick.bind(this)),this._addActiveListeners();const e=this.getAttribute("name");e&&(this.name=e),this.shadowRoot.querySelector('[part~="label"]').querySelector("slot").addEventListener("slotchange",this._updateLabelAttribute.bind(this)),this._updateLabelAttribute()}_updateLabelAttribute(){const e=this.shadowRoot.querySelector('[part~="label"]'),t=e.firstElementChild.assignedNodes();this._isAssignedNodesEmpty(t)?e.setAttribute("empty",""):e.removeAttribute("empty")}_isAssignedNodesEmpty(e){return 0===e.length||1==e.length&&e[0].nodeType==Node.TEXT_NODE&&""===e[0].textContent.trim()}_checkedChanged(e){this.indeterminate?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",Boolean(e))}_indeterminateChanged(e){e?this.setAttribute("aria-checked","mixed"):this.setAttribute("aria-checked",this.checked)}_addActiveListeners(){this._addEventListenerToNode(this,"down",e=>{this.__interactionsAllowed(e)&&this.setAttribute("active","")}),this._addEventListenerToNode(this,"up",()=>this.removeAttribute("active")),this.addEventListener("keydown",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this.setAttribute("active",""))}),this.addEventListener("keyup",e=>{this.__interactionsAllowed(e)&&32===e.keyCode&&(e.preventDefault(),this._toggleChecked(),this.removeAttribute("active"),this.indeterminate&&(this.indeterminate=!1))})}get focusElement(){return this.shadowRoot.querySelector("input")}__interactionsAllowed(e){return!this.disabled&&"a"!==e.target.localName}_handleClick(e){this.__interactionsAllowed(e)&&(this.indeterminate?(this.indeterminate=!1,e.preventDefault(),this._toggleChecked()):e.composedPath()[0]!==this._nativeCheckbox&&(e.preventDefault(),this._toggleChecked()))}_toggleChecked(){this.checked=!this.checked,this.dispatchEvent(new CustomEvent("change",{composed:!1,bubbles:!0}))}}customElements.define(d.is,d)},143:function(e,t,i){"use strict";i(51),i(50),i(74);const n=i(13).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
-  <template>
-    <style include="lumo-field-button">
-      :host {
-        width: 8em;
-      }
-
-      :host([has-controls]:not([theme~="align-right"])) [part="value"] {
-        text-align: center;
-      }
-
-      [part="decrease-button"][disabled],
-      [part="increase-button"][disabled] {
-        opacity: 0.2;
-      }
-
-      :host([has-controls]) [part="input-field"] {
-        padding: 0;
-      }
-
-      [part="decrease-button"],
-      [part="increase-button"] {
-        cursor: pointer;
-        font-size: var(--lumo-icon-size-s);
-        width: 1.6em;
-        height: 1.6em;
-      }
-
-      [part="decrease-button"]::before,
-      [part="increase-button"]::before {
-        margin-top: 0.2em;
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) [part="value"],
-      :host([dir="rtl"]) [part="input-field"] ::slotted(input) {
-        --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(n.content);i(85),i(7),i(31);var a=i(65),o=i(20);
-/**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-const r=document.createElement("template");let l;r.innerHTML='<dom-module id="vaadin-number-field-template">\n  <template>\n    <style>\n      :host([readonly]) [part$="button"] {\n        pointer-events: none;\n      }\n\n      [part="decrease-button"]::before {\n        content: "−";\n      }\n\n      [part="increase-button"]::before {\n        content: "+";\n      }\n\n      [part="decrease-button"],\n      [part="increase-button"] {\n        -webkit-user-select: none;\n        -moz-user-select: none;\n        -ms-user-select: none;\n        user-select: none;\n      }\n\n      /* Hide the native arrow icons */\n      [part="value"]::-webkit-outer-spin-button,\n      [part="value"]::-webkit-inner-spin-button {\n        -webkit-appearance: none;\n        margin: 0;\n      }\n\n      [part="value"] {\n        /* Older Firefox versions (v47.0) requires !important */\n        -moz-appearance: textfield !important;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] {\n        direction: ltr;\n      }\n\n      :host([dir="rtl"]) [part="value"]::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input)::placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        direction: rtl;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input)::placeholder {\n        text-align: left;\n      }\n\n      :host([dir="rtl"]:not([has-controls])) [part="value"]:-ms-input-placeholder,\n      :host([dir="rtl"]:not([has-controls])) [part="input-field"] ::slotted(input):-ms-input-placeholder {\n        text-align: left;\n      }\n    </style>\n\n    <div disabled$="[[!_allowed(-1, value, min, max, step)]]" part="decrease-button" on-click="_decreaseValue" on-touchend="_decreaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n\n    <div disabled$="[[!_allowed(1, value, min, max, step)]]" part="increase-button" on-click="_increaseValue" on-touchend="_increaseButtonTouchend" hidden$="[[!hasControls]]">\n    </div>\n  </template>\n\n  \n</dom-module>',document.head.appendChild(r.content);class s extends a.a{static get is(){return"vaadin-number-field"}static get version(){return"2.6.2"}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number,reflectToAttribute:!0,observer:"_minChanged"},max:{type:Number,reflectToAttribute:!0,observer:"_maxChanged"},step:{type:Number,value:1,observer:"_stepChanged"}}}ready(){super.ready(),this.__previousValidInput=this.value||"",this.inputElement.type="number",this.inputElement.addEventListener("change",this.__onInputChange.bind(this))}_decreaseButtonTouchend(e){e.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(e){e.preventDefault(),this._increaseValue()}static get template(){if(!l){l=super.template.cloneNode(!0);const e=o.a.import(this.is+"-template","template"),t=e.content.querySelector('[part="decrease-button"]'),i=e.content.querySelector('[part="increase-button"]'),n=e.content.querySelector("style"),a=l.content.querySelector('[part="input-field"]'),r=l.content.querySelector('[name="prefix"]');a.insertBefore(t,r),a.appendChild(i),l.content.appendChild(n)}return l}_createConstraintsObserver(){this._createMethodObserver("_constraintsChanged(required, minlength, maxlength, pattern, min, max, step)")}_constraintsChanged(e,t,i,n,a,o,r){if(!this.invalid)return;const l=e=>!e&&0!==e;l(a)&&l(o)?super._constraintsChanged(e,t,i,n):this.validate()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(e){if(this.disabled||this.readonly)return;let t=parseFloat(this.value);this.value?t<this.min?(e=0,t=this.min):t>this.max&&(e=0,t=this.max):0==this.min&&e<0||0==this.max&&e>0||0==this.max&&0==this.min?(e=0,t=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?t=0:this.min>0?(t=this.min,this.max<0&&e<0&&(t=this.max),e=0):this.max<0&&(t=this.max,e<0?e=0:this._getIncrement(1,t-this.step)>this.max?t-=2*this.step:t-=this.step);const i=this._getIncrement(e,t);this.value&&0!=e&&!this._incrementIsInsideTheLimits(e,t)||this._setValue(i)}_setValue(e){this.value=this.inputElement.value=String(parseFloat(e)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(e,t){let i=this.step||1,n=this.min||0;const a=Math.max(this._getMultiplier(t),this._getMultiplier(i),this._getMultiplier(n));i*=a,n*=a;const o=((t=Math.round(t*a))-n)%i;return e>0?(t-o+i)/a:e<0?(t-(o||i))/a:t/a}_getDecimalCount(e){const t=String(e),i=t.indexOf(".");return-1===i?1:t.length-i-1}_getMultiplier(e){if(!isNaN(e))return Math.pow(10,this._getDecimalCount(e))}_incrementIsInsideTheLimits(e,t){return e<0?null==this.min||this._getIncrement(e,t)>=this.min:e>0?null==this.max||this._getIncrement(e,t)<=this.max:this._getIncrement(e,t)<=this.max&&this._getIncrement(e,t)>=this.min}_allowed(e){const t=e*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(t,i)}_stepChanged(e){this.__validateByStep=this.__stepChangedCalled||null!==this.getAttribute("step"),this.inputElement.step=this.__validateByStep?e:"any",this.__stepChangedCalled=!0,this.setAttribute("step",e)}_minChanged(e){this.inputElement.min=e}_maxChanged(e){this.inputElement.max=e}_valueChanged(e,t){e&&isNaN(parseFloat(e))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,t)}_onKeyDown(e){38==e.keyCode?(e.preventDefault(),this._increaseValue()):40==e.keyCode&&(e.preventDefault(),this._decreaseValue()),super._onKeyDown(e)}__onInputChange(){this.validate()}checkValidity(){return void 0!==this.min||void 0!==this.max||this.__validateByStep?this.inputElement.checkValidity():super.checkValidity()}}window.customElements.define(s.is,s);
-/**
-@license
-Copyright (c) 2019 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
-const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(d.content);class c extends s{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(!this.__hasOnlyDigits(e))return console.warn(`Trying to set invalid step size "${e}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d*$/.test(String(e))}}window.customElements.define(c.is,c)},144:function(e,t,i){"use strict";i(45),i(33);const n=i(13).a`<dom-module id="lumo-checkbox" theme-for="vaadin-checkbox">
-  <template>
-    <style include="lumo-checkbox-style lumo-checkbox-effects">
-      /* IE11 only */
-      ::-ms-backdrop,
-      [part="checkbox"] {
-        line-height: 1;
-      }
-    </style>
-  </template>
-</dom-module><dom-module id="lumo-checkbox-style">
-  <template>
-    <style>
-      :host {
-        -webkit-tap-highlight-color: transparent;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        cursor: default;
-        outline: none;
-      }
-
-      [part="label"]:not([empty]) {
-        margin: 0.1875em 0.875em 0.1875em 0.375em;
-      }
-
-      [part="checkbox"] {
-        width: calc(1em + 2px);
-        height: calc(1em + 2px);
-        margin: 0.1875em;
-        position: relative;
-        border-radius: var(--lumo-border-radius-s);
-        background-color: var(--lumo-contrast-20pct);
-        transition: transform 0.2s cubic-bezier(.12, .32, .54, 2), background-color 0.15s;
-        pointer-events: none;
-        line-height: 1.2;
-      }
-
-      :host([indeterminate]) [part="checkbox"],
-      :host([checked]) [part="checkbox"] {
-        background-color: var(--lumo-primary-color);
-      }
-
-      /* Needed to align the checkbox nicely on the baseline */
-      [part="checkbox"]::before {
-        content: "\\2003";
-      }
-
-      /* Checkmark */
-      [part="checkbox"]::after {
-        content: "";
-        display: inline-block;
-        width: 0;
-        height: 0;
-        border: 0 solid var(--lumo-primary-contrast-color);
-        border-width: 0.1875em 0 0 0.1875em;
-        box-sizing: border-box;
-        transform-origin: 0 0;
-        position: absolute;
-        top: 0.8125em;
-        left: 0.5em;
-        transform: scale(0.55) rotate(-135deg);
-        opacity: 0;
-      }
-
-      :host([checked]) [part="checkbox"]::after {
-        opacity: 1;
-        width: 0.625em;
-        height: 1.0625em;
-      }
-
-      /* Indeterminate checkmark */
-
-      :host([indeterminate]) [part="checkbox"]::after {
-        transform: none;
-        opacity: 1;
-        top: 45%;
-        height: 10%;
-        left: 22%;
-        right: 22%;
-        width: auto;
-        border: 0;
-        background-color: var(--lumo-primary-contrast-color);
-        transition: opacity 0.25s;
-      }
-
-      /* Focus ring */
-
-      :host([focus-ring]) [part="checkbox"] {
-        box-shadow: 0 0 0 3px var(--lumo-primary-color-50pct);
-      }
-
-      /* Disabled */
-
-      :host([disabled]) {
-        pointer-events: none;
-        color: var(--lumo-disabled-text-color);
-      }
-
-      :host([disabled]) [part="label"] ::slotted(*) {
-        color: inherit;
-      }
-
-      :host([disabled]) [part="checkbox"] {
-        background-color: var(--lumo-contrast-10pct);
-      }
-
-      :host([disabled]) [part="checkbox"]::after {
-        border-color: var(--lumo-contrast-30pct);
-      }
-
-      :host([indeterminate][disabled]) [part="checkbox"]::after {
-        background-color: var(--lumo-contrast-30pct);
-      }
-
-      /* RTL specific styles */
-
-      :host([dir="rtl"]) [part="label"]:not([empty]) {
-        margin: 0.1875em 0.375em 0.1875em 0.875em;
-      }
-    </style>
-  </template>
-</dom-module><dom-module id="lumo-checkbox-effects">
-  <template>
-    <style>
-      /* Transition the checkmark if activated with the mouse (disabled for grid select-all this way) */
-      :host(:hover) [part="checkbox"]::after {
-        transition: width 0.1s, height 0.25s;
-      }
-
-      /* Used for activation "halo" */
-      [part="checkbox"]::before {
-        color: transparent;
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        border-radius: inherit;
-        background-color: inherit;
-        transform: scale(1.4);
-        opacity: 0;
-        transition: transform 0.1s, opacity 0.8s;
-      }
-
-      /* Hover */
-
-      :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
-        background-color: var(--lumo-contrast-30pct);
-      }
-
-      /* Disable hover for touch devices */
-      @media (pointer: coarse) {
-        :host(:not([checked]):not([indeterminate]):not([disabled]):hover) [part="checkbox"] {
-          background-color: var(--lumo-contrast-20pct);
-        }
-      }
-
-      /* Active */
-
-      :host([active]) [part="checkbox"] {
-        transform: scale(0.9);
-        transition-duration: 0.05s;
-      }
-
-      :host([active][checked]) [part="checkbox"] {
-        transform: scale(1.1);
-      }
-
-      :host([active]:not([checked])) [part="checkbox"]::before {
-        transition-duration: 0.01s, 0.01s;
-        transform: scale(0);
-        opacity: 0.4;
-      }
-    </style>
-  </template>
-</dom-module>`;document.head.appendChild(n.content);i(135)},145:function(e,t,i){"use strict";i(144),i(135)},161:function(e,t,i){"use strict";i.r(t);var n=i(7),a=(i(84),i(145),i(143),i(116),i(1)),o=i(17),r=i(0),l=i(142),s=i(75);class d extends n.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},customRolls:{type:Array}}}connectedCallback(){super.connectedCallback(),this.damageTypes=r.k,this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(o.F)()),Object(o.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(l.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(l.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(o.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(l.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateFromCharacter(e){this.customRolls=e.customRolls?Object(a.cloneDeep)(e.customRolls):[],this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}__exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}__abs(e){return e>=0?"+"+e:e}_makeRoll(e){if(!this.isEditMode){let t=e.model.__data.item;t.noHitRoll||Object(s.d)(t.name+" (to hit)",t.toHit,this.$.advMod.checked,this.$.disadvMod.checked),t.damages.forEach((e,i)=>{Object(s.b)(`${t.name} (${e.type} damage)`,e.roll),setTimeout(()=>{},500*(i+1))})}}_rollChangeHandler(e){const t=Object(a.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10);Object(o.hb)(this.customRolls[i],i)}_addRoll(){Object(o.hb)({name:"",toHit:0,noHitRoll:!1,damages:[{roll:"",type:""}]},this.customRolls.length),this.isEditMode||Object(l.a)(!0),setTimeout(()=>{const e=this.shadowRoot.querySelectorAll(".roll");e[e.length-1].scrollIntoView()},1)}_removeRoll(e){const t=Object(a.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10);Object(o.R)(i)}_addDamage(e){const t=Object(a.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10),n=this.customRolls[i];n.damages.push({roll:"",type:""}),Object(o.hb)(n,i)}_removeDamage(e){const t=Object(a.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10),n=Object(a.findInPath)(".roll__damage",e).getAttribute("index"),r=parseInt(n,10);Object(o.S)(i,r)}_or(e,t){return e||t}_orNot(e,t){return e||!t}_isTruthy(e){return!!e}_modChange(e){"advMod"===e.currentTarget.id?this.$.disadvMod.checked=!1:this.$.advMod.checked=!1}static get template(){return n.b`
-    <style include="material-styles">
-      body {}
-      :host {
-        display: block;
-        padding: 14px;
-      }
-      [hidden] {
-        display: none !important;
-      }
-      
-      .col-wrap {
-        display: flex; 
-        justify-content: space-between;
-        flex-wrap: wrap;
-        margin-bottom: 56px;
-      }
-      .row-wrap {
-        width: 100%;
-      }
-
-      .heading {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid var(--lumo-contrast-10pct);
-        margin-bottom: 10px;
-      }
-
-      h2 {
-        margin-bottom: 24px;
-      }
-
-      .rolls__add-button {
-        margin-left: 16px;
-      }
-
-      .roll {
-        display: flex;
-        flex-direction: column;
-        cursor: pointer;
-        border-radius: 4px;
-        padding: 8px;
-        margin-bottom: 16px;
-        background: var(--lumo-contrast-10pct);
-        height: min-content;
-        width: calc(100% - 16px);
-      }
-      
-      .rolls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding-bottom: 60px;
-      }
-
-      @media(min-width: 500px) {
-        .roll {
-          width: calc(50% - 24px);
-        }
-      }
-
-      @media(min-width: 921px) {
-        :host {
-        }
-        .roll {
-          max-width: 380px;
-          margin-right: 15px;
-        }
-        .rolls {
+        .roll__damages {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: column;
         }
-      }
-
-      @media(min-width: 1321px) {
-        .roll {
-          width: calc(33.3% - 32px);
+        .roll__damage {
+          display: flex;
+          margin-right: 10px;
         }
-      }
+        .roll__damage vaadin-text-field,
+        .roll__damage vaadin-select {
+          max-width: 100%;
+        }
+        .roll__damage-roll--edit,
+        .roll__damage-type--edit {
+          width: calc(50% - 40px);
+        }
+        .roll__damage-roll--edit {
+          margin: 0 16px;
+        }
+        .roll__damage-remove {
+          margin: auto -5px 4px;
+        }
 
-      .roll-header {
-        display: flex;
-        justify-content: space-between;
-      }
-      .roll-header dnd-button {
-        margin-top: 20px;
-      }
-      .roll-header vaadin-text-field {
-        padding-top: 0;
-      }
-      h3 {
-        margin: 4px 0;
-      }
-      .roll__to-hit {
-        display: flex;
-      }
-      .roll__to-hit dnd-switch {
-        margin: 0 auto;
-        padding: 26px 20px 27px;
-      }
+        dnd-switch {
+          margin: 10px auto 0;
+          display: block;
+        }
 
-      .roll-footer {
-        display: flex;
-        flex-direction: column;
-      }
-      .roll__damages {
-        display: flex;
-        flex-direction: column;
-      }
-      .roll__damage {
-        display: flex;
-      }
-      .roll__damage vaadin-text-field,
-      .roll__damage vaadin-select {
-        max-width: 100%;
-      }
-      .roll__damage-roll--edit,
-      .roll__damage-type--edit {
-        width: calc(50% - 40px);
-      }
-      .roll__damage-roll--edit {
-        margin: 0 16px;
-      }
-      .roll__damage-remove {
-        margin: auto -5px 4px;
-      }
+        h2 {
+          margin-top: 0;
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
 
-      .rolls__toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-      .rolls__toolbar h4 {
-        width: 100%;
-        margin: 0;
-      }
-      .rolls__toolbar-reset-mods {
-        display: inline-flex;
-      }
-      .roll__add-damage {
-        width: min-content;
-        margin: 8px auto 0;
-      }
-    </style>
-    
-    <div class="col-wrap">
-      <div class="row-wrap">
-        <div class="heading">
-          <h2>Rolls</h2>
-          <dnd-button class="rolls__add-button link" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add a Roll" icon="edit"  on-click="_addRoll"></dnd-button>
-        </div>
+        vaadin-checkbox {
+          width: fit-content;
+        }
 
-        <div hidden$="[[isEditMode]]" class="rolls__toolbar">
-          <h4>Roll Modifiers:</h4>
-          <div>
-            <vaadin-checkbox id='advMod' on-change="_modChange">Advantage</vaadin-checkbox>
-            <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
+        vaadin-select {
+          max-width: calc(50% - 14px);
+        }
+        vaadin-number-field,
+        vaadin-integer-field {
+          width: calc(33% - 10px);
+        }
+        vaadin-text-field,
+        vaadin-text-area,
+        vaadin-integer-field,
+        vaadin-number-field,
+        vaadin-select {
+          margin-right: 10px;
+        }
+        dnd-select-add {
+          width: calc(66% - 22px);
+          margin-right: 10px;
+          margin-left: 10px;
+        }
+
+        .margin-bottom_large {
+          margin-bottom: 0 !important;
+        }
+
+        @media(min-width: 921px) {
+          h2 {
+            font-size: 24px;
+          }
+        }
+      </style>
+
+      <div hidden$="[[!item]]">
+        <div hidden$="[[isEditMode]]">
+          <div hidden$="[[!hasRenderedOutput]]">
+            <h2>[[item.name]]</h4>
+            <div>[[item.notes]]</div>
+            <div hidden$="[[item.hideRef]]" id="renderedOutput"></div>
+          </div>
+
+          <div hidden$="[[hasRenderedOutput]]">
+            <h2>[[item.name]]</h4>
+            <div>[[item.notes]]</div>
           </div>
         </div>
 
-        <div class="rolls rolls--custom">
+        <template is="dom-if" if="[[isEditMode]]">
+          <div class="edit__wrap">
+            <vaadin-text-field class="edit__name" theme="label--secondary" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
+            <vaadin-number-field theme="label--secondary" has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
 
-          <template is="dom-repeat" items="[[customRolls]]">
-            <template is="dom-if" if="[[!isEditMode]]">
-              <div class="roll" on-click="_makeRoll" index$="[[index]]">
-                <div class="roll-header">
-                  <h3>[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
-                </div>
+            <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[itemTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
 
-                <div class="roll-footer">
-                  <div class="roll__to-hit">
-                    <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
+            <vaadin-select id="raritySelect" value="{{itemRarity}}" on-change="_itemRarityChange" label="Rarity" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[rarityTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
+
+            <div class="edit__weapon" hidden$="[[!item.weapon]]">
+              <h4 class="section_heading">Weapon</h4>
+              <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
+              <vaadin-integer-field theme="label--secondary"  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+              <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
+
+              <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
+                <div class="roll__damage" index$="[[index]]">
+                  <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                  <div class="roll__damage-roll--edit">
+                    <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
                   </div>
-
-                  <div class="roll__damages">
-                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
-                      <div class="roll__damage" index$="[[index]]">
-                        <span class="roll__damage-roll" >[[damage.roll]]</span>
-                        <span class="roll__damage-type">&nbsp;[[damage.type]] damage</span>
-                      </div>
-                    </template>
-                  </div>
-                </div>
-              </div>
-            </template>
-
-            <template is="dom-if" if="[[isEditMode]]">
-              <div class="roll" on-click="_makeRoll" index$="[[index]]">
-                <div class="roll-header">
-                  <vaadin-text-field theme="label--secondary" value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
-                  <dnd-button icon="delete" class="icon-only" on-click="_removeRoll"></dnd-button>
-                </div>
-
-                <div class="roll-footer">
-                  <div class="roll__to-hit">
-                    <vaadin-integer-field theme="label--secondary" hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
-                    <dnd-switch label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
-                  </div>
-
-                  <div class="roll__damages">
-                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
-                      <div class="roll__damage" index$="[[index]]">
-                        <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
-                        <div class="roll__damage-roll--edit">
-                          <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
-                        </div>
-                        <div class="roll__damage-type--edit">
-                          <vaadin-select theme="label--secondary" value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
-                            <template>
-                              <vaadin-list-box>
-                                <template is="dom-repeat" items="[[damageTypes]]">
-                                  <vaadin-item>[[item]]</vaadin-item>
-                                </template>
-                              </vaadin-list-box>
-                            </template>
-                          </vaadin-select>
-                        </div>
-                      </div>
-                    </template>
-                    <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+                  <div class="roll__damage-type--edit">
+                    <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
+                      <template>
+                        <vaadin-list-box>
+                          <template is="dom-repeat" items="[[damageTypes]]">
+                            <vaadin-item>[[item]]</vaadin-item>
+                          </template>
+                        </vaadin-list-box>
+                      </template>
+                    </vaadin-select>
                   </div>
                 </div>
-              </div>
-            </template>
-          </template>
-        </div>
+              </template>
+              <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+            </div>
 
+            <vaadin-integer-field theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
+            
+            <vaadin-integer-field theme="label--secondary"  hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
+
+            <!-- <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[resistTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select> -->
+
+            <div class="edit__checkboxes">
+              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement</vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference</vaadin-checkbox>
+            </div>
+
+            <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-change="_updateItem"></vaadin-text-area>
+          </div>
+        </template>
       </div>
-    </div>
-    `}}customElements.define("dnd-character-builder-rolls",d)}}]);
+    `}}customElements.define("dnd-character-builder-equipment-item-detail",m)},155:function(e,t,i){"use strict";i.r(t);var a=i(3),s=i(32),n=i(142);i(145),i(108),i(150),i(162),i(148);class d extends a.a{static get properties(){return{inventory:{type:Array},isEditMode:{type:Boolean,value:!1},character:{type:Object},expandedItems:{type:Array},expandedIds:{type:Array},activeItem:{type:Object},isMobile:{type:Boolean}}}static get observers(){return["_expandedItemsChange(expandedItems.*)"]}_expandedItemsChange(){this.expandedItems&&this.expandedItems.length&&(this.expandedIds=this.expandedItems.filter(e=>!!e).map(e=>e.uniqueId),console.error(this.expandedIds),this.openedItemID&&(this.$.grid.closeItemDetails(this.openedItemID),this.openedItemID=void 0)),window.scrollTo(0,this.originalScrollHeight)}_recordScrollHeight(e){this.originalScrollHeight=window.scrollY}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(s.F)()),Object(s.l)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.grid&&setTimeout(()=>{this.$.grid.notifyResize()},0)},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(s.l)().removeEventListener("character-selected",this.characterChangeHandler),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}ready(){super.ready(),this._checkBreakpoint(),window.addEventListener("resize",()=>{this._checkBreakpoint()}),setTimeout(()=>{const e=this.$.grid;let t;e.addEventListener("grid-dragstart",(function(i){t=i.detail.draggedItems[0],e.dropMode="on-top-or-between"})),e.addEventListener("grid-dragend",(function(i){t=e.dropMode=null})),e.addEventListener("grid-drop",e=>{const i=e.detail.dropTargetItem;if(t&&t!==i){const a=Object(s.M)(t,i.uniqueId);if(t.container&&a)return;const n=t.storedItem.uniqueId;if(t.storedItem.uniqueId=this.character.itemCounter++,"on-top"===e.detail.dropLocation&&i.container)return void(i.storedItem&&i.storedItem.children&&(i.storedItem.children.push(t.storedItem),Object(s.kb)(i,void 0,!0),Object(s.T)(n)));if(this.inventory){const a=""+i.id;let d=parseInt(a.substring(a.lastIndexOf("_")),10);"below"===e.detail.dropLocation&&d++,i.parentItemREF?(i.parentItemREF.storedItem.children.splice(d,0,t.storedItem),Object(s.kb)(i.parentItemREF,void 0,!0)):Object(s.nb)(d,t.storedItem),Object(s.T)(n)}}}),e.dataProvider=((e,t)=>{const i=e.page*e.pageSize;let a=e.parentItem?e.parentItem.children:this.inventory;if(a&&a.length){t(a.slice(i,i+e.pageSize),a.length)}}).bind(this)},0)}async updateFromCharacter(e){if(e){this.character=e,this.inventory=await Object(s.C)(e),console.error("inventory:",this.inventory);const t=window.scrollY;if(this.$.grid.clearCache(),this.openedItemID){const e=Object(s.B)(this.inventory,this.openedItemID.uniqueId);e&&this.$.grid.openItemDetails(e)}if(this.expandedIds){const e=this.expandedIds.map(e=>Object(s.B)(this.inventory,e));this.expandedItems=e}this.activeItem&&(this.activeItem=Object(s.B)(this.inventory,this.activeItem.uniqueId)),window.scrollTo(0,t),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_expandDetails(e){let t=e.model.__data.item,i=this.$.grid.detailsOpenedItems.indexOf(t)>-1;const a=window.scrollY;for(let e of this.$.grid.detailsOpenedItems)this.$.grid.closeItemDetails(e);i?(this.$.grid.closeItemDetails(t),this.openedItemID=void 0):(this.$.grid.openItemDetails(t),this.openedItemID=t),this.$.grid.notifyResize(),window.scrollTo(0,a)}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){let t=e.model.__data.item&&void 0!==e.model.__data.item.uniqueId?e.model.__data.item.uniqueId:void 0;Object(s.T)(t)}async _setItemEquipped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isEquipped)Object(s.ub)(i);else if(await Object(s.f)(t))Object(s.ub)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isAttuned)Object(s.tb)(i);else if(await Object(s.e)(t))Object(s.tb)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_quantityChange(e){const t=this.$.grid.getEventContext(e).item;let i=parseInt(t.quantity,10);isNaN(i)&&(i=0),t.storedItem.quantity=i,Object(s.kb)(t)}_addItem(){Object(s.c)({},!1)}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}_noRarity(e){return!e||"None"===e}_toggleTheme(e){return e.children&&0===e.children.length?"no-children":""}_checkBreakpoint(){const e=this.$.grid;this.isMobile=window.innerWidth<921,this.isMobile?e.rowDetailsRenderer=((e,t,i)=>{i.detailsOpened&&(e.firstElementChild||(e.innerHTML='<div class="details"></div>'),this.detailEl||(this.detailEl=document.createElement("dnd-character-builder-equipment-item-detail"),this.detailEl.smallRender=!0,this.detailEl.unique=Date.now()),e.querySelector(".details").appendChild(this.detailEl),this.detailEl.item=i.item)}).bind(this):e.rowDetailsRenderer&&(console.error("removing rowDetailsRenderer"),e.rowDetailsRenderer=()=>{})}_isActive(e,t){return e===t}static get template(){return a.b`
+      <style include="material-styles"></style>
+      <style>
+        :host {
+          display: block;
+          padding: 14px;
+        }
+        [hidden] {
+          display: none !important;
+        }
+        a {
+          color: var(--mdc-theme-secondary);
+        }
+
+        vaadin-grid {
+          margin-bottom: 200px;
+        }
+
+        .heading {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid var(--lumo-contrast-10pct);
+        }
+        .reference-link:hover {
+          color: var(--mdc-theme-secondary);
+        }
+
+        .col-wrap {
+          display: flex; 
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+
+        .row-wrap {
+          width: 100%;
+        }
+        .row-wrap:not(:last-child) {
+          margin-bottom: 24px;
+        }
+
+        .row-wrap > *:not(h2):not(:last-child) {
+          margin-bottom: 10px;
+        }
+
+        .no-content {
+          font-size: 14px;
+          font-style: italic;
+        }
+
+        .item-wrap {
+          display: flex;
+          flex-wrap: nowrap;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+          padding: 10px 6px;
+          min-height: 28px;
+          border-bottom: 1px solid var(--_lumo-grid-secondary-border-color);
+        }
+        .item-wrap__name-wrap {
+          flex-basis: 100%;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          cursor: pointer;
+        }
+        .item-wrap__name-wrap:hover {
+          color: var(--mdc-theme-secondary);
+        }
+        .item-wrap__name {
+          font-weight: bold;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          position: relative;
+        }
+        .item-wrap__edited,
+        .item-wrap__from {
+          background-color: var(--mdc-theme-text-disabled-on-background);
+          color: var(--mdc-theme-on-secondary);
+          border: none;
+          border-radius: 4px;
+          outline: none;
+          display: inline-block;
+          justify-content: center;
+          white-space: normal;
+          font-size: 10px;
+          padding: 1px 4px;
+          margin-right: 4px;
+          font-style: italic;
+        }
+        .item-wrap__edited {
+          top: -1px;
+          position: relative;
+          font-weight: normal;
+        }
+        .item-wrap__type {
+          font-style: italic;
+          font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          position: relative;
+        }
+        .item-wrap__type--fromBackground {
+          padding-right: 38px;
+        }
+        .item-wrap__type--fromClass {
+          padding-right: 50px;
+        }
+        .item-wrap__close {
+          font-size: 14px;
+          margin-top: 6px;
+          cursor: pointer;
+        }
+        .item-wrap__checkboxes {
+          display: flex;
+          flex-direction: column;
+          width: 80px;
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+        .item-wrap__checkboxes > span {
+          cursor: pointer;
+        }
+        .item-wrap__quantity {
+          display: flex;
+          flex-direction: column;
+          width: 80px;
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+        vaadin-integer-field {
+          margin: -13px 0 8px;
+        }
+        vaadin-checkbox {
+          pointer-events: none;
+          font-size: 13px;
+        }
+        vaadin-checkbox.flash-error {
+          color: var(--mdc-theme-error);
+          transition: color 0.2s ease-out;
+          --lumo-contrast-20pct: var(--mdc-theme-error);
+        }
+        vaadin-checkbox.transition-bg {
+          transition: color 0.2s ease-in;
+        }
+
+        .details {
+          font-size: 14px;
+          width: calc(100% - 30px);
+          margin: 0 auto 13px !important;
+          background: var(--lumo-contrast-10pct);
+          border-radius: 4px;
+          padding: 14px;
+        }
+        
+        .details-row {
+          padding-top: 14px;
+        }
+
+        .details-wrap {
+          display: none;
+          font-size: 14px;
+          background: var(--lumo-contrast-10pct);
+          border-radius: 4px;
+          line-height: 1.5;
+          padding: 14px;
+        }
+
+        @media(min-width: 420px) {
+          .heading {
+            justify-content: flex-start;
+          }
+          .reference-link {
+            margin-left: 8px;
+          }
+        }
+
+        @media(min-width: 921px) {
+          .item-wrap[active] {
+            background: var(--_lumo-grid-selected-row-color);
+          }
+          .row-wrap {
+            width: calc(50% - 10px);
+          }
+          .row-wrap:first-child {
+            margin-bottom: 0;
+          }
+          .details {
+            display: none;
+          }
+          .details-wrap {
+            display: block;
+          }
+        }
+      </style>
+
+      <div class="heading">
+        <h2>Inventory</h2>
+        <a class="reference-link mdc-icon-button material-icons" href="#/items">launch</a>
+      </div>
+      <div class="col-wrap">
+        <div class="row-wrap">
+          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" active-item="{{activeItem}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
+            <vaadin-grid-column>
+              <template>
+                <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
+                  <div class="item-wrap__name-wrap" on-click="_expandDetails">
+                    <span class="item-wrap__name">[[item.name]]
+                      <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
+                    </span>
+                    <span class="item-wrap__type">
+                      <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
+                      <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
+                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity, item)]]">, [[item.rarity]]</span></span>
+                    </span>
+                  </div>
+                  <div hidden$="[[item.hasQuantity]]" class="item-wrap__checkboxes">
+                    <span on-click="_setItemEquipped">
+                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
+                    </span>
+                    <span on-click="_setItemAttuned">
+                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>
+                    </span>
+                  </div>
+                  <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
+                    <vaadin-integer-field min="0" value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
+                  </div>
+                  <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
+                </div>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+        <template is="dom-if" if="[[!isMobile]]">
+          <div class="row-wrap details-row" hidden$="[[!activeItem]]">
+            <div class="details-wrap">          
+              <dnd-character-builder-equipment-item-detail small-render item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
+            </div>
+          </div>
+        </template>
+      </div>
+    `}}customElements.define("dnd-character-builder-equipment",d)}}]);
 //# sourceMappingURL=7.bundle.js.map
