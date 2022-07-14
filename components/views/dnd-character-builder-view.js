@@ -321,6 +321,10 @@ class DndCharacterBuilderView extends PolymerElement {
     dispatchEditModeChange(!this.isEditMode);
   }
 
+  openDrawer() {
+    this.dispatchEvent(new CustomEvent("open-drawer", { bubbles: true }));
+  }
+
   _editIcon(isEditMode) {
     return isEditMode ? 'check' : 'edit';
   }
@@ -351,7 +355,7 @@ class DndCharacterBuilderView extends PolymerElement {
           max-width: calc(100% - 50px);
         }
         .char-change .mdc-icon-button {
-          margin-left: 8px;
+          margin-left: 0px;
         }
         .char-name {
           display: flex;
@@ -420,6 +424,7 @@ class DndCharacterBuilderView extends PolymerElement {
           z-index: 2;
           display: flex;
           flex-direction: column-reverse;
+          margin-right: auto;
         }
         .thumb-menu__btn {
           border-radius: 50%;
@@ -427,6 +432,9 @@ class DndCharacterBuilderView extends PolymerElement {
         }
         .edit-mode .edit-button {
           background: var(--mdc-theme-secondary) !important;
+        }
+        .drawer-btn {
+          margin-bottom: 20px;
         }
         .download-mobile {
           margin-bottom: 20px;
@@ -448,8 +456,11 @@ class DndCharacterBuilderView extends PolymerElement {
 
         .buttons {
           display: flex;
+          width: 100%;
           margin-left: auto;
           margin-top: -30px;
+          justify-content: flex-end;
+          height: 55px;
         }
 
         .not-edit-mode .delete-char,
@@ -522,16 +533,20 @@ class DndCharacterBuilderView extends PolymerElement {
           .thumb-menu__btn {
             margin-left: auto;
             position: relative;
-            top: -20px;
+            top: -10px;
           }
-          .download-char {
+          .upload-char,
+          .download-char,
+          .download-all-char,
+          .delete-char,
+          .add-char {
             display: block;
-          }
-          .download-mobile {
-            display: none;
           }
           .buttons {
             margin-top: 0;
+          }
+          .drawer-btn {
+            display: none;
           }
         }
       </style>
@@ -552,26 +567,24 @@ class DndCharacterBuilderView extends PolymerElement {
                 </div>
               </div>
             </div>
-
-            <div class="buttons">
-              <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
-              <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
-              <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
-              <button class="mdc-icon-button material-icons download-all-char" on-click="downloadCharacters">file_download <span class="material-icons">playlist_add</span></button>
-
-              <label class="upload-char">
-                <span class="mdc-icon-button">
-                  <span class=" material-icons">file_upload</span>
-                </span>
-                <input type="file" id="file-selector" accept=".json" on-change="processUpload" />
-              </label>
-            </div>
           </div>
-        </div>
-
-        <div class="thumb-menu">
-          <div class="roll-container" id="rollContainer"></div>
-          <button class="thumb-menu__btn edit-button mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
+          <div class="buttons">
+            <div class="thumb-menu">
+              <div class="roll-container" id="rollContainer"></div>
+              <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
+              <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="openDrawer">logout</button>
+            </div>
+            <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
+            <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
+            <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
+            <button class="mdc-icon-button material-icons download-all-char" on-click="downloadCharacters">file_download <span class="material-icons">playlist_add</span></button>
+            <label class="upload-char">
+              <span class="mdc-icon-button">
+                <span class=" material-icons">file_upload</span>
+              </span>
+              <input type="file" id="file-selector" accept=".json" on-change="processUpload" />
+            </label>
+          </div>
         </div>
 
         <div class="character-builder--tabs-wrapper">

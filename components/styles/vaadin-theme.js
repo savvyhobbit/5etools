@@ -60,6 +60,11 @@ registerStyles('vaadin-text-field', css`
     margin-left: -16px;
   }
 
+  :host([disabled].name) [part="value"] {
+    font-size: 32px;
+    font-weight: normal;
+  }
+
   :host([theme~="label--secondary"]) [part="label"] {
     color: var(--mdc-theme-primary);
   }

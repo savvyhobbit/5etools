@@ -96,6 +96,18 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
     return bg ? `#/backgrounds/${dataLink}` : '#/backgrounds'
   }
 
+  _linkClick(e) {
+    const isBackground = e.target.classList.contains('background');
+    this.dispatchEvent(new CustomEvent("open-drawer", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        selectedItem: isBackground ? this.selectedBackground : this.selectedRace,
+        viewId: isBackground ? 'backgrounds' : 'races'
+      }
+    }));
+  }
+
   _showEmpty(isEditMode, value) {
     return !isEditMode && !value;
   }
@@ -221,7 +233,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         <div class="row-wrap">
           <div class="heading">
             <h2>Race</h2>
-            <a class="reference-link mdc-icon-button material-icons" href="[[_getRaceLink(selectedRace)]]">launch</a>
+            <button class="mdc-icon-button material-icons" on-click="_linkClick">logout</button>
           </div>
           <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
           <div class="missing-text" hidden$="[[_exists(selectedRace)]]">Select Race to add Attribute Bonuses</div>
@@ -231,7 +243,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         <div class="row-wrap">
           <div class="heading">
             <h2>Background</h2>
-            <a class="mdc-icon-button material-icons" href="[[_getBackgroundLink(selectedBackground)]]">launch</a>
+            <button class="mdc-icon-button material-icons background" on-click="_linkClick">logout</button>
           </div>
           <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
           <div class="missing-text" hidden$="[[_exists(selectedBackground)]]">Select Background to add Skill Proficiencies</div>

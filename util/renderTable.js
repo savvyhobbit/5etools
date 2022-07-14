@@ -345,7 +345,7 @@ function parseListData(data, columns) {
  * @returns The found item based on hash or undefined.
  */
 function resolveHash(data, hash) {
-  let parts = decodeForHash(hash),
+  let parts = Array.isArray(hash) ? hash : decodeForHash(hash),
     name = parts[0],
     source = parts[1];
 

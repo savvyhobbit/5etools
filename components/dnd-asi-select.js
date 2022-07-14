@@ -144,6 +144,17 @@ class DndAsiSelect extends PolymerElement {
     return dataLink ? `#/feats/${dataLink}` : '#/feats';
   }
 
+  _linkClick() {
+    this.dispatchEvent(new CustomEvent("open-drawer", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        selectedItem: this.selectedFeat,
+        viewId: 'feats'
+      }
+    }));
+  }
+
   static get template() {
     return html`
       <style include="material-styles">
@@ -192,7 +203,7 @@ class DndAsiSelect extends PolymerElement {
       </div>
       <div class="feat-pick-wrap" hidden$=[[!checked]]>
         <dnd-select-add add-callback="[[_genASICallback('feat')]]" model="feats" value="[[selectedFeat.name]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
-        <a class="reference-link mdc-icon-button material-icons" href="[[_getFeatLink(selectedFeat)]]">launch</a>
+        <button class="reference-link mdc-icon-button material-icons" on-click="_linkClick">logout</button>
       </div>
       <div hidden$=[[!featHasAttributeChoice]]>
         <dnd-select-add test add-callback="[[_genFeatAbilityCallback()]]" value="[[featAttributeSelection]]" options="[[featAttributeOptions]]" placeholder="<Choose Attribute>" disabled$="[[disabled]]"></dnd-select-add>

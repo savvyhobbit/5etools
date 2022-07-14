@@ -84,7 +84,7 @@ class DndList extends PolymerElement {
     });
     this._checkBreakpoint();
     this._adjustHeight();
-    setInterval(() => {
+    setTimeout(() => {
       this._checkBreakpoint();
       this._adjustHeight();
     }, 500);
@@ -98,7 +98,7 @@ class DndList extends PolymerElement {
     if (window.innerWidth < 921 || this.nonGlobal) {
       const top = this.$.grid.getBoundingClientRect().top;
       if (top) {
-        this.$.grid.style.height = `${window.innerHeight - top - 85}px`;
+        this.$.grid.style.height = `${window.innerHeight - top - 86}px`;
       }
     } else {
       this.$.grid.style.height = `600px`;
@@ -301,13 +301,13 @@ class DndList extends PolymerElement {
           height: 44px;
         }
 
-        :host([non-global]) .page-title {
+        /* :host([non-global]) .page-title {
           font-size: 24px;
           line-height: 1.5;
         }
         :host([non-global]) .source-text {
           font-size: 16px;
-        }
+        } */
 
         .search-wrap {
           margin-bottom: 20px;
@@ -385,6 +385,7 @@ class DndList extends PolymerElement {
         vaadin-grid {
           width: calc(100% + 32px);
           margin-left: -16px;
+          height: calc(100 * var(--vh, 1vh) - 220px);
         }
 
         vaadin-grid-filter {
@@ -412,7 +413,7 @@ class DndList extends PolymerElement {
         <dnd-button class="search-reset" on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 
-      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" size="{{resultsCount}}">
+      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" page-size="15" size="{{resultsCount}}">
         <vaadin-grid-column frozen width="[[_nameColWidth(isMobile, halfWidth)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">

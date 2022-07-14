@@ -564,7 +564,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           align-items: flex-start;
           flex-wrap: wrap;
         }
-        .open-details:hover {
+        .open-details:hover .level-col {
           color: var(--mdc-theme-secondary);
         }
 
@@ -648,6 +648,11 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           font-size: 18px;
           padding: 0;
           margin-right: 16px;
+          background: none !important;
+        }
+        .delete-btn:before,
+        .delete-btn:after {
+          background: none !important;
         }
         .delete-btn:hover {
           color: var(--mdc-theme-secondary);
@@ -841,7 +846,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
                   <div class="hp-col">
                     <div class="delete-col">
-                      <dnd-button class="delete-btn link icon-only" icon="delete" on-click="_deleteLevel"></dnd-button>
+                      <button class="delete-btn mdc-icon-button material-icons "on-click="_deleteLevel">delete</button>
                     </div>
                     <div class="hp-col__non-edit">
                       <span class="material-icons " aria-hidden="true">casino</span>

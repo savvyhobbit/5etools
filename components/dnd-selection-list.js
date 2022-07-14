@@ -3,7 +3,7 @@ import "./dnd-list.js";
 import "./dnd-button.js";
 import "./dnd-selected-item.js";
 import { loadModel } from "../util/data.js";
-import { parseListData } from "../util/renderTable.js";
+import { parseListData, resolveHash } from "../util/renderTable.js";
 import { routeEventChannel } from '../util/routing.js';
 import { util_capitalize } from '../js/utils.js';
 
@@ -38,9 +38,13 @@ class DndSelectionList extends PolymerElement {
       _filters: {
         type: Array
       },
-      _selectedItem: {
+      selectedItem: {
         type: Object,
         observer: '_selectedItemChange'
+      },
+      selectedItemKey: {
+        type: String,
+        observer: '_selectedItemKeyChange'
       },
       _selectedHash: {
         type: String
@@ -77,6 +81,17 @@ class DndSelectionList extends PolymerElement {
   constructor() {
     super();
     this.viewSideBySide = !!window.localStorage.getItem("viewSideBySide");
+    this.colMap = {
+      backgrounds: [{id:"source",label:"Source",hideMobile:!0}, {id:"proficiencies",label:"Proficiencies"}],
+      bestiary: [{id:"source",label:"Source"}, {id:"monster-type",label:"Type"}, {id:"cr",label:"CR"}],
+      conditions: [],
+      feats: [{id:"source",label:"Source"}, {id:"ability",label:"Ability"}, {id:"prerequisite",label:"Prerequisite",hideMobile:!0}],
+      features: [{id:"feature-type",label:"Type"}, {id:"prerequisite",label:"Prerequisite"}, {id:"source",label:"Source"}],
+      items: [{id:"item-type",label:"Type"}, {id:"source",label:"Source",hideMobile:!0}, {id:"item-rarity",label:"Rarity",hideMobile:!0}],
+      races: [{id:"ability",label:"Ability"}, {id:"source",label:"Source",hideMobile:!0}, {id:"size",label:"Size",hideMobile:!0}],
+      spells: [{id:"level",label:"Level"}, {id:"time",label:"Time",hideMobile:!0}, {id:"spell-meta",label:"Tag",cssClass:"hidden"}, {id:"source",label:"Source"}, {id:"range",label:"Range",hideMobile:!0}, {id:"school",label:"School",hideMobile:!0}, {id:"classes",label:"Classes",cssClass:"hidden"}, {id:"subclasses",label:"Subclasses",cssClass:"hidden"}],
+      variantrules: [{id:"source",label:"Source"}, {id:"rules-search",label:"Rules",cssClass:"hidden"}]
+    };
   }
 
   /**
@@ -107,8 +122,8 @@ class DndSelectionList extends PolymerElement {
   }
 
   _selectedItemChange() {
-    console.error('_selectedItemChange', this._selectedItem)
-    if (this._selectedItem) {
+    console.error('_selectedItemChange', this.selectedItem)
+    if (this.selectedItem) {
       this.hasSelection = true;
       if (!this.disableScrollBack) {
         window.scrollTo(0, 0);
@@ -118,12 +133,17 @@ class DndSelectionList extends PolymerElement {
     }
   }
 
+  _selectedItemKeyChange() {
+    this.set("selectedItem", )
+  }
+
   /**
    * Loads the JSON data for the given modelId, then checks to see if 
    * the current routed selection is present in the data.
    */
   _modelChange() {
     if (this.modelId) {
+      this.columns = this.colMap[this.modelId];
       this.set("_data", undefined);
       this.set("_filters", undefined);
       this.loading = true;
@@ -160,7 +180,10 @@ class DndSelectionList extends PolymerElement {
           this.set("_data", result);
           this.set("_filters", filters);
           this.loading = false;
-          console.error('loadedModel', filters);
+          if (this.selectedItemKey) {
+            this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
+          }
+          console.error('loadedModel', result);
         })
         .catch(e => {
           console.error("Model requested for list did not return.", e);
@@ -187,7 +210,7 @@ class DndSelectionList extends PolymerElement {
   _closeDrawerPreview(e) {
     console.error('_closeDrawerPreview click');
     if (this.hasSelection) {
-      this.set('_selectedItem', null)
+      this.set('selectedItem', null)
     } else {
       this.dispatchEvent(new CustomEvent("close-preview", { 
         bubbles: true,
@@ -274,23 +297,24 @@ class DndSelectionList extends PolymerElement {
 
           :host(:not([non-global])) .list--sidebyside dnd-button {
             transform: rotate(180deg);
+            z-index: 100;
           }
           :host([non-global]) .footer-bar {
-            max-width: 670px;
+            max-width: 50vw;
           }
         }
       </style>
 
       <div class$="[[_viewClass(viewSideBySide, hasSelection)]]">
-        <dnd-selected-item non-global$="[[nonGlobal]]" model-id="[[modelId]]" selected-item="{{_selectedItem}}" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
+        <dnd-selected-item non-global$="[[nonGlobal]]" model-id="[[modelId]]" selected-item="{{selectedItem}}" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
 
         <div class="list-wrap">
           <dnd-button icon="launch" class="icon-only" on-click="_changeView"></dnd-button>
-          <dnd-list non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{_selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
+          <dnd-list non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
         </div>
 
         <div class="footer-bar" hidden$="[[_toHideFooter(hideCharacterPopup, nonGlobal)]]" >
-          <dnd-character-popup hidden$="[[hideCharacterPopup]]" small$="[[nonGlobal]]" view-id="[[modelId]]" selected-item="[[_selectedItem]]"></dnd-character-popup>
+          <dnd-character-popup hidden$="[[hideCharacterPopup]]" small$="[[nonGlobal]]" view-id="[[modelId]]" selected-item="[[selectedItem]]"></dnd-character-popup>
           <button class="preview-close mdc-icon-button material-icons" on-click="_closeDrawerPreview">arrow_back</button> 
         </div>
       </div>

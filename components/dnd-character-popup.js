@@ -176,7 +176,7 @@ class DndCharacterPopup extends PolymerElement {
             <div class="feature" hidden$="[[_equal(viewId, 'classes')]]">[[featureString(viewId, selectedCharacter)]]</div>
           </div>
         </div>
-        <div class="feature-button">
+        <div class="feature-button" hidden$="[[!_exists(selectedItem)]]">
           <button class="mdc-icon-button material-icons mdc-button--raised add-character-option" on-click="addFeatureToCharacter" hidden$="[[!_exists(selectedItem)]]">person_add</button>
         </div>
       </div>

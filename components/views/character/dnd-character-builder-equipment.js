@@ -351,6 +351,16 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       grid.rowDetailsRenderer = () => {};
     }
   }
+
+  _linkClick() {
+    this.dispatchEvent(new CustomEvent("open-drawer", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        viewId: 'items'
+      }
+    }));
+  }
   
   _isActive(activeItem, item) {
     return activeItem === item;
@@ -561,7 +571,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
       <div class="heading">
         <h2>Inventory</h2>
-        <a class="reference-link mdc-icon-button material-icons" href="#/items">launch</a>
+        <button class="mdc-icon-button material-icons" on-click="_linkClick">logout</button>
       </div>
       <div class="col-wrap">
         <div class="row-wrap">

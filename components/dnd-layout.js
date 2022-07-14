@@ -50,28 +50,46 @@ class DndLayout extends PolymerElement {
     };
   }
 
+  ready() {
+    super.ready();
+
+    window.addEventListener("resize", () => {
+      if (this.hasPreview) {
+        this._adjustPreviewWidth();
+      }
+    });
+  }
+
   connectedCallback() {
     super.connectedCallback();
+
     this._initDarkmode();
     this._initSwipe();
     this._initNavDrawer();
-    this._initSelectionEvents();
-
     this._resetActiveLink({detail: { view: readRouteView()}});
     routeEventChannel().addEventListener("view-change", this._resetActiveLink.bind(this));
 
     this.addEventListener("open-preview", this._openDrawerPreview.bind(this));
     this.addEventListener("close-preview", this._closeDrawerPreview.bind(this));
-  }
 
-  ready() {
-    super.ready();
+    this.addEventListener("open-drawer", this._openDrawer.bind(this));
 
+    routeEventChannel().addEventListener("title-change", e => {
+      if (e.detail) {
+        const {title} = e.detail;
+        if (title) {
+          this.lastTitle = title
+        }
+      }
+    });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     routeEventChannel().removeEventListener("view-change", this._resetActiveLink.bind(this));
+    this.removeEventListener("open-preview", this._openDrawerPreview.bind(this));
+    this.removeEventListener("close-preview", this._closeDrawerPreview.bind(this));
+    this.removeEventListener("open-drawer", this._openDrawer.bind(this));
   }
 
   selectedTitleChange() {
@@ -118,9 +136,7 @@ class DndLayout extends PolymerElement {
     if (!this.alreadyInit) {
       this.alreadyInit = true;
       registerSwipe(document.body, "right", () => {
-        if (!this.drawer.open) {
-          this.drawer.open = true;
-        }
+        this._openDrawer();
       }, null, ".character-builder--tabs-wrapper, vaadin-grid");
       registerSwipe(document.body, "left", () => {
         if (this.drawer.open) {
@@ -139,7 +155,22 @@ class DndLayout extends PolymerElement {
     new MDCRipple(navButton);
     this.drawer = new MDCDrawer(this.shadowRoot.querySelector(".mdc-drawer"));
     navButton.addEventListener("click", () => {
-      this.drawer.open = !this.drawer.open;
+      if (this.drawer.open) {
+        this.drawer.open = false;
+      } else {
+        this._openDrawer();
+      }
+    });
+
+    // close preview when drawer scrim is clicked
+    this.$.scrim.addEventListener('click', () => {
+      this.$.container.style['border-left'] = null;
+      this.$.breadcrumbcontainer.style['border-left'] = null;
+      const isOpen = this.$.drawer.classList.contains('mdc-drawer--open');
+      console.error('click', this.$.drawer.classList.contains('mdc-drawer--open'))
+      setTimeout(() => {
+        console.error('clock', this.$.drawer.classList.contains('mdc-drawer--open'));
+      }, 50)
     });
 
     // List Items
@@ -148,22 +179,6 @@ class DndLayout extends PolymerElement {
       new MDCRipple(listItem);
     }
   }
-
-
-  /**
-   * Adds listeners for updating the breadcrumbs / title
-   */
-  _initSelectionEvents() {
-    routeEventChannel().addEventListener("title-change", e => {
-      if (e.detail) {
-        const {title} = e.detail;
-        if (title) {
-          this.lastTitle = title
-        }
-      }
-    });
-  }
-
   /**
    * Finds and adds CSS class to the Active Link in the nav
    */
@@ -183,6 +198,18 @@ class DndLayout extends PolymerElement {
       }
     }
   }
+  
+  _openDrawer(e) {
+    console.error('_openDrawer', e);
+    if (!this.drawer.open) {
+      if (e && e.detail && e.detail.viewId) {
+        this._openDrawerPreview(e.detail.viewId, e.detail.selectedItem);
+      } else if (this.hasPreview) {
+        this._adjustPreviewWidth();
+      }
+      this.drawer.open = true;
+    }
+  }
 
   async _openDrawerPreviewEvent(e) {
     e.preventDefault();
@@ -191,29 +218,42 @@ class DndLayout extends PolymerElement {
     this._openDrawerPreview(viewId);
   }
 
-  async _openDrawerPreview(viewId) {
-    jqEmpty(this.$.previewTarget);
-    console.error('_openDrawerPreview', viewId);
-    const newWidth = Math.min(window.innerWidth - 50, window.innerWidth > 920 ? 670 : 400);
-    this.$.drawer.style.width = `${newWidth}px`
+  _adjustPreviewWidth() {
+    const isTablet = window.innerWidth > 920,
+      isDesktop = window.innerWidth > 1320,
+      tabletMaxWidth =  window.innerWidth / 2,
+      mobileMaxWidth = 400,
+      mobileMinWidth = window.innerWidth - 50;
 
-    // this.$.drawer.classList.add('mdc-drawer__content--transition');
-  
-    await timeout(200);
-    // await import(`./views/dnd-${viewId}-view.js`);
+    let newWidth = Math.min(mobileMinWidth, isTablet ? tabletMaxWidth : mobileMaxWidth);
+    this.$.drawer.style.width = `${newWidth}px`;
 
-    jqEmpty(this.$.previewTarget);
-    const previewEl = document.createElement(`dnd-${viewId}-view`);
-    previewEl.nonGlobal = true;
-    this.$.previewTarget.appendChild(previewEl);
+    if (isTablet) {
+      const containerWidth = isDesktop ? newWidth - 280 : newWidth;
+      this.$.container.style['border-left'] = `${containerWidth}px solid`;
+
+      const breadcrumbWidth = isDesktop ? newWidth + 320 : newWidth;
+      this.$.breadcrumbcontainer.style['padding-left'] = `${breadcrumbWidth}px`;
+      
+    } else {
+      this.$.container.style['border-left'] = null;
+      this.$.breadcrumbcontainer.style['padding-left'] = null;
+    }
+    this.$.drawer.scrollTop = 0;
+  }
+
+  async _openDrawerPreview(viewId, selectedItem) {
     this.hasPreview = true;
-    this.$.drawer.classList.remove('mdc-drawer__content--transition');
+    this.previewViewId = viewId;
+    this.previewSelectedItem = selectedItem;
+    console.error('_openDrawerPreview', viewId);
+    this._adjustPreviewWidth();
   }
 
   async _closeDrawerPreview() {
     console.error('_closeDrawerPreview');
     this.$.drawer.style.width = `250px`;
-    jqEmpty(this.$.previewTarget);
+    this.$.container.style['border-left'] = null;
     this.hasPreview = false;
   }
 
@@ -265,14 +305,15 @@ class DndLayout extends PolymerElement {
           min-height: calc(var(--vh, 1vh) * 100 - 64px);
         }
         .container {
+          transition: border-left 150ms;
         }
         .mdc-drawer__content {
           width: 250px;
           transition: width 200ms, opacity 200ms;
           opacity: 1;
         }
-        .mdc-drawer__content[preview] {
-          max-width: 400px;
+        [preview] .mdc-drawer__content {
+          overflow-y: hidden;
         }
         .mdc-drawer__content.mdc-drawer__content--transition {
           opacity: 0;
@@ -284,6 +325,7 @@ class DndLayout extends PolymerElement {
         }
         .preview-link {
           margin-left: auto;
+          color: var(--lumo-contrast-30pct);
         }
         .preview-bar {
           display: flex;
@@ -298,8 +340,8 @@ class DndLayout extends PolymerElement {
           .page-title[hidden] {
             display: block !important;
           }
-          .mdc-drawer__content[preview] {
-            max-width: 670px;
+          [preview] + .mdc-drawer-scrim {
+            display: none;
           }
         }
       </style>
@@ -307,7 +349,7 @@ class DndLayout extends PolymerElement {
       <header class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--primary-bg mdc-theme--on-primary">
         <div class="mdc-top-app-bar__row">
           <div class="breadcrumbs mdc-theme--on-primary">
-            <div class="container breadcrumbs__list">
+            <div id="breadcrumbcontainer" class="container breadcrumbs__list">
               <div class="breadcrumbs__crumb" >
                 <a on-click="_resetHashClickHandler">[[lastTitle]]</a>
               </div>
@@ -362,15 +404,12 @@ class DndLayout extends PolymerElement {
 
               <hr class="mdc-list-divider" />
               <a class="mdc-list-item mdc-theme--on-surface" href="#/rules" tabindex="0">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                  >library_books</i
-                >
-                <span class="mdc-list-item__text">Rules</span>
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">library_books</i>
+                <span class="mdc-list-item__text">Players Handbook</span>
               </a>
-              <a class="mdc-list-item mdc-theme--on-surface" href="#/variantrules">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">description</i>
-
-                <span class="mdc-list-item__text">Variant Rules</span>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
+                <span class="mdc-list-item__text">Character Sheets</span>
               </a>
 
               <hr class="mdc-list-divider" />
@@ -426,6 +465,10 @@ class DndLayout extends PolymerElement {
                 <span class="mdc-list-item__text">Conditions</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/variantrules">
+                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">description</i>
+                <span class="mdc-list-item__text">Variant Rules</span>
+              </a>
               <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">toll</i>
                 <span class="mdc-list-item__text">Other Rewards</span>
@@ -455,19 +498,21 @@ class DndLayout extends PolymerElement {
 
             </div>
             <div hidden$="[[!hasPreview]]">
-              <div class="preview-wrap" id="previewTarget"></div>
+              <div class="preview-wrap" id="previewTarget">
+                <dnd-selection-list model-id="[[previewViewId]]" selected-item-key="[[previewSelectedItem]]" non-global></dnd-selection-list>
+              </div>
               <button class="hide-me"></button>
             </div>
           </nav>
         </div>
       </aside>
 
-      <div class="mdc-drawer-scrim"></div>
+      <div class="mdc-drawer-scrim" id="scrim"></div>
 
       <div
         class="main mdc-top-app-bar--fixed-adjust mdc-typography--body1 mdc-theme--background mdc-theme--text-primary-on-background"
       >
-        <div class="container content-wrap">
+        <div class="container content-wrap" id="container">
           <slot name="default"></slot>
         </div>
 

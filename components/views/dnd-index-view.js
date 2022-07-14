@@ -84,7 +84,7 @@ class DndIndexView extends PolymerElement {
       <div class="grid-container">
         <a class="grid-item" href="#/rules">
           <i class="material-icons mdc-theme--on-surface link-grid-item--image" aria-hidden="true">library_books</i>
-          <span class="grid-item--text">PHB Rules</span>
+          <span class="grid-item--text">Players Handbook</span>
         </a>
         <a class="grid-item" href="#/variantrules">
           <i class="material-icons mdc-theme--on-surface link-grid-item--image" aria-hidden="true">description</i>
