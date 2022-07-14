@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[16],{130:function(i,a,e){"use strict";e.r(a);var s=e(3);e(26),e(28);class t extends s.a{static get template(){return s.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[16],{130:function(i,a,e){"use strict";e.r(a);var s=e(3);e(26),e(29);class t extends s.a{static get template(){return s.b`
       <style include="material-styles my-styles"></style>
 
       <h1 class="mdc-typography--headline2 margin-bottom_large margin-top_large typography_mono">5e Tools</h1>
@@ -78,7 +78,7 @@
       <div class="grid-container">
         <a class="grid-item" href="#/rules">
           <i class="material-icons mdc-theme--on-surface link-grid-item--image" aria-hidden="true">library_books</i>
-          <span class="grid-item--text">PHB Rules</span>
+          <span class="grid-item--text">Players Handbook</span>
         </a>
         <a class="grid-item" href="#/variantrules">
           <i class="material-icons mdc-theme--on-surface link-grid-item--image" aria-hidden="true">description</i>

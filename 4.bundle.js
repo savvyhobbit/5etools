@@ -422,13 +422,15 @@ const r=document.createElement("template");r.innerHTML='<dom-module id="vaadin-i
           margin: -4px 0 8px auto;
           background-color: var(--lumo-contrast-10pct);
           /* background-color: var(--mdc-theme-secondary-lighter); */
-          padding: 5px 5px 4px;
+          padding: 4px 5px 4px;
           line-height: 1;
           border-radius: 4px;
           cursor: pointer;
         }
         .custom-val__swap .material-icons {
           font-size: 11px;
+          position: relative;
+          top: 1px;
         }
 
         /* Rest Buttons */
