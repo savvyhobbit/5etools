@@ -145,6 +145,17 @@ function setRouteSelection(newSelection, noHistory) {
 	}
 }
 
+
+
+function notifyPreviewOpen(isPreviewOpen, isDrawerOpen) {
+	let titleChangeEvent = new CustomEvent("preview-state-change", {
+		bubbles: true,
+		composed: true,
+		detail: { isPreviewOpen, isDrawerOpen}
+	});
+	routingChannel.dispatchEvent(titleChangeEvent);
+}
+
 export {
 	initRouting,
 	routeEventChannel,
@@ -153,5 +164,6 @@ export {
   readRouteSelection,
 	clearRouteSelection,
 	setRouteView,
-	setRouteSelection
+	setRouteSelection,
+	notifyPreviewOpen
 }

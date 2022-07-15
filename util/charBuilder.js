@@ -665,6 +665,62 @@ async function toggleCustomSkill(skill, character = selectedCharacter) {
   }
 }
 
+function addAdditionalChoice(choiceKey, newIndex, character = selectedCharacter) {
+  const newChoice = { choiceKey };
+  switch (choiceKey.toLowerCase()) {
+    case 'feat':
+      newChoice.feats = 1;
+      break;
+
+    case 'skill':
+    case 'language':
+    case 'tool':
+      newChoice[`${choiceKey.toLowerCase()}Proficiencies`] = [{"any": 1}];
+      break;
+
+    case 'attribute +1':
+      newChoice.ability = [{
+				"choose": {
+					"from": [
+						"str",
+						"dex",
+						"con",
+						"int",
+						"wis",
+						"cha"
+					],
+					"amount": 1,
+				}
+			}]
+      break;
+
+    case 'attribute +2':
+      newChoice.ability = [{
+        "choose": {
+          "from": [
+            "str",
+            "dex",
+            "con",
+            "int",
+            "wis",
+            "cha"
+          ],
+          "amount": 2,
+        }
+      }];
+      break;
+  }
+  character.choices[`additionalChoice_${newIndex}`] = newChoice;
+  saveCharacter(character);
+}
+
+function deleteAdditionalChoice(key, character = selectedCharacter) {
+  if (character && character.choices && character.choices[key]) {
+    delete character.choices[key];
+  }
+  saveCharacter(character)
+}
+
 function getAllChoices(character = selectedCharacter) {
   const choices = [],
     choiceVisited = Object.values(cloneDeep(character.choices || {}));
@@ -1881,5 +1937,7 @@ export {
   getItemRolls,
   setAbilityUsage,
   removeAbilityUsage,
-  toggleCustomSkill
+  toggleCustomSkill,
+  addAdditionalChoice,
+  deleteAdditionalChoice
 };

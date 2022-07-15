@@ -239,8 +239,8 @@ class DndList extends PolymerElement {
     return false;
   }
 
-  _nameColWidth(isMobile, halfWidth) {
-    return isMobile || halfWidth ? '175px' : '300px';
+  _nameColWidth(isMobile, halfWidth, nonGlobal) {
+    return isMobile || halfWidth || nonGlobal ? '175px' : '300px';
   }
 
   _colWidth(index, columns) {
@@ -414,7 +414,7 @@ class DndList extends PolymerElement {
       </div>
 
       <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" page-size="15" size="{{resultsCount}}">
-        <vaadin-grid-column frozen width="[[_nameColWidth(isMobile, halfWidth)]]">
+        <vaadin-grid-column frozen width="[[_nameColWidth(isMobile, halfWidth, nonGlobal)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">
               <span class="name-label">Name</span>

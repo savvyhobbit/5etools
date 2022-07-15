@@ -74,23 +74,67 @@ class DndSelectionList extends PolymerElement {
       hideCharacterPopup: {
         type: Boolean,
         value: false
-      }
+      },
+      previewOpen: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: false
+      },
+      drawerOpen: {
+        type: Boolean,
+        value: false
+      },
     };
   }
 
   constructor() {
     super();
     this.viewSideBySide = !!window.localStorage.getItem("viewSideBySide");
-    this.colMap = {
-      backgrounds: [{id:"source",label:"Source",hideMobile:!0}, {id:"proficiencies",label:"Proficiencies"}],
-      bestiary: [{id:"source",label:"Source"}, {id:"monster-type",label:"Type"}, {id:"cr",label:"CR"}],
+    this.colMap =  {
+      backgrounds: [
+        { id: "proficiencies", label: "Proficiencies" },
+        { id: "source", label: "Source" },
+      ],
+      bestiary: [
+        { id: "monster-type", label: "Type" },
+        { id: "cr", label: "CR" },
+        { id: "source", label: "Source" },
+      ],
       conditions: [],
-      feats: [{id:"source",label:"Source"}, {id:"ability",label:"Ability"}, {id:"prerequisite",label:"Prerequisite",hideMobile:!0}],
-      features: [{id:"feature-type",label:"Type"}, {id:"prerequisite",label:"Prerequisite"}, {id:"source",label:"Source"}],
-      items: [{id:"item-type",label:"Type"}, {id:"source",label:"Source",hideMobile:!0}, {id:"item-rarity",label:"Rarity",hideMobile:!0}],
-      races: [{id:"ability",label:"Ability"}, {id:"source",label:"Source",hideMobile:!0}, {id:"size",label:"Size",hideMobile:!0}],
-      spells: [{id:"level",label:"Level"}, {id:"time",label:"Time",hideMobile:!0}, {id:"spell-meta",label:"Tag",cssClass:"hidden"}, {id:"source",label:"Source"}, {id:"range",label:"Range",hideMobile:!0}, {id:"school",label:"School",hideMobile:!0}, {id:"classes",label:"Classes",cssClass:"hidden"}, {id:"subclasses",label:"Subclasses",cssClass:"hidden"}],
-      variantrules: [{id:"source",label:"Source"}, {id:"rules-search",label:"Rules",cssClass:"hidden"}]
+      feats: [
+        { id: "ability", label: "Ability" },
+        { id: "source", label: "Source" },
+        { id: "prerequisite", label: "Prerequisite" },
+      ],
+      features: [
+        { id: "feature-type", label: "Type" },
+        { id: "prerequisite", label: "Prerequisite" },
+        { id: "source", label: "Source" },
+      ],
+      items: [
+        { id: "item-type", label: "Type" },
+        { id: "item-rarity", label: "Rarity" },
+        { id: "source", label: "Source" }
+      ],
+      races: [
+        { id: "ability", label: "Ability" },
+        { id: "size", label: "Size" },
+        { id: "source", label: "Source" },
+      ],
+      spells: [
+        { id: "level", label: "Level" },
+        { id: "time", label: "Time" },
+        { id: "spell-meta", label: "Tag", cssClass: "hidden" },
+        { id: "classes", label: "Classes", cssClass: "hidden" },
+        { id: "subclasses", label: "Subclasses", cssClass: "hidden" },
+        { id: "range", label: "Range" },
+        { id: "school", label: "School" },
+        { id: "source", label: "Source" },
+      ],
+      variantrules: [
+        { id: "source", label: "Source" },
+        { id: "rules-search", label: "Rules", cssClass: "hidden" },
+      ],
     };
   }
 
@@ -104,9 +148,16 @@ class DndSelectionList extends PolymerElement {
     routeEventChannel().addEventListener("view-change", () => {
       this.hasSelection = false;
     });
-    this.addEventListener("asdf", (e) => {
-      console.error('asdf', e);
-    } )
+    routeEventChannel().addEventListener("preview-state-change", ({ detail : {isPreviewOpen, isDrawerOpen}}) => {
+      console.error("preview-state-change");
+      this.previewOpen = isPreviewOpen;
+      this.drawerOpen = isDrawerOpen;
+    });
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    console.error("selection-list disconnected");
   }
 
   _loadingChange() {
@@ -122,7 +173,6 @@ class DndSelectionList extends PolymerElement {
   }
 
   _selectedItemChange() {
-    console.error('_selectedItemChange', this.selectedItem)
     if (this.selectedItem) {
       this.hasSelection = true;
       if (!this.disableScrollBack) {
@@ -208,7 +258,6 @@ class DndSelectionList extends PolymerElement {
   }
 
   _closeDrawerPreview(e) {
-    console.error('_closeDrawerPreview click');
     if (this.hasSelection) {
       this.set('selectedItem', null)
     } else {
@@ -266,6 +315,7 @@ class DndSelectionList extends PolymerElement {
           bottom: 0;
           margin-left: -16px;
           background: var(--mdc-theme-surface);
+          overflow: hidden;
         }
         :host([non-global]) .footer-bar {
           border-top: 1px solid var(--mdc-theme-text-divider-on-background);
@@ -275,30 +325,29 @@ class DndSelectionList extends PolymerElement {
           :host(:not([non-global])) dnd-list {
             display: block !important;
           }
-          
           :host(:not([non-global])) dnd-button {
             position: absolute;
             top: 22px;
             right: 0;
             display: block;
           }
-          :host(:not([non-global])) .list--sidebyside {
+          :host(:not([non-global]):not([preview-open])) .list--sidebyside {
             display: flex;
-            flex-direction: row;
+            flex-direction: row-reverse;
           }
-          :host(:not([non-global])) .list--sidebyside.list--selected .list-wrap {
+          :host(:not([non-global]):not([preview-open])) .list--sidebyside.list--selected .list-wrap {
             width: 50%;
-            margin-left: 32px;
+            margin-right: 32px;
           }
-          :host(:not([non-global])) .list--sidebyside.list--selected dnd-selected-item {
+          :host(:not([non-global]):not([preview-open])) .list--sidebyside.list--selected dnd-selected-item {
             width: 50%;
             margin-top: -24px;
           }
-
-          :host(:not([non-global])) .list--sidebyside dnd-button {
+          :host(:not([non-global]):not([preview-open])) .list--sidebyside dnd-button {
             transform: rotate(180deg);
             z-index: 100;
           }
+
           :host([non-global]) .footer-bar {
             max-width: 50vw;
           }

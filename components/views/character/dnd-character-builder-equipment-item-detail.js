@@ -216,7 +216,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     this.itemWeight = this.item.weight;
     this.canHaveResist = this.item.armor || this.item.type === 'P' || this.item.type === 'RG';
     this.itemResist = this.item.resist;
-    this.canHaveQuantity = this.item.type === 'P' || this.item.type === 'A' || this.item.type === 'EXP';
+    this.canHaveQuantity = this.item.type === 'P' || this.item.type === 'A' || this.item.type === 'EXP' || this.item.type === '$';
     this.itemQuantity = this.item.quantity;
     this.canHaveSpell = this.item.type === 'SC';
 

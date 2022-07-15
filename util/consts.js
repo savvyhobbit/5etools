@@ -190,4 +190,29 @@ export const
     'Very Rare',
     'Legendary',
     'Artifact'
-  ];
+  ],
+  TOOLS_ARTISAN = [{"name":"Alchemist's Supplies","source":"PHB"},{"name":"Brewer's Supplies","source":"PHB"},{"name":"Calligrapher's Supplies","source":"PHB"},{"name":"Carpenter's Tools","source":"PHB"},{"name":"Cartographer's Tools","source":"PHB"},{"name":"Cobbler's Tools","source":"PHB"},{"name":"Cook's Utensils","source":"PHB"},{"name":"Glassblower's Tools","source":"PHB"},{"name":"Jeweler's Tools","source":"PHB"},{"name":"Leatherworker's Tools","source":"PHB"},{"name":"Mason's Tools","source":"PHB"},{"name":"Painter's Supplies","source":"PHB"},{"name":"Potter's Tools","source":"PHB"},{"name":"Smith's Tools","source":"PHB"},{"name":"Tinker's Tools","source":"PHB"},{"name":"Weaver's Tools","source":"PHB"},{"name":"Woodcarver's Tools","source":"PHB"}],
+  TOOLS_INSTRUMENT = [{"name":"Bagpipes","source":"PHB"},{"name":"Drum","source":"PHB"},{"name":"Dulcimer","source":"PHB"},{"name":"Flute","source":"PHB"},{"name":"Horn","source":"PHB"},{"name":"Lute","source":"PHB"},{"name":"Lyre","source":"PHB"},{"name":"Pan Flute","source":"PHB"},{"name":"Shawm","source":"PHB"},{"name":"Viol","source":"PHB"}],
+  TOOLS_GAMING_SET = [{name:"Dice Set", source:"PHB"}, {name:"Playing Card Set", source:"PBH"}],
+  TOOLS_ALL = [{name:"Navigator's tools", source:"PHB"}, {name:"Thieves' Tools", source:"PHB"}, {name:"Vehicles (land)", source:"PHB"},{name:"Vehicles (water)", source:"PHB"}].concat(TOOLS_ARTISAN, TOOLS_INSTRUMENT, TOOLS_GAMING_SET),
+  toolsListFromCategory = (category) => {
+    let res = [category]
+    switch (category) {
+      case 'musical instrument':
+          res = TOOLS_INSTRUMENT;
+          break;
+      case 'gaming set':
+          res = TOOLS_GAMING_SET;
+          break;
+      case "artisan's tools":
+          res = TOOLS_ARTISAN;
+          break;
+      case 'any':
+          res = TOOLS_ALL;
+          break;
+    }
+    return res.map(r => r.name || r);
+  },
+  LANGUAGES_ALL = ["Common", "Dwarvish", "Elvish", "Giant", "Gnomish", "Goblin", "Halfling", "Orc", "Abyssal", "Celestial", "Deep Speech", "Draconic", "Infernal", "Primordial", "Sylvan", "Undercommon"]
+  ;
+

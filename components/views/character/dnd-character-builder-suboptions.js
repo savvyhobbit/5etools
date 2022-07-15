@@ -10,7 +10,9 @@ import { loadModel } from "../../../util/data";
 import '../../dnd-select-add';
 import { SKILL_TO_ATB_ABV } from "../../../js/bestiary";
 import { } from '@polymer/polymer/lib/elements/dom-if.js';
-    
+import { } from '@polymer/polymer/lib/elements/dom-repeat.js';
+import { LANGUAGES_ALL, toolsListFromCategory, TOOLS_ALL, TOOLS_ARTISAN, TOOLS_GAMING_SET, TOOLS_INSTRUMENT } from "../../../util/consts";
+
 class DndCharacterBuilderSuboptions extends PolymerElement {
     static get properties() {
         return {
@@ -33,6 +35,24 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 type: Array,
             },
             defaultSkillProfs: {
+                type: String,
+                value: ""
+            },
+
+            toolProfOptions: {
+                type: Array,
+                value: []
+            },
+            defaultToolProfs: {
+                type: String,
+                value: ""
+            },
+
+            langProfOptions: {
+                type: Array,
+                value: []
+            },
+            defaultLangProfs: {
                 type: String,
                 value: ""
             },
@@ -70,6 +90,12 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 type: Boolean,
                 value: false
             },
+            
+            dontCreateIfMissing: {
+                type: Boolean,
+                value: false,
+                reflectToAttribute: true
+            }
         };
     }
 
@@ -116,16 +142,23 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             for (let i = 0; i < storageKeys.length; i++) {
                 const storageKey = storageKeys[i];
                 if (!storedItem[storageKey]) {
-                    if (storageKeys.length < i + 1 && !isNaN(parseInt(storageKeys[i + 1], 10))) {
-                        storedItem[storageKey] = new Array(20);
+                    if (!this.dontCreateIfMissing) {
+                        if (storageKeys.length < i + 1 && !isNaN(parseInt(storageKeys[i + 1], 10))) {
+                            storedItem[storageKey] = new Array(20);
+                        } else {
+                            storedItem[storageKey] = {};
+                        }
                     } else {
-                        storedItem[storageKey] = {};
+                        this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
+                        return;
                     }
                 }
                 storedItem = storedItem[storageKey];
             }
             this.storedItem = storedItem;
 
+
+            // todo languageProficiencies
 
             // Retrieving the selected choices for attribute, feat, or proficiency off of the storedItem
 
@@ -168,7 +201,11 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     this.selectedSkillProfs = this.storedItem.selectedSkillProfs ? this.storedItem.selectedSkillProfs.split(',') : null;
                 }
                 if (skillProficiency.any) {
-                    this.skillProfOptions = Object.keys(SKILL_TO_ATB_ABV);
+                    if (this.selectedItem.name === "Custom Lineage") {
+                        this.skillProfOptions = ["Darkvision (60ft)"].concat(Object.keys(SKILL_TO_ATB_ABV));
+                    } else {
+                        this.skillProfOptions = Object.keys(SKILL_TO_ATB_ABV);
+                    }
                     this.skillProfChoices = skillProficiency.any;
                     this.selectedSkillProfs = this.storedItem.selectedSkillProfs ? this.storedItem.selectedSkillProfs.split(',') : null;
                 }
@@ -180,6 +217,120 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 // store defaults on character to avoid future look-ups
                 this.storedItem.defaultSkillProfs = this.defaultSkillProfs;
             }
+
+            // toolProficiencies (Dragon Casualty)
+                // tool list special keys - artisan's tools, musical instruments, gaming set, any, choose.from
+                // values usually === true or 2
+            const toolProfOptions = []
+            let defaultToolProfs = [];
+            if (this.selectedItem.toolProficiencies && this.selectedItem.toolProficiencies.length) {
+                if (this.selectedItem.toolProficiencies.length > 1) {
+                    // TODO: generated a dropdown for choosing index and add additional suboption components for each choice.
+                    // path of nested suboptions should use an indexed key
+                    // test with Dragon Causualty
+                } else {
+                    if (!this.storedItem.selectedToolProfs || typeof this.storedItem.selectedToolProfs === 'string') {
+                        this.storedItem.selectedToolProfs = {};
+                    }
+                    const toolProficiency = this.selectedItem.toolProficiencies[0];
+
+                    Object.entries(toolProficiency).forEach(([toolKey, toolVal]) => {
+                        const newToolProfOption = {
+                            key: toolKey,
+                            toolProfOptions: toolsListFromCategory(toolKey),
+                            selectedToolProfs: this.storedItem.selectedToolProfs[toolKey] ? this.storedItem.selectedToolProfs[toolKey].split(',') : null
+                        };
+                        switch (toolKey) {
+                            case 'choose':
+                                const toolListsMapped = toolProficiency.choose.from.map(toolsListFromCategory);
+                                newToolProfOption.toolProfOptions = toolListsMapped.flat();
+                                newToolProfOption.toolProfChoices = toolProficiency.choose.count || 1;
+                                toolProfOptions.push(newToolProfOption);
+                                break;
+    
+                            case 'any':
+                                newToolProfOption.toolProfChoices = toolProficiency.any || 1;
+                                toolProfOptions.push(newToolProfOption);
+                                break;
+    
+                            case "artisan's tools":
+                            case 'musical instrument':
+                            case 'gaming set':
+                                newToolProfOption.label = `Selected ${util_capitalizeAll(toolKey)}`;
+                                newToolProfOption.toolProfChoices = Number.isInteger(toolVal) ? toolVal : 1;
+                                toolProfOptions.push(newToolProfOption);
+                                break;
+                        
+                            default:
+                                defaultToolProfs.push(util_capitalizeAll(toolKey))
+                                break;
+                        }
+
+                    })
+                    defaultToolProfs = defaultToolProfs.filter(e => !!e).join(', ');
+                    // store defaults on character to avoid future look-ups
+                    this.defaultToolProfs = defaultToolProfs;
+                    this.storedItem.defaultToolProfs = defaultToolProfs;
+                }
+            }
+            this.toolProfOptions = toolProfOptions;
+
+
+            // todo "languageProficiencies" 
+            //      any: #, anyStandard: #, dwarvish, choose:from, other (this usually? indicates race's own language)
+            // test with  Vedalken
+            const langProfOptions = []
+            let defaultLangProfs = [];
+            if (this.selectedItem.languageProficiencies && this.selectedItem.languageProficiencies.length) {
+                if (!this.storedItem.selectedLangProfs || typeof this.storedItem.selectedLangProfs === 'string') {
+                    this.storedItem.selectedLangProfs = {};
+                }
+                this.selectedItem.languageProficiencies.forEach(langProficiency => {
+                    Object.entries(langProficiency).forEach(([langKey, langVal]) => {
+                        const newLangProfOption = {
+                            key: langKey,
+                            langProfOptions: toolsListFromCategory(langKey),
+                            selectedLangProfs: this.storedItem.selectedLangProfs[langKey] ? this.storedItem.selectedLangProfs[langKey].split(',') : null
+                        };
+                        switch (langKey) {
+                            case 'choose':
+                                newLangProfOption.langProfOptions = langProfOptions.choose.from;
+                                newLangProfOption.langProfChoices = langProficiency.choose.count || 1;
+                                langProfOptions.push(newLangProfOption);
+                                break;
+
+                            case 'any':
+                            case 'anyStandard':
+                                newLangProfOption.langProfOptions = LANGUAGES_ALL;
+                                newLangProfOption.langProfChoices = Number.isInteger(langVal) ? langVal : 1;
+                                langProfOptions.push(newLangProfOption);
+                                break;
+
+                            case "other":
+                                let name = this.selectedItem.name;
+                                if (name.includes("(")) {
+                                    name = name.substring(0, name.indexOf('(')).trim();
+                                }
+                                defaultLangProfs.push(name);
+                                break;
+                        
+                            default:
+                                defaultLangProfs.push(util_capitalizeAll(langKey))
+                                break;
+                        }
+                    });
+                });
+                defaultLangProfs = defaultLangProfs.filter(e => !!e).join(', ');
+                console.error('defaultLangProfs', this.selectedItem.name, defaultLangProfs);
+                // store defaults on character to avoid future look-ups
+                this.defaultLangProfs = defaultLangProfs;
+                this.storedItem.defaultLangProfs = defaultLangProfs;
+            }
+            this.langProfOptions = langProfOptions;
+            console.error('langProfOptions', this.selectedItem.name, langProfOptions);
+
+
+            // todo: "resist"
 
             // Populating Feat choice field
             this.featOptions = [];
@@ -198,6 +349,20 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
     _skillProficiencyAddCallback() {
         return ((skills) => {
             this.storedItem.selectedSkillProfs = skills.join(',');
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
+    _toolProficiencyAddCallback(key) {
+        return ((skills) => {
+            this.storedItem.selectedToolProfs[key] = skills.join(',');
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
+    _langProficiencyAddCallback(key) {
+        return ((skills) => {
+            this.storedItem.selectedLangProfs[key] = skills.join(',');
             saveCharacter(this.character);
         }).bind(this);
     }
@@ -238,11 +403,12 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         return `+${num}`
     }
 
-    _plural(str, num) {
+    _plural(str, num, overrideLabel) {
+        const newStr = overrideLabel || str;
         if (num > 1) {
-            return str + 's'
+            return newStr + 's'
         }
-        return str;
+        return newStr;
     }
 
     static get template() {
@@ -269,6 +435,10 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
 
                 <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skills: <span>[[defaultSkillProfs]]</span></div>
 
+                <div hidden$="[[!_exists(defaultToolProfs)]]" class="default-selection">Default Tools: <span>[[defaultToolProfs]]</span></div>
+
+                <div hidden$="[[!_exists(defaultLangProfs)]]" class="default-selection">Default Languages: <span>[[defaultLangProfs]]</span></div>
+
                 <template is="dom-if" if="[[_exists(attributeOptions)]]">
                     <dnd-select-add disabled$="[[!isEditMode]]" 
                         placeholder="<Select Attribute>" label='[[_plural("Selected Attribute", attributeChoices)]]'
@@ -282,6 +452,22 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                         placeholder="<Select Skill>" label='[[_plural("Selected Skill", skillProfChoices)]]'
                         choices="[[skillProfChoices]]" options="[[skillProfOptions]]"
                         value="[[selectedSkillProfs]]" add-callback="[[_skillProficiencyAddCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-repeat" items="[[toolProfOptions]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Tool>" label='[[_plural("Selected Tool", item.toolProfChoices, item.label)]]'
+                        choices="[[item.toolProfChoices]]" options="[[item.toolProfOptions]]"
+                        value="[[item.selectedToolProfs]]" add-callback="[[_toolProficiencyAddCallback(item.key)]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-repeat" items="[[langProfOptions]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Language>" label='[[_plural("Selected Language", item.langProfChoices, item.label)]]'
+                        choices="[[item.langProfChoices]]" options="[[item.langProfOptions]]"
+                        value="[[item.selectedLangProfs]]" add-callback="[[_langProficiencyAddCallback(item.key)]]">
                     </dnd-select-add>
                 </template>
 

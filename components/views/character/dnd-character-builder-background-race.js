@@ -1,11 +1,14 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import {
+  addAdditionalChoice,
+  deleteAdditionalChoice,
   getBackgroundReference,
   getCharacterChannel,
   getRaceReference,
   getSelectedCharacter,
 } from "../../../util/charBuilder";
 import './dnd-character-builder-suboptions';
+import "@vaadin/vaadin-select";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, initCollapseToggles, encodeForHash } from "../../../js/utils"; 
 
@@ -42,6 +45,12 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
     };
   }
 
+  constructor() {
+    super();
+    
+    this.additionalOptionAddOptions = ["Feat", "Attribute +1", "Attribute +2", "Skill", "Language", "Tool"];
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -68,6 +77,31 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
   }
 
   async updateFromCharacter(character) {
+    let maxAdditionalOptionsIndex = 0;
+    let additionalOptions = Object.entries(character.choices)
+      .filter(([key, value]) => {
+        if (key.includes("additionalChoice")) {
+          const index = parseInt(key.substring(key.indexOf('_') + 1));
+          if (index > maxAdditionalOptionsIndex) {
+            maxAdditionalOptionsIndex = index;
+          }
+          if (value) {
+            value.index = index;
+          } else {
+            return false;
+          }
+          return true;
+        }
+        return false;
+      })
+      .map(([key, value]) => {
+        value.key = key;
+        return value;
+      });
+    this.maxAdditionalOptionsIndex = maxAdditionalOptionsIndex;
+    this.set('additionalOptions', additionalOptions);
+    console.error('additionalOptions', additionalOptions);
+
     this.selectedBackground = character.background;
     this.selectedBackgroundRef = await getBackgroundReference();
     this.backgroundName = this.selectedBackground.name;
@@ -106,6 +140,17 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         viewId: isBackground ? 'backgrounds' : 'races'
       }
     }));
+  }
+
+  _addAdditionalOption(e) {
+    const optionChoice = this.$.optionAdd.value;
+    addAdditionalChoice(optionChoice, this.maxAdditionalOptionsIndex + 1);
+    this.$.optionAdd.value = "";
+  }
+
+  _deleteAdditionalOption(e) {
+    const optionKey = e.model.__data.item.key;
+    deleteAdditionalChoice(optionKey);
   }
 
   _showEmpty(isEditMode, value) {
@@ -248,6 +293,31 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
           <div class="missing-text" hidden$="[[_exists(selectedBackground)]]">Select Background to add Skill Proficiencies</div>
           <dnd-character-builder-suboptions storage-key="background" selected-item="[[selectedBackgroundRef]]"></dnd-character-builder-suboptions>
+        </div>
+
+        <div class="row-wrap">
+          <div class="heading">
+              <h2>Additional Options</h2>
+          </div>
+          <vaadin-select id="optionAdd" class="label--secondary" label="Add Additional Option" on-change="_addAdditionalOption" placeholder="<Add Additional Feature>" disabled$="[[!isEditMode]]" hidden$="[[!isEditMode]]">
+            <template>
+              <vaadin-list-box>
+                <template is="dom-repeat" items="[[additionalOptionAddOptions]]">
+                  <vaadin-item>[[item]]</vaadin-item>
+                </template>
+              </vaadin-list-box>
+            </template>
+          </vaadin-select>
+
+          <div class="added-options">
+            <template is="dom-repeat" items="[[additionalOptions]]">
+              <div>
+                Extra [[item.choiceKey]]
+                <button class="mdc-icon-button material-icons" on-click="_deleteAdditionalOption">delete</button>
+                <dnd-character-builder-suboptions dont-create-if-missing storage-key="[[item.key]]" selected-item="[[item]]"></dnd-character-builder-suboptions>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
     `;

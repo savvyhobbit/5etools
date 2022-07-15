@@ -1,4 +1,5 @@
 import {PolymerElement, html} from '@polymer/polymer';
+import { } from '@polymer/polymer/lib/elements/dom-if.js';
 import { MDCRipple } from "@material/ripple";
 import { MDCDrawer } from "@material/drawer";
 import { MDCSwitch } from "@material/switch";
@@ -7,7 +8,7 @@ import "./styles/my-styles.js";
 import "./dnd-character-popup.js";
 import registerSwipe from '../util/swipe.js';
 import { setDarkmode } from "../util/darkmode.js";
-import { clearRouteSelection, routeEventChannel, readRouteView } from '../util/routing.js';
+import { clearRouteSelection, routeEventChannel, readRouteView, notifyPreviewOpen } from '../util/routing.js';
 import { jqEmpty, timeout, util_capitalize } from '../js/utils.js';
 import './views/dnd-backgrounds-view';
 import './views/dnd-bestiary-view';
@@ -136,7 +137,9 @@ class DndLayout extends PolymerElement {
     if (!this.alreadyInit) {
       this.alreadyInit = true;
       registerSwipe(document.body, "right", () => {
-        this._openDrawer();
+        if (!this.drawer.open) {
+          this._openDrawer();
+        }
       }, null, ".character-builder--tabs-wrapper, vaadin-grid");
       registerSwipe(document.body, "left", () => {
         if (this.drawer.open) {
@@ -201,14 +204,13 @@ class DndLayout extends PolymerElement {
   
   _openDrawer(e) {
     console.error('_openDrawer', e);
-    if (!this.drawer.open) {
-      if (e && e.detail && e.detail.viewId) {
-        this._openDrawerPreview(e.detail.viewId, e.detail.selectedItem);
-      } else if (this.hasPreview) {
-        this._adjustPreviewWidth();
-      }
-      this.drawer.open = true;
+    if (e && e.detail && e.detail.viewId) {
+      this._openDrawerPreview(e.detail.viewId, e.detail.selectedItem);
+    } else if (this.hasPreview) {
+      this._adjustPreviewWidth();
     }
+    this.drawer.open = true;
+    notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
   async _openDrawerPreviewEvent(e) {
@@ -243,11 +245,13 @@ class DndLayout extends PolymerElement {
   }
 
   async _openDrawerPreview(viewId, selectedItem) {
-    this.hasPreview = true;
-    this.previewViewId = viewId;
-    this.previewSelectedItem = selectedItem;
-    console.error('_openDrawerPreview', viewId);
     this._adjustPreviewWidth();
+    console.error('_openDrawerPreview', viewId);
+    await timeout(150);
+    this.previewViewId = viewId;
+    this.previewSelectedItem = selectedItem || null;
+    this.hasPreview = true;
+    notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
   async _closeDrawerPreview() {
@@ -255,6 +259,7 @@ class DndLayout extends PolymerElement {
     this.$.drawer.style.width = `250px`;
     this.$.container.style['border-left'] = null;
     this.hasPreview = false;
+    notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
   /**
@@ -305,7 +310,7 @@ class DndLayout extends PolymerElement {
           min-height: calc(var(--vh, 1vh) * 100 - 64px);
         }
         .container {
-          transition: border-left 150ms;
+          transition: border-left 150ms ease-out;
         }
         .mdc-drawer__content {
           width: 250px;
@@ -497,11 +502,12 @@ class DndLayout extends PolymerElement {
               <span class="version mdc-typography--caption">v2.1.0</span>
 
             </div>
-            <div hidden$="[[!hasPreview]]">
+            <template is="dom-if" if="[[hasPreview]]">
               <div class="preview-wrap" id="previewTarget">
                 <dnd-selection-list model-id="[[previewViewId]]" selected-item-key="[[previewSelectedItem]]" non-global></dnd-selection-list>
               </div>
               <button class="hide-me"></button>
+            </template>
             </div>
           </nav>
         </div>
