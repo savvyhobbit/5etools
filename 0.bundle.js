@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[0],{144:function(e,t,n){"use strict";n(56),n(59),n(78);const a=n(7).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
+(window.webpackJsonp=window.webpackJsonp||[]).push([[0],{144:function(e,t,n){"use strict";n(56),n(59),n(79);const a=n(7).a`<dom-module id="lumo-number-field" theme-for="vaadin-number-field">
   <template>
     <style include="lumo-field-button">
       :host {
@@ -39,7 +39,7 @@
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(a.content);n(77),n(3),n(43);var i=n(65),r=n(33);
+</dom-module>`;document.head.appendChild(a.content);n(78),n(3),n(43);var i=n(65),r=n(33);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
@@ -51,7 +51,7 @@ const l=document.createElement("template");let o;l.innerHTML='<dom-module id="va
 Copyright (c) 2019 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(d.content);class c extends s{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(!this.__hasOnlyDigits(e))return console.warn(`Trying to set invalid step size "${e}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d*$/.test(String(e))}}window.customElements.define(c.is,c)},145:function(e,t,n){"use strict";n(91),n(106)},146:function(e,t,n){"use strict";n(77)},149:function(e,t,n){"use strict";n(37),n(59),n(60);var a=n(7);const i=a.a`<dom-module id="lumo-text-area" theme-for="vaadin-text-area">
+const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-integer-field-template">\n\n  \n</dom-module>',document.head.appendChild(d.content);class c extends s{static get is(){return"vaadin-integer-field"}static get version(){return"2.6.2"}static get properties(){return{pattern:String,preventInvalidInput:Boolean,minlength:Number,maxlength:Number}}ready(){super.ready(),this._enabledCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(!this.__hasOnlyDigits(e))return console.warn(`Trying to set invalid step size "${e}", which is not a positive integer, to <vaadin-integer-field>. Resetting the default value 1.`),void(this.step=1);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d*$/.test(String(e))}}window.customElements.define(c.is,c)},145:function(e,t,n){"use strict";n(91),n(106)},146:function(e,t,n){"use strict";n(78)},149:function(e,t,n){"use strict";n(37),n(59),n(60);var a=n(7);const i=a.a`<dom-module id="lumo-text-area" theme-for="vaadin-text-area">
   <template>
     <style include="lumo-text-field">
       [part="input-field"],
@@ -109,7 +109,7 @@ const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-i
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(i.content);n(77);var r=n(3),l=n(93),o=n(35),s=n(20);
+</dom-module>`;document.head.appendChild(i.content);n(78);var r=n(3),l=n(93),o=n(35),s=n(20);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
