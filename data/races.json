@@ -10078,7 +10078,7 @@
 		"weaponProficiencies": [
 			{
 				"choose": {
-					"fromFilter": "type=martial weapon|miscellaneous=mundane",
+					"fromFilter": "martial",
 					"count": 2
 				}
 			}
