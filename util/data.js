@@ -114,7 +114,7 @@ async function loadModelFromIndex(modelId, isSpells) {
 }
 
 function loadAllNewClassModels() {
-	let classModelIds = ["artificer","barbarian","bard","cleric","druid","fighter","generic","monk","mystic","paladin","ranger","rogue","sidekick","sorcerer","warlock","wizard"]
+	let classModelIds = ["artificer","barbarian","bard","cleric","druid","fighter","generic","monk","mystic","paladin","pirate","ranger","rogue","sidekick","sorcerer","warlock","wizard"]
 	const promises = [];
 
 	for (let classModelId of classModelIds) {
@@ -132,7 +132,12 @@ function loadAllNewClassModels() {
 
 async function loadNewClassModel(classId) {
 	const path = `${DATA_ROOT}newClasses/${classId}.json`;
-	const modelData = await loadJSON(path).then(parseNewClassModel);
+	const modelData = await loadJSON(path).then((data) => {
+		if (classId !== 'class-pirate') {
+			return parseNewClassModel(data);
+		}
+		return data;
+	});
 	if (modelData) {
 		return modelData;
 	} else {

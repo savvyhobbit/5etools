@@ -25,11 +25,11 @@ module.exports = {
           to: ".",
           toType: "dir"
         },
-        {
-          from: "data/classes/*",
-          to: ".",
-          toType: "dir"
-        },
+        // {
+        //   from: "data/classes/*",
+        //   to: ".",
+        //   toType: "dir"
+        // },
         {
           from: "data/newClasses/*",
           to: ".",

@@ -213,6 +213,9 @@ export const
     }
     return res.map(r => r.name || r);
   },
+  WEAPON_MARTIAL = ["Battleaxe","Blowgun","Flail","Glaive","Greataxe","Greatsword","Halberd","Hand Crossbow","Heavy Crossbow","Lance","Longbow","Longsword","Maul","Morningstar","Net","Pike","Rapier","Scimitar","Shortsword","Trident","War Pick","Warhammer","Whip","Pistol","Musket","Automatic Pistol","Revolver","Hunting Rifle","Automatic Rifle","Shotgun","Laser Pistol","Antimatter Rifle","Laser Rifle"],
+  WEAPON_SIMPLE = ["Club","Dagger","Dart","Greatclub","Handaxe","Javelin","Light Crossbow","Light Hammer","Mace","Quarterstaff","Shortbow","Sickle","Sling","Spear","Yklwa"],
+  WEAPON_ALL = WEAPON_SIMPLE.concat(WEAPON_MARTIAL),
   LANGUAGES_ALL = ["Common", "Dwarvish", "Elvish", "Giant", "Gnomish", "Goblin", "Halfling", "Orc", "Abyssal", "Celestial", "Deep Speech", "Draconic", "Infernal", "Primordial", "Sylvan", "Undercommon"]
   ;
 

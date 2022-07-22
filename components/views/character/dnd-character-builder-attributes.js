@@ -27,7 +27,13 @@ import {
   toggleCustomAC,
   toggleCustomHealth,
   setCustomACVal,
-  setCustomHealthVal
+  setCustomHealthVal,
+  getChoiceLanguages,
+  getChoiceToolProfs,
+  getChoiceArmorProfs,
+  getChoiceWeaponProfs,
+  getChoiceFeats,
+  getChoiceDarkvision
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, findInPath } from "../../../js/utils";
@@ -127,6 +133,34 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       },
       customACHealth: {
         type: Number
+      },
+      otherProfsOpen: {
+        type: Boolean
+      },
+      featuresOpen: {
+        type: Boolean
+      },
+      languages: {
+        type: String,
+      },
+      toolProfs: {
+        type: String,
+      },
+      weaponProfs: {
+        type: String,
+      },
+      armorProfs: {
+        type: String,
+      },
+      feats: {
+        type: String,
+      },
+      darkvision: {
+        type: Number,
+      },
+      hasDarkvision: {
+        type: Boolean,
+        value: false,
       }
     };
   }
@@ -265,6 +299,16 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.speed = await getCharacterSpeed();
 
       this.proficiencyBonus = await getCharacterProficiencyBonus();
+
+      this.weaponProfs = getChoiceWeaponProfs().map(util_capitalizeAll).join(', ');
+      this.armorProfs = getChoiceArmorProfs().map(util_capitalizeAll).join(', ');
+      this.toolProfs = getChoiceToolProfs().map(util_capitalizeAll).join(', ');
+      this.languages = getChoiceLanguages().map(util_capitalizeAll).join(', ');
+      this.feats = getChoiceFeats().map(util_capitalizeAll).join(', ');
+      this.darkvision = getChoiceDarkvision();
+      this.hasDarkvision = this.darkvision !== null;
+      
+      console.error('blah', this.weaponProfs, this.armorProfs, this.toolProfs, this.languages);
 
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
@@ -461,6 +505,14 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     return customHealth ? customHealthVal : maxHP;
   }
 
+  _toggleOtherProfs() {
+    this.otherProfsOpen = !this.otherProfsOpen;
+  }
+
+  _toggleFeatures() {
+    this.featuresOpen = !this.featuresOpen;
+  }
+
   static get template() {
     return html`
       <style include="material-styles">
@@ -478,12 +530,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           flex-direction: column;
           justify-content: space-between;
           padding-bottom: 50px;
-        }
-
-        .stats {
-          display: flex;
-          flex-direction: column;
-          min-width: 0;
+          position: relative;
         }
         .attribute-wrap {
           display: flex;
@@ -497,7 +544,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           min-width: 0;
           flex-shrink: 0;
           justify-content: space-between;
-          margin-bottom: 16px;      
+          max-width: 360px;
         }
         .health-wrap > div {
           width: calc(33% - 8px);
@@ -506,7 +553,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .health-wrap > * {
           margin-bottom: 16px;
         }
-
 
         /* Proficiencies */
         .proficiencies {
@@ -551,6 +597,114 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         }
         .proficiency-item[enabled]::before {
           background-color: var(--mdc-theme-primary);
+        }
+
+
+        .stats {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          width: 190px;
+          flex-shrink: 0;
+          padding-top: 10px;
+        }
+
+        /* Other profs */
+        .stats-other-wrap {
+          display: flex;
+          justify-content: space-between;
+        }
+        .others {
+          margin-bottom: 120px;
+        }
+        .other {
+          margin-left: 20px;
+          font-size: 14px;
+          flex-shrink: 1;
+          max-width: 180px;
+          height: fit-content;
+          margin-bottom: 8px;
+          line-height: 1.5;
+        }
+        .other[open]  .other__header .material-icons {
+          transform: rotate(180deg);
+        }
+        .other__header {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          margin-bottom: 8px;
+          padding: 0;
+          cursor: pointer;
+          transition: color .1s ease-in;
+          font-size: 18px;
+          font-weight: bold;
+          text-align: left;
+          line-height: 1.6;
+          user-select: none;
+          color: var(--mdc-theme-primary);
+          background: none;
+          border: 0;
+        }
+        .other__header:hover {
+          color: var(--lumo-primary-color-50pct);
+        }
+        .other__header .material-icons {
+          font-size: 24px;
+          position: relative;
+          transition: transform .1s ease-in;
+          margin: -2px 8px 0 0;
+        }
+        .other__wrap {
+          opacity: 0;
+          height: 0;
+          overflow: hidden;
+        }
+        .other[open] .other__wrap {
+          opacity: 1;
+          height: auto;
+          transform: scale(1, 1);
+          animation-duration: .3s;
+          animation-name: scaleIn;
+          animation-timing-function: cubic-bezier(.71,.55,.62,1.57);
+        }
+
+        .other__item h4 {
+          margin: 0;
+          font-size: 16px;
+        }
+        .other__item {
+          margin-bottom: 16px;
+          margin-left: 16px;
+        }
+        .other__item div {
+          margin-left: 16px;
+        }
+
+        @keyframes scaleIn {
+          0% {
+            height: 0;
+          }
+          1% {
+            height: fit-content;
+            opacity: 0;
+            transform: scale(.9, .9);
+          }
+          100% {
+            opacity: 1;
+            height: auto;
+            transform: scale(1, 1);
+          }
+        }
+        @keyframes scaleOut {
+          0% {
+            opacity: 1;
+            transform: scale(1, 1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(.9, .9);
+          }
         }
 
 
@@ -777,6 +931,13 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           margin-top: auto;
         }
 
+        .basic-box__wrap {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 40px;
+          max-width: 360px;
+        }
         .basic-box {
           display: flex;
           flex-direction: column;
@@ -785,10 +946,13 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
           height: min-content;
+          width: calc(33% - 8px);
+          max-width: 120px;
         }
         .basic-box--short {
           height: fit-content;
         }
+        
         .basic-box__label {
           color: var(--mdc-theme-primary);
           font-size: 14px;
@@ -828,6 +992,31 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         @media(min-width: 420px) {
           .wrap {
             padding-bottom: 0;
+          }
+        }
+        @media(min-width: 505px) {
+          .stats {
+            width: 250px;
+          }
+        }
+        @media(min-width: 920px) {
+          .basic-box__wrap {
+            position: absolute;
+            right: 0;
+          }
+          .others {
+            margin-bottom: 0;
+          }
+          .other .other__header .material-icons {
+            display: none;
+          }
+          .other .other__wrap {
+            opacity: 1;
+            height: auto;
+            transform: scale(1, 1);
+          }
+          .other__header {
+            font-size: 18px;
           }
         }
       </style>
@@ -895,7 +1084,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
               </template>
               <dnd-button class="hit-dice__reset" label="Reset" on-click="_resetHitDice"></dnd-button>
             </div>
+          </div>
 
+          <div class="basic-box__wrap">
             <div class="basic-box basic-box--short ac">
               <div class="basic-box__value">
                 <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
@@ -938,107 +1129,156 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
             <!--  Long Rest -->
             <!-- <dnd-button icon="watch_later" class="rest-btn rest-btn--long" background="var(--lumo-contrast-10pct)" label="Long" on-click="_triggerLongRest"></dnd-button> -->
+            </div>
 
-            
-          </div>
+          <div class="stats-other-wrap">
+            <div class="stats">
+              <!--  Attributes -->
+              <div class="attribute-wrap">
+                <div class="stat-box" on-click="_roll">
+                  <div class="stat-box__save" enabled$="[[_contains(saves, 'str')]]"></div>
+                  <div class="stat-box__mod">[[_mod(strAdj, str)]]</div>
+                  <div class="stat-box__footer">
+                    <vaadin-integer-field theme="mini" value={{str}} min="1" max="20" has-controls label="Strength" disabled$="[[!isEditMode]]">
+                      <span class="stat-box__adj" slot="suffix">[[_adjustString(strAdj)]]</span>
+                    </vaadin-integer-field>
+                  </div>
+                </div>
+                <div class="proficiencies">
+                  <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(skillProfs, 'athletics')]]" expertise$="[[_strContainsTwo(skillProfs, 'athletics')]]">Athletics</div>
+                </div>
+              </div>
+              <div class="attribute-wrap">
+                <div class="stat-box" on-click="_roll">
+                  <div class="stat-box__save" enabled$="[[_contains(saves, 'dex')]]"></div>
+                  <div class="stat-box__mod">[[_mod(dexAdj, dex)]]</div>
+                  <div class="stat-box__footer">
+                    <vaadin-integer-field theme="mini" value={{dex}} min="1" max="20" has-controls label="Dexterity" disabled$="[[!isEditMode]]">
+                      <span class="stat-box__adj" slot="suffix">[[_adjustString(dexAdj)]]</span>
+                    </vaadin-integer-field>
+                  </div>
+                </div>
+                <div class="proficiencies">
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>
+                </div>
+              </div>
+              <div class="attribute-wrap">
+                <div class="stat-box" on-click="_roll">
+                  <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
+                  <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
+                  <div class="stat-box__footer">
+                    <vaadin-integer-field theme="mini" value={{con}} min="1" max="20" has-controls label="Constitution" disabled$="[[!isEditMode]]">
+                      <span class="stat-box__adj" slot="suffix">[[_adjustString(conAdj)]]</span>
+                    </vaadin-integer-field>
+                  </div>
+                </div>
+                <div class="proficiencies">
+                
+                </div>
+              </div>
+              <div class="attribute-wrap">
+                <div class="stat-box" on-click="_roll">
+                  <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
+                  <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
+                  <div class="stat-box__footer">
+                    <vaadin-integer-field theme="mini" value={{int}} min="1" max="20" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
+                      <span class="stat-box__adj" slot="suffix">[[_adjustString(intAdj)]]</span>
+                    </vaadin-integer-field>
+                  </div>
+                </div>
+                <div class="proficiencies">
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'arcana')]]" enabled$="[[_strContains(skillProfs, 'arcana')]]">Arcana</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'history')]]" enabled$="[[_strContains(skillProfs, 'history')]]">History</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'nature')]]" enabled$="[[_strContains(skillProfs, 'nature')]]">Nature</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'religion')]]" enabled$="[[_strContains(skillProfs, 'religion')]]">Religion</div>
+                </div>
+              </div>
+              <div class="attribute-wrap">
+                <div class="stat-box" on-click="_roll">
+                  <div class="stat-box__save" enabled$="[[_contains(saves, 'wis')]]"></div>
+                  <div class="stat-box__mod">[[_mod(wisAdj, wis)]]</div>
+                  <div class="stat-box__footer">
+                    <vaadin-integer-field theme="mini" value={{wis}} min="1" max="20" has-controls label="Wisdom" disabled$="[[!isEditMode]]">
+                      <span class="stat-box__adj" slot="suffix">[[_adjustString(wisAdj)]]</span>
+                    </vaadin-integer-field>
+                  </div>
+                </div>
+                <div class="proficiencies">
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'insight')]]" enabled$="[[_strContains(skillProfs, 'insight')]]">Insight</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'medicine')]]" enabled$="[[_strContains(skillProfs, 'medicine')]]">Medicine</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'perception')]]" enabled$="[[_strContains(skillProfs, 'perception')]]">Perception</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'survival')]]" enabled$="[[_strContains(skillProfs, 'survival')]]">Survival</div>
+                </div>
+              </div>
+              <div class="attribute-wrap">
+                <div class="stat-box" on-click="_roll">
+                  <div class="stat-box__save" enabled$="[[_contains(saves, 'cha')]]"></div>
+                  <div class="stat-box__mod">[[_mod(chaAdj, cha)]]</div>
+                  <div class="stat-box__footer">
+                    <vaadin-integer-field theme="mini" value={{cha}} min="1" max="20" has-controls label="Charisma" disabled$="[[!isEditMode]]">
+                      <span class="stat-box__adj" slot="suffix">[[_adjustString(chaAdj)]]</span>
+                    </vaadin-integer-field>
+                  </div>
+                </div>
+                <div class="proficiencies">
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'deception')]]" enabled$="[[_strContains(skillProfs, 'deception')]]">Deception</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'intimidation')]]" enabled$="[[_strContains(skillProfs, 'intimidation')]]">Intimidation</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'performance')]]" enabled$="[[_strContains(skillProfs, 'performance')]]">Performance</div>
+                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'persuasion')]]" enabled$="[[_strContains(skillProfs, 'persuasion')]]">Persuasion</div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="others">
+              <div class="other" open$="[[featuresOpen]]">
+                <button class="other__header" on-click="_toggleFeatures">
+                  <span class="material-icons">expand_more</span>
+                  <span class="other__header-text">Features</span>
+                </button>  
 
-          <div class="stats">
-            <!--  Attributes -->
-            <div class="attribute-wrap">
-              <div class="stat-box" on-click="_roll">
-                <div class="stat-box__save" enabled$="[[_contains(saves, 'str')]]"></div>
-                <div class="stat-box__mod">[[_mod(strAdj, str)]]</div>
-                <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{str}} min="1" max="20" has-controls label="Strength" disabled$="[[!isEditMode]]">
-                    <span class="stat-box__adj" slot="suffix">[[_adjustString(strAdj)]]</span>
-                  </vaadin-integer-field>
+                <div class="other__wrap">
+                  <div class="other__item" hidden$="[[!hasDarkvision]]">
+                    <h4>Darkvision [[darkvision]] ft.</h4>
+                  </div>
+                  <div class="other__item" hidden$="[[!_exists(feats)]]">
+                    <h4>Feats</h4>
+                    <div>[[feats]]</div>
+                  </div>
+                  <!-- <div class="other__item">
+                    <h4>Resistances</h4>
+                    <div>Todo</div>
+                  </div> -->
                 </div>
               </div>
-              <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(skillProfs, 'athletics')]]" expertise$="[[_strContainsTwo(skillProfs, 'athletics')]]">Athletics</div>
-              </div>
-            </div>
-            <div class="attribute-wrap">
-              <div class="stat-box" on-click="_roll">
-                <div class="stat-box__save" enabled$="[[_contains(saves, 'dex')]]"></div>
-                <div class="stat-box__mod">[[_mod(dexAdj, dex)]]</div>
-                <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{dex}} min="1" max="20" has-controls label="Dexterity" disabled$="[[!isEditMode]]">
-                    <span class="stat-box__adj" slot="suffix">[[_adjustString(dexAdj)]]</span>
-                  </vaadin-integer-field>
+
+              <div class="other" open$="[[otherProfsOpen]]">
+                <button class="other__header" on-click="_toggleOtherProfs">
+                  <span class="material-icons">expand_more</span>
+                  <span class="other__header-text">Proficiencies</span>
+                </button>  
+
+                <div class="other__wrap">
+                  <div class="other__item" hidden$="[[!_exists(armorProfs)]]">
+                    <h4>Armor</h4>
+                    <div>[[armorProfs]]</div>
+                  </div>
+                  <div class="other__item" hidden$="[[!_exists(weaponProfs)]]">
+                    <h4>Weapons</h4>
+                    <div>[[weaponProfs]]</div>
+                  </div>
+                  <div class="other__item" hidden$="[[!_exists(toolProfs)]]">
+                    <h4>Tools</h4>
+                    <div>[[toolProfs]]</div>
+                  </div>
+                  <div class="other__item" hidden$="[[!_exists(languages)]]">
+                    <h4>Languages</h4>
+                    <div>[[languages]]</div>
+                  </div>
                 </div>
-              </div>
-              <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>
-              </div>
-            </div>
-            <div class="attribute-wrap">
-              <div class="stat-box" on-click="_roll">
-                <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
-                <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
-                <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{con}} min="1" max="20" has-controls label="Constitution" disabled$="[[!isEditMode]]">
-                    <span class="stat-box__adj" slot="suffix">[[_adjustString(conAdj)]]</span>
-                  </vaadin-integer-field>
-                </div>
-              </div>
-              <div class="proficiencies">
-              
-              </div>
-            </div>
-            <div class="attribute-wrap">
-              <div class="stat-box" on-click="_roll">
-                <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
-                <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
-                <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{int}} min="1" max="20" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
-                    <span class="stat-box__adj" slot="suffix">[[_adjustString(intAdj)]]</span>
-                  </vaadin-integer-field>
-                </div>
-              </div>
-              <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'arcana')]]" enabled$="[[_strContains(skillProfs, 'arcana')]]">Arcana</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'history')]]" enabled$="[[_strContains(skillProfs, 'history')]]">History</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'nature')]]" enabled$="[[_strContains(skillProfs, 'nature')]]">Nature</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'religion')]]" enabled$="[[_strContains(skillProfs, 'religion')]]">Religion</div>
-              </div>
-            </div>
-            <div class="attribute-wrap">
-              <div class="stat-box" on-click="_roll">
-                <div class="stat-box__save" enabled$="[[_contains(saves, 'wis')]]"></div>
-                <div class="stat-box__mod">[[_mod(wisAdj, wis)]]</div>
-                <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{wis}} min="1" max="20" has-controls label="Wisdom" disabled$="[[!isEditMode]]">
-                    <span class="stat-box__adj" slot="suffix">[[_adjustString(wisAdj)]]</span>
-                  </vaadin-integer-field>
-                </div>
-              </div>
-              <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'insight')]]" enabled$="[[_strContains(skillProfs, 'insight')]]">Insight</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'medicine')]]" enabled$="[[_strContains(skillProfs, 'medicine')]]">Medicine</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'perception')]]" enabled$="[[_strContains(skillProfs, 'perception')]]">Perception</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'survival')]]" enabled$="[[_strContains(skillProfs, 'survival')]]">Survival</div>
-              </div>
-            </div>
-            <div class="attribute-wrap">
-              <div class="stat-box" on-click="_roll">
-                <div class="stat-box__save" enabled$="[[_contains(saves, 'cha')]]"></div>
-                <div class="stat-box__mod">[[_mod(chaAdj, cha)]]</div>
-                <div class="stat-box__footer">
-                  <vaadin-integer-field theme="mini" value={{cha}} min="1" max="20" has-controls label="Charisma" disabled$="[[!isEditMode]]">
-                    <span class="stat-box__adj" slot="suffix">[[_adjustString(chaAdj)]]</span>
-                  </vaadin-integer-field>
-                </div>
-              </div>
-              <div class="proficiencies">
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'deception')]]" enabled$="[[_strContains(skillProfs, 'deception')]]">Deception</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'intimidation')]]" enabled$="[[_strContains(skillProfs, 'intimidation')]]">Intimidation</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'performance')]]" enabled$="[[_strContains(skillProfs, 'performance')]]">Performance</div>
-                <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'persuasion')]]" enabled$="[[_strContains(skillProfs, 'persuasion')]]">Persuasion</div>
               </div>
             </div>
           </div>

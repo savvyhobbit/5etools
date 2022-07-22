@@ -280,6 +280,9 @@ styleElement.innerHTML = `
       }
 
       /* Tables */
+      .entry-table__scroll-wrap {
+        overflow-x: scroll;
+      }
       .table-wrap {
         border-radius: 4px;
         display: inline-block;

@@ -166,7 +166,7 @@ function EntryRenderer() {
 		function renderTable(self) {
 			// TODO add handling for rowLabel property
 
-			textStack.push("<table class='table'>");
+			textStack.push("<div class='entry-table__scroll-wrap'><table class='table'>");
 
 			if (entry.caption !== undefined) {
 				textStack.push(`<caption>${entry.caption}</caption>`);
@@ -195,7 +195,7 @@ function EntryRenderer() {
 			}
 
 			textStack.push("</tbody>");
-			textStack.push("</table>");
+			textStack.push("</table></div>");
 
 			function getTableThClassText(i) {
 				return entry.colStyles === undefined || i >= entry.colStyles.length ? "class='table-cell'" :  `class="table-cell ${entry.colStyles[i]}"`;

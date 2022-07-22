@@ -11,7 +11,13 @@ import '../../dnd-select-add';
 import { SKILL_TO_ATB_ABV } from "../../../js/bestiary";
 import { } from '@polymer/polymer/lib/elements/dom-if.js';
 import { } from '@polymer/polymer/lib/elements/dom-repeat.js';
-import { LANGUAGES_ALL, toolsListFromCategory, TOOLS_ALL, TOOLS_ARTISAN, TOOLS_GAMING_SET, TOOLS_INSTRUMENT } from "../../../util/consts";
+import { LANGUAGES_ALL, toolsListFromCategory, TOOLS_ALL, TOOLS_ARTISAN, TOOLS_GAMING_SET, TOOLS_INSTRUMENT, WEAPON_ALL, WEAPON_MARTIAL, WEAPON_SIMPLE } from "../../../util/consts";
+
+
+// TODO parsing
+//// additionalSpells, "expertise", dark vision
+//// class entry parsing - "gain proficiency" - {@item brewer's supplies|phb}, martial weapons, {@skill Performance}, or, choose one, 
+///
 
 class DndCharacterBuilderSuboptions extends PolymerElement {
     static get properties() {
@@ -53,6 +59,24 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 value: []
             },
             defaultLangProfs: {
+                type: String,
+                value: ""
+            },
+
+            weaponProfOptions: {
+                type: Array,
+                value: []
+            },
+            defaultWeaponProfs: {
+                type: String,
+                value: ""
+            },
+
+            armorProfOptions: {
+                type: Array,
+                value: []
+            },
+            defaultArmorProfs: {
                 type: String,
                 value: ""
             },
@@ -218,9 +242,10 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 this.storedItem.defaultSkillProfs = this.defaultSkillProfs;
             }
 
-            // toolProficiencies (Dragon Casualty)
-                // tool list special keys - artisan's tools, musical instruments, gaming set, any, choose.from
-                // values usually === true or 2
+
+            // "toolProficiencies" (Dragon Casualty)
+            //     tool list special keys - artisan's tools, musical instruments, gaming set, any, choose.from
+            //     values usually === true or 2
             const toolProfOptions = []
             let defaultToolProfs = [];
             if (this.selectedItem.toolProficiencies && this.selectedItem.toolProficiencies.length) {
@@ -269,14 +294,14 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     })
                     defaultToolProfs = defaultToolProfs.filter(e => !!e).join(', ');
                     // store defaults on character to avoid future look-ups
-                    this.defaultToolProfs = defaultToolProfs;
+                    this.set('defaultToolProfs', defaultToolProfs.length > 0 ? defaultToolProfs : null);
                     this.storedItem.defaultToolProfs = defaultToolProfs;
                 }
             }
-            this.toolProfOptions = toolProfOptions;
+            this.set('toolProfOptions', toolProfOptions.length > 0 ? toolProfOptions : null);
 
 
-            // todo "languageProficiencies" 
+            // "languageProficiencies" 
             //      any: #, anyStandard: #, dwarvish, choose:from, other (this usually? indicates race's own language)
             // test with  Vedalken
             const langProfOptions = []
@@ -321,16 +346,132 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     });
                 });
                 defaultLangProfs = defaultLangProfs.filter(e => !!e).join(', ');
-                console.error('defaultLangProfs', this.selectedItem.name, defaultLangProfs);
+                this.defaultLangProfs = defaultLangProfs.length > 0 ? defaultLangProfs : null;
                 // store defaults on character to avoid future look-ups
-                this.defaultLangProfs = defaultLangProfs;
                 this.storedItem.defaultLangProfs = defaultLangProfs;
             }
-            this.langProfOptions = langProfOptions;
-            console.error('langProfOptions', this.selectedItem.name, langProfOptions);
-
+            this.set('langProfOptions', langProfOptions.length > 0 ? langProfOptions : null);
 
             // todo: "resist"
+
+            // "weaponProficiencies"
+            //     martial, spmple
+            // 
+            //     "longsword|phb": true,
+            //
+            //     "choose": {
+            //         	"fromFilter": "type=martial weapon|miscellaneous=mundane",
+            //         	"count": 2
+            //      }
+            const weaponProfOptions = []
+            let defaultWeaponProfs = [];
+            if (this.selectedItem.weaponProficiencies && this.selectedItem.weaponProficiencies.length) {
+                if (!this.storedItem.selectedWeaponProfs || typeof this.storedItem.selectedWeaponProfs === 'string') {
+                    this.storedItem.selectedWeaponProfs = {};
+                }
+                this.selectedItem.weaponProficiencies.forEach(weaponProficiency => {
+                    Object.entries(weaponProficiency).forEach(([weaponKey, weaponVal]) => {
+                        const newWeaponProfOption = {
+                            key: weaponKey,
+                            selectedWeaponProfs: this.storedItem.selectedWeaponProfs[weaponKey] ? this.storedItem.selectedWeaponProfs[weaponKey].split(',') : null
+                        };
+                        switch (weaponKey) {
+                            case 'any':
+                                newWeaponProfOption.weaponProfOptions = WEAPON_ALL;
+                                newWeaponProfOption.weaponProfChoices = Number.isInteger(weaponVal) ? weaponVal : 1;
+                                weaponProfOptions.push(newWeaponProfOption);
+                                break;
+
+                            case 'choose':
+                                newWeaponProfOption.weaponProfOptions = weaponProfOptions.choose.from === "martial" ? WEAPON_MARTIAL : weaponProfOptions.choose.from === "simple" ? WEAPON_SIMPLE : WEAPON_ALL;
+                                newWeaponProfOption.weaponProfChoices = weaponProficiency.choose.count || 1;
+                                weaponProfOptions.push(newWeaponProfOption);
+                                break;
+                        
+                            default:
+                                if (weaponKey.includes('|')) {
+                                    const weaponName = weaponKey.split('|')[0];
+                                    defaultWeaponProfs.push(util_capitalizeAll(weaponName))
+                                } else {
+                                    defaultWeaponProfs.push(util_capitalizeAll(weaponKey));
+                                }
+                                break;
+                        }
+                    });
+                });
+                defaultWeaponProfs = defaultWeaponProfs.filter(e => !!e).join(', ');
+            }
+            if (defaultWeaponProfs.length > 0) {
+                this.set("defaultWeaponProfs", defaultWeaponProfs);
+                this.storedItem.defaultWeaponProfs = defaultWeaponProfs;
+
+            } else {
+                this.set("defaultWeaponProfs", null);
+                this.storedItem.defaultWeaponProfs = null;
+
+
+            }
+            this.set("defaultWeaponProfs", defaultWeaponProfs.length > 0 ? defaultWeaponProfs : null);
+            // store defaults on character to avoid future look-ups
+            this.storedItem.defaultWeaponProfs = defaultWeaponProfs;
+            this.set('weaponProfOptions', weaponProfOptions.length > 0 ? weaponProfOptions : null);
+
+
+            // "armorProficiencies"
+            //
+            const armorProfOptions = []
+            let defaultArmorProfs = [];
+            if (this.selectedItem.armorProficiencies && this.selectedItem.armorProficiencies.length) {
+                if (!this.storedItem.selectedArmorProfs || typeof this.storedItem.selectedArmorProfs === 'string') {
+                    this.storedItem.selectedArmorProfs = {};
+                }
+                this.selectedItem.armorProficiencies.forEach(armorProficiency => {
+                    Object.entries(armorProficiency).forEach(([armorKey, armorVal]) => {
+                        const newArmorProfOption = {
+                            key: armorKey,
+                            selectedArmorProfs: this.storedItem.selectedArmorProfs[armorKey] ? this.storedItem.selectedArmorProfs[armorKey].split(',') : null
+                        };
+                        switch (armorKey) {
+                            case 'any':
+                                newArmorProfOption.armorProfOptions = ["light", "medium", "heavy", "shield"];
+                                newArmorProfOption.armorProfChoices = Number.isInteger(armorVal) ? armorVal : 1;
+                                armorProfOptions.push(newArmorProfOption);
+                                break;
+                        
+                            default:
+                                if (armorKey.includes('|')) {
+                                    const armorName = armorKey.split('|')[0];
+                                    defaultArmorProfs.push(util_capitalizeAll(armorName))
+                                } else {
+                                    defaultArmorProfs.push(util_capitalizeAll(armorKey));
+                                }
+                                break;
+                        }
+                    });
+                });
+                defaultArmorProfs = defaultArmorProfs.filter(e => !!e).join(', ');
+                this.defaultArmorProfs = defaultArmorProfs.length > 0 ? defaultArmorProfs : null;
+                // store defaults on character to avoid future look-ups
+                this.storedItem.defaultArmorProfs = defaultArmorProfs;
+            }
+            this.set('armorProfOptions', armorProfOptions.length > 0 ? armorProfOptions : null);
+
+
+            let defaultDarkvision;
+            if (this.selectedItem.entries) {
+                this.selectedItem.entries
+                    .forEach((entry) => {
+                        if (entry && entry.name && entry.name.toLowerCase() === 'darkvision' 
+                                && entry.entries && entry.entries.length) {
+                            const is60 = entry.entries[0].includes('60'),
+                                is120 = entry.entries[0].includes('120');
+                                defaultDarkvision = is120 ? 120 : is60 ? 60 : 0;
+                        }
+                    })
+            }
+
+            this.storedItem.defaultDarkvision = defaultDarkvision || null;
+            this.defaultDarkvision = defaultDarkvision || null;
 
             // Populating Feat choice field
             this.featOptions = [];
@@ -367,6 +508,20 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         }).bind(this);
     }
 
+    _armorProficiencyAddCallback(key) {
+        return ((skills) => {
+            this.storedItem.selectedArmorProfs[key] = skills.join(',');
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
+    _weaponProficiencyAddCallback(key) {
+        return ((skills) => {
+            this.storedItem.selectedWeaponProfs[key] = skills.join(',');
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
     _attributeAddCallback() {
         return ((attr) => {
             this.storedItem.selectedAttributes = attr.join(',');
@@ -399,7 +554,6 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
     }
 
     _plusPrefix(num) {
-        console.error(num)
         return `+${num}`
     }
 
@@ -411,14 +565,41 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         return newStr;
     }
 
+    _printOptions(selectedOptions, storedItem, key) {
+        let out = []
+        for (const option of selectedOptions) {
+            out = out.concat(storedItem[`selected${key}Profs`][option])
+        }
+        return out.join(', ');
+    }
+
     static get template() {
         return html`
             <style include="material-styles">
+                .some {}
+                :host {
+                    display: block;
+                    white-space: initial;
+                }
                 [hidden] {
                     display: none !important;
                 }
+                dnd-character-builder-suboptions {
+                    padding-left: 40px;
+                    display: block;
+                }
                 dnd-select-add {
                     width: 100%;
+                    display: block;
+                }
+                dnd-select-add,
+                dnd-character-builder-suboptions {
+                    width: var(--suboptions__width);
+                    max-width: var(--suboptions__max-width);
+                }
+                .default-selection {
+                    font-size: 14px;
+                    margin-bottom: 6px;
                 }
                 @media(min-width: 420px) {
                     dnd-select-add {
@@ -431,13 +612,19 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             </style>
 
             <div class="col-wrap">
-                <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection">Default Attributes: <span>[[defaultAttributes]]</span></div>
+                <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection"><b>Ability Increase: </b><span>[[defaultAttributes]]</span></div>
 
-                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection">Default Skills: <span>[[defaultSkillProfs]]</span></div>
+                <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection"><b>Skills: </b><span>[[defaultSkillProfs]]</span></div>
+                
+                <div hidden$="[[!_exists(defaultArmorProfs)]]" class="default-selection"><b>Armor: </b><span>[[defaultArmorProfs]]</span></div>
 
-                <div hidden$="[[!_exists(defaultToolProfs)]]" class="default-selection">Default Tools: <span>[[defaultToolProfs]]</span></div>
+                <div hidden$="[[!_exists(defaultWeaponProfs)]]" class="default-selection"><b>Weapons: </b><span>[[defaultWeaponProfs]]</span></div>
 
-                <div hidden$="[[!_exists(defaultLangProfs)]]" class="default-selection">Default Languages: <span>[[defaultLangProfs]]</span></div>
+                <div hidden$="[[!_exists(defaultToolProfs)]]" class="default-selection"><b>Tools: </b><span>[[defaultToolProfs]]</span></div>
+
+                <div hidden$="[[!_exists(defaultLangProfs)]]" class="default-selection"><b>Languages: </b><span>[[defaultLangProfs]]</span></div>
+
+                <div hidden$="[[!_exists(defaultDarkvision)]]" class="default-selection"><b>Darkvision: </b><span>[[defaultDarkvision]] ft.</span></div>
 
                 <template is="dom-if" if="[[_exists(attributeOptions)]]">
                     <dnd-select-add disabled$="[[!isEditMode]]" 
@@ -452,6 +639,22 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                         placeholder="<Select Skill>" label='[[_plural("Selected Skill", skillProfChoices)]]'
                         choices="[[skillProfChoices]]" options="[[skillProfOptions]]"
                         value="[[selectedSkillProfs]]" add-callback="[[_skillProficiencyAddCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-repeat" items="[[armorProfOptions]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Armor>" label='[[_plural("Selected Armor", item.armorProfChoices, item.label)]]'
+                        choices="[[item.armorProfChoices]]" options="[[item.armorProfOptions]]"
+                        value="[[item.selectedArmorProfs]]" add-callback="[[_armorProficiencyAddCallback(item.key)]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-repeat" items="[[weaponProfOptions]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Weapon>" label='[[_plural("Selected Weapon", item.weaponProfChoices, item.label)]]'
+                        choices="[[item.weaponProfChoices]]" options="[[item.weaponProfOptions]]"
+                        value="[[item.selectedWeaponProfs]]" add-callback="[[_weaponProficiencyAddCallback(item.key)]]">
                     </dnd-select-add>
                 </template>
 
@@ -470,8 +673,6 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                         value="[[item.selectedLangProfs]]" add-callback="[[_langProficiencyAddCallback(item.key)]]">
                     </dnd-select-add>
                 </template>
-
-                <!-- Todo: add language and tool proficiencies -->
 
                 <template is="dom-if" if="[[_exists(featOptions)]]">
                     <dnd-select-add disabled$="[[!isEditMode]]"

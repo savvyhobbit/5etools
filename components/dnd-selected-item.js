@@ -118,7 +118,11 @@ class DndSelectedItem extends PolymerElement {
   }
 
   clearSelection() {
-    this.set('selectedItem', null);
+    if (this.nonGlobal && window.innerWidth > 920) {
+      this.dispatchEvent(new CustomEvent("close-drawer", { bubbles: true, composed: true }));
+    } else {
+      this.set('selectedItem', null);
+    }
   }
 
   _adjustHeight() {

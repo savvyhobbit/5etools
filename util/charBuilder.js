@@ -283,7 +283,12 @@ function addClassLevel(classLevel, character = selectedCharacter) {
   saveCharacter(character);
 }
 
-function setClassLevels(levels, character = selectedCharacter) {
+function setClassLevels(levels, prevFirstClassId, character = selectedCharacter) {
+  if (levels.length === 0 || (prevFirstClassId && levels[0].id !== prevFirstClassId)) {
+    if (character.choices && character.choices.firstClass) {
+      delete character.choices.firstClass;
+    }
+  }
   character.levels = levels;
   saveCharacter(character);
 }
@@ -675,6 +680,8 @@ function addAdditionalChoice(choiceKey, newIndex, character = selectedCharacter)
     case 'skill':
     case 'language':
     case 'tool':
+    case 'armor':
+    case 'weapon':
       newChoice[`${choiceKey.toLowerCase()}Proficiencies`] = [{"any": 1}];
       break;
 
@@ -738,18 +745,85 @@ function getAllChoices(character = selectedCharacter) {
   return choices;
 }
 
-function getChoiceSkillProfs(character = selectedCharacter) {
+function getChoicesForKey(key, character = selectedCharacter) {
   const choices = getAllChoices(character);
   let skillProfs = [];
   for (const choice of choices) {
-    if (choice.selectedSkillProfs) {
-      skillProfs = skillProfs.concat(choice.selectedSkillProfs.split(','))
+    let selectedChoices = choice[`selected${key}`];
+    if (selectedChoices) {
+      if (Array.isArray(selectedChoices)) {
+        skillProfs = skillProfs.concat(selectedChoices);
+      } else if (selectedChoices.split) {
+        skillProfs = skillProfs.concat(selectedChoices.split(','));
+      } else if (Object.keys(selectedChoices).length) {
+        if (selectedChoices.name) {
+          skillProfs = skillProfs.concat(selectedChoices.name);
+        } else {
+          Object.values(selectedChoices).forEach(choiceVal => {
+            skillProfs = skillProfs.concat(choiceVal)
+          });
+        }
+      }
     }
-    if (choice.defaultSkillProfs) {
-      skillProfs = skillProfs.concat(choice.defaultSkillProfs.split(','));
+    if (choice[`default${key}`]) {
+      let defaultChoices = choice[`default${key}`];
+      if (defaultChoices) {
+        if (Array.isArray(defaultChoices)) {
+          skillProfs = skillProfs.concat(defaultChoices);
+        } else if (defaultChoices.split) {
+          skillProfs = skillProfs.concat(defaultChoices.split(','));
+        } else if (Object.keys(defaultChoices).length) {
+          if (defaultChoices.name) {
+            skillProfs = skillProfs.concat(defaultChoices.name);
+          } else {
+            Object.values(defaultChoices).forEach(choiceVal => {
+              skillProfs = skillProfs.concat(choiceVal)
+            });
+          }
+        }
+      }
     }
   }
   return skillProfs.map(skill => skill.toLowerCase().trim());
+}
+
+function getChoiceSkillProfs(character = selectedCharacter) {
+  return getChoicesForKey('SkillProfs', character);
+}
+
+function getChoiceWeaponProfs(character = selectedCharacter) {
+  return getChoicesForKey('WeaponProfs', character);
+}
+
+function getChoiceArmorProfs(character = selectedCharacter) {
+  return getChoicesForKey('ArmorProfs', character);
+}
+
+function getChoiceToolProfs(character = selectedCharacter) {
+  return getChoicesForKey('ToolProfs', character);
+}
+
+function getChoiceLanguages(character = selectedCharacter) {
+  return getChoicesForKey('LangProfs', character);
+}
+
+function getChoiceFeats(character = selectedCharacter) {
+  return getChoicesForKey('Feat', character);
+}
+
+function getChoiceDarkvision(character = selectedCharacter) {
+  let max = null;
+  getAllChoices(character).forEach(choice => {
+    if (choice.defaultDarkvision !== undefined && choice.defaultDarkvision > max) {
+      max = choice.defaultDarkvision;
+    }
+    if (choice.selectedSkillProfs && choice.selectedSkillProfs.includes('Darkvision')) {
+      const is60 = choice.selectedSkillProfs.includes('60'),
+        is120 = choice.selectedSkillProfs.includes('120');
+      max = is120 ? 120 : is60 ? 60 : 0
+    }
+  });
+  return max;
 }
 
 function getChoiceAttributes(character = selectedCharacter) {
@@ -922,6 +996,32 @@ function setSubclassChoice(classs, subclass, level, feature, choice, character =
       character.classChoices[classs].subclass[subclass][level] = {};
     }
     character.classChoices[classs].subclass[subclass][level][feature] = choice;
+    saveCharacter(character);
+  }
+}
+
+function getOptionFeatureChoice(classs, level, feature, character = selectedCharacter) {
+  if (character
+      && character.classChoices
+      && character.classChoices[classs]
+      && character.classChoices[classs][level]
+      && character.classChoices[classs][level][feature]) {
+    return character.classChoices[classs][level][feature];
+  }
+}
+
+function setOptionFeatureChoice(classs, level, feature, choice, character = selectedCharacter) {
+  if (character) {
+    if (!character.classChoices) {
+      character.classChoices = {};
+    }
+    if (!character.classChoices[classs]) {
+      character.classChoices[classs] = { class: {}, subclass: {} };
+    }
+    if (!character.classChoices[classs][level]) {
+      character.classChoices[classs][level] = {};
+    }
+    character.classChoices[classs][level][feature] = choice;
     saveCharacter(character);
   }
 }
@@ -1547,7 +1647,6 @@ async function setItemsFromClass(character = selectedCharacter) {
                   return;
                 }
                 const itemParams = itemFunc.substring(0, itemFunc.indexOf('}')).split('|');
-                console.error('class items', itemParams, itemStrTrimmed);
                 const newItem = {
                   itemRef: {
                     name: itemParams[0].trim(),
@@ -1726,6 +1825,7 @@ function getCharacterProficiencyBonus(character = selectedCharacter) {
   return 0;
 }
 
+
 function getCustomRolls(character = selectedCharacter) {
   if (character && character.customRolls) {
     return character.customRolls;
@@ -1886,6 +1986,8 @@ export {
   getSubclassChoice,
   setClassChoice,
   setSubclassChoice,
+  getOptionFeatureChoice,
+  setOptionFeatureChoice,
   toggleSpellPrepared,
   isSpellPrepared,
   isSpellPreparedFromObj,
@@ -1939,5 +2041,11 @@ export {
   removeAbilityUsage,
   toggleCustomSkill,
   addAdditionalChoice,
-  deleteAdditionalChoice
+  deleteAdditionalChoice,
+  getChoiceWeaponProfs,
+  getChoiceArmorProfs,
+  getChoiceToolProfs,
+  getChoiceLanguages,
+  getChoiceFeats,
+  getChoiceDarkvision,
 };

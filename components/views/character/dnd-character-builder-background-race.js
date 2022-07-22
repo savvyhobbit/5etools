@@ -48,7 +48,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
   constructor() {
     super();
     
-    this.additionalOptionAddOptions = ["Feat", "Attribute +1", "Attribute +2", "Skill", "Language", "Tool"];
+    this.additionalOptionAddOptions = ["Feat", "Attribute +1", "Attribute +2", "Skill", "Language", "Tool", "Weapon", "Armor"];
   }
 
   connectedCallback() {
@@ -187,9 +187,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
         .row-wrap {
           width: 100%;
-        }
-        .row-wrap:first-child {
-          margin-bottom: 24px;
+          margin-bottom: 32px;
         }
 
         .row-wrap > *:not(h2):not(:last-child) {
@@ -234,9 +232,6 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           .row-wrap {
             width: calc(50% - 10px);
           }
-          .row-wrap:first-child {
-            margin-bottom: 0;
-          }
         }
 
         h2 {
@@ -263,6 +258,15 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         .stats-wrapper.margin-bottom_large {
           margin-bottom: 0px !important;
         }
+        vaadin-select {
+          cursor: pointer;
+          margin-left: 20px;
+          --lumo-font-size-m: 20px;
+          --vaadin-text-field-default-width: 0;
+          position: relative;
+          left: -50px;
+        }
+        
         dnd-select-add {
           --lumo-font-size-m: 20px;
           width: 100%;
@@ -271,6 +275,12 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         dnd-character-builder-suboptions {
           display: block;
           margin-left: 30px;
+        }
+
+        @media(min-width: 420px) {
+          vaadin-select {
+            left: 0;
+          }
         }
       </style>
 
@@ -297,17 +307,17 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
         <div class="row-wrap">
           <div class="heading">
-              <h2>Additional Options</h2>
+            <h2>Extra Features</h2>
+            <vaadin-select add theme="large" id="optionAdd" class="label--secondary" on-change="_addAdditionalOption" placeholder="<Add Additional Feature>" disabled$="[[!isEditMode]]" hidden$="[[!isEditMode]]">
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[additionalOptionAddOptions]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
           </div>
-          <vaadin-select id="optionAdd" class="label--secondary" label="Add Additional Option" on-change="_addAdditionalOption" placeholder="<Add Additional Feature>" disabled$="[[!isEditMode]]" hidden$="[[!isEditMode]]">
-            <template>
-              <vaadin-list-box>
-                <template is="dom-repeat" items="[[additionalOptionAddOptions]]">
-                  <vaadin-item>[[item]]</vaadin-item>
-                </template>
-              </vaadin-list-box>
-            </template>
-          </vaadin-select>
 
           <div class="added-options">
             <template is="dom-repeat" items="[[additionalOptions]]">

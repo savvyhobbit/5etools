@@ -1,12 +1,13 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import { MutableData } from '@polymer/polymer/lib/mixins/mutable-data.js';
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, setClassSkillProficiencies, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll, getClassString } from "../../../util/charBuilder";
+import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, setClassSkillProficiencies, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll, getClassString, getOptionFeatureChoice, setOptionFeatureChoice } from "../../../util/charBuilder";
 import "@vaadin/vaadin-grid";
 import "../../dnd-select-add";
 import "../../dnd-switch";
 import "../../dnd-button";
 import "../../dnd-asi-select";
 import "../../dnd-svg";
+import './dnd-character-builder-suboptions';
 import { jqEmpty, getEntryName } from "../../../js/utils";
 import { classOptionsMap } from "../../../data/choices";
 import EntryRenderer from "../../../util/entryrender";
@@ -216,8 +217,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
   _deleteLevel(e) {
     let index = e.model.__data.index;
+    let previousFirstClassId = this.levels[0].id;
     this.levels.splice(index, 1);
-    setClassLevels(this.levels);
+    setClassLevels(this.levels, previousFirstClassId);
   }
 
   _expandDetails(e) {
@@ -265,6 +267,55 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           }
         }
 
+        // Suboption component for first level class
+        if (levelIndex === 0) {
+          const suboptions = {}
+          suboptions.skillProficiencies = classDef.startingProficiencies.skills
+
+          if (classDef.startingProficiencies.armor) {
+            suboptions.armorProficiencies = [{}];
+            classDef.startingProficiencies.armor.forEach(p => {
+              let prof = p.proficiency || p.toLowerCase();
+              prof = prof.includes('shield') ? 'shield' : prof;
+              suboptions.armorProficiencies[0][prof] = true;
+            });
+          }
+          
+          if (classDef.startingProficiencies.weapons) {
+            suboptions.weaponProficiencies = [{}];
+            classDef.startingProficiencies.weapons.forEach(p => {
+              let prof = p.proficiency || p.toLowerCase();
+              if (prof.includes("@item")) {
+                prof = prof.split("@item")[1].trim().split('|')[0];
+              }
+              suboptions.weaponProficiencies[0][prof] = true;
+            });
+          }
+
+          if (classDef.startingProficiencies.tools) {
+            suboptions.toolProficiencies = [{}];
+            classDef.startingProficiencies.tools.forEach(p => {
+              let count;
+              let prof = p.proficiency || p.toLowerCase();
+              count = prof.includes('one ') ? 1 : prof.includes('two ') ? 2 : prof.includes('three ') ? 3 :prof.includes('four ') ? 4 : prof.includes('five ') ? 5 : 1;
+              if (prof.includes("@item")) {
+                prof = prof.split("@item")[1].trim().split('|')[0];
+              }
+              if (prof.includes("artisan's tools") || prof.includes('musical instrument')) {
+                prof = prof.includes("artisan's tools") ? "artisan's tools" : 'musical instrument';
+                suboptions.toolProficiencies[0].choose = { from: [prof], count };
+              } else {
+                suboptions.toolProficiencies[0][prof] = true;
+              }
+            });
+          }
+          choices.push({
+            id: "firstClass",
+            suboptions
+          });
+        }
+
+        // Subclass choice
         if (subclassChoiceLevel !== undefined && classLevelCount === subclassChoiceLevel) {
           choices.push({
             id: "subclass",
@@ -273,24 +324,44 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           });
         }
 
+        // ASI choice
         let features = this._getClassLevelFeatures(levels, levelIndex, classes, subclasses);
-        if (features && features.length
-            && features.find((f) => { return f.name === "Ability Score Improvement"; })) {
-          choices.push({
-            id: "asi"
-          });
+        if (features && features.length) {
+          if (features.find((f) => { return f.name === "Ability Score Improvement"; })) {
+            choices.push({
+              id: "asi"
+            });
+          }
         }
 
-        if (levelIndex === 0) {
-          const classSkillOptions = classDef.startingProficiencies.skills[0].choose;
-          choices.push({
-            id: "profs",
-            count: classSkillOptions.count,
-            from: classSkillOptions.from,
-            selections: character.classSkillProficiencies
+        // Feature replacement choice
+        if (features && features.length) {
+          features.forEach(feature => {
+            if (!feature.name.includes("feature")) {
+              const choice = {
+                id: 'replacement',
+                from: [{name: feature.name, source: feature.source}],
+                selection: getOptionFeatureChoice(name, levelIndex, feature.name),
+                class: name,
+                level: levelIndex,
+                feature: feature.name
+              };
+              features.forEach(featurei => {
+                if (featurei.isClassFeatureVariant && featurei.entries[0].includes('replaces') && featurei.entries[0].includes(feature.name)) {
+                  choice.from.push({name: featurei.name, source: featurei.source});
+                }
+              });
+              if (choice.from.length > 1) {
+                console.error(' replacement choice', choice)
+                choices.push(choice);
+              }
+            }
           });
         }
+        
+        // Todo: optional replacement features, sub-option setup for class, subclass, and features
 
+        // Generating other choices from choices.js map
         if (classLevelCount) {
           const classOptions = classOptionsMap[name.toLowerCase()];
 
@@ -298,6 +369,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
             const classLevelOptions = [].concat(classOptions.class[classLevelCount]);
             
             for (const classLevelOption of classLevelOptions) {
+              console.error("classLevelOption", classLevelOption);
               if (classLevelOption.options) {
                 choices.push({
                   id: "classFeature",
@@ -420,6 +492,26 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         adjChoice = choice;
       }
       setSubclassChoice(classs, subclass.name.toLowerCase(), level, feature, adjChoice);
+    };
+  }
+
+  _optionalFeatureAddCallback(classs, level, feature) {
+    return (choice) => {
+      let adjChoice;
+      if (Array.isArray(choice)) {
+        adjChoice = choice.map(c => {
+          if (c.name) {
+            return { ...c }
+          } else {
+            return c;
+          }
+        });
+      } else if (choice.name) {
+        adjChoice = { ...choice };
+      } else {
+        adjChoice = choice;
+      }
+      setOptionFeatureChoice(classs, level, feature, adjChoice);
     };
   }
 
@@ -628,10 +720,17 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           min-width: 250px;
           width: calc(100% - 20px);
         }
+        .choices-col__choice dnd-character-builder-suboptions {
+          --suboptions__min-width: 250px;
+          --suboptions__width: calc(100% - 20px);
+        }
 
         @media(min-width: 420px) {
           .choices-col__choice dnd-select-add {
             width: calc(50% - 20px);
+          }
+          .choices-col__choice dnd-character-builder-suboptions {
+            --suboptions__width: calc(50% - 20px);
           }
         }
 
@@ -821,16 +920,22 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                   <div class="choices-col">
                     <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
                       <div class="choices-col__choice">
+
+                        <template is="dom-if" if="[[_equal(choice.id, 'firstClass')]]">
+                          <dnd-character-builder-suboptions storage-key="firstClass" selected-item="[[choice.suboptions]]"></dnd-character-builder-suboptions>
+                        </template>
+          
+                        <template is="dom-if" if="[[_equal(choice.id, 'replacement')]]">
+                          <dnd-select-add label="Optional Features" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                            options="[[choice.from]]" value="[[choice.selection]]" add-callback="[[_optionalFeatureAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                        </template>
+
                         <template is="dom-if" if="[[_equal(choice.id, 'subclass')]]">
                           <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
                             options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
                         </template>
                         <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
                           <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
-                        </template>
-                        <template is="dom-if" if="[[_equal(choice.id, 'profs')]]">
-                          <dnd-select-add choices="[[choice.count]]" label="Skill Proficiency" placeholder="<Choose Skills>" disabled$="[[!isEditMode]]"
-                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classSkillAddCallback]]"></dnd-select-add>
                         </template>
                         <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
                           <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"

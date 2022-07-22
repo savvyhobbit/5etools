@@ -12,6 +12,11 @@ registerStyles('vaadin-select', css`
     :host([add]) [part="toggle-button"] {
       margin-left: -10px;
     }
+    :host([add][theme~="large"]) [part="toggle-button"] {
+      position: relative;
+      left: -2px;
+      cursor: pointer;
+    }
     :host([add]) [part="toggle-button"]::before {
       content: var(--lumo-icons-plus);
     }
@@ -37,6 +42,13 @@ registerStyles('vaadin-select-text-field', css`
   :host([disabled]) [part="label"] {
     color: var(--mdc-theme-primary);;
     -webkit-text-fill-color: var(--mdc-theme-primary);
+    padding-bottom: 0px;
+    margin-bottom: -4px;
+  }
+
+  :host([theme~="large"]) [part="input-field"] {
+    height: 50px;
+    width: 50px;
   }
 
   :host([disabled]) [part="input-field"] {

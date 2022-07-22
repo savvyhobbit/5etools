@@ -74,6 +74,7 @@ class DndLayout extends PolymerElement {
     this.addEventListener("close-preview", this._closeDrawerPreview.bind(this));
 
     this.addEventListener("open-drawer", this._openDrawer.bind(this));
+    this.addEventListener("close-drawer", this._closeDrawer.bind(this));
 
     routeEventChannel().addEventListener("title-change", e => {
       if (e.detail) {
@@ -142,9 +143,7 @@ class DndLayout extends PolymerElement {
         }
       }, null, ".character-builder--tabs-wrapper, vaadin-grid");
       registerSwipe(document.body, "left", () => {
-        if (this.drawer.open) {
-          this.drawer.open = false;
-        }
+        this._closeDrawer();
       }, null, ".character-builder--tabs-wrapper, vaadin-grid");
     }
   }
@@ -167,13 +166,7 @@ class DndLayout extends PolymerElement {
 
     // close preview when drawer scrim is clicked
     this.$.scrim.addEventListener('click', () => {
-      this.$.container.style['border-left'] = null;
-      this.$.breadcrumbcontainer.style['border-left'] = null;
-      const isOpen = this.$.drawer.classList.contains('mdc-drawer--open');
-      console.error('click', this.$.drawer.classList.contains('mdc-drawer--open'))
-      setTimeout(() => {
-        console.error('clock', this.$.drawer.classList.contains('mdc-drawer--open'));
-      }, 50)
+      this._closeDrawer();
     });
 
     // List Items
@@ -211,6 +204,14 @@ class DndLayout extends PolymerElement {
     }
     this.drawer.open = true;
     notifyPreviewOpen(this.hasPreview, this.drawer.open);
+  }
+
+  _closeDrawer() {
+    if (this.drawer.open) {
+      this.drawer.open = false;
+      this.$.container.style['border-left'] = null;
+      this.$.breadcrumbcontainer.style['padding-left'] = null;
+    }
   }
 
   async _openDrawerPreviewEvent(e) {
@@ -255,7 +256,6 @@ class DndLayout extends PolymerElement {
   }
 
   async _closeDrawerPreview() {
-    console.error('_closeDrawerPreview');
     this.$.drawer.style.width = `250px`;
     this.$.container.style['border-left'] = null;
     this.hasPreview = false;

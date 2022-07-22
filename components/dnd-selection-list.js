@@ -149,7 +149,6 @@ class DndSelectionList extends PolymerElement {
       this.hasSelection = false;
     });
     routeEventChannel().addEventListener("preview-state-change", ({ detail : {isPreviewOpen, isDrawerOpen}}) => {
-      console.error("preview-state-change");
       this.previewOpen = isPreviewOpen;
       this.drawerOpen = isDrawerOpen;
     });
