@@ -4,6 +4,7 @@ import { MDCRipple } from "@material/ripple";
 import { MDCDrawer } from "@material/drawer";
 import { MDCSwitch } from "@material/switch";
 import "./styles/material-styles.js";
+import "./styles/fa-styles.js";
 import "./styles/my-styles.js";
 import "./dnd-character-popup.js";
 import registerSwipe from '../util/swipe.js';
@@ -243,6 +244,12 @@ class DndLayout extends PolymerElement {
       this.$.breadcrumbcontainer.style['padding-left'] = null;
     }
     this.$.drawer.scrollTop = 0;
+    setTimeout(() => {
+      this.$.drawer.scrollTop = 0;
+    }, 100)
+    setTimeout(() => {
+      this.$.drawer.scrollTop = 0;
+    }, 200)
   }
 
   async _openDrawerPreview(viewId, selectedItem) {
@@ -258,6 +265,7 @@ class DndLayout extends PolymerElement {
   async _closeDrawerPreview() {
     this.$.drawer.style.width = `250px`;
     this.$.container.style['border-left'] = null;
+    this.$.breadcrumbcontainer.style['padding-left'] = null;
     this.hasPreview = false;
     notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
@@ -287,7 +295,7 @@ class DndLayout extends PolymerElement {
 
   static get template() {
     return html`
-      <style include="material-styles my-styles">
+      <style include="material-styles my-styles fa-styles">
         :host {}
         .page-title {
         }
@@ -339,6 +347,14 @@ class DndLayout extends PolymerElement {
         .hide-me {
           background: transparent;
           border: none;
+        }
+
+        .mdc-list-item i {
+          font-size: 20px;
+        }
+
+        #breadcrumbcontainer {
+          transition: padding-left 150ms ease-out;
         }
 
         @media(min-width: 921px) {
@@ -409,39 +425,37 @@ class DndLayout extends PolymerElement {
 
               <hr class="mdc-list-divider" />
               <a class="mdc-list-item mdc-theme--on-surface" href="#/rules" tabindex="0">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">library_books</i>
+                <i class="fas fa-book mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Players Handbook</span>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
+                <i class="fas fa-wrench mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Character Sheets</span>
               </a>
 
               <hr class="mdc-list-divider" />
               <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Player Options</h6>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/classes">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">class</i>
+                <i class="fas fa-award mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Classes</span>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/spells">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">flash_on</i>
+                <i class="fas fa-book-spells mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Spells</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/races">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">face</i>
+                <i class="fas fa-users mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Races</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/backgrounds">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">public</i>
+                <i class="fas fa-globe-americas mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Backgrounds</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/feats">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                  >fitness_center</i
-                >
+                <i class="fas fa-fist-raised mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Feats</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
@@ -449,29 +463,27 @@ class DndLayout extends PolymerElement {
               <hr class="mdc-list-divider" />
               <h6 class="mdc-list-group__subheader mdc-theme--on-surface">References</h6>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/bestiary">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">warning</i>
+                <i class="fas fa-dragon mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Bestiary</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/items">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">restaurant</i>
+                <i class="fas fa-treasure-chest  mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Items</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/features">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
+                <i class="fas fa-cogs mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Class Features</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/conditions">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"
-                  >sentiment_very_dissatisfied</i
-                >
+                <i class="fas fa-skull-crossbones mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Conditions</span>
                 <button class="preview-link mdc-icon-button material-icons" on-click="_openDrawerPreviewEvent">login</button>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/variantrules">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">description</i>
+                <i class="fas fa-file-alt mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Variant Rules</span>
               </a>
               <!-- <a class="mdc-list-item mdc-theme--on-surface" href="#/rewards">
@@ -492,11 +504,11 @@ class DndLayout extends PolymerElement {
               <hr class="mdc-list-divider" />
               <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Tools</h6>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/dice">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">casino</i>
+                <i class="fas fa-dice mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Dice Roller</span>
               </a>
               <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
-                <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">build</i>
+                <i class="fas fa-wrench mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Character Sheets</span>
               </a>
               <span class="version mdc-typography--caption">v2.1.0</span>

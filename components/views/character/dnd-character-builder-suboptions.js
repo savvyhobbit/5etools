@@ -181,9 +181,6 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             }
             this.storedItem = storedItem;
 
-
-            // todo languageProficiencies
-
             // Retrieving the selected choices for attribute, feat, or proficiency off of the storedItem
 
             // Populating Attribute choice field
@@ -200,13 +197,16 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     this.attributeMod = ability.choose.amount || 1;
                     this.selectedAttributes = this.storedItem.selectedAttributes ? this.storedItem.selectedAttributes.split(',') : null;
                 }
-                this.defaultAttributes = Object.entries(ability).map(e => {
-                    if (e[0] !== 'choose' && e[0] !== 'any') {
-                        let attribute = e[0].toLowerCase(),
-                            mod = e[1];
-                        return attribute.toUpperCase() + ' ' + absInt(mod);
-                    }
+                this.defaultAttributes = this.selectedItem.ability.map((abilityObj) => {
+                    return Object.entries(abilityObj).map(e => {
+                        if (e[0] !== 'choose' && e[0] !== 'any') {
+                            let attribute = e[0].toLowerCase(),
+                                mod = e[1];
+                            return attribute.toUpperCase() + ' ' + absInt(mod);
+                        }
+                    }).filter(e => !!e).join(', ');
                 }).filter(e => !!e).join(', ');
+
                 // store defaults on character to avoid future look-ups
                 this.storedItem.defaultAttributes = this.defaultAttributes;
                 this.storedItem.attributeMod = this.attributeMod;
@@ -252,7 +252,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 if (this.selectedItem.toolProficiencies.length > 1) {
                     // TODO: generated a dropdown for choosing index and add additional suboption components for each choice.
                     // path of nested suboptions should use an indexed key
-                    // test with Dragon Causualty
+                    // test with "Dragon Causualty"
                 } else {
                     if (!this.storedItem.selectedToolProfs || typeof this.storedItem.selectedToolProfs === 'string') {
                         this.storedItem.selectedToolProfs = {};
@@ -457,6 +457,8 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.set('armorProfOptions', armorProfOptions.length > 0 ? armorProfOptions : null);
 
 
+            // Dark Vision 
+            //   uses entry names, only one depth.
             let defaultDarkvision;
             if (this.selectedItem.entries) {
                 this.selectedItem.entries
@@ -473,7 +475,8 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.storedItem.defaultDarkvision = defaultDarkvision || null;
             this.defaultDarkvision = defaultDarkvision || null;
 
-            // Populating Feat choice field
+            // Feast
+            //  can populate a nested suboption component entry 
             this.featOptions = [];
             this.featChoices = null;
             this.selectedFeat = null;

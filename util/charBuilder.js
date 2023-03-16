@@ -846,7 +846,7 @@ function getChoiceAttributes(character = selectedCharacter) {
       attributes = attributes.concat(choice.defaultAttributes.toLowerCase().split(','));
     }
     for (const attribute of attributes) {
-      const attrSplit = attribute.split(' ');
+      const attrSplit = attribute.trim().split(' ');
       let mod = choice.attributeMod || 1;
       if (attrSplit.length > 1) {
         try {

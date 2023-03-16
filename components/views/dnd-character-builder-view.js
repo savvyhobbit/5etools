@@ -255,25 +255,25 @@ class DndCharacterBuilderView extends PolymerElement {
 
   defaultTabs() {
     return [
-      { label: "", icon: "favorite", viewId: "attributes" },
-      { label: "", icon: "class", viewId: "class" },
-      { label: "", icon: "face", viewId: "background-race" },
-      { label: "", icon: "flash_on", viewId: "spells" },
-      { label: "", icon: "local_grocery_store", viewId: "equipment" },
-      { label: "", icon: "receipt", viewId: "abilities" },
-      { label: "", icon: "casino", viewId: "rolls" },
+      { label: "", icon: "heart", viewId: "attributes" },
+      { label: "", icon: "book-medical", viewId: "class" },
+      { label: "", icon: "book-user", viewId: "background-race" },
+      { label: "", icon: "book-spells", viewId: "spells" },
+      { label: "", icon: "sack", viewId: "equipment" },
+      { label: "", icon: "list", viewId: "abilities" },
+      { label: "", icon: "dice", viewId: "rolls" },
     ]
   }
 
   nonCasterTabs() {
     return [
-      { label: "", icon: "favorite", viewId: "attributes" },
-      { label: "", icon: "class", viewId: "class" },
-      { label: "", icon: "face", viewId: "background-race" },
-      { label: "", icon: "flash_on", viewId: "spells", hidden: true},
-      { label: "", icon: "local_grocery_store", viewId: "equipment" },
-      { label: "", icon: "receipt", viewId: "abilities" },
-      { label: "", icon: "casino", viewId: "rolls" },
+      { label: "", icon: "heart", viewId: "attributes" },
+      { label: "", icon: "book-medical", viewId: "class" },
+      { label: "", icon: "book-user", viewId: "background-race" },
+      { label: "", icon: "book-spells", viewId: "spells", hidden: true},
+      { label: "", icon: "sack", viewId: "equipment" },
+      { label: "", icon: "list", viewId: "abilities" },
+      { label: "", icon: "dice", viewId: "rolls" },
     ]
   }
 

@@ -561,7 +561,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
   
     if (isOpen) {
       const changeVal = parseInt(intField.value);
-      if (changeVal && changeVal <= max && changeVal > 0) {
+      if (!changeVal) {
+        element.classList.toggle('btn-field--open');
+      } else if (changeVal <= max && changeVal > 0) {
         setHpRoll(className, level, changeVal);
         intField.value = '';
         element.classList.toggle('btn-field--open');
@@ -583,9 +585,14 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     }
   }
 
+  _hpDiceIconClass(index, hitDiceMaxes) {
+    const dice = this._levelHitDice(index, hitDiceMaxes);
+    return `fal fa-dice-d${dice || '6'}`;
+  }
+
   static get template() {
     return html`
-      <style include="material-styles my-styles">
+      <style include="material-styles my-styles fa-styles">
         .something {
           display: block;
         }
@@ -815,7 +822,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .not-edit-mode .hp-col {
           right: 0px;
         }
-        .hp-col .material-icons {
+        .hp-col .fal {
           font-size: 20px;
           position: relative;
           margin-right: 8px;
@@ -951,22 +958,22 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
                   <div class="hp-col">
                     <div class="delete-col">
-                      <button class="delete-btn mdc-icon-button material-icons "on-click="_deleteLevel">delete</button>
+                      <button class="delete-btn mdc-icon-button" on-click="_deleteLevel"><i class="fas fa-trash" on-click="_deleteLevel"></i></button>
                     </div>
                     <div class="hp-col__non-edit">
-                      <span class="material-icons " aria-hidden="true">casino</span>
+                      <i class$="[[_hpDiceIconClass(index, hitDiceMaxes)]]"></i>
                       <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
                       [[_levelHp(item.name, index)]]
                     </div>
                     <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
                       <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
                         <span class="btn-field__btn-label" slot="label">
-                          <span class="material-icons " aria-hidden="true">casino</span>
+                          <i class$="[[_hpDiceIconClass(index, hitDiceMaxes)]]"></i>
                           <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
                           <span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span>
                         </span>
                       </dnd-button>
-                      <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]"></vaadin-integer-field>
+                      <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]" on-blur="_toggleHpField"></vaadin-integer-field>
                     </div>
                   </div>
                 </div>

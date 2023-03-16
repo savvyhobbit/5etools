@@ -118,11 +118,7 @@ class DndSelectedItem extends PolymerElement {
   }
 
   clearSelection() {
-    if (this.nonGlobal && window.innerWidth > 920) {
-      this.dispatchEvent(new CustomEvent("close-drawer", { bubbles: true, composed: true }));
-    } else {
-      this.set('selectedItem', null);
-    }
+    this.set('selectedItem', null);
   }
 
   _adjustHeight() {
@@ -206,7 +202,7 @@ class DndSelectedItem extends PolymerElement {
           display: none;
         }
         .main.non-global .close-item {
-          position: absolute;
+          display: none;
         }
         .main .page-title {
           display: none;
@@ -235,9 +231,6 @@ class DndSelectedItem extends PolymerElement {
         @media(min-width: 921px) {
           .main.item-opened {
             padding-bottom: 0;
-          }
-          .non-global.item-opened .close-item {
-            display: block !important;
           }
         }
       </style>

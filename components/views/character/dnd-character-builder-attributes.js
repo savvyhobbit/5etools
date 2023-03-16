@@ -3,6 +3,7 @@ import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "../../dnd-select-add";
 import "../../dnd-button";
 import "../../dnd-svg";
+import "../../styles/fa-styles";
 import { 
   getCharacterChannel,
   getSelectedCharacter,
@@ -88,6 +89,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       skillProfs: {
         type: String,
         value: ""
+      },
+      customSkillProfs: {
+        type: Array,
       },
 
       saves: {
@@ -265,6 +269,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.chaAdj = attributeAdj.cha;
 
       this.skillProfs = (await getSkillProfs()).join(',');
+      this.customSkillProfs = character.customSkillProfs || [];
 
       this.customHealth = !!character.customHealth;
       this.customHealthVal = character.customHealthVal;
@@ -361,7 +366,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     const isOpen = element.classList.contains('btn-field--open');
     const isTemp = element.classList.contains('btn-field--temp');
     const intField = element.querySelector('vaadin-integer-field');
-    const buttonComp = element.querySelector('dnd-button');
+    const buttonComp = element.querySelector('button');
     element.classList.toggle('btn-field--open');
     buttonComp.classList.toggle('icon-only');
     buttonComp.classList.toggle('hard-left');
@@ -515,7 +520,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   static get template() {
     return html`
-      <style include="material-styles">
+      <style include="material-styles fa-styles">
         :host {
           display: block;
           padding: 14px;
@@ -615,7 +620,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           justify-content: space-between;
         }
         .others {
-          margin-bottom: 120px;
+          margin-bottom: 130px;
         }
         .other {
           margin-left: 20px;
@@ -840,6 +845,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           height: 36px;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
+          overflow: hidden;
         }
         .btn-field:not(:last-child){
           margin-bottom: 12px;
@@ -847,6 +853,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .btn-field__btn {
           display: block;
           width: 100%;
+          cursor: pointer;
+          padding-top: 2px;
+          background: transparent;
+          border: none;
+          min-width: 0;
         }
         .btn-field__input {
           display: none;
@@ -876,14 +887,14 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .btn-field__btn-label--damage {
           font-size: 12px;
         }
-        .btn-field--heal dnd-button {
-          --mdc-theme-primary: #83f675;
+        .btn-field--heal button i:before {
+          color: #83f675;
         }
-        .btn-field--dmg dnd-button {
-          --mdc-theme-primary: #f83c42;
+        .btn-field--dmg button i:before {
+          color: #e34449;
         }
-        .btn-field--temp dnd-button {
-          --mdc-theme-primary: #2069c9;
+        .btn-field--temp button i:before {
+          color: #2069c9;
         }
 
 
@@ -1048,19 +1059,19 @@ class DndCharacterBuilderAttributes extends PolymerElement {
               <div class="stat-box__side" hidden$=[[isEditMode]]>
                 <!--  Healing / Damage -->
                 <div class="btn-field btn-field--heal">
-                    <dnd-button icon="favorite" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
+                    <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-heart"></i></button>
                     <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
                       <span slot="prefix">+</span>
                     </vaadin-integer-field>
                 </div>
                 <div class="btn-field btn-field--dmg">
-                    <dnd-button svg="swords" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
+                    <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-swords"></i></button>
                     <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
                       <span slot="prefix">-</span>
                     </vaadin-integer-field>
                 </div>
                 <div class="btn-field btn-field--temp">
-                    <dnd-button svg="paladin" background="none" class="btn-field__btn" on-click="_toggleButtonField"></dnd-button>
+                    <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-shield-cross"></i></button>
                     <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
                       <span slot="prefix">+</span>
                     </vaadin-integer-field>
@@ -1159,6 +1170,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                 </div>
                 <div class="proficiencies">
+                  <!-- <div class="proficiency-item" on-click="_roll" is-custom$="[[_strContains(customSkillProfs, 'acrobatics')]]" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div> -->
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>

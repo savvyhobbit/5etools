@@ -48,10 +48,14 @@ class DndTabs extends PolymerElement {
       }
     }));
   }
+
+  _iconClass(icon) {
+    return `mdc-tab__icon fas fa-${icon}`;
+  }
   
   static get template() {
     return html`
-      <style include="material-styles">
+      <style include="material-styles fa-styles">
         .mdc-tab-bar {
           max-width: 100vw;
           line-height: 1;
@@ -101,7 +105,7 @@ class DndTabs extends PolymerElement {
                 
                 <button class="mdc-tab" role="tab" aria-selected="false" tabindex="[[index]]" hidden$="[[item.hidden]]">
                   <span class="mdc-tab__content">
-                      <span class="mdc-tab__icon material-icons" aria-hidden="true">[[item.icon]]</span>
+                      <span class$="[[_iconClass(item.icon)]]" aria-hidden="true"></span>
                     <span class="mdc-tab__text-label">[[item.label]]</span>
                   </span>
                   <span class="mdc-tab-indicator">

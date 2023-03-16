@@ -28,7 +28,18 @@ class DndClasses extends PolymerElement {
         type: Boolean,
         value: true,
         observer: '_loadingChange'
-      }
+      },
+      selectedTitle: {
+        type: String,
+        value: "",
+      },
+      lastTitle: {
+        type: String,
+      },
+      selectedSource: {
+        type: String,
+        value: ""
+      },
     };
   }
 
@@ -54,6 +65,26 @@ class DndClasses extends PolymerElement {
     routeEventChannel().addEventListener("selection-deselected", this.deselectionChangeEventHandler);
     this.$.backToTop.addEventListener("click", this.backToTopEventHandler);
     window.addEventListener("scroll", this.subclassScrollRepositionHandler);
+
+    routeEventChannel().addEventListener("title-change", e => {
+      if (e.detail) {
+        const {title, name, source} = e.detail;
+        if (title) {
+          this.lastTitle = title;
+        }
+        this.selectedTitle = name || title || '';
+        this.selectedSource = source;
+        this.selectedSourceFull = Parser.sourceJsonToFull(source);
+        this.selectedSourceAbv = Parser.sourceJsonToAbv(source);
+      }
+    });
+
+    routeEventChannel().addEventListener("selection-deselected", () => {
+      this.selectedTitle = this.lastTitle || "";
+      this.selectedSource = '';
+      this.selectedSourceFull = '';
+      this.selectedSourceAbv = '';
+    });
   }
 
   disconnectedCallback() {
@@ -173,6 +204,14 @@ class DndClasses extends PolymerElement {
 
         <button class="mdc-icon-button close-item material-icons" on-click="_clearSelectionHandler">close</button>
         <button id="backToTop" class="mdc-icon-button mdc-button--raised back-to-top material-icons hidden">arrow_upward</button>
+
+        <h1 class="page-title mdc-typography--headline2" hidden$="[[!selectedTitle]]">
+          <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
+          <div class="title-text-wrap">
+            <span class="title-text">[[selectedTitle]]</span>
+            <span class="source-text" hidden$=[[!selectedSourceFull]]><span class$="[[_selectedSourceClass(selectedSource)]]">[[selectedSourceFull]]<span hidden hiddens$="[[_same(selectedSourceFull, selectedSourceAbv)]]"> ([[selectedSourceAbv]])</span><span></span>
+          </div>
+        </h1>
 
         <div class="class-container"></div>
 
