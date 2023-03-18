@@ -1018,6 +1018,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           .others {
             margin-bottom: 0;
           }
+          .other .other__header {
+            cursor: unset;
+          }
+          .other .other__header:hover {
+            color: var(--mdc-theme-primary);
+          }
           .other .other__header .material-icons {
             display: none;
           }
@@ -1025,6 +1031,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             opacity: 1;
             height: auto;
             transform: scale(1, 1);
+            animation-name: none !important;
           }
           .other__header {
             font-size: 18px;

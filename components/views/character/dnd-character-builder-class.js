@@ -14,7 +14,7 @@ import EntryRenderer from "../../../util/entryrender";
 import { } from '@polymer/polymer/lib/elements/dom-if.js';
 import { } from '@polymer/polymer/lib/elements/dom-repeat.js';
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import {filterModel} from "../../../util/data";
+import { filterModel } from "../../../util/data";
 import '@vaadin/vaadin-text-field/vaadin-integer-field'
 
 class DndCharacterBuilderClass extends MutableData(PolymerElement) {
@@ -88,13 +88,21 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           }
 
           for (let feature of features) {
-            renderer.recursiveEntryRender(
-              feature,
-              renderStack,
-              0,
-              undefined,
-              true
-            );
+            const isUnselectedReplacementChoice = this.classChoices && this.classChoices[rowData.index] && this.classChoices[rowData.index].some((choice) => {
+              const isNotSelectedOptionalFeature = choice.selection && (choice.selection.name !== feature.name || choice.selection.source !== feature.source);
+              const isOptionalFeature = choice.from && choice.from.some((optionalFeature) => {return optionalFeature.name === feature.name && optionalFeature.source === feature.source});
+              
+              return choice.id === 'replacement' && isNotSelectedOptionalFeature && isOptionalFeature;
+            });
+            if (!isUnselectedReplacementChoice) {
+              renderer.recursiveEntryRender(
+                feature,
+                renderStack,
+                0,
+                undefined,
+                true
+              );
+            }
           }
           const deets = root.querySelector('.details');
           jqEmpty(deets);
@@ -199,13 +207,22 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     }
   }
 
-  _getClassLevelFeatureStringArray(levels, index, classes, subclasses) {
+  _getClassLevelFeatureStringArray(levels, index, classes, subclasses, classChoices) {
     if (levels && index !== undefined && classes && subclasses) {
       const classLevelFeatures = this._getClassLevelFeatures(levels, index, classes, subclasses);
 
       if (classLevelFeatures) {
         return classLevelFeatures.map(f => {
-          return { name: getEntryName(f), isSubclass: f.isSubclass };
+          return { name: getEntryName(f), isSubclass: f.isSubclass, source: f.source };
+        }).filter(feature => {
+          const isUnselectedReplacementChoice = classChoices && classChoices[index] && classChoices[index].some((choice) => {
+            const isNotSelectedOptionalFeature = choice.selection && (choice.selection.name !== feature.name || choice.selection.source !== feature.source);
+            const isOptionalFeature = choice.from && choice.from.some((optionalFeature) => {return optionalFeature.name === feature.name && optionalFeature.source === feature.source});
+            
+            return choice.id === 'replacement' && isNotSelectedOptionalFeature && isOptionalFeature;
+          });
+
+          return !isUnselectedReplacementChoice;
         });
       }
     }
@@ -918,7 +935,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                     </div>
 
                     <div class="features-col">
-                      <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses)]]">
+                      <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses, classChoices)]]">
                         <span class="class-feature" subclass$="[[item.isSubclass]]">[[item.name]]</span>
                       </template>
                     </div>
