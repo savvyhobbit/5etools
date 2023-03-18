@@ -106,10 +106,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
   ready() {
     super.ready();
-    this._checkBreakpoint();
-    window.addEventListener('resize', () => {
-      this._checkBreakpoint();
-    });
     
     setTimeout(() => {
       const grid = this.$.grid;
@@ -327,31 +323,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     return item.children && item.children.length === 0 ? 'no-children' : '';
   }
 
-  _checkBreakpoint() {
-    const grid = this.$.grid;
-    this.isMobile = window.innerWidth < 921;
-    // Define Row Details
-    if (this.isMobile) {
-      grid.rowDetailsRenderer = ((root, grid, rowData) => {
-        if (rowData.detailsOpened) {
-          if (!root.firstElementChild) {
-            root.innerHTML = '<div class="details"></div>';
-          }
-          if (!this.detailEl) {
-            this.detailEl = document.createElement('dnd-character-builder-equipment-item-detail');
-            this.detailEl.smallRender = true;
-            this.detailEl.unique = Date.now();
-          }
-          root.querySelector('.details').appendChild(this.detailEl);
-          this.detailEl.item = rowData.item;
-        }
-      }).bind(this);
-    } else if (grid.rowDetailsRenderer) {
-      console.error('removing rowDetailsRenderer')
-      grid.rowDetailsRenderer = () => {};
-    }
-  }
-
   _linkClick() {
     this.dispatchEvent(new CustomEvent("open-drawer", {
       bubbles: true,
@@ -364,6 +335,14 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   
   _isActive(activeItem, item) {
     return activeItem === item;
+  }
+
+  _hasActive(activeItem) {
+    return !!activeItem;
+  }
+
+  _clearSelection() {
+    this.set('activeItem', null);
   }
 
   static get template() {
@@ -530,15 +509,21 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         
         .details-row {
           padding-top: 14px;
+          position: relative;
+          padding-bottom: 220px;
         }
 
         .details-wrap {
-          display: none;
           font-size: 14px;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
           line-height: 1.5;
           padding: 14px;
+        }
+
+        .close-item {
+          margin-left: auto;
+          font-size: 32px;
         }
 
         @media(min-width: 420px) {
@@ -563,18 +548,25 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           .details {
             display: none;
           }
+          .item-list-row[hidden]{
+            display: block !important;
+          }
           .details-wrap {
             display: block;
+          }
+          .close-item {
+            display: none;
           }
         }
       </style>
 
       <div class="heading">
         <h2>Inventory</h2>
-        <button class="mdc-icon-button material-icons" on-click="_linkClick">logout</button>
+        <button class="mdc-icon-button material-icons" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">logout</button>
+        <button class="mdc-icon-button close-item material-icons" hidden$="[[!_hasActive(activeItem)]]" on-click="_clearSelection">close</button>
       </div>
       <div class="col-wrap">
-        <div class="row-wrap">
+        <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
           <vaadin-grid id="grid" expanded-items="{{expandedItems}}" active-item="{{activeItem}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>
@@ -599,21 +591,20 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                     </span>
                   </div>
                   <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
-                    <vaadin-integer-field min="0" value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
+                    <!-- <vaadin-integer-field min="0" value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field> -->
                   </div>
-                  <div class="mdc-buttom-icon material-icons item-wrap__close" on-click="_deleteItem">close</div>
+                  <div class="mdc-buttom-icon material-icons item-wrap__close" hidden$="[[!isEditMode]]" on-click="_deleteItem">close</div>
                 </div>
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
         </div>
-        <template is="dom-if" if="[[!isMobile]]">
-          <div class="row-wrap details-row" hidden$="[[!activeItem]]">
-            <div class="details-wrap">          
-              <dnd-character-builder-equipment-item-detail small-render item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
-            </div>
+
+        <div class="row-wrap details-row" hidden$="[[!_hasActive(activeItem)]]">
+          <div class="details-wrap">          
+            <dnd-character-builder-equipment-item-detail small-render item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
           </div>
-        </template>
+        </div>
       </div>
     `;
   }

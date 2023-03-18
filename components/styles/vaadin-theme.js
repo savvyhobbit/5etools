@@ -132,9 +132,21 @@ registerStyles('vaadin-integer-field', css`
     }
   
     :host([theme="mini"]) {
-      width: 70px;
+      width: 80px;
       padding: 0;
       margin: -16px 8px 8px;
+    }
+
+    :host([mini-label]) [part="label"] {
+      font-size: 12px;
+    }
+    :host([mini-ish-label]) [part="label"] {
+      font-size: 13px;
+    }
+    @media(min-width: 920px) {
+      :host([theme="mini"]) {
+        width: 80px;
+      }
     }
     :host([theme="mini"]) [part="decrease-button"],
     :host([theme="mini"]) [part="increase-button"] {

@@ -565,7 +565,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           line-height: 1.4;
           min-width: 0;
           position: relative;
-          top: -2px;
+          top: 3px;
         }
         .proficiency-item {
           font-size: 14px;
@@ -574,6 +574,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           text-overflow: ellipsis;
           position: relative;
           cursor: pointer;
+        }
+
+        .proficiency-item--ah,
+        .proficiency-item--soh {
+          font-size: 12px;
         }
 
         .proficiency-item::before,
@@ -609,27 +614,28 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           display: flex;
           flex-direction: column;
           min-width: 0;
-          width: 190px;
           flex-shrink: 0;
           padding-top: 10px;
         }
 
         /* Other profs */
         .stats-other-wrap {
-          display: flex;
-          justify-content: space-between;
+          position: relative;
         }
         .others {
           margin-bottom: 130px;
+          position: absolute;
+          top: 0;
+          right: 0;
         }
         .other {
-          margin-left: 20px;
           font-size: 14px;
           flex-shrink: 1;
-          max-width: 180px;
           height: fit-content;
           margin-bottom: 8px;
           line-height: 1.5;
+          max-width: calc(100vw - 245px);
+          margin-left: auto;
         }
         .other[open]  .other__header .material-icons {
           transform: rotate(180deg);
@@ -642,7 +648,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           padding: 0;
           cursor: pointer;
           transition: color .1s ease-in;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
           text-align: left;
           line-height: 1.6;
@@ -676,14 +682,14 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
         .other__item h4 {
           margin: 0;
-          font-size: 16px;
+          font-size: 14px;
         }
         .other__item {
           margin-bottom: 16px;
           margin-left: 16px;
         }
         .other__item div {
-          margin-left: 16px;
+          margin-left: 12px;
         }
 
         @keyframes scaleIn {
@@ -744,7 +750,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .stat-box__mod {
           font-size: 32px;
           font-weight: normal;
-          margin: 8px 8px 2px;
+          margin: 14px 8px 7px;
           line-height: 1;
           position: relative;
           left: 1px;
@@ -1004,10 +1010,17 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           .wrap {
             padding-bottom: 0;
           }
+          .other {
+            max-width: calc(100vw - 305px);
+          }
         }
         @media(min-width: 505px) {
           .stats {
             width: 250px;
+          }
+          .proficiency-item--ah,
+          .proficiency-item--soh {
+            font-size: 14px;
           }
         }
         @media(min-width: 920px) {
@@ -1020,6 +1033,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           }
           .other .other__header {
             cursor: unset;
+            font-size: 18px;
           }
           .other .other__header:hover {
             color: var(--mdc-theme-primary);
@@ -1035,6 +1049,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           }
           .other__header {
             font-size: 18px;
+          }
+          .other__item h4 {
+            font-size: 16px;
+          }
+          .other__item div {
+            margin-left: 16px;
           }
         }
       </style>
@@ -1179,7 +1199,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 <div class="proficiencies">
                   <!-- <div class="proficiency-item" on-click="_roll" is-custom$="[[_strContains(customSkillProfs, 'acrobatics')]]" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div> -->
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                  <div class="proficiency-item proficiency-item--soh" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>
                 </div>
               </div>
@@ -1188,7 +1208,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
                   <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" value={{con}} min="1" max="20" has-controls label="Constitution" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" mini-label value={{con}} min="1" max="20" has-controls label="Constitution" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(conAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1202,7 +1222,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
                   <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" value={{int}} min="1" max="20" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" mini-ish-label value={{int}} min="1" max="20" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(intAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1210,7 +1230,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 <div class="proficiencies">
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'arcana')]]" enabled$="[[_strContains(skillProfs, 'arcana')]]">Arcana</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'history')]]" enabled$="[[_strContains(skillProfs, 'history')]]">History</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
+                  <div class="proficiency-item proficiency-item--inv" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'nature')]]" enabled$="[[_strContains(skillProfs, 'nature')]]">Nature</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'religion')]]" enabled$="[[_strContains(skillProfs, 'religion')]]">Religion</div>
                 </div>
@@ -1226,7 +1246,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                 </div>
                 <div class="proficiencies">
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
+                  <div class="proficiency-item proficiency-item--ah" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'insight')]]" enabled$="[[_strContains(skillProfs, 'insight')]]">Insight</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'medicine')]]" enabled$="[[_strContains(skillProfs, 'medicine')]]">Medicine</div>
                   <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'perception')]]" enabled$="[[_strContains(skillProfs, 'perception')]]">Perception</div>
