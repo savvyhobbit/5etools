@@ -2173,6 +2173,10 @@ var v=_.cssClasses,x=_.strings,w=function(e){function t(){return null!==e&&e.app
                 <i class="fas fa-wrench mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Character Sheets</span>
               </a>
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/dice">
+                <i class="fas fa-dice mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
+                <span class="mdc-list-item__text">Dice Roller</span>
+              </a>
 
               <hr class="mdc-list-divider" />
               <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Player Options</h6>
@@ -2241,18 +2245,6 @@ var v=_.cssClasses,x=_.strings,w=function(e){function t(){return null!==e&&e.app
                 <i class="material-icons mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true">group</i>
                 <span class="mdc-list-item__text">Cults</span>
               </a> -->
-
-              <hr class="mdc-list-divider" />
-              <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Tools</h6>
-              <a class="mdc-list-item mdc-theme--on-surface" href="#/dice">
-                <i class="fas fa-dice mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
-                <span class="mdc-list-item__text">Dice Roller</span>
-              </a>
-              <a class="mdc-list-item mdc-theme--on-surface" href="#/character-builder">
-                <i class="fas fa-wrench mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
-                <span class="mdc-list-item__text">Character Sheets</span>
-              </a>
-              <span class="version mdc-typography--caption">v2.1.0</span>
 
             </div>
             <template is="dom-if" if="[[hasPreview]]">

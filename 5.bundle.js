@@ -574,6 +574,12 @@ const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-i
           .others {
             margin-bottom: 0;
           }
+          .other .other__header {
+            cursor: unset;
+          }
+          .other .other__header:hover {
+            color: var(--mdc-theme-primary);
+          }
           .other .other__header .material-icons {
             display: none;
           }
@@ -581,6 +587,7 @@ const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-i
             opacity: 1;
             height: auto;
             transform: scale(1, 1);
+            animation-name: none !important;
           }
           .other__header {
             font-size: 18px;
