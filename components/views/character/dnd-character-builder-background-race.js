@@ -77,37 +77,51 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
   }
 
   async updateFromCharacter(character) {
-    let maxAdditionalOptionsIndex = 0;
-    let additionalOptions = Object.entries(character.choices)
-      .filter(([key, value]) => {
-        if (key.includes("additionalChoice")) {
-          const index = parseInt(key.substring(key.indexOf('_') + 1));
-          if (index > maxAdditionalOptionsIndex) {
-            maxAdditionalOptionsIndex = index;
+    if (character) {
+      let maxAdditionalOptionsIndex = 0;
+      let additionalOptions = Object.entries(character.choices)
+        .filter(([key, value]) => {
+          if (key.includes("additionalChoice")) {
+            const index = parseInt(key.substring(key.indexOf('_') + 1));
+            if (index > maxAdditionalOptionsIndex) {
+              maxAdditionalOptionsIndex = index;
+            }
+            if (value) {
+              value.index = index;
+            } else {
+              return false;
+            }
+            return true;
           }
-          if (value) {
-            value.index = index;
-          } else {
-            return false;
-          }
-          return true;
-        }
-        return false;
-      })
-      .map(([key, value]) => {
-        value.key = key;
-        return value;
-      });
-    this.maxAdditionalOptionsIndex = maxAdditionalOptionsIndex;
-    this.set('additionalOptions', additionalOptions);
-    console.error('additionalOptions', additionalOptions);
+          return false;
+        })
+        .map(([key, value]) => {
+          value.key = key;
+          return value;
+        });
+      this.maxAdditionalOptionsIndex = maxAdditionalOptionsIndex;
+      this.set('additionalOptions', additionalOptions);
 
-    this.selectedBackground = character.background;
-    this.selectedBackgroundRef = await getBackgroundReference();
-    this.backgroundName = this.selectedBackground.name;
-    this.selectedRace = character.race;
-    this.selectedRaceRef = await getRaceReference();
-    this.raceName = this.selectedRace.name;
+      if (character.background) {
+        this.selectedBackground = character.background;
+        this.selectedBackgroundRef = await getBackgroundReference();
+        this.backgroundName = this.selectedBackground.name;
+      } else {
+        this.selectedBackground = {};
+        this.selectedBackgroundRef = undefined;
+        this.backgroundName = "";
+      }
+
+      if (character.race) {
+        this.selectedRace = character.race;
+        this.selectedRaceRef = await getRaceReference();
+        this.raceName = this.selectedRace.name;
+      } else {
+        this.selectedRace = {};
+        this.selectedRaceRef = undefined;
+        this.raceName = "";
+      }
+    }
     
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
   }
@@ -290,8 +304,8 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
             <h2>Race</h2>
             <button class="mdc-icon-button material-icons" on-click="_linkClick">logout</button>
           </div>
+          <div class="missing-text" hidden$="[[_exists(selectedRaceRef)]]">Enter edit mode to select a Race.</div>
           <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
-          <div class="missing-text" hidden$="[[_exists(selectedRace)]]">Select Race to add Attribute Bonuses</div>
           <dnd-character-builder-suboptions storage-key="race" selected-item="[[selectedRaceRef]]"></dnd-character-builder-suboptions>
         </div>
 
@@ -300,8 +314,8 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
             <h2>Background</h2>
             <button class="mdc-icon-button material-icons background" on-click="_linkClick">logout</button>
           </div>
+          <div class="missing-text" hidden$="[[_exists(selectedBackgroundRef)]]">Enter edit mode to select a Background.</div>
           <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
-          <div class="missing-text" hidden$="[[_exists(selectedBackground)]]">Select Background to add Skill Proficiencies</div>
           <dnd-character-builder-suboptions storage-key="background" selected-item="[[selectedBackgroundRef]]"></dnd-character-builder-suboptions>
         </div>
 

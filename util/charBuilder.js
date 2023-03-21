@@ -112,8 +112,8 @@ function addCharacter(name, charObject) {
     newChar = charObject ? charObject : newCharacter(name);
 
   characters.push(newChar);
-  saveCharacters(characters);
   selectCharacter(newChar);
+  saveCharacters(characters);
 }
 
 function removeSelectedCharacter() {
@@ -760,7 +760,11 @@ function getChoicesForKey(key, character = selectedCharacter) {
           skillProfs = skillProfs.concat(selectedChoices.name);
         } else {
           Object.values(selectedChoices).forEach(choiceVal => {
-            skillProfs = skillProfs.concat(choiceVal)
+            if (choiceVal.split) {
+              skillProfs = skillProfs.concat(choiceVal.split(','));
+            } else {
+              skillProfs = skillProfs.concat(choiceVal)
+            }
           });
         }
       }
@@ -777,7 +781,11 @@ function getChoicesForKey(key, character = selectedCharacter) {
             skillProfs = skillProfs.concat(defaultChoices.name);
           } else {
             Object.values(defaultChoices).forEach(choiceVal => {
-              skillProfs = skillProfs.concat(choiceVal)
+              if (choiceVal.split) {
+                skillProfs = skillProfs.concat(choiceVal.split(','));
+              } else {
+                skillProfs = skillProfs.concat(choiceVal)
+              }
             });
           }
         }
@@ -788,7 +796,13 @@ function getChoicesForKey(key, character = selectedCharacter) {
 }
 
 function getChoiceSkillProfs(character = selectedCharacter) {
-  return getChoicesForKey('SkillProfs', character);
+  let skillProfs =  getChoicesForKey('SkillProfs', character);
+  if (character.choices) {
+    Object.values(character.choices).filter((choice) => !!choice.selectedSTLProfs).forEach((choice) => {
+      skillProfs = skillProfs.concat(choice.selectedSTLProfs.filter(prof => prof.type === 'skill').map(prof => prof.name.toLowerCase()));
+    });
+  }
+  return skillProfs;
 }
 
 function getChoiceWeaponProfs(character = selectedCharacter) {
@@ -800,11 +814,25 @@ function getChoiceArmorProfs(character = selectedCharacter) {
 }
 
 function getChoiceToolProfs(character = selectedCharacter) {
-  return getChoicesForKey('ToolProfs', character);
+  let toolProfs = getChoicesForKey('ToolProfs', character);
+  if (character.choices) {
+    Object.values(character.choices).filter((choice) => !!choice.selectedSTLProfs).forEach((choice) => {
+      toolProfs = toolProfs.concat(choice.selectedSTLProfs.filter(prof => prof.type === 'tool').map(prof => prof.name));
+    });
+  }
+  return toolProfs;
 }
 
 function getChoiceLanguages(character = selectedCharacter) {
   return getChoicesForKey('LangProfs', character);
+}
+
+function getChoiceResists(character = selectedCharacter) {
+  return getChoicesForKey('Resists', character);
+}
+
+function getChoiceConditionImmunes(character = selectedCharacter) {
+  return getChoicesForKey('ConditionImmunes', character);
 }
 
 function getChoiceFeats(character = selectedCharacter) {
@@ -2046,6 +2074,8 @@ export {
   getChoiceArmorProfs,
   getChoiceToolProfs,
   getChoiceLanguages,
+  getChoiceResists,
+  getChoiceConditionImmunes,
   getChoiceFeats,
   getChoiceDarkvision,
 };

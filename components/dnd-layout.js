@@ -21,8 +21,6 @@ import './views/dnd-races-view';
 import './views/dnd-spells-view';
 import './views/dnd-variantrules-view';
 
-
-
 class DndLayout extends PolymerElement {
   static get properties() {
     return {

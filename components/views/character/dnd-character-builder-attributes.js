@@ -11,7 +11,6 @@ import {
   getClassSaves,
   getSkillProfs,
   toggleCustomSkill,
-  getRaceAttributeDefaults,
   getAttributeScoreModifiers,
   getMaxHP,
   getCurrentHP, getTempHp, setCurrentHp,
@@ -34,7 +33,9 @@ import {
   getChoiceArmorProfs,
   getChoiceWeaponProfs,
   getChoiceFeats,
-  getChoiceDarkvision
+  getChoiceDarkvision,
+  getChoiceConditionImmunes,
+  getChoiceResists
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, findInPath } from "../../../js/utils";
@@ -161,6 +162,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       },
       darkvision: {
         type: Number,
+      },
+      resists: {
+        type: String,
+      },
+      conditionImmunes: {
+        type: String,
       },
       hasDarkvision: {
         type: Boolean,
@@ -311,6 +318,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.languages = getChoiceLanguages().map(util_capitalizeAll).join(', ');
       this.feats = getChoiceFeats().map(util_capitalizeAll).join(', ');
       this.darkvision = getChoiceDarkvision();
+      this.resists = getChoiceResists().map(util_capitalizeAll).join(', ');
+      this.conditionImmunes = getChoiceConditionImmunes().map(util_capitalizeAll).join(', ');
       this.hasDarkvision = this.darkvision !== null;
       
       console.error('blah', this.weaponProfs, this.armorProfs, this.toolProfs, this.languages);
@@ -1023,6 +1032,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             font-size: 14px;
           }
         }
+        @media(min-width: 555px) {
+          .other {
+            max-width: 250px;
+          }
+        }
         @media(min-width: 920px) {
           .basic-box__wrap {
             position: absolute;
@@ -1287,10 +1301,14 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                     <h4>Feats</h4>
                     <div>[[feats]]</div>
                   </div>
-                  <!-- <div class="other__item">
+                  <div class="other__item" hidden$="[[!_exists(resists)]]">
                     <h4>Resistances</h4>
-                    <div>Todo</div>
-                  </div> -->
+                    <div>[[resists]]</div>
+                  </div>
+                  <div class="other__item" hidden$="[[!_exists(conditionImmunes)]]">
+                    <h4>Condition Immunities</h4>
+                    <div>[[conditionImmunes]]</div>
+                  </div>
                 </div>
               </div>
 

@@ -921,7 +921,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         </div>
 
         <div>
-          <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
+          <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add class levels.</div>
 
           <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows>
             <vaadin-grid-column flex-grow="1">
