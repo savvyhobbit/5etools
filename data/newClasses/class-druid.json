@@ -1898,7 +1898,7 @@
 				{
 					"name": "Arctic",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -1928,7 +1928,7 @@
 				{
 					"name": "Coast",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -1958,7 +1958,7 @@
 				{
 					"name": "Desert",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -1988,7 +1988,7 @@
 				{
 					"name": "Forest",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -2018,7 +2018,7 @@
 				{
 					"name": "Grassland",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -2048,7 +2048,7 @@
 				{
 					"name": "Mountain",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -2078,7 +2078,7 @@
 				{
 					"name": "Swamp",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -2108,7 +2108,7 @@
 				{
 					"name": "Underdark",
 					"known": {
-						"1": {
+						"2": {
 							"_": [
 								{
 									"choose": "level=0|class=Druid"
@@ -2152,10 +2152,12 @@
 			"page": 69,
 			"additionalSpells": [
 				{
-					"known": {
-						"14": [
-							"alter self"
-						]
+					"innate": {
+						"14": {
+							"will": [
+								"alter self"
+							]
+						}
 					}
 				}
 			],
@@ -2402,6 +2404,15 @@
 						"2": [
 							"guidance#c"
 						]
+					},
+					"innate": {
+						"2": {
+							"daily": {
+								"proficiency": [
+									"guiding bolt"
+								]
+							}
+						}
 					},
 					"prepared": {
 						"2": [

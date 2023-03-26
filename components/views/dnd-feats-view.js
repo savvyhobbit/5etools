@@ -17,17 +17,17 @@ class DndFeatsView extends PolymerElement {
     return html`
       <style include="material-styles my-styles"></style>
 
-        <dnd-selection-list
-          enable-hash-routing
+      <dnd-selection-list
+        enable-hash-routing
         non-global$="[[nonGlobal]]"
-          model-id="feats"
-          columns='[
-            {"id":"source","label":"Source"}, 
-            {"id":"ability","label":"Ability"},
-            {"id":"prerequisite","label":"Prerequisite","hideMobile":true}
-          ]'
-        >
-        </dnd-selection-list>
+        model-id="feats"
+        columns='[
+          {"id":"source","label":"Source"}, 
+          {"id":"ability","label":"Ability"},
+          {"id":"prerequisite","label":"Prerequisite","hideMobile":true}
+        ]'
+      >
+      </dnd-selection-list>
     `;
   }
 }

@@ -174,7 +174,7 @@ class DndSelectionList extends PolymerElement {
   _selectedItemChange() {
     if (this.selectedItem) {
       this.hasSelection = true;
-      if (!this.disableScrollBack) {
+      if (!this.disableScrollBack && !this.nonGlobal) {
         window.scrollTo(0, 0);
       }
     } else {
@@ -183,7 +183,9 @@ class DndSelectionList extends PolymerElement {
   }
 
   _selectedItemKeyChange() {
-    this.set("selectedItem", )
+    loadModel(this.modelId).then(result => {
+      this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
+    });
   }
 
   /**

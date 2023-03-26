@@ -788,24 +788,24 @@
 				{
 					"expanded": {
 						"s1": [
-							"infallible relay (ua)|uamodernmagic",
-							"remote access (ua)|uamodernmagic"
+							"infallible relay",
+							"remote access"
 						],
 						"s2": [
-							"arcane hacking (ua)|uamodernmagic",
-							"digital phantom (ua)|uamodernmagic"
+							"arcane hacking",
+							"digital phantom"
 						],
 						"s3": [
-							"haywire (ua)|uamodernmagic",
-							"invisibility to cameras (ua)|uamodernmagic"
+							"haywire",
+							"invisibility to cameras"
 						],
 						"s4": [
-							"conjure knowbot (ua)|uamodernmagic",
-							"system backdoor (ua)|uamodernmagic"
+							"conjure knowbot",
+							"system backdoor"
 						],
 						"s5": [
-							"shutdown (ua)|uamodernmagic",
-							"synchronicity (ua)|uamodernmagic"
+							"shutdown",
+							"synchronicity"
 						]
 					}
 				}

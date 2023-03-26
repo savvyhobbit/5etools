@@ -8,7 +8,7 @@ import "../../dnd-button";
 import "../../dnd-asi-select";
 import "../../dnd-svg";
 import './dnd-character-builder-suboptions';
-import { jqEmpty, getEntryName } from "../../../js/utils";
+import { jqEmpty, getEntryName, cloneDeep } from "../../../js/utils";
 import { classOptionsMap } from "../../../data/choices";
 import EntryRenderer from "../../../util/entryrender";
 import { } from '@polymer/polymer/lib/elements/dom-if.js';
@@ -56,7 +56,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
     this.editModeHandler = (e) => {
       this.isEditMode = e.detail.isEditMode;
-      this.$.classGrid.notifyResize();
     }
     getEditModeChannel().addEventListener('editModeChange', this.editModeHandler);
     this.isEditMode = isEditMode();
@@ -69,96 +68,29 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
   }
 
-  ready() {
-    super.ready();
-
-    const renderer = new EntryRenderer();
-
-    setTimeout(() => {
-      const grid = this.$.classGrid;
-      let draggedItem;
-
-      grid.rowDetailsRenderer = ((root, grid, rowData) => {
-        let renderStack = [],
-          features = this._getClassLevelFeatures(this.levels, rowData.index, this.classes, this.subclasses);
-        
-        if (features && features.length) {
-          if (!root.firstElementChild) {
-            root.innerHTML = '<div class="details stats-wrapper "></div>';
-          }
-
-          for (let feature of features) {
-            const isUnselectedReplacementChoice = this.classChoices && this.classChoices[rowData.index] && this.classChoices[rowData.index].some((choice) => {
-              const isNotSelectedOptionalFeature = choice.selection && (choice.selection.name !== feature.name || choice.selection.source !== feature.source);
-              const isOptionalFeature = choice.from && choice.from.some((optionalFeature) => {return optionalFeature.name === feature.name && optionalFeature.source === feature.source});
-              
-              return choice.id === 'replacement' && isNotSelectedOptionalFeature && isOptionalFeature;
-            });
-            if (!isUnselectedReplacementChoice) {
-              renderer.recursiveEntryRender(
-                feature,
-                renderStack,
-                0,
-                undefined,
-                true
-              );
-            }
-          }
-          const deets = root.querySelector('.details');
-          jqEmpty(deets);
-          deets.innerHTML = renderStack.join("");
-        }
-      }).bind(this);
-
-      grid.addEventListener('grid-dragstart', function(e) {
-        draggedItem = e.detail.draggedItems[0];
-        grid.dropMode = 'between';
-      });
-
-      grid.addEventListener('grid-dragend', function(e) {
-        draggedItem = grid.dropMode = null;
-      });
-
-      grid.addEventListener('grid-drop', function(e) {
-        const dropTargetItem = e.detail.dropTargetItem;
-        if (draggedItem && draggedItem !== dropTargetItem) {
-          // Reorder the items
-          const items = grid.items.filter(function(i) {
-            return i !== draggedItem;
-          });
-          const dropIndex = items.indexOf(dropTargetItem)
-            + (e.detail.dropLocation === 'below' ? 1 : 0);
-          items.splice(dropIndex, 0, draggedItem);
-          setClassLevels(items);
-        }
-      });
-    }, 0);
-  }
-
   async updateFromCharacter(character) {
     if (character && character.levels && character.levels.length) {
+      console.error('class updateFromCharacter', character);
       this.noContentMessage = false;
       this.character = character;
       this.classes = await getClassReferences(character);
-      this.subclasses = JSON.parse(JSON.stringify(character.subclasses));
+      this.subclasses = cloneDeep(character.subclasses);
       this.classLevel = getClassString(character);
       this.classChoices = await this._findLevelChoices(character, this.classes);
 
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
 
-      this.levels = character.levels;
+      this.levels = cloneDeep(character.levels);
 
       const hitDiceMaxes = [];
       for (let i = 0; i < character.levels.length; i++) {
         hitDiceMaxes.push(await getHPDiceForLevel(i));
       }
       this.hitDiceMaxes = hitDiceMaxes;
-
-      this.$.classGrid.clearCache();
     } else {
+      this.levels = [];
       this.noContentMessage = true;
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
-      this.$.classGrid.clearCache();
     }
   }
 
@@ -192,7 +124,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
             const hasSubclassFeature = classFeaturesForLevel.some(i => i.gainSubclassFeature);
             if (hasSubclassFeature && subclasses && subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
               const subclassDef = classRef.subclasses.find(i => subclasses[className].name === i.name);
-              if (subclassDef && subclassDef.subclassFeatures[levelsInSubclass]) {
+              if (subclassDef && subclassDef.subclassFeatures && subclassDef.subclassFeatures[levelsInSubclass]) {
                 subclassDef.subclassFeatures[levelsInSubclass].map((i) => { i.isSubclass = true; return i; })
                 return [...classFeaturesForLevel].concat(subclassDef.subclassFeatures[levelsInSubclass]);
               }
@@ -233,26 +165,57 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
   }
 
   _deleteLevel(e) {
-    let index = e.model.__data.index;
-    let previousFirstClassId = this.levels[0].id;
+    const index = e.model.__data.index,
+      className = this.levels[index].name,
+      level = this.levels.filter(lvl => lvl.name === className).length,
+      choiceKeysToRemove = Object.keys(this.character.choices).filter(key => key.startsWith(className.toLowerCase() + '_' + level));
+    
     this.levels.splice(index, 1);
-    setClassLevels(this.levels, previousFirstClassId);
+    choiceKeysToRemove.forEach(key => {
+      delete this.character.choices[key];
+    });
+    setClassLevels(this.levels);
   }
 
   _expandDetails(e) {
-    let data = e.model.__data.item,
-      stayClosed = this.$.classGrid.detailsOpenedItems.indexOf(data) > -1;
-
-    for (let item of this.$.classGrid.detailsOpenedItems) {
-      this.$.classGrid.closeItemDetails(item);
-    }
-
-    if (stayClosed) {
-      this.$.classGrid.closeItemDetails(data);
+    let rowIndex = e.model.__data.index;
+    
+    if (this.expandedIndex === rowIndex) {
+      this.expandedIndex = null;
     } else {
-      this.$.classGrid.openItemDetails(data);
+      this.expandedIndex = rowIndex;
     }
-    this.$.classGrid.notifyResize();
+  }
+
+  _renderDetails(expandedIndex, rowIndex) {
+    let renderStack = [];
+    if (expandedIndex === rowIndex) {
+      const renderer = new EntryRenderer();
+      const features = this._getClassLevelFeatures(this.levels, rowIndex, this.classes, this.subclasses);
+      
+      if (features && features.length) {
+        for (let feature of features) {
+          const isUnselectedReplacementChoice = this.classChoices && this.classChoices[rowIndex] && this.classChoices[rowIndex].some((choice) => {
+            const isNotSelectedOptionalFeature = choice.selection && (choice.selection.name !== feature.name || choice.selection.source !== feature.source);
+            const isOptionalFeature = choice.from && choice.from.some((optionalFeature) => {return optionalFeature.name === feature.name && optionalFeature.source === feature.source});
+            
+            return choice.id === 'replacement' && isNotSelectedOptionalFeature && isOptionalFeature;
+          });
+          if (!isUnselectedReplacementChoice) {
+            renderer.recursiveEntryRender(
+              feature,
+              renderStack,
+              0,
+              undefined,
+              true
+            );
+          }
+        }
+      }
+      return "<div class='details stats-wrapper'>" + renderStack.join("") + "</div>"
+    } else {
+      return "";
+    }
   }
 
   async _findLevelChoices(character, classes) {
@@ -269,8 +232,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     if (classes && character.levels && character.levels.length && character.levels.length > levelIndex) {
       let levels = character.levels,
         subclasses = character.subclasses,
-        name = levels[levelIndex].name,
-        classDef = classes[name];
+        className = levels[levelIndex].name,
+        classDef = classes[className],
+        subclassDef = classDef.subclasses.find(i => subclasses[className] && subclasses[className].name === i.name);
 
       if (classDef) {
         let choices = [],
@@ -279,38 +243,70 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
         for (let i = 0; i <= levelIndex; i++) {
           let level = levels[i]
-          if (level.name === name) {
+          if (level.name === className) {
             classLevelCount ++;
           }
         }
 
-        // Suboption component for first level class
+        
+        // Class sub-option for additional spells and first level proficiencies
+        const classSubOptions = {};
+        // restructuring class defined additional spells
+        if (classDef.additionalSpells) {
+          let lowestAddtlSpellLevel = 9;
+          classDef.additionalSpells.forEach((addtlSpellSetEntry) => {
+            Object.entries(addtlSpellSetEntry).forEach(([addtlSpellTypeKey, addtlSpellTypeValue]) => {
+              Object.entries(addtlSpellTypeValue).forEach(([addtlSpellLevelKey, addtlSpellLevelValue]) => {
+                const spellGainLevel = parseInt(addtlSpellLevelKey.split('s').join(''));
+
+                if (spellGainLevel < lowestAddtlSpellLevel && addtlSpellTypeKey !== 'prepared' && addtlSpellTypeKey !== 'expanded') {
+                  lowestAddtlSpellLevel = spellGainLevel;
+                }
+                
+                // If this level has some spell gain, recreate structure for just this level
+                if (classDef.additionalSpells.length === 1 && spellGainLevel === classLevelCount) {
+                  if (!classSubOptions.additionalSpells) {
+                    classSubOptions.additionalSpells = [{}];
+                  }
+                  if (!classSubOptions.additionalSpells[0][addtlSpellTypeKey]) {
+                    classSubOptions.additionalSpells[0][addtlSpellTypeKey] = {}
+                  }
+                  classSubOptions.additionalSpells[0][addtlSpellTypeKey][addtlSpellLevelKey] = addtlSpellLevelValue;
+                }
+              });
+            });
+          });
+          // if there are multiple additional spell sets then select set (and all others) at the lowest level
+          if (classDef.additionalSpells.length > 1 && lowestAddtlSpellLevel === classLevelCount) {
+            classSubOptions.additionalSpells = classDef.additionalSpells;
+          }
+        }
+
         if (levelIndex === 0) {
-          const suboptions = {}
-          suboptions.skillProficiencies = classDef.startingProficiencies.skills
+          classSubOptions.skillProficiencies = classDef.startingProficiencies.skills;
 
           if (classDef.startingProficiencies.armor) {
-            suboptions.armorProficiencies = [{}];
+            classSubOptions.armorProficiencies = [{}];
             classDef.startingProficiencies.armor.forEach(p => {
               let prof = p.proficiency || p.toLowerCase();
               prof = prof.includes('shield') ? 'shield' : prof;
-              suboptions.armorProficiencies[0][prof] = true;
+              classSubOptions.armorProficiencies[0][prof] = true;
             });
           }
           
           if (classDef.startingProficiencies.weapons) {
-            suboptions.weaponProficiencies = [{}];
+            classSubOptions.weaponProficiencies = [{}];
             classDef.startingProficiencies.weapons.forEach(p => {
               let prof = p.proficiency || p.toLowerCase();
               if (prof.includes("@item")) {
                 prof = prof.split("@item")[1].trim().split('|')[0];
               }
-              suboptions.weaponProficiencies[0][prof] = true;
+              classSubOptions.weaponProficiencies[0][prof] = true;
             });
           }
 
           if (classDef.startingProficiencies.tools) {
-            suboptions.toolProficiencies = [{}];
+            classSubOptions.toolProficiencies = [{}];
             classDef.startingProficiencies.tools.forEach(p => {
               let count;
               let prof = p.proficiency || p.toLowerCase();
@@ -320,24 +316,71 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
               }
               if (prof.includes("artisan's tools") || prof.includes('musical instrument')) {
                 prof = prof.includes("artisan's tools") ? "artisan's tools" : 'musical instrument';
-                suboptions.toolProficiencies[0].choose = { from: [prof], count };
+                classSubOptions.toolProficiencies[0].choose = { from: [prof], count };
               } else {
-                suboptions.toolProficiencies[0][prof] = true;
+                classSubOptions.toolProficiencies[0][prof] = true;
               }
             });
           }
-          choices.push({
-            id: "firstClass",
-            suboptions
-          });
         }
+        choices.push({
+          id: "classSubOptions",
+          classSubOptions,
+          class: className.toLowerCase(),
+          level: classLevelCount
+        });
 
         // Subclass choice
         if (subclassChoiceLevel !== undefined && classLevelCount === subclassChoiceLevel) {
           choices.push({
             id: "subclass",
             from: classDef.subclasses,
-            selections: character.subclasses[name]
+            selections: character.subclasses[className]
+          });
+        }
+
+        // Subclass suboption
+        const subclassSubOptions = {};
+        if (subclassDef && subclassDef.additionalSpells) {
+          let lowestAddtlSpellLevel = 20;
+          let hasExpanded = false;
+          subclassDef.additionalSpells.forEach((addtlSpellSetEntry) => {
+            Object.entries(addtlSpellSetEntry).forEach(([addtlSpellTypeKey, addtlSpellTypeValue]) => {
+              if (addtlSpellTypeKey === 'expanded') {
+                hasExpanded = true;
+              }
+              if (typeof addtlSpellTypeValue !== 'string' && !Array.isArray(addtlSpellTypeValue)) {
+                Object.entries(addtlSpellTypeValue).forEach(([addtlSpellLevelKey, addtlSpellLevelValue]) => {
+                  const spellGainLevel = parseInt(addtlSpellLevelKey.split('s').join(''));
+
+                  if (spellGainLevel < lowestAddtlSpellLevel && addtlSpellTypeKey !== 'prepared') {
+                    lowestAddtlSpellLevel = spellGainLevel;
+                  }
+                  
+                  // If this level has some spell gain, recreate structure for just this level
+                  if (subclassDef.additionalSpells.length === 1 && addtlSpellTypeKey !== 'expanded'&& spellGainLevel === classLevelCount) {
+                    if (!subclassSubOptions.additionalSpells) {
+                      subclassSubOptions.additionalSpells = [{}];
+                    }
+                    if (!subclassSubOptions.additionalSpells[0][addtlSpellTypeKey]) {
+                      subclassSubOptions.additionalSpells[0][addtlSpellTypeKey] = {}
+                    }
+                    subclassSubOptions.additionalSpells[0][addtlSpellTypeKey][addtlSpellLevelKey] = addtlSpellLevelValue;
+                  }
+                });
+              }
+            });
+          });
+          // if there are multiple additional spell sets then select set (and all others) at the lowest level
+          if ((subclassDef.additionalSpells.length > 1 || hasExpanded) && lowestAddtlSpellLevel === classLevelCount) {
+            subclassSubOptions.additionalSpells = subclassDef.additionalSpells;
+          }
+          choices.push({
+            id: "subclassSubOptions",
+            subclassSubOptions,
+            subclass: subclassDef.shortName,
+            class: className.toLowerCase(),
+            level: classLevelCount
           });
         }
 
@@ -358,8 +401,8 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
               const choice = {
                 id: 'replacement',
                 from: [{name: feature.name, source: feature.source}],
-                selection: getOptionFeatureChoice(name, levelIndex, feature.name),
-                class: name,
+                selection: getOptionFeatureChoice(className, levelIndex, feature.name),
+                class: className,
                 level: levelIndex,
                 feature: feature.name
               };
@@ -369,53 +412,59 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                 }
               });
               if (choice.from.length > 1) {
-                console.error(' replacement choice', choice)
                 choices.push(choice);
               }
             }
           });
         }
-        
-        // Todo: optional replacement features, sub-option setup for class, subclass, and features
 
         // Generating other choices from choices.js map
         if (classLevelCount) {
-          const classOptions = classOptionsMap[name.toLowerCase()];
+          const classOptions = classOptionsMap[className.toLowerCase()];
 
           if (classOptions && classOptions.class && classOptions.class[classLevelCount]) {
             const classLevelOptions = [].concat(classOptions.class[classLevelCount]);
             
             for (const classLevelOption of classLevelOptions) {
-              console.error("classLevelOption", classLevelOption);
               if (classLevelOption.options) {
                 choices.push({
                   id: "classFeature",
                   name: classLevelOption.name,
                   from: classLevelOption.options,
-                  count: classLevelOption.count > 1 ? classLevelOption.count : undefined,
-                  class: name.toLowerCase(),
+                  count: classLevelOption.count > 1 ? classLevelOption.count : 1,
+                  class: className.toLowerCase(),
                   feature: classLevelOption.name,
                   level: classLevelCount,
-                  selections: getClassChoice(name.toLowerCase(), classLevelCount, classLevelOption.name)
+                  selections: getClassChoice(className.toLowerCase(), classLevelCount, classLevelOption.name)
                 });
               } else if (classLevelOption.type) {
                 const options = await filterModel("features", classLevelOption.type);
+                let selections = getClassChoice(className.toLowerCase(), classLevelCount, classLevelOption.name);
+                if (selections) {
+                  if (Array.isArray(selections)) {
+                    selections = selections.map(sel => options.find(opt => opt.name === sel.name && opt.source === sel.source));
+                  } else {
+                    selections = options.find(opt => opt.name === selections.name && opt.source === selections.source);
+                  }
+                }
                 choices.push({
                   id: "classFeature",
+                  hasSubFeature: true,
                   name: classLevelOption.name,
                   from: options,
-                  count: classLevelOption.count > 1 ? classLevelOption.count : undefined,
-                  class: name.toLowerCase(),
+                  count: classLevelOption.count > 1 ? classLevelOption.count : 1,
+                  class: className.toLowerCase(),
                   feature: classLevelOption.name,
                   level: classLevelCount,
-                  selections: getClassChoice(name.toLowerCase(), classLevelCount, classLevelOption.name)
+                  selections,
+                  selectionsArray: Array.isArray(selections) ? selections : [selections]
                 });
               }
             }
           }
 
-          if (classOptions && classOptions.subclasses && subclasses[name] && classOptions.subclasses[subclasses[name].name] && classOptions.subclasses[subclasses[name].name][classLevelCount]) {
-            const subclassLevelOptions = [].concat(classOptions.subclasses[subclasses[name].name][classLevelCount]);
+          if (classOptions && classOptions.subclasses && subclasses[className] && classOptions.subclasses[subclasses[className].name] && classOptions.subclasses[subclasses[className].name][classLevelCount]) {
+            const subclassLevelOptions = [].concat(classOptions.subclasses[subclasses[className].name][classLevelCount]);
             
             for (const subclassLevelOption of subclassLevelOptions) {
               if (subclassLevelOption.options) {
@@ -424,24 +473,34 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                   name: subclassLevelOption.name,
                   from: subclassLevelOption.options,
                   count: subclassLevelOption.count > 1 ? subclassLevelOption.count : undefined,
-                  class: name.toLowerCase(),
-                  subclass: subclasses[name],
+                  class: className.toLowerCase(),
+                  subclass: subclasses[className],
                   feature: subclassLevelOption.name,
                   level: classLevelCount,
-                  selections: getSubclassChoice(name.toLowerCase(), subclasses[name].name.toLowerCase(), classLevelCount, subclassLevelOption.name)
+                  selections: getSubclassChoice(className.toLowerCase(), subclasses[className].name.toLowerCase(), classLevelCount, subclassLevelOption.name)
                 });
               } else if (subclassLevelOption.type) {
                 const options = await filterModel("features", subclassLevelOption.type);
+                let selections = getSubclassChoice(className.toLowerCase(), subclasses[className].name.toLowerCase(), classLevelCount, subclassLevelOption.name);
+                if (selections) {
+                  if (Array.isArray(selections)) {
+                    selections = selections.map(sel => options.find(opt => opt.name === sel.name && opt.source === sel.source));
+                  } else {
+                    selections = options.find(opt => opt.name === selections.name && opt.source === selections.source);
+                  }
+                }
                 choices.push({
                   id: "subclassFeature",
+                  hasSubFeature: true,
                   name: subclassLevelOption.name,
                   from: options,
                   count: subclassLevelOption.count > 1 ? subclassLevelOption.count : undefined,
-                  class: name.toLowerCase(),
-                  subclass: subclasses[name],
+                  class: className.toLowerCase(),
+                  subclass: subclasses[className],
                   feature: subclassLevelOption.name,
                   level: classLevelCount,
-                  selections: getSubclassChoice(name.toLowerCase(), subclasses[name].name.toLowerCase(), classLevelCount, subclassLevelOption.name)
+                  selections: selections,
+                  selectionsArray: Array.isArray(selections) ? selections : [selections]
                 });
               }
             }
@@ -607,6 +666,10 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     return `fal fa-dice-d${dice || '6'}`;
   }
 
+  _joinUnderscore(...items) {
+    return items.join('_')
+  }
+
   static get template() {
     return html`
       <style include="material-styles my-styles fa-styles">
@@ -614,14 +677,14 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           display: block;
         }
 
-        #classGrid {
-          margin-bottom: 144px;
+        .class-grid {
+          margin-bottom: 200px;
         }
 
         .heading-wrap {
           display: flex;
           justify-content: space-between;
-          margin: 22px 14px 12px;
+          margin: 22px 14px 0;
           align-items: center;
           border-bottom: 1px solid var(--lumo-contrast-10pct);
           flex-wrap: wrap;
@@ -663,6 +726,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           margin: 4px;
         }
 
+        .row-wrap {
+          padding: 4px 16px;
+        }
+        .row-wrap:not(:first-child) {
+          border-top: 1px solid var(--mdc-theme-text-divider-on-background);
+        }
         .row {
           position: relative;
           min-height: 80px;
@@ -766,11 +835,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           margin-right: 16px;
         }
         .delete-btn {
-          height: 24px;
-          width: 24px;
+          height: 36px;
           font-size: 18px;
           padding: 0;
-          margin-right: 16px;
           background: none !important;
         }
         .delete-btn:before,
@@ -893,7 +960,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
             width: unset;
             font-size: 16px;
           }
-          #classGrid {
+          .class-grid {
             margin-bottom: 0;
           }
           .class-levels {
@@ -923,9 +990,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         <div>
           <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add class levels.</div>
 
-          <vaadin-grid id="classGrid" items=[[levels]] theme="no-border" height-by-rows>
-            <vaadin-grid-column flex-grow="1">
-              <template>
+          <div class="class-grid">
+            <template is="dom-repeat" items=[[levels]]>
+              <div class="row-wrap">
                 <div class="row">
                   <div class="open-details" on-click="_expandDetails">
                     <div class="level-col">
@@ -944,9 +1011,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                   <div class="choices-col">
                     <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
                       <div class="choices-col__choice">
+                        <template is="dom-if" if="[[_equal(choice.id, 'classSubOptions')]]">
+                          <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level)]]" selected-item="[[choice.classSubOptions]]"></dnd-character-builder-suboptions>
+                        </template>
 
-                        <template is="dom-if" if="[[_equal(choice.id, 'firstClass')]]">
-                          <dnd-character-builder-suboptions storage-key="firstClass" selected-item="[[choice.suboptions]]"></dnd-character-builder-suboptions>
+                        <template is="dom-if" if="[[_equal(choice.id, 'subclassSubOptions')]]">
+                          <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, choice.subclass)]]" selected-item="[[choice.subclassSubOptions]]"></dnd-character-builder-suboptions>
                         </template>
           
                         <template is="dom-if" if="[[_equal(choice.id, 'replacement')]]">
@@ -958,16 +1028,25 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                           <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
                             options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
                         </template>
+
                         <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
                           <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
                         </template>
+
                         <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
                           <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                            options="[[choice.from]]" choices="1" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                          <template is="dom-repeat" items="[[choice.selectionsArray]]" as="subfeature">
+                            <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
+                          </template>
                         </template>
+
                         <template is="dom-if" if="[[_equal(choice.id, 'subclassFeature')]]">
                           <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
                             options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
+                          <template is="dom-repeat" items="[[choice.selectionsArray]]" as="subfeature">
+                            <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, 'sub', 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
+                          </template>
                         </template>
                       </div>
                     </template>
@@ -975,7 +1054,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
                   <div class="hp-col">
                     <div class="delete-col">
-                      <button class="delete-btn mdc-icon-button" on-click="_deleteLevel"><i class="fas fa-trash" on-click="_deleteLevel"></i></button>
+                      <button class="delete-btn mdc-icon-button" on-click="_deleteLevel">
+                        <i class="fas fa-trash"></i>
+                      </button>
                     </div>
                     <div class="hp-col__non-edit">
                       <i class$="[[_hpDiceIconClass(index, hitDiceMaxes)]]"></i>
@@ -994,9 +1075,10 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                     </div>
                   </div>
                 </div>
-              </template>
-            </vaadin-grid-column>
-          </vaadin-grid>
+                <div class="details-wrap" inner-h-t-m-l="[[_renderDetails(expandedIndex, index)]]"></div>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
     `;

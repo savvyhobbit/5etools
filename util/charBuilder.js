@@ -283,12 +283,7 @@ function addClassLevel(classLevel, character = selectedCharacter) {
   saveCharacter(character);
 }
 
-function setClassLevels(levels, prevFirstClassId, character = selectedCharacter) {
-  if (levels.length === 0 || (prevFirstClassId && levels[0].id !== prevFirstClassId)) {
-    if (character.choices && character.choices.firstClass) {
-      delete character.choices.firstClass;
-    }
-  }
+function setClassLevels(levels, character = selectedCharacter) {
   character.levels = levels;
   saveCharacter(character);
 }

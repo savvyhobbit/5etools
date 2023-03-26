@@ -123,6 +123,32 @@ export const classOptionsMap = {
       }
     }
   },
+  monk: {
+    subclasses: {
+      "Way of the Four Elements": {
+        3: {
+          name: "Elemental Discipline",
+          count: 2,
+          type: "ed"
+        },
+        6: {
+          name: "Elemental Discipline",
+          count: 1,
+          type: "ed"
+        },
+        11: {
+          name: "Elemental Discipline",
+          count: 1,
+          type: "ed"
+        },
+        17: {
+          name: "Elemental Discipline",
+          count: 1,
+          type: "ed"
+        }
+      },
+    }
+  },
   fighter: {
     class: {
       1: {
@@ -166,17 +192,6 @@ export const classOptionsMap = {
         name: "Metamagic",
         type: "mm",
         count: 1
-      }
-    },
-    subclasses: {
-      "Divine Soul": {
-        1: [
-          {
-            name: "Divine Magic Affinity",
-            options: ["Good (Cure Wounds)", "Evil (Inflict Wounds)", "Law (Bless)", "Chaos (Bane)", "Neutrality (Protection From Good and Evil"],
-            count: 1
-          }
-        ]
       }
     }
   },

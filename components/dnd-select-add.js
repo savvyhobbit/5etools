@@ -60,7 +60,7 @@ class DndSelectAdd extends PolymerElement {
     this.$.select.render();
   }
 
-  optionsUpdated() {
+  soptionsUpdated() {
     if (this.listBox) {
       this.listBox.remove();
       delete this.listBox;
@@ -119,6 +119,13 @@ class DndSelectAdd extends PolymerElement {
         this.options = await loadModel(this.model);
       }
 
+      const contentEl = this.$.select._overlayElement.shadowRoot.querySelector('#content');
+      let scrollHeight = 0;
+      
+      contentEl.addEventListener('scroll', (e) => {
+        scrollHeight = contentEl.scrollTop;
+      }, { passive: true });
+
       this.$.select.renderer = (root, select) => {
         if (!this.listBox) {
           this.listBox = document.createElement('vaadin-list-box');
@@ -130,6 +137,7 @@ class DndSelectAdd extends PolymerElement {
             this.listBox.addEventListener("click", (e) => {
               select.opened = true;
               let wasPreviouslySelected = e.srcElement.getAttribute("selected") !== null
+              contentEl.scroll(0, scrollHeight);
               setTimeout(() => {
                 if (this.listBox.selectedValues.length > this.choices
                     && !wasPreviouslySelected) {

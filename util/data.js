@@ -1,4 +1,4 @@
-import {cloneDeep} from "../js/utils.js";
+import {camelize, cloneDeep} from "../js/utils.js";
 import Parser from "./Parser.js";
 
 let cache = {};
@@ -22,23 +22,23 @@ export async function loadModel(modelId) {
 				// Catch for items.json to load additional data
 				switch (modelId) {
 					case "items":
-						cache[modelId] = await loadAllItemData();
+						cache[modelId] = loadAllItemData();
 						break;
 
 					case "bestiary":
-						cache[modelId] = await loadAllMonsterData();
+						cache[modelId] = loadAllMonsterData();
 						break;
 
 					case "spells":
-						cache[modelId] = await loadModelFromIndex(modelId, true);
+						cache[modelId] = loadModelFromIndex(modelId, true);
 						break;
 
 					case "races":
-						cache[modelId] = await loadRaceData();
+						cache[modelId] = loadRaceData();
 						break;
 
 					default:
-						cache[modelId] = await loadModelFromSingleJSON(modelId);
+						cache[modelId] = loadModelFromSingleJSON(modelId);
 				}
 			}
 		}
@@ -255,15 +255,29 @@ export async function filterModel(modelId, selectorString, orOperand = false) {
 	let selectors;
 	
 	if (typeof selectorString === "string") {
-		if (selectorString.indexOf('|') > -1) {
+		if (selectorString.indexOf('|') > -1 || selectorString.indexOf('=') > -1) {
 			selectors = selectorString
 				.split('|')
 				.map((selectorStr) => {
 					let selectorKeyValue = selectorStr.split('=');
 					if (selectorKeyValue.length > 1) {
+						let key = selectorKeyValue[0];
+						let value = selectorKeyValue[1];
+						if (key === 'class') {
+							key = 'classes.fromClassList';
+							value = { name: value }
+						} else if (key.toLowerCase() === 'components & miscellaneous') {
+							key = 'meta.ritual';
+							value = true;
+						} else {
+							key = camelize(key);
+						}
+						if (typeof value === 'string' && value.indexOf(';') > -1) {
+							value = value.split(';');
+						}
 						return {
-							key: selectorKeyValue[0],
-							value: selectorKeyValue[1]
+							key,
+							value
 						};
 					} else {
 						return null;
@@ -288,7 +302,7 @@ export async function filterModel(modelId, selectorString, orOperand = false) {
 				let failedPathSearch = false;
 
 				valPath.forEach((curKey) => {
-					if (itemVal && itemVal[curKey]) {
+					if (itemVal && itemVal[curKey] !== undefined) {
 						itemVal = itemVal[curKey];
 					} else {
 						failedPathSearch = true;
@@ -300,12 +314,22 @@ export async function filterModel(modelId, selectorString, orOperand = false) {
 					return false;
 				}
 
-				if (itemVal) {
+				if (itemVal !== undefined) {
 					if (Array.isArray(selector.value)) {
-						// todo
+						const itemValArray = Array.isArray(itemVal) ? itemVal : [itemVal];
+						return selector.value.some((selVal) => {
+							return itemValArray.some((itemValItem) => {
+								if (typeof itemVal === 'string') {
+									return itemVal.toLowerCase() === selVal.toLowerCase()
+								} else if (typeof itemVal === 'number') {
+									return itemVal === parseInt(selVal);
+								} else {
+									return itemVal === selVal;
+								}
+							});
+						});
 
 					} else if (typeof selector.value === "object") {
-
 						if (Array.isArray(itemVal)) {
 							return itemVal.some(i => {
 								return Object.entries(selector.value).every(([ selKey , selVal ]) => {
@@ -336,8 +360,12 @@ export async function filterModel(modelId, selectorString, orOperand = false) {
 						if (Array.isArray(itemVal)) {
 							const lowerCased = itemVal.map(i => i.toLowerCase());
 							return lowerCased.includes(selector.value.toLowerCase());
-						} else {
+						} else if (typeof itemVal === 'string') {
 							return itemVal.toLowerCase() === selector.value.toLowerCase()
+						} else if (typeof itemVal === 'number') {
+							return itemVal === parseInt(selector.value);
+						} else {
+							return itemVal === selector.value;
 						}
 					}
 				}

@@ -6,7 +6,7 @@ import {
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, cloneDeep } from "../../../js/utils"; 
-import { loadModel } from "../../../util/data";
+import { filterModel, loadModel } from "../../../util/data";
 import '../../dnd-select-add';
 import { SKILL_TO_ATB_ABV } from "../../../js/bestiary";
 import { } from '@polymer/polymer/lib/elements/dom-if.js';
@@ -156,6 +156,14 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 type: Array,
             },
 
+            spellSetOptions: {
+                type: Array,
+            },
+            selectedSpellSet: {
+                type: Object,
+                value: {}
+            },
+
             isEditMode: {
                 type: Boolean,
                 value: false
@@ -223,6 +231,15 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     } else {
                         this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
                         return;
+                    }
+                }
+                if (i === storageKeys.length - 1) {
+                    // Clearing out all stored choices if the selected item has changed from what was previously selected and options chosen for
+                    if (storedItem[storageKey].selectedItemName !== this.selectedItem.name || storedItem[storageKey].selectedItemSource !== this.selectedItem.source) {
+                        storedItem[storageKey] = {
+                            selectedItemName: this.selectedItem.name,
+                            selectedItemSource: this.selectedItem.source
+                        }
                     }
                 }
                 storedItem = storedItem[storageKey];
@@ -585,7 +602,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.storedItem.defaultDarkvision = defaultDarkvision || null;
             this.defaultDarkvision = defaultDarkvision || null;
 
-            // Feast
+            // Feats
             //  can populate a nested suboption component entry 
             this.featOptions = [];
             this.featChoices = null;
@@ -593,8 +610,250 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             if (this.selectedItem.feats) {
                 this.featOptions = await loadModel('feats');
                 this.featChoices = this.selectedItem.feats;
-                this.selectedFeat = this.storedItem.selectedFeat;
+                this.selectedFeat = this.featOptions.find(feat => feat.name === this.storedItem.selectedFeat.name && feat.source === this.storedItem.selectedFeat.source);
             }
+
+            // Additional Spells: []
+            //     Ritual Caster  -  multiple top-level options
+            //     Breath of Winter  -  ki resource
+            //     Eldritch Sight, Far Scribe  -  innate: -: [] with unique structure (should be will?)
+            //     Astral Elf  -  multiple top-level, multiple ability choose
+            //     Mark of Shadow  -  innate, known and expanded
+            //     Shadar-kai  -  standard choose implemented as a top-level options
+            //     race "name": "Green",  - known with additional level
+            //     Drow High Magic - innate with "1e" usage (1 for each spell)
+            // {
+            const spellSetOptions = [];
+            const spellLookupPromises = [];
+            if (this.selectedItem.additionalSpells && this.selectedItem.additionalSpells.length) {
+                if (!this.storedItem.additionalSpells) {
+                    this.storedItem.additionalSpells = {
+                        defaultSpells: [],
+                        selectedSpells: []
+                    };
+                } else {
+                    this.storedItem.additionalSpells.defaultSpells = [];
+                    this.storedItem.additionalSpells.defaultAbility = null;
+                }
+                if (this.storedItem.additionalSpells.selectedSpellSet === undefined) {
+                    this.storedItem.additionalSpells.selectedSpellSet = 0;
+                }
+
+                this.selectedItem.additionalSpells.forEach((addtlSpellSet, addtlSpellSetIndex) => {
+                    const spellSetOption = {
+                        defaultSpells: [],
+                        expandedSpells: [],
+                        spellChoices: [],
+                        abilityChoices: []
+                    };
+                    const spellSetPromises = [];
+
+                    Object.entries(addtlSpellSet).forEach(([addtlSpellTypeKey, addtlSpellTypeValue]) => {
+                        
+                        switch (addtlSpellTypeKey) {
+                            //type    innate: 
+                            //level     <character level> - or 1, 2, 3, 4, 5, 6, 7, 8, 9:
+                            //reset       <cost or reset type> rest, daily, will, ritual, resource:
+                            //                      rest (eg once per short or long rest)
+                            //                      daily (eg once per long rest)
+                            //                      will (eg cast it without spending a spell slot)
+                            //                      ritual (eg only cast as a ritual, infinite uses)
+                            //                      resource
+                            //                      - n/a : if character level value is an array (not object), then treat as "will"
+                            //count         <cost or reset value> 1: 
+                            //                      - n/a for ritual and will
+                            //                <spell list or choose> ["speak with animals", {choose: "level=1|class=Sorcerer", count: 2}]
+                            //  issues: Furbolg & Variant; Mark of Detection  -  cast count shared across multiple spells
+                            //
+                            case 'innate':
+                                Object.entries(addtlSpellTypeValue).forEach(([addtlSpellLevelKey, addtlSpellLevelValue]) => {
+                                    const adjAddtlSpellLevelValue = Array.isArray(addtlSpellLevelValue) ? { will: addtlSpellLevelValue } : addtlSpellLevelValue;
+
+                                    Object.entries(adjAddtlSpellLevelValue).forEach(([addtlSpellResetKey, addtlSpellResetValue]) => {
+                                        const adjAddtlSpellResetValue = Array.isArray(addtlSpellResetValue) ? { '99': addtlSpellResetValue } : addtlSpellResetValue;
+
+                                        Object.entries(adjAddtlSpellResetValue).forEach(([addtlSpellCountKey, addtlSpellCountValue]) => {
+                                            const path = [addtlSpellSetIndex, addtlSpellTypeKey, addtlSpellLevelKey, addtlSpellResetKey, addtlSpellCountKey].join('.');
+                                            const type = addtlSpellResetKey;
+                                            const uses = parseInt(addtlSpellResetKey.split('e').join(''));
+
+                                            addtlSpellCountValue.forEach( (spellEntry) => {
+                                                const level = addtlSpellLevelKey === '_' ? 1 : parseInt(addtlSpellLevelKey);
+                                                if (spellEntry.choose !== undefined) {
+                                                    const spellLookupPromise = filterModel('spells', spellEntry.choose).then((options) => {
+                                                        const spellChoiceAtPath = this.storedItem.additionalSpells.selectedSpells.find((selected) => selected.path === path);
+                                                        spellSetOption.spellChoices.push({
+                                                            path,
+                                                            type,
+                                                            level,
+                                                            uses,
+                                                            count: spellEntry.count || 1,
+                                                            options,
+                                                            selectedSpells: spellChoiceAtPath && spellChoiceAtPath.spells ? spellChoiceAtPath.spells : []
+                                                        });
+                                                    });
+                                                    spellLookupPromises.push(spellLookupPromise);
+                                                    spellSetPromises.push(spellLookupPromise);
+                                                } else {
+                                                    let name = spellEntry.split('#')[0];
+                                                    let source;
+                                                    const spellLookupPromise = filterModel('spells', 'name='+name+'|').then((spellResult) => {
+                                                        if (spellResult.length) {
+                                                            source = spellResult[0].source;
+                                                            name = spellResult[0].name;
+                                                        }
+                                                        spellSetOption.defaultSpells.push({name, source, type});
+                                                        // defaults get stored if this is the selected spell set
+                                                        if (addtlSpellSetIndex === this.storedItem.additionalSpells.selectedSpellSet) {
+                                                            this.storedItem.additionalSpells.defaultSpells.push({
+                                                                type,
+                                                                level,
+                                                                name,
+                                                                source,
+                                                                uses,
+                                                            });
+                                                        }
+                                                    });
+                                                    spellLookupPromises.push(spellLookupPromise);
+                                                    spellSetPromises.push(spellLookupPromise);
+                                                }
+                                            });
+                                        });
+                                    });
+                                });
+                                break;
+
+
+                            //type    known:
+                            //level     <character level> - or 1, 2, 3, 4, 5, 6, 7, 8, 9:
+                            //            <spell list or choose> ["prestidigitation#c", {choose: "level=0|class=Sorcerer", count: 2}]
+                            //                  - if character level is an object (not array), take first key's array (test with race High; Valena)
+                            //
+                            case 'known':
+                                Object.entries(addtlSpellTypeValue).forEach(([addtlSpellLevelKey, addtlSpellLevelValue]) => {
+                                    let adjAddtlSpellLevelValue = Array.isArray(addtlSpellLevelValue)
+                                        ? addtlSpellLevelValue
+                                        : Object.values(addtlSpellLevelValue)[0];
+                                    const path = [addtlSpellSetIndex, addtlSpellTypeKey, addtlSpellLevelKey].join('.');
+
+                                    adjAddtlSpellLevelValue.forEach((spellEntry) => {
+                                        const level = addtlSpellLevelKey === '_' ? 1 : parseInt(addtlSpellLevelKey);
+                                        if (spellEntry.choose !== undefined) {
+                                            const spellLookupPromise = filterModel('spells', spellEntry.choose).then((options) => {
+                                                const spellChoiceAtPath = this.storedItem.additionalSpells.selectedSpells.find((selected) => selected.path === path);
+                                                spellSetOption.spellChoices.push({
+                                                    path,
+                                                    type: 'known',
+                                                    level,
+                                                    count: spellEntry.count || 1,
+                                                    options,
+                                                    selectedSpells: spellChoiceAtPath && spellChoiceAtPath.spells ? spellChoiceAtPath.spells : []
+                                                });
+                                            });
+                                            spellLookupPromises.push(spellLookupPromise);
+                                            spellSetPromises.push(spellLookupPromise);
+                                        } else {
+                                            let name = spellEntry.split('#')[0];
+                                            let source;
+                                            const spellLookupPromise = filterModel('spells', 'name='+name+'|').then((spellResult) => {
+                                                if (spellResult.length) {
+                                                    source = spellResult[0].source;
+                                                    name = spellResult[0].name;
+                                                }
+                                                spellSetOption.defaultSpells.push({name, source, type: 'known'});
+                                                // defaults get stored if this is the selected spell set
+                                                if (addtlSpellSetIndex === this.storedItem.additionalSpells.selectedSpellSet) {
+                                                    this.storedItem.additionalSpells.defaultSpells.push({
+                                                        type: 'known',
+                                                        level,
+                                                        name,
+                                                        source
+                                                    });
+                                                }
+                                            });
+                                            spellLookupPromises.push(spellLookupPromise);
+                                            spellSetPromises.push(spellLookupPromise);
+                                        }
+                                    });
+                                });
+
+                                break;
+
+                            //   expanded: If you have spellcasting or pact magic, add these spells to your class spell list
+                            //      <spell level> s1, s2, s3, s5, s5, 9
+                            //         <spell list>
+                            case 'prepared':
+                            case 'expanded':
+                                Object.entries(addtlSpellTypeValue).forEach(([addtlSpellLevelKey, addtlSpellLevelValue]) => {
+                                    addtlSpellLevelValue.forEach((spellEntry) => {
+                                        const level = parseInt(addtlSpellLevelKey.split('s').join(''));
+                                        let name = spellEntry.split('#')[0];
+                                        let source;
+                                        const spellLookupPromise = filterModel('spells', 'name='+name+'|').then((spellResult) => {
+                                            if (spellResult.length) {
+                                                source = spellResult[0].source;
+                                                name = spellResult[0].name;
+                                            }
+                                            const foundExpandedSpellsLevel = spellSetOption.expandedSpells.find((es) => es.level === level);
+                                            if (foundExpandedSpellsLevel) {
+                                                foundExpandedSpellsLevel.spells.push({name, source});
+                                            } else {
+                                                spellSetOption.expandedSpells.push({level, spells: [{name, source}]});
+                                            }
+                                            
+                                            // defaults get stored if this is the selected spell set
+                                            if (addtlSpellSetIndex === this.storedItem.additionalSpells.selectedSpellSet) {
+                                                this.storedItem.additionalSpells.defaultSpells.push({
+                                                    type: 'expanded',
+                                                    level,
+                                                    name,
+                                                    source
+                                                });
+                                            }
+                                        });
+                                        spellLookupPromises.push(spellLookupPromise);
+                                        spellSetPromises.push(spellLookupPromise);
+                                    });
+                                });
+                                break;
+
+                            
+                            case 'ability': 
+                                if (addtlSpellTypeValue === "inherit") {
+                                    // todo, get from selected ability. example: feat Telekinetic
+                                } else if (addtlSpellTypeValue.choose){
+                                    spellSetOption.abilityChoices = addtlSpellTypeValue.choose.map((v) => v.toUpperCase());
+                                    spellSetOption.selectedAbility = this.storedItem.additionalSpells.selectedAbility;
+                                } else {
+                                    spellSetOption.defaultAbility = addtlSpellTypeValue;
+                                    // defaults get stored if this is the selected spell set
+                                    if (addtlSpellSetIndex === this.storedItem.additionalSpells.selectedSpellSet) {
+                                        this.storedItem.additionalSpells.defaultAbility = addtlSpellTypeValue.toUpperCase();
+                                    }
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+                    });
+
+                    Promise.all(spellSetPromises).then(() => {
+                        spellSetOption.name = addtlSpellSet.name ? addtlSpellSet.name : spellSetOption.defaultSpells.length ? this._renderSpellName(spellSetOption.defaultSpells[0]) : addtlSpellSetIndex;
+                        spellSetOption.expandedSpells.sort((es1, es2) => es1.level - es2.level);
+                        spellSetOptions.push(spellSetOption);
+                    })
+                });
+            }
+
+            Promise.all(spellLookupPromises).then(() => {
+                this.set('spellSetOptions', spellSetOptions);
+                if (spellSetOptions.length) {
+                    this.set('selectedSpellSet', spellSetOptions[this.storedItem.additionalSpells.selectedSpellSet]);
+                } else {
+                    this.set('selectedSpellSet', null);
+                }
+            });
             
             this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
         } else {
@@ -605,7 +864,11 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.weaponProfOptions = [];
             this.toolProfOptions = [];
             this.langProfOptions = [];
+            this.sTLProfOptions = [];
+            this.resistOptions = [];
+            this.conditionImmuneOptions = [];
             this.featOptions = [];
+            this.spellSetOptions = [];
             this.defaultAttributes = null;
             this.defaultSkillProfs = null;
             this.defaultArmorProfs = null;
@@ -613,7 +876,13 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.defaultToolProfs = null;
             this.defaultLangProfs = null;
             this.defaultDarkvision = null;
+            this.defaultResists = null;
+            this.defaultConditionImmunes = null;
         }
+    }
+
+    async getSpellChoiceOptions(chooseString) {
+        return await filterModel('spells', chooseString);
     }
 
     _toolProficiencyAddCallback(key, index) {
@@ -674,10 +943,18 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
 
     _featAddCallback() {
         return ((feat) => {
-            this.storedItem.selectedFeat = feat;
-            this.selectedFeat = this.storedItem.selectedFeat;
+            this.storedItem.selectedFeat = { name: feat.name, source: feat.source };
+            this.selectedFeat = this.featOptions.find(feat => feat.name === this.storedItem.selectedFeat.name && feat.source === this.storedItem.selectedFeat.source);
             saveCharacter(this.character);
         }).bind(this);
+    }
+
+    _sTLProfAddCallback() {
+        return ((profs) => {
+            this.storedItem.selectedSTLProfs = profs;
+            this.selectedSTLProfs = profs;
+            saveCharacter(this.character);
+        }).bind(this)
     }
 
     _resistAddCallback() {
@@ -694,6 +971,41 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.selectedConditionImmunes = conditionImmunes;
             saveCharacter(this.character);
         }).bind(this)
+    }
+
+    _spellSetCallback() {
+        return ((spellSet) => {
+            this.storedItem.additionalSpells.selectedSpellSet = this.spellSetOptions.findIndex((spellSetOption) => spellSetOption === spellSet);;
+            this.set('selectedSpellSet', spellSet);
+            this.updateOptions();
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
+    _spellAbilityCallback() {
+        return ((ability) => {
+            this.storedItem.additionalSpells.selectedAbility = ability;
+            const newSelectedSpellSet = cloneDeep(this.selectedSpellSet);
+            newSelectedSpellSet.selectedAbility = ability;
+            this.set('selectedSpellSet', newSelectedSpellSet);
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
+    _spellChoiceCallback(choice, index) {
+        return ((spells) => {
+            const mappedSpells = spells.map((spell) => { return { name: spell.name, source: spell.source } });
+            let spellChoiceAtPath = this.storedItem.additionalSpells.selectedSpells.find((selected) => selected.path === choice.path);
+            if (!spellChoiceAtPath) {
+                spellChoiceAtPath = { path: choice.path, type: choice.type, level: choice.level, resource: choice.resource, count: choice.count, uses: choice.uses };
+                this.storedItem.additionalSpells.selectedSpells.push(spellChoiceAtPath);
+            }
+            spellChoiceAtPath.spells = mappedSpells;
+            const newSelectedSpellSet = cloneDeep(this.selectedSpellSet);
+            newSelectedSpellSet.spellChoices[index].selectedSpells = mappedSpells;
+            this.set('selectedSpellSet', newSelectedSpellSet);
+            saveCharacter(this.character);
+        }).bind(this);
     }
 
     _suboptionStorageKey(storageKey) {
@@ -733,6 +1045,44 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         return out.join(', ');
     }
 
+    _moreThanOne(list) {
+        return list.length > 1;
+    }
+
+    _renderSpellName(s) {
+        return `${util_capitalizeAll(s.name)}${s.source.toLowerCase() !== 'phb' ? ` (${s.source})` : ''}`;
+    }
+
+    _openSpell(e) {
+        this.dispatchEvent(new CustomEvent("open-drawer", {
+            bubbles: true,
+            composed: true,
+            detail: {
+                viewId: "spells",
+                selectedItem: e.model.__data.item
+            }
+        }));
+    }
+
+    _spellLevel(level) {
+        switch (level) {
+            case 0:
+                return 'Cantrip';
+            case 1:
+                return '1st';
+            case 2:
+                return '2nd';
+            case 3:
+                return '3rd';
+            default:
+                return level + 'th';
+        }
+    }
+
+    _isLast(index, list) {
+        return list && list.length && index === list.length - 1;
+    }
+
     static get template() {
         return html`
             <style include="material-styles">
@@ -740,6 +1090,23 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 :host {
                     display: block;
                     white-space: initial;
+                }
+                .spell-link {
+                    color: var(--mdc-theme-secondary);
+                    cursor: pointer;
+                }
+                .spell-link:hover {
+                    text-decoration: underline;
+                }
+                table {
+                    line-height: 1.3;
+                    margin-left: 12px;
+                }
+                td {
+                    vertical-align: top;
+                }
+                td:first-child {
+                    padding-right: 8px;
                 }
                 [hidden] {
                     display: none !important;
@@ -772,6 +1139,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             </style>
 
             <div class="col-wrap">
+
                 <div hidden$="[[!_exists(defaultAttributes)]]" class="default-selection"><b>Ability Increase: </b><span>[[defaultAttributes]]</span></div>
 
                 <div hidden$="[[!_exists(defaultSkillProfs)]]" class="default-selection"><b>Skills: </b><span>[[defaultSkillProfs]]</span></div>
@@ -789,6 +1157,55 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 <div hidden$="[[!_exists(defaultResists)]]" class="default-selection"><b>Resistances: </b><span>[[defaultResists]]</span></div>
 
                 <div hidden$="[[!_exists(defaultConditionImmunes)]]" class="default-selection"><b>Condition Immunities: </b><span>[[defaultConditionImmunes]]</span></div>
+
+                <template is="dom-if" if="[[_moreThanOne(spellSetOptions)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Spell Set>" label="Selected Spell Set"
+                        options="[[spellSetOptions]]" value="[[selectedSpellSet]]" 
+                        add-callback="[[_spellSetCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-if" if="[[_exists(selectedSpellSet.abilityChoices)]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Spell Ability>" label="Selected Spell Ability"
+                        options="[[selectedSpellSet.abilityChoices]]" value="[[selectedSpellSet.selectedAbility]]"
+                        add-callback="[[_spellAbilityCallback()]]">
+                    </dnd-select-add>
+                </template>
+
+                <template is="dom-repeat" items="[[selectedSpellSet.spellChoices]]">
+                    <dnd-select-add disabled$="[[!isEditMode]]"
+                        placeholder="<Select Spells>" label="Selected Spells"
+                        choices="[[item.count]]" options="[[item.options]]"
+                        value="[[item.selectedSpells]]" add-callback="[[_spellChoiceCallback(item, index)]]">
+                    </dnd-select-add>
+                </template>
+
+                <div hidden$="[[!_exists(selectedSpellSet.defaultSpells)]]" class="default-selection">
+                    <b>Spells: </b>
+                    <span>
+                        <template is="dom-repeat" items="[[selectedSpellSet.defaultSpells]]">
+                            <span class="spell-link" on-click="_openSpell">[[_renderSpellName(item)]]</span><span hidden$="[[_isLast(index, selectedSpellSet.defaultSpells)]]">, </span>
+                        </template>
+                    </span>
+                </div>
+
+                <div hidden$="[[!_exists(selectedSpellSet.expandedSpells)]]" class="default-selection">
+                    <b>Expanded Spell List</b>
+                    <table>
+                        <template is="dom-repeat" items="[[selectedSpellSet.expandedSpells]]" as="expandedSpells">
+                            <tr>
+                                <td>[[_spellLevel(expandedSpells.level)]]</td>
+                                <td>
+                                    <template is="dom-repeat" items="[[expandedSpells.spells]]">
+                                        <span class="spell-link" on-click="_openSpell">[[_renderSpellName(item)]]</span><span hidden$="[[_isLast(index, expandedSpells.spells)]]">, </span>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                    </table>
+                </div>
 
 
                 <template is="dom-if" if="[[_exists(attributeOptions)]]">

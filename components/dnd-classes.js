@@ -8,6 +8,7 @@ import { onDataLoad, onClassChange, onSubChange } from "../js/classes.js";
 import { readRouteSelection, routeEventChannel, clearRouteSelection } from '../util/routing.js';
 import { scrollToTop } from '../util/animateScroll.js';
 import { jqOffset, jqHeight } from '../js/utils.js';
+import Parser from '../util/Parser.js';
 
 
 class DndClasses extends PolymerElement {

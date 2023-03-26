@@ -703,6 +703,19 @@
 			"page": 1,
 			"isReprinted": true,
 			"spellcastingAbility": "wis",
+			"additionalSpells": [
+				{
+					"innate": {
+						"10": {
+							"daily": {
+								"1": [
+									"clairvoyance"
+								]
+							}
+						}
+					}
+				}
+			],
 			"subclassFeatures": [
 				"Path of the Ancestral Guardian v2|Barbarian||Ancestral Guardian v2 (UA)|UARevisedSubclasses|3",
 				"Ancestral Shield|Barbarian||Ancestral Guardian v2 (UA)|UARevisedSubclasses|6",
@@ -721,10 +734,14 @@
 			"additionalSpells": [
 				{
 					"innate": {
-						"10": [
-							"augury",
-							"clairvoyance"
-						]
+						"10": {
+							"daily": {
+								"1": [
+									"augury",
+									"clairvoyance"
+								]
+							}
+						}
 					}
 				}
 			],

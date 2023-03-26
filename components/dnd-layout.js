@@ -251,16 +251,17 @@ class DndLayout extends PolymerElement {
   }
 
   async _openDrawerPreview(viewId, selectedItem) {
+    this.previewSelectedItem = selectedItem || null;
     this._adjustPreviewWidth();
-    console.error('_openDrawerPreview', viewId);
+    console.error('_openDrawerPreview', { viewId, selectedItem });
     await timeout(150);
     this.previewViewId = viewId;
-    this.previewSelectedItem = selectedItem || null;
     this.hasPreview = true;
     notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
-  async _closeDrawerPreview() {
+  _closeDrawerPreview() {
+    console.error('_closeDrawerPreview');
     this.$.drawer.style.width = `250px`;
     this.$.container.style['border-left'] = null;
     this.$.breadcrumbcontainer.style['padding-left'] = null;
