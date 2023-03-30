@@ -8,10 +8,11 @@ import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, cloneDeep } from "../../../js/utils"; 
 import { filterModel, loadModel } from "../../../util/data";
 import '../../dnd-select-add';
+import '../../dnd-asi-select';
 import { SKILL_TO_ATB_ABV } from "../../../js/bestiary";
 import { } from '@polymer/polymer/lib/elements/dom-if.js';
 import { } from '@polymer/polymer/lib/elements/dom-repeat.js';
-import { LANGUAGES_ALL, toolsListFromCategory, TOOLS_ALL, TOOLS_ARTISAN, TOOLS_GAMING_SET, TOOLS_INSTRUMENT, WEAPON_ALL, WEAPON_MARTIAL, WEAPON_SIMPLE } from "../../../util/consts";
+import { LANGUAGES_ALL, toolsListFromCategory, TOOLS_ALL, WEAPON_ALL, WEAPON_MARTIAL, WEAPON_SIMPLE } from "../../../util/consts";
 import Parser from "../../../util/Parser";
 
 
@@ -610,7 +611,18 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             if (this.selectedItem.feats) {
                 this.featOptions = await loadModel('feats');
                 this.featChoices = this.selectedItem.feats;
-                this.selectedFeat = this.featOptions.find(feat => feat.name === this.storedItem.selectedFeat.name && feat.source === this.storedItem.selectedFeat.source);
+                this.selectedFeat = this.featOptions.find(feat => this.storedItem.selectedFeat && feat.name === this.storedItem.selectedFeat.name && feat.source === this.storedItem.selectedFeat.source);
+            }
+
+            // ASI
+            if (this.selectedItem.asi) {
+                this.hasASI = true;
+                this.asiChecked = !!this.storedItem.selectedFeat;
+                this.asiFeat = this.storedItem.selectedFeat || this.storedItem.previouslySelectedFeat;
+                const attributes = this.storedItem.selectedAttributes ? this.storedItem.selectedAttributes.split(',') : this.storedItem.previouslySelectedAttributes ? this.storedItem.previouslySelectedAttributes.split(',') : [];
+                this.asiAbility1 = attributes.length ? attributes[0] : null;
+                this.asiAbility2 = attributes.length > 1 ? attributes[1] : null;
+                this.storedItem.attributeMod = 1;
             }
 
             // Additional Spells: []
@@ -1008,8 +1020,23 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         }).bind(this);
     }
 
+    _asiChangeCallback() {
+        return ((asi) => {
+            if (asi.checked) {
+                this.storedItem.selectedFeat = asi.selectedFeat;
+                this.storedItem.previouslySelectedAttributes = [asi.selectedAbilityOne, asi.selectedAbilityTwo].filter(a => !!a).join(',');
+                delete this.storedItem.selectedAttributes;
+            } else {
+                this.storedItem.previouslySelectedFeat = asi.selectedFeat;
+                delete this.storedItem.selectedFeat;
+                this.storedItem.selectedAttributes = [asi.selectedAbilityOne, asi.selectedAbilityTwo].filter(a => !!a).join(',')
+            }
+            saveCharacter(this.character);
+        }).bind(this);
+    }
+
     _suboptionStorageKey(storageKey) {
-        return `${storageKey}.suboptions`
+        return `${storageKey}_suboptions`
     }
 
     _showEmpty(isEditMode, value) {
@@ -1050,7 +1077,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
     }
 
     _renderSpellName(s) {
-        return `${util_capitalizeAll(s.name)}${s.source.toLowerCase() !== 'phb' ? ` (${s.source})` : ''}`;
+        return `${util_capitalizeAll(s.name)}${s.source && s.source.toLowerCase() !== 'phb' ? ` (${s.source})` : ''}`;
     }
 
     _openSpell(e) {
@@ -1094,9 +1121,9 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 .spell-link {
                     color: var(--mdc-theme-secondary);
                     cursor: pointer;
+                    text-decoration: underline;
                 }
                 .spell-link:hover {
-                    text-decoration: underline;
                 }
                 table {
                     line-height: 1.3;
@@ -1120,7 +1147,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     display: block;
                 }
                 dnd-select-add,
-                dnd-character-builder-suboptions {
+                dnd-character-builder-suboptions:not(.asi-suboption) {
                     width: var(--suboptions__width);
                     max-width: var(--suboptions__max-width);
                 }
@@ -1287,8 +1314,16 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                         add-callback="[[_featAddCallback()]]">
                     </dnd-select-add>
                     
-                    <template is="dom-if" if="[[_exists(selectedFeat)]]"></template>
+                    <template is="dom-if" if="[[_exists(selectedFeat)]]">
                         <dnd-character-builder-suboptions storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
+                    </template>
+                </template>
+
+                <template is="dom-if" if="[[hasASI]]">
+                    <dnd-asi-select change-callback="[[_asiChangeCallback()]]" checked="[[asiChecked]]" selected-feat="[[asiFeat]]" selected-ability-one="[[asiAbility1]]" selected-ability-two="[[asiAbility2]]"></dnd-asi-select>
+
+                    <template is="dom-if" if="[[asiChecked]]">
+                        <dnd-character-builder-suboptions class="asi-suboption" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[asiFeat]]"></dnd-character-builder-suboptions>
                     </template>
                 </template>
             </div>

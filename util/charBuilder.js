@@ -25,11 +25,6 @@ let schema = {
   },
   levels: [],
   subclasses: {},
-  classSkillProficiencies: [],
-  backgroundSkillProficiencies: [],
-  raceAttributes: [],
-  asi: [],
-  featAttributeSelections: {},
   preparedSpells: {},
   preparedCantrips: {},
   hp: {},
@@ -249,9 +244,6 @@ function mergeClass(character, selectedItem) {
   if (character.levels === undefined) {
     character.levels = [];
   }
-  if (character.levels.length === 0) {
-    character.classSkillProficiencies = [];
-  }
   if (character.levels.length < 20) {
     character.levels.push({
       name: selectedItem.name,
@@ -264,7 +256,7 @@ function mergeClass(character, selectedItem) {
   }
 }
 
-function mergeSubclass(character = selectedCharacter, className, subclass) {
+function mergeSubclass(character = selectedCharacter, className, subclass, previousSubclass) {
   if (character) {
     if (!character.subclasses) {
       character.subclasses = {}
@@ -274,6 +266,11 @@ function mergeSubclass(character = selectedCharacter, className, subclass) {
       shortName: subclass.shortName,
       source: subclass.source
     };
+    // Removing any choices set by subclass or subclass features
+    const choiceKeysToRemove = Object.keys(character.choices).filter(key => key.includes(className.toLowerCase()) && (key.includes(previousSubclass.shortName) || key.includes('sub_feature')) );
+    choiceKeysToRemove.forEach(key => {
+      delete character.choices[key];
+    });
     saveCharacter(character);
   }
 }
@@ -459,194 +456,6 @@ function getSubclassChoiceLevel(classDef) {
     }
     return subclassChoiceLevel;
   }
-}
-
-async function getClassSkillProfOptions(character = selectedCharacter) {
-  let firstClass = await getClassReferences(character, 0)
-  
-  if (firstClass && firstClass.startingProficiencies) {
-    return firstClass.startingProficiencies.skills[0].choose;
-  }
-}
-
-async function getBackgroundSkillProfOptions(character = selectedCharacter) {
-  let background = await getBackgroundReference(character);
-  
-  if (background && background.skillProficiencies) {
-    return background.skillProficiencies[0];
-  }
-}
-
-async function getRaceAttributeOptions(character = selectedCharacter) {
-  let race = await getRaceReference(character);
-
-  if (race && race.ability) {
-    return race.ability[0];
-  }
-}
-
-async function getBackgroundSkillProfDefaults(backgroundSkills) {
-  let backgroundSkillz = backgroundSkills || await getBackgroundSkillProfOptions();
-  if (backgroundSkillz) {
-    return Object.entries(backgroundSkillz).filter(e => {return e[0] !== 'choose'}).map(e => {return e[0]});
-  } else {
-    return [];
-  }
-}
-
-async function getRaceAttributeDefaults(raceAttr) {
-  let raceAttrs = raceAttr || await getRaceAttributeOptions();
-  if (raceAttrs) {
-    return Object.entries(raceAttrs).filter(e => {return e[0] !== 'choose'});
-  } else {
-    return [];
-  }
-}
-
-function setClassSkillProficiencies(skills, character = selectedCharacter) {
-  if (character) {
-    character.classSkillProficiencies = skills;
-    saveCharacter(character);
-  }
-}
-
-function setBackgroundSkillProficiencies(skills, character = selectedCharacter) {
-  if (character) {
-    character.backgroundSkillProficiencies = skills;
-    saveCharacter(character);
-  }
-}
-
-function setRaceAttributes(attr, character = selectedCharacter) {
-  if (character) {
-    character.raceAttributes = attr;
-    saveCharacter(character);
-  }
-}
-
-async function getASIForLevel(level, character = selectedCharacter) {
-  const asiArray = character.asi,
-    classData = await loadModel("class-all");
-  let asiIndex = -1
-
-  for (let i = 0; i <= level && i < character.levels.length; i ++) {
-    const curLevel = character.levels[i],
-      classLevelData = resolveHash(classData, curLevel.id);
-
-    for (let feature of classLevelData.classFeatures[i]) {
-      if (feature.name === "Ability Score Improvement") {
-        asiIndex ++;
-        break;
-      }
-    }
-  }
-  if (asiIndex === -1) {
-    console.error("ASI not found at level");
-    return { asi: undefined, index: undefined };
-  }
-  if (asiArray && asiArray.length > asiIndex) {
-    return { asi: asiArray[asiIndex], index: asiIndex };
-  }
-  return { asi: undefined, index: asiIndex };
-}
-
-// function setASI(asiObj, index, character = selectedCharacter) {
-//   if (!character.choices) {
-//     character.choices = {};
-//   }
-
-//   character.choices[`asi_${index}`] = asiObj;
-
-//   saveCharacter(character);
-// }
-
-function setASI(asiObj, index, character = selectedCharacter) {
-  if (!character.asi) {
-    character.asi = [];
-  } 
-  
-  if (character.asi.length > index) {
-    character.asi[index] = asiObj;
-  } else {
-    let currentLength = character.asi.length
-    for (let i = currentLength; i <= index - 1; i++) {
-      character.asi.push({
-        ability1: '',
-        ability2: '',
-        feat: { name: '', source: '' },
-        isFeat: false
-      });
-    }
-    character.asi.push(asiObj);
-  }
-
-  saveCharacter(character);
-}
-
-async function getASIAndFeatAttributeData(character = selectedCharacter) {
-  const asiLevels = [];
-  if (character && character.levels && character.levels.length) {
-    if (!character.featAttributeSelections) {
-      character.featAttributeSelections = {}
-    }
-    let currentASIIndex = 0;
-    for (let i = 0; i < character.levels.length; i++) {
-      let classLevelData = await getClassReferences(character, i);
-
-      for (let feature of classLevelData.classFeatures[i]) {
-        if (feature.name === "Ability Score Improvement") {
-          let asiForLevel = character.asi[currentASIIndex];
-          if (asiForLevel) {
-            if (asiForLevel.isFeat && asiForLevel.feat) {
-              let featId = asiForLevel.feat.name + "_" + asiForLevel.feat.source,
-                featReference = await getFeatReference(featId);
-
-              if (featReference && featReference.ability && featReference.ability.length) {
-                let asiLevel = {
-                  levelIndex: i,
-                  asiIndex: currentASIIndex,
-                  featName: featReference.name,
-                  featId,
-                  featAttribute: featReference.ability[0],
-                  featSelections: character.featAttributeSelections[featId] || ''
-                }
-                asiLevels.push(asiLevel);
-              }
-            } else {
-              let asiAttributes = {};
-              if (asiForLevel.ability1) {
-                asiAttributes[asiForLevel.ability1] = 1;
-              }
-              if (asiForLevel.ability2) {
-                if (asiAttributes[asiForLevel.ability2]) {
-                  asiAttributes[asiForLevel.ability2] ++
-                } else {
-                  asiAttributes[asiForLevel.ability2] = 1;
-                }
-              }
-              let asiLevel = {
-                levelIndex: i,
-                asiIndex: currentASIIndex,
-                asiAttributes
-              }
-              asiLevels.push(asiLevel);
-            }
-          }
-          currentASIIndex ++;
-          break;
-        }
-      }
-    }
-  }
-  return asiLevels;
-}
-
-function setFeatAttributeSelection(featId, selection, character = selectedCharacter) {
-  if (!character.featAttributeSelections) {
-    character.featAttributeSelections = {}
-  }
-  character.featAttributeSelections[featId] = selection;
-  saveCharacter(character);
 }
 
 async function toggleCustomSkill(skill, character = selectedCharacter) {
@@ -886,10 +695,9 @@ function getChoiceAttributes(character = selectedCharacter) {
 
 
 async function getSkillProfs(attr, character = selectedCharacter) {
-  let classSkills = character.classSkillProficiencies || [],
-    choiceSkills = getChoiceSkillProfs(character),
+  let choiceSkills = getChoiceSkillProfs(character),
     customSkills = character.customSkills || [],
-    allSkills = classSkills.concat(choiceSkills).concat(customSkills);
+    allSkills = choiceSkills.concat(customSkills);
   
   if (attr) {
     let skillsForAttr = [];
@@ -1124,29 +932,7 @@ function isCantripPrepared(parentClass, spell, character = selectedCharacter) {
 }
 
 async function getAttributeScoreModifiers(character = selectedCharacter) {
-  // Attributes from Race
   let attributeAdj = getChoiceAttributes(character);
-
-  let asiData = await getASIAndFeatAttributeData();
-  for (let asi of asiData) {
-    if (asi.featSelections) {
-      attributeAdj[asi.featSelections.toLowerCase()] += 1;
-    }
-    if (asi.featAttribute) {
-      Object.entries(asi.featAttribute).filter(e => { return e[0] !== 'choose'}).forEach(e => {
-        let attribute = e[0].toLowerCase(),
-        mod = e[1];
-        attributeAdj[attribute] += mod;
-      });
-    }
-    if (asi.asiAttributes) {
-      Object.entries(asi.asiAttributes).forEach(e => {
-        let attribute = e[0].toLowerCase(),
-        mod = e[1];
-        attributeAdj[attribute] += mod;
-      });
-    }
-  }
   return attributeAdj;
 }
 
@@ -1804,7 +1590,7 @@ async function getCharacterInitiative(character = selectedCharacter) {
       return character.customInitiativeVal > 0 ? `+${character.customInitiativeVal}` : character.customInitiativeVal;
     } else {
       const dexMod = await getAttributeModifier('dex', character);
-      return dexMod > 0 ? `+${dexMod}` : dexMod;
+      return dexMod > -1 ? `+${dexMod}` : dexMod;
     }
   }
   return '';
@@ -1982,20 +1768,8 @@ export {
   mergeFeature,
   mergeSubclass,
   getSubclassChoiceLevel,
-  getClassSkillProfOptions,
-  getBackgroundSkillProfOptions,
-  setClassSkillProficiencies,
-  setBackgroundSkillProficiencies,
-  getBackgroundSkillProfDefaults,
-  getRaceAttributeOptions,
-  getRaceAttributeDefaults,
-  setRaceAttributes,
-  getASIForLevel,
-  setASI,
-  getASIAndFeatAttributeData,
   getSkillProfs,
   getFeatReference,
-  setFeatAttributeSelection,
   initSelectedCharacter,
   getClassReferences,
   getBackgroundReference,

@@ -10,7 +10,7 @@ import {
 import './dnd-character-builder-suboptions';
 import "@vaadin/vaadin-select";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { util_capitalizeAll, absInt, initCollapseToggles, encodeForHash } from "../../../js/utils"; 
+import { encodeForHash } from "../../../js/utils"; 
 
 class DndCharacterBuilderBackgroundRace extends PolymerElement {
   
@@ -81,7 +81,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
       let maxAdditionalOptionsIndex = 0;
       let additionalOptions = Object.entries(character.choices)
         .filter(([key, value]) => {
-          if (key.includes("additionalChoice")) {
+          if (key.includes("additionalChoice") && !key.includes("suboptions")) {
             const index = parseInt(key.substring(key.indexOf('_') + 1));
             if (index > maxAdditionalOptionsIndex) {
               maxAdditionalOptionsIndex = index;

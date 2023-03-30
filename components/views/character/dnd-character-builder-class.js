@@ -1,7 +1,6 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import { MutableData } from '@polymer/polymer/lib/mixins/mutable-data.js';
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, setClassSkillProficiencies, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll, getClassString, getOptionFeatureChoice, setOptionFeatureChoice } from "../../../util/charBuilder";
-import "@vaadin/vaadin-grid";
+import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll, getClassString, getOptionFeatureChoice, setOptionFeatureChoice } from "../../../util/charBuilder";
 import "../../dnd-select-add";
 import "../../dnd-switch";
 import "../../dnd-button";
@@ -388,9 +387,17 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         let features = this._getClassLevelFeatures(levels, levelIndex, classes, subclasses);
         if (features && features.length) {
           if (features.find((f) => { return f.name === "Ability Score Improvement"; })) {
-            choices.push({
-              id: "asi"
-            });
+            if (!this.asiItem) {
+              this.asiChoice = {
+                id: "asi",
+                class: className.toLowerCase(),
+                level: classLevelCount,
+                asiItem: {
+                  asi: true
+                }
+              }
+            }
+            choices.push(this.asiChoice);
           }
         }
 
@@ -517,9 +524,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     return a === b;
   }
 
-  _genSubclassCallback(level) {
+  _genSubclassCallback(level, previousSubclass) {
     return (subclass) => {
-      mergeSubclass(undefined, level.name, subclass);
+      mergeSubclass(undefined, level.name, subclass, previousSubclass);
     }
   }
 
@@ -613,10 +620,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
   _addClassLevel(e) {
     mergeFeature(undefined, e.model.item, "classes");
-  }
-
-  _classSkillAddCallback(skills) {
-    setClassSkillProficiencies(skills);
   }
 
   _levelHp(className, index) {
@@ -1026,11 +1029,11 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
                         <template is="dom-if" if="[[_equal(choice.id, 'subclass')]]">
                           <dnd-select-add class="choices-col__subclass-choice" label="Subclass" placeholder="<Choose Subclass>" disabled$="[[!isEditMode]]"
-                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item)]]"></dnd-select-add>
+                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_genSubclassCallback(item, choice.selections)]]"></dnd-select-add>
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
-                          <dnd-asi-select level-index="[[_indexOfLevel(item, levels)]]" character="[[character]]" disabled$="[[!isEditMode]]"></dnd-asi-select>
+                          <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, 'asi')]]" selected-item="[[choice.asiItem]]"></dnd-asi-select>
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">

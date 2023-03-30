@@ -2,10 +2,10 @@ import { PolymerElement,html } from "@polymer/polymer";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSubclassChoice } from "../../../util/charBuilder";
-import { filterModel } from "../../../util/data";
+import { filterModel, loadModel } from "../../../util/data";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { spellHtml } from "../../../js/spells";
-import { findInPath, util_capitalize, util_capitalizeAll, getProfBonus, throttle, debounce } from "../../../js/utils";
+import { findInPath, util_capitalize, util_capitalizeAll, getProfBonus, throttle, debounce, cloneDeep } from "../../../js/utils";
 import Parser from "../../../util/Parser";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-text-field";
@@ -323,21 +323,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
             if (subclassName === 'Eldritch Knight') {
               classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'wizard', source: 'phb' } } );
             }
-            let subclassSpellList = await filterModel('spells', { key: 'classes.fromSubclass', value: { 'subclass.name': subclassName, 'class.name': className, 'class.source': classRef.source } } );
             if (subclassName === 'Divine Soul') {
-              let divineAffinityChoice = getSubclassChoice(className.toLowerCase(), subclassName.toLowerCase(), level, 'Divine Magic Affinity', character);
-              if (divineAffinityChoice) {
-                subclassSpellList = subclassSpellList.filter(spell => divineAffinityChoice.indexOf(spell.name) > -1);
-              } else {
-                subclassSpellList = [];
-              }
+              let divineSoulSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'cleric', source: 'phb' } } );
+              classSpellList = [...new Set(classSpellList.concat(divineSoulSpellList))];
             }
-            subclassSpellList = subclassSpellList.map(spell => ({ ...spell, isSubclassSpell: true }));
-            classSpellList = [...new Set(classSpellList.concat(subclassSpellList))];
-          }
-          if (subclassName === 'Divine Soul') {
-            let divineSoulSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'cleric', source: 'phb' } } );
-            classSpellList = [...new Set(classSpellList.concat(divineSoulSpellList))];
           }
 
           // Getting spell slots per level array
@@ -354,6 +343,36 @@ class DndCharacterBuilderSpells extends PolymerElement {
             }
           }
 
+          // // Adding additionalSpells
+          // const additionalSpellChoices = Object.values(character.choices).filter((c) => !!c.additionalSpells);
+          // const spellsModel = await loadModel('spells');
+          // const addtlLevelsObj = {};
+          // additionalSpellChoices.forEach(spellChoice => {
+          //   const allAddtlSpells = spellChoice.additionalSpells.defaultSpells.concat(spellChoice.additionalSpells.selectedSpells);
+
+          //   allAddtlSpells.forEach((spellChoiceEntry) => {
+          //     const spellsForThisEntry = spellChoiceEntry.spells ? spellChoiceEntry.spells : [spellChoiceEntry];
+
+          //     spellsForThisEntry.forEach((addtlSpell) => {
+          //       const spellDef = spellsModel.find(s => s.name.toLowerCase() === addtlSpell.name.toLowerCase() && s.source.toLowerCase() === addtlSpell.source.toLowerCase());
+                
+          //       if (spellDef) {
+          //         const spellLevel = spellDef.level;
+          //         const spellClass = spellChoice.class || 'Other';
+
+          //         if (!addtlLevelsObj[spellClass]) {
+          //           addtlLevelsObj[spellClass] = {};
+          //         }
+          //         if (!addtlLevelsObj[spellClass][spellLevel]) {
+          //           addtlLevelsObj[spellClass][spellLevel] = [];
+          //         }
+      
+          //         addtlLevelsObj[spellClass][spellLevel].push({...spellChoice, spellDef});
+          //       }
+          //     })
+          //   });
+          // });
+
           // Adding cantrips entry
           const hasCantrips = cantripsKnown ? 0 : 1;
           if (cantripsKnown) {
@@ -361,10 +380,11 @@ class DndCharacterBuilderSpells extends PolymerElement {
           }
 
           // Clearing prepared spells to filter out those that can no longer be prepared
-          let oldSpellsPrepared = JSON.parse(JSON.stringify(character.preparedSpells));
-          let oldCantripsPrepared = JSON.parse(JSON.stringify(character.preparedCantrips));
+          let oldSpellsPrepared = cloneDeep(character.preparedSpells);
+          let oldCantripsPrepared = cloneDeep(character.preparedCantrips);
           character.preparedSpells[casterName] = {};
           character.preparedCantrips[casterName] = {};
+          
 
           // Generating hierarchical structure of classes > levels > spells > spellDef
           const spellSlots = spellSlotEntries.map((spellSlots, index) => {
@@ -452,7 +472,56 @@ class DndCharacterBuilderSpells extends PolymerElement {
             spellDisplay.push(classObj);
           }
         }
-      }
+      } // end level loop
+
+      // const levelObj = {
+      //   id: 'level',
+      //   level: index + hasCantrips,
+      //   spellSlots,
+      //   currentSlots: getSpellSlots(index + hasCantrips),
+      //   children: spellList,
+      //   hasChildren: spellList.length > 0,
+      //   parentClass: casterName,
+      //   isWarlock: !!warlockSpellLevel
+      // };
+      // const sortedLevels = Object.entries(addtlLevelsObj).sort((a, b) => parseInt(a[0]) - parseInt(b[0])).map(a => {
+      //   const spellList = a[1];
+      //   return {
+      //     id: 'level',
+      //     level: parseInt(a[0]),
+      //     spellSlots: 0,
+      //     currentSlots: 0,
+      //     children: spellList,
+      //     hasChildren: spellList.length > 0,
+      //     parentClass: 'Other',
+      //     isWarlock: false
+      //   };
+      // });
+      // const otherSpellsObj = {
+      //   id: 'class',
+      //   className: 'Other',
+      //   level: 0,
+      //   hasCantrips: false,
+      //   children: sortedLevels,
+      //   spellsKnown: 0,
+      //   hasChildren: sortedLevels > 0,
+      //   spellPrepType: 'always',
+      //   multiclassingLevels: 0,
+      //   isWarlock: false,
+      //   warlockSpellLevel: 0,
+      //   warlockSpellSlots: 0
+      // };
+      // spellDisplay.push(otherSpellsObj);
+      // expandedItems.push(otherSpellsObj);
+
+      // console.error(additionalSpellChoices, otherSpellsObj);
+      // console.error('spells', spellDisplay);
+      // spellsKnownObj.Other = {
+      //   max: 12,
+      //   maxCantrips: 0,
+      //   current: [],
+      //   currentCantrips: []
+      // }
 
       // sorting most levels first
       spellDisplay.sort((a, b) => a.children.length - b.children.length);
@@ -1211,10 +1280,8 @@ class DndCharacterBuilderSpells extends PolymerElement {
       </style>
 
       <div class$="[[_wrapClassString(isEditMode)]]" hidden$="[[noContentMessage]]">
-
         <div class="heading">
           <h2>Spells</h2>
-
           <dnd-button class="prepare-spells-button link" hidden$="[[_hidePrepareSpellsButton(isEditMode, spellsKnown)]]" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Prepare Your Spells!" icon="edit" on-click="_toggleEditMode"></dnd-button>
         </div>
 

@@ -92,7 +92,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         value: ""
       },
       customSkillProfs: {
-        type: Array,
+        type: String,
       },
 
       saves: {
@@ -276,7 +276,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.chaAdj = attributeAdj.cha;
 
       this.skillProfs = (await getSkillProfs()).join(',');
-      this.customSkillProfs = character.customSkillProfs || [];
+      this.customSkillProfs = character.customSkills ? character.customSkills.join(',') : '';
 
       this.customHealth = !!character.customHealth;
       this.customHealthVal = character.customHealthVal;
@@ -322,8 +322,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.conditionImmunes = getChoiceConditionImmunes().map(util_capitalizeAll).join(', ');
       this.hasDarkvision = this.darkvision !== null;
       
-      console.error('blah', this.weaponProfs, this.armorProfs, this.toolProfs, this.languages);
-
+      console.error('character', character);
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
   }
@@ -500,8 +499,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
   }
 
   _plusMinus(val) {
-    if (val) {
-      if (val > 0) { 
+    if (val !== undefined) {
+      if (val > -1) { 
         return "+";
       }
     }
@@ -579,43 +578,56 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .proficiency-item {
           font-size: 14px;
           white-space: nowrap;
-          overflow: hidden;
           text-overflow: ellipsis;
           position: relative;
           cursor: pointer;
+          user-select: none;
         }
 
         .proficiency-item--ah,
         .proficiency-item--soh {
           font-size: 12px;
         }
-
+        .proficiency-item {
+          padding-left: 13px;
+        }
+        .proficiency-item[expertise] {
+          padding-left: 24px;
+        }
         .proficiency-item::before,
         .proficiency-item[expertise]::after {
-          content: '';
-          display: inline-block;
+          content: '\\f111';
+          display: block;
           height: 10px;
           width: 10px;
-          border: 1px solid var(--mdc-theme-primary);
-          border-radius: 50%;
-          background-color: transparent;
           margin-right: 8px;
-          position: relative;
-          top: 1px;
-          box-shadow: 0px 0px 10px -4px rgba(0,0,0,0.75);
+          position: absolute;
+          left: -4px;
+          bottom: 8px;
+          font-size: 12px;
+          font-family: 'Font Awesome 5 Pro';
+          font-weight: 400;
+          color: var(--mdc-theme-primary);
+        }
+        .proficiency-item[enabled]::before {
+          font-weight: 900;
         }
         .proficiency-item[expertise]::after {
-          position: absolute;
-          left: 13px;
-          top: 3px;
-          margin-right: 0;
-          background-color: var(--mdc-theme-primary);
+          left: 9px;
+        }
+        .proficiency-item[expertise]::after {
+          font-weight: 900;
+        }
+        .proficiency-item[enabled][custom-enabled]::before,
+        .proficiency-item[expertise][custom-expertise]::after {
+          content: '\\f055';
+        }
+        .not-edit-mode .proficiency-item[enabled][custom-enabled]::before,
+        .not-edit-mode .proficiency-item[expertise][custom-expertise]::after {
+          content: '\\f111';
         }
         .proficiency-item[expertise]::before {
           margin-right: 20px;
-        }
-        .proficiency-item[enabled]::before {
-          background-color: var(--mdc-theme-primary);
         }
 
 
@@ -1197,7 +1209,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                 </div>
                 <div class="proficiencies">
-                  <div class="proficiency-item" on-click="_roll" enabled$="[[_strContains(skillProfs, 'athletics')]]" expertise$="[[_strContainsTwo(skillProfs, 'athletics')]]">Athletics</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'athletics')]]" custom-enabled$="[[_strContains(customSkillProfs, 'athletics')]]" enabled$="[[_strContains(skillProfs, 'athletics')]]" expertise$="[[_strContainsTwo(skillProfs, 'athletics')]]">Athletics</div>
                 </div>
               </div>
               <div class="attribute-wrap">
@@ -1212,9 +1224,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                 </div>
                 <div class="proficiencies">
                   <!-- <div class="proficiency-item" on-click="_roll" is-custom$="[[_strContains(customSkillProfs, 'acrobatics')]]" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div> -->
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
-                  <div class="proficiency-item proficiency-item--soh" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'acrobatics')]]" custom-enabled$="[[_strContains(customSkillProfs, 'acrobatics')]]" expertise$="[[_strContainsTwo(skillProfs, 'acrobatics')]]" enabled$="[[_strContains(skillProfs, 'acrobatics')]]">Acrobatics</div>
+                  <div class="proficiency-item proficiency-item--soh" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'sleight of hand')]]" custom-enabled$="[[_strContains(customSkillProfs, 'sleight of hand')]]" expertise$="[[_strContainsTwo(skillProfs, 'sleight of hand')]]" enabled$="[[_strContains(skillProfs, 'sleight of hand')]]">Sleight of Hand</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'stealth')]]" custom-enabled$="[[_strContains(customSkillProfs, 'stealth')]]" expertise$="[[_strContainsTwo(skillProfs, 'stealth')]]" enabled$="[[_strContains(skillProfs, 'stealth')]]">Stealth</div>
                 </div>
               </div>
               <div class="attribute-wrap">
@@ -1242,11 +1254,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                 </div>
                 <div class="proficiencies">
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'arcana')]]" enabled$="[[_strContains(skillProfs, 'arcana')]]">Arcana</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'history')]]" enabled$="[[_strContains(skillProfs, 'history')]]">History</div>
-                  <div class="proficiency-item proficiency-item--inv" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'nature')]]" enabled$="[[_strContains(skillProfs, 'nature')]]">Nature</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'religion')]]" enabled$="[[_strContains(skillProfs, 'religion')]]">Religion</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'arcana')]]" custom-enabled$="[[_strContains(customSkillProfs, 'arcana')]]" expertise$="[[_strContainsTwo(skillProfs, 'arcana')]]" enabled$="[[_strContains(skillProfs, 'arcana')]]">Arcana</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'history')]]" custom-enabled$="[[_strContains(customSkillProfs, 'history')]]" expertise$="[[_strContainsTwo(skillProfs, 'history')]]" enabled$="[[_strContains(skillProfs, 'history')]]">History</div>
+                  <div class="proficiency-item proficiency-item--inv" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'investigation')]]" custom-enabled$="[[_strContains(customSkillProfs, 'investigation')]]" expertise$="[[_strContainsTwo(skillProfs, 'investigation')]]" enabled$="[[_strContains(skillProfs, 'investigation')]]">Investigation</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'nature')]]" custom-enabled$="[[_strContains(customSkillProfs, 'nature')]]" expertise$="[[_strContainsTwo(skillProfs, 'nature')]]" enabled$="[[_strContains(skillProfs, 'nature')]]">Nature</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'religion')]]" custom-enabled$="[[_strContains(customSkillProfs, 'religion')]]" expertise$="[[_strContainsTwo(skillProfs, 'religion')]]" enabled$="[[_strContains(skillProfs, 'religion')]]">Religion</div>
                 </div>
               </div>
               <div class="attribute-wrap">
@@ -1260,11 +1272,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                 </div>
                 <div class="proficiencies">
-                  <div class="proficiency-item proficiency-item--ah" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'insight')]]" enabled$="[[_strContains(skillProfs, 'insight')]]">Insight</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'medicine')]]" enabled$="[[_strContains(skillProfs, 'medicine')]]">Medicine</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'perception')]]" enabled$="[[_strContains(skillProfs, 'perception')]]">Perception</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'survival')]]" enabled$="[[_strContains(skillProfs, 'survival')]]">Survival</div>
+                  <div class="proficiency-item proficiency-item--ah" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'animal handling')]]" custom-enabled$="[[_strContains(customSkillProfs, 'animal handling')]]" expertise$="[[_strContainsTwo(skillProfs, 'animal handling')]]" enabled$="[[_strContains(skillProfs, 'animal handling')]]">Animal Handling</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'insight')]]" custom-enabled$="[[_strContains(customSkillProfs, 'insight')]]" expertise$="[[_strContainsTwo(skillProfs, 'insight')]]" enabled$="[[_strContains(skillProfs, 'insight')]]">Insight</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'medicine')]]" custom-enabled$="[[_strContains(customSkillProfs, 'medicine')]]" expertise$="[[_strContainsTwo(skillProfs, 'medicine')]]" enabled$="[[_strContains(skillProfs, 'medicine')]]">Medicine</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'perception')]]" custom-enabled$="[[_strContains(customSkillProfs, 'perception')]]" expertise$="[[_strContainsTwo(skillProfs, 'perception')]]" enabled$="[[_strContains(skillProfs, 'perception')]]">Perception</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'survival')]]" custom-enabled$="[[_strContains(customSkillProfs, 'survival')]]" expertise$="[[_strContainsTwo(skillProfs, 'survival')]]" enabled$="[[_strContains(skillProfs, 'survival')]]">Survival</div>
                 </div>
               </div>
               <div class="attribute-wrap">
@@ -1278,10 +1290,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                 </div>
                 <div class="proficiencies">
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'deception')]]" enabled$="[[_strContains(skillProfs, 'deception')]]">Deception</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'intimidation')]]" enabled$="[[_strContains(skillProfs, 'intimidation')]]">Intimidation</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'performance')]]" enabled$="[[_strContains(skillProfs, 'performance')]]">Performance</div>
-                  <div class="proficiency-item" on-click="_roll" expertise$="[[_strContainsTwo(skillProfs, 'persuasion')]]" enabled$="[[_strContains(skillProfs, 'persuasion')]]">Persuasion</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'deception')]]" custom-enabled$="[[_strContains(customSkillProfs, 'deception')]]" expertise$="[[_strContainsTwo(skillProfs, 'deception')]]" enabled$="[[_strContains(skillProfs, 'deception')]]">Deception</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'intimidation')]]" custom-enabled$="[[_strContains(customSkillProfs, 'intimidation')]]" expertise$="[[_strContainsTwo(skillProfs, 'intimidation')]]" enabled$="[[_strContains(skillProfs, 'intimidation')]]">Intimidation</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'performance')]]" custom-enabled$="[[_strContains(customSkillProfs, 'performance')]]" expertise$="[[_strContainsTwo(skillProfs, 'performance')]]" enabled$="[[_strContains(skillProfs, 'performance')]]">Performance</div>
+                  <div class="proficiency-item" on-click="_roll" custom-expertise$="[[_strContainsTwo(customSkillProfs, 'persuasion')]]" custom-enabled$="[[_strContains(customSkillProfs, 'persuasion')]]" expertise$="[[_strContainsTwo(skillProfs, 'persuasion')]]" enabled$="[[_strContains(skillProfs, 'persuasion')]]">Persuasion</div>
                 </div>
               </div>
             </div>

@@ -101,7 +101,7 @@ class DndSwitch extends PolymerElement {
         label.secondary {
           color: var(--lumo-secondary-text-color);
           margin-right: 0;
-          margin-left: 16px;
+          margin-left: 50px;
         }
       </style>
       

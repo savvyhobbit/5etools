@@ -234,7 +234,6 @@ class DndSelectionList extends PolymerElement {
           if (this.selectedItemKey) {
             this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
           }
-          console.error('loadedModel', result);
         })
         .catch(e => {
           console.error("Model requested for list did not return.", e);
