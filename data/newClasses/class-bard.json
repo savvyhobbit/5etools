@@ -72,26 +72,20 @@
 					"known": {
 						"10": [
 							{
-								"choose": "level=0;1;2;3;4;5"
-							},
-							{
-								"choose": "level=0;1;2;3;4;5"
+								"choose": "level=0;1;2;3;4;5",
+								"count": 2
 							}
 						],
 						"14": [
 							{
-								"choose": "level=0;1;2;3;4;5;6;7"
-							},
-							{
-								"choose": "level=0;1;2;3;4;5;6;7"
+								"choose": "level=0;1;2;3;4;5;6;7",
+								"count": 2
 							}
 						],
 						"18": [
 							{
-								"choose": ""
-							},
-							{
-								"choose": ""
+								"choose": "",
+								"count": 2
 							}
 						]
 					}
@@ -923,10 +917,8 @@
 					"known": {
 						"6": [
 							{
-								"choose": "level=0;1;2;3"
-							},
-							{
-								"choose": "level=0;1;2;3"
+								"choose": "level=0;1;2;3",
+								"count": 2
 							}
 						]
 					}

@@ -4258,14 +4258,12 @@
 				"ability": "cha",
 				"innate": {
 					"_": {
-						"daily": {
-							"1": [
-								{
-									"choose": "level=1|class=Bard|components & miscellaneous=ritual",
-									"count": 2
-								}
-							]
-						}
+						"ritual": [
+							{
+								"choose": "level=1|class=Bard|components & miscellaneous=ritual",
+								"count": 2
+							}
+						]
 					}
 				}
 			},
@@ -4274,14 +4272,12 @@
 				"ability": "wis",
 				"innate": {
 					"_": {
-						"daily": {
-							"1": [
-								{
-									"choose": "level=1|class=Cleric|components & miscellaneous=ritual",
-									"count": 2
-								}
-							]
-						}
+						"ritual": [
+							{
+								"choose": "level=1|class=Cleric|components & miscellaneous=ritual",
+								"count": 2
+							}
+						]
 					}
 				}
 			},
@@ -4290,14 +4286,12 @@
 				"ability": "wis",
 				"innate": {
 					"_": {
-						"daily": {
-							"1": [
-								{
-									"choose": "level=1|class=Druid|components & miscellaneous=ritual",
-									"count": 2
-								}
-							]
-						}
+						"ritual": [
+							{
+								"choose": "level=1|class=Druid|components & miscellaneous=ritual",
+								"count": 2
+							}
+						]
 					}
 				}
 			},
@@ -4306,14 +4300,12 @@
 				"ability": "cha",
 				"innate": {
 					"_": {
-						"daily": {
-							"1": [
-								{
-									"choose": "level=1|class=Sorcerer|components & miscellaneous=ritual",
-									"count": 2
-								}
-							]
-						}
+						"ritual": [
+							{
+								"choose": "level=1|class=Sorcerer|components & miscellaneous=ritual",
+								"count": 2
+							}
+						]
 					}
 				}
 			},
@@ -4322,14 +4314,12 @@
 				"ability": "cha",
 				"innate": {
 					"_": {
-						"daily": {
-							"1": [
-								{
-									"choose": "level=1|class=Warlock|components & miscellaneous=ritual",
-									"count": 2
-								}
-							]
-						}
+						"ritual": [
+							{
+								"choose": "level=1|class=Warlock|components & miscellaneous=ritual",
+								"count": 2
+							}
+						]
 					}
 				}
 			},
@@ -4338,14 +4328,12 @@
 				"ability": "int",
 				"innate": {
 					"_": {
-						"daily": {
-							"1": [
-								{
-									"choose": "level=1|class=Wizard|components & miscellaneous=ritual",
-									"count": 2
-								}
-							]
-						}
+						"ritual": [
+							{
+								"choose": "level=1|class=Wizard|components & miscellaneous=ritual",
+								"count": 2
+							}
+						]
 					}
 				}
 			}

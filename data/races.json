@@ -556,6 +556,7 @@
 		],
 		"additionalSpells": [
 			{
+				"name": "Dancing Lights",
 				"known": {
 					"1": [
 						"dancing lights#c"
@@ -570,6 +571,7 @@
 				}
 			},
 			{
+				"name": "Light",
 				"known": {
 					"1": [
 						"light#c"
@@ -584,6 +586,7 @@
 				}
 			},
 			{
+				"name": "Sacred Flame",
 				"known": {
 					"1": [
 						"sacred flame#c"
@@ -5884,7 +5887,7 @@
 		"additionalSpells": [
 			{
 				"ability": "wis",
-				"known": {
+				"innate": {
 					"1": {
 						"rest": {
 							"1": [
@@ -8436,10 +8439,14 @@
 				"additionalSpells": [
 					{
 						"innate": {
-							"1": [
-								"detect magic",
-								"detect poison and disease"
-							],
+							"1": {
+								"daily": {
+									"1": [
+										"detect magic",
+										"detect poison and disease"
+									]
+								}
+							},
 							"3": {
 								"daily": {
 									"1": [
@@ -9094,9 +9101,13 @@
 		"additionalSpells": [
 			{
 				"innate": {
-					"1": [
-						"hunter's mark"
-					],
+					"1": {
+						"daily": {
+							"1": [
+								"hunter's mark"
+							]
+						}
+					},
 					"3": {
 						"daily": {
 							"1": [
@@ -9424,9 +9435,13 @@
 				"additionalSpells": [
 					{
 						"innate": {
-							"1": [
-								"cure wounds"
-							],
+							"1": {
+								"daily": {
+									"1": [
+										"cure wounds"
+									]
+								}
+							},
 							"3": {
 								"daily": {
 									"1": [
@@ -10332,9 +10347,13 @@
 				"additionalSpells": [
 					{
 						"innate": {
-							"1": [
-								"hunter's mark"
-							],
+							"1": {
+								"daily": {
+									"1": [
+										"hunter's mark"
+									]
+								}
+							},
 							"3": {
 								"daily": {
 									"1": [
@@ -10498,7 +10517,7 @@
 							]
 						},
 						"ability": "wis",
-						"known": {
+						"innate": {
 							"1": {
 								"rest": {
 									"1": [
@@ -14181,7 +14200,7 @@
 						"cha"
 					]
 				},
-				"known": {
+				"innate": {
 					"1": {
 						"ritual": [
 							"detect magic"
@@ -17411,9 +17430,13 @@
 		"additionalSpells": [
 			{
 				"innate": {
-					"1": [
-						"fog cloud"
-					],
+					"1": {
+						"daily": {
+							"1":  [
+								"fog cloud"
+							]
+						}
+					},
 					"3": {
 						"daily": {
 							"1": [
