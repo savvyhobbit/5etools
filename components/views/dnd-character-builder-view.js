@@ -223,21 +223,25 @@ class DndCharacterBuilderView extends PolymerElement {
     // Set Tabs order based on tab order
     let isNonCaster = true;
     if (character) {
-      const classRefs = await getClassReferences(character),
-        classLevels = getClassLevelGroups(character);
+      if (character.choices && Object.values(character.choices).find(c => c.additionalSpells)) {
+        isNonCaster = false;
+      } else {
+        const classRefs = await getClassReferences(character),
+          classLevels = getClassLevelGroups(character);
 
-      for (const [ className, level ] of Object.entries(classLevels)) {
-        const classRef = classRefs[className];
+        for (const [ className, level ] of Object.entries(classLevels)) {
+          const classRef = classRefs[className];
 
-        if (classRef.casterProgression) {
-          isNonCaster = false;
-        }
-
-        if (character.subclasses && character.subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
-          const subclassDef = classRef.subclasses.find(i => character.subclasses[className].name === i.name);
-
-          if (subclassDef && subclassDef.casterProgression) {
+          if (classRef.casterProgression) {
             isNonCaster = false;
+          }
+
+          if (character.subclasses && character.subclasses[className] && classRef.subclasses && classRef.subclasses.length) {
+            const subclassDef = classRef.subclasses.find(i => character.subclasses[className].name === i.name);
+
+            if (subclassDef && subclassDef.casterProgression) {
+              isNonCaster = false;
+            }
           }
         }
       }

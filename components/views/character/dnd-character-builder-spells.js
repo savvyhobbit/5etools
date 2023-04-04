@@ -194,8 +194,8 @@ class DndCharacterBuilderSpells extends PolymerElement {
     return array;
   }
 
-  async updateSpellStats(classRefs, classLevels) {
-    if (classLevels && classRefs) {
+  async updateSpellStats(classRefs, classLevels, character) {
+    if (classLevels && classRefs && character) {
       // DCs and Spell Modifier
       const newSpellMods = [];
       const overallLevel = Object.entries(classLevels).reduce((total, [className, level]) => total + level, 0);
@@ -216,6 +216,20 @@ class DndCharacterBuilderSpells extends PolymerElement {
         }
       }
 
+      const additionalSpellsAbilities = Object.values(character.choices).filter(c => c.additionalSpells && (c.additionalSpells.defaultAbility || c.additionalSpells.selectedAbility));
+      for (const choice of additionalSpellsAbilities) {
+        const spellcastingAbility = choice.additionalSpells.defaultAbility || choice.additionalSpells.selectedAbility;
+        const alreadyAdded = newSpellMods.find(spellMod => spellcastingAbility.toLowerCase() === spellMod.spellcastingAbility);
+        if (alreadyAdded) {
+          alreadyAdded.classes.push(spellcastingAbility);
+        } else {
+          const attributeModifier = await getAttributeModifier(spellcastingAbility);
+          const spellAttackBonus = attributeModifier + profBonus
+          const dc = 8 + spellAttackBonus;
+          newSpellMods.push({ classes: [spellcastingAbility], mod: attributeModifier, spellAttackBonus, dc, spellcastingAbility: spellcastingAbility});
+        }
+      }
+
       this.spellMods = newSpellMods;
     } else {
       this.spellMods = [];
@@ -231,7 +245,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         spellsKnownObj = {};
       let spellDisplay = [];
 
-      this.updateSpellStats(classRefs, classLevels);
+      this.updateSpellStats(classRefs, classLevels, character);
 
       for (const [ className, classLevel ] of Object.entries(classLevels)) {
         const classRef = classRefs[className];
@@ -455,7 +469,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 addtlSpellsObj[spellClass][spellLevel] = [];
               }
   
-              addtlSpellsObj[spellClass][spellLevel].push({...addtlSpell, ...spellChoiceEntry, label: spellChoice.label, spellDef});
+              addtlSpellsObj[spellClass][spellLevel].push({storedItemName: spellChoice.selectedItemName, ...spellChoice.additionalSpells,...addtlSpell, ...spellChoiceEntry, label: spellChoice.label, spellDef});
             }
           })
         });
@@ -464,6 +478,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
       // Adding additional spells
       Object.entries(addtlSpellsObj).forEach(([addtlSpellsClass, addtlSpellsClassVal]) => {
+        this.noContentMessage = false;
 
         if (addtlSpellsClass !== 'Other') {
           const spellDisplayForClass = spellDisplay.find((sdClass) => sdClass.className.toLowerCase() === addtlSpellsClass);
@@ -493,7 +508,8 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     spellAlreadyAdded.spellSlots = addtlSpell.uses;
                     spellAlreadyAdded.spellUseType = addtlSpell.type;
                     spellAlreadyAdded.currentSlots = character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0
-
+                    spellAlreadyAdded.ability = addtlSpell.selectedAbility || addtlSpell.defaultAbility;
+                    spellAlreadyAdded.superLabel = [addtlSpell.label, addtlSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ');
                   } else {
                     spellDisplayForClassLevel.children.push({
                       id: 'spell',
@@ -507,7 +523,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
                       isWarlock: addtlSpellsClass === 'warlock',
                       spellUseType: addtlSpell.type,
                       spellSlots: addtlSpell.uses,
-                      currentSlots: character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0
+                      ability: addtlSpell.selectedAbility || addtlSpell.defaultAbility,
+                      currentSlots: character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0,
+                      superLabel: [addtlSpell.label, addtlSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ')
                     })
                     spellDisplayForClassLevel.hasChildren = true;
                   }
@@ -520,27 +538,24 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
         // Other additional Spells
         } else {
-          const otherSpells = [{
-            id: 'level',
-            level: 'At Will',
-            spellSlots: 0,
-            currentSlots: 0,
-            children: [],
-            hasChildren: true,
-            parentClass: 'Other'
-          }, {
-            id: 'level',
-            level: 'Innate',
-            spellSlots: 0,
-            currentSlots: 0,
-            children: [],
-            hasChildren: true,
-            parentClass: 'Other'
-          }] 
+          const otherSpells = [] 
           Object.entries(addtlSpellsObj.Other).forEach(([otherSpellLevel, otherSpellList]) => {
             otherSpellList.forEach((otherSpell) => {
-              const destList = otherSpell.type === 'will' || otherSpell.spellDef.level === 0 ? otherSpells[0].children : otherSpells[1].children;
-              destList.push({
+              const destListType = otherSpell.type === 'will' || otherSpell.spellDef.level === 0 ? 'At Will' : 'Innate';
+              let destList = otherSpells.find(l => l.level === destListType);
+              if (!destList) {
+                destList = {
+                  id: 'level',
+                  level: destListType,
+                  spellSlots: 0,
+                  currentSlots: 0,
+                  children: [],
+                  hasChildren: true,
+                  parentClass: 'Other'
+                }
+                otherSpells.push(destList);
+              }
+              destList.children.push({
                 id: 'spell',
                 name: otherSpell.spellDef.name,
                 children: [{...otherSpell.spellDef, hasChildren: false, id: 'spelldef', parentClass: "Other", parentLevel: "Other"} ],
@@ -552,7 +567,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 isWarlock: false,
                 spellUseType: otherSpell.type,
                 spellSlots: otherSpell.uses,
-                currentSlots: character.spellSlots && character.spellSlots[otherSpell.spellDef.name] ? character.spellSlots[otherSpell.spellDef.name] : 0
+                ability: otherSpell.selectedAbility || otherSpell.defaultAbility,
+                currentSlots: character.spellSlots && character.spellSlots[otherSpell.spellDef.name] ? character.spellSlots[otherSpell.spellDef.name] : 0,
+                superLabel: [otherSpell.label, otherSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ')
               })
             });
           });
@@ -624,7 +641,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           newSpellDisplay = newSpellDisplay.filter(i => i !== undefined);
 
           // Changing spell slots for multiclass rules
-          const hasCantrips = newSpellDisplay[0].level === 0;
+          const hasCantrips = newSpellDisplay.length && newSpellDisplay[0].level === 0;
           if (isMulticlass > 0) {
             const multiclassSlotsArray = this.multiclassSlotsDef[multiclassLevel + 1];
 
@@ -892,41 +909,6 @@ class DndCharacterBuilderSpells extends PolymerElement {
     return 0;
   }
 
-  _toggleTooltip(e) {
-    const tooltipStr = e.target.dataset.tooltip;
-    const hasTooltip = Array.from(e.target.children).find((childEl) => childEl.matches('.tooltip'));
-
-    if (!window.tooltipCloseListener) {
-      window.tooltipCloseListener = true;
-      window.tooltips = [];
-      document.addEventListener('click', () => {
-        window.tooltips.forEach((tooltip) => {
-          tooltip.classList.remove('tooltip--open');
-          setTimeout(() => {
-            tooltip.remove();
-          }, 300);
-        });
-        window.tooltips = [];
-      });
-    }
-
-    if (hasTooltip) {
-      hasTooltip.classList.remove('tooltip--open');
-      setTimeout(() => {
-        hasTooltip.remove();
-      }, 300);
-    } else if (tooltipStr) {
-      const tooltipEl = document.createElement('div');
-      tooltipEl.innerHTML = tooltipStr;
-      tooltipEl.classList.add('tooltip');
-      e.target.appendChild(tooltipEl);
-      setTimeout(() => {
-        tooltipEl.classList.add('tooltip--open');
-        window.tooltips.push(tooltipEl);
-      }, 0);
-    }
-  }
-
   _toggleEditMode() {
     dispatchEditModeChange(!this.isEditMode);
   }
@@ -983,6 +965,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
   _hideCheckboxes(spellSlots, isEditMode, type) {
     return !spellSlots || spellSlots > 0 && this.isEditMode || type === 'known' || type === 'will'
+  }
+
+  _hideAbility(ability) {
+    return !ability;
   }
 
   _hideAtWill(type) {
@@ -1165,6 +1151,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         }
 
         .spell-inner-wrap {
+          position: relative;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -1175,11 +1162,37 @@ class DndCharacterBuilderSpells extends PolymerElement {
           user-select: none;
         }
 
+        .spell-inner-wrap[has-super] {
+          padding-top: 12px;
+          padding-bottom: 4px;
+        }
+
         .spell-level {
           color: var(--mdc-theme-text-disabled-on-background);
           margin-left: 8px;
           margin-right: 4px;
           font-size: 12px;
+        }
+
+        .spell-ability {
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          color: var(--mdc-theme-text-secondary-on-background);
+        }
+
+        .spell-at-will {
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+        }
+
+        .spell-super-text {
+          position: absolute;
+          top: 0px;
+          font-size: 10px;
+          left: 0px;
+          color: var(--mdc-theme-text-secondary-on-background);
         }
 
         .ind {
@@ -1254,6 +1267,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
           font-size: 12px;
           padding: 4px 4px;
           margin-left: 8px;
+          height: min-content;
+          margin-top: auto;
+          margin-bottom: auto;
         }
         .class-icon {
           border: none;
@@ -1306,6 +1322,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .mod-val-wrap {
           font-size: 16px;
         }
+        .mod-val:focus {
+          outline: none;
+        }
         .mod-val:not(:first-child)::before {
           content: '|';
           margin-right: 4px;
@@ -1350,12 +1369,16 @@ class DndCharacterBuilderSpells extends PolymerElement {
           padding: 2px 10px;
           border-radius: 4px;
           white-space: nowrap;
-          left: 8px;
+          left: 15px;
+          top: -35px;
           opacity: 0;
           transition: opacity 0.3s ease;
-          border-top-left-radius: 0px;
         }
-        .tooltip--open {
+        .mod-val {
+          position: relative;
+        }
+        .mod-val:focus .tooltip,
+        .mod-val:hover .tooltip {
           opacity: 1;
         }
         .tooltip::after {
@@ -1366,11 +1389,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
           border-left: 5px solid transparent;
           border-right: 5px solid transparent;
           border-bottom: 5px solid lightgray;
-          top: -5px;
-          left: 0px;
-        }
-        [data-tooltip] {
-          position: relative;
+          bottom: -4px;
+          left: 1px;
+          transform: rotate(180deg);
         }
 
         .no-content-message {
@@ -1391,7 +1412,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           <div class="mod-row">
             <span class="mod-val-wrap">
               <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">[[_abs(item.mod)]]</span>
+                <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
               </template>
             </span>
             <span class="mod-label">Modifier</span>
@@ -1399,7 +1420,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           <div class="mod-row">
             <span class="mod-val-wrap">
               <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">+[[item.spellAttackBonus]]</span>
+                <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
               </template>
             </span>
             <span class="mod-label">Attack +</span>
@@ -1407,7 +1428,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
           <div class="mod-row">
             <span class="mod-val-wrap">
               <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" data-tooltip$="[[_join(item.classes)]]" on-mouseover="_toggleTooltip" on-mouseout="_toggleTooltip">[[item.dc]]</span>
+                <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
               </template>
             </span>
             <span class="mod-label">DC</span>
@@ -1463,7 +1484,8 @@ class DndCharacterBuilderSpells extends PolymerElement {
               <template is="dom-if" if="[[_equal(item.id, 'spell')]]">
                 <div class="spell-outer-wrap">
                   <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" class="spell-wrap" on-click='_recordScrollHeight'>
-                    <div class="spell-inner-wrap" not-edit-mode$="[[!isEditMode]]">
+                    <div class="spell-inner-wrap" has-super$="[[!_hideAbility(item.superLabel)]]" not-edit-mode$="[[!isEditMode]]">
+                      <span class=spell-super-text>[[item.superLabel]]</span>
                       [[item.name]]
                       <span class="spell-level" hidden>[[_spellLevel(item)]]</span>
                       <span class="ind rit-ind" title="Ritual" hidden$="[[!_isRitualSpell(item)]]"></span>
@@ -1473,6 +1495,8 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     </div>
                   </vaadin-grid-tree-toggle>
 
+                  <div class="spell-ability" hidden$="[[_hideAbility(item.ability)]]">([[item.ability]])</div>
+
                   <div class="slot-checkboxes" hidden$="[[_hideCheckboxes(item.spellSlots, isEditMode, item.spellUseType)]]" on-click="_toggleSpellSlot">
                     <template is='dom-repeat' items='[[_countToArray(item.spellSlots)]]' as="thing">
                       <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSpellSlotChecked(item.currentSlots, index)]]"></vaadin-checkbox></span>
@@ -1480,7 +1504,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     <span class="label" inner-h-t-m-l="[[_innateUsageString(item.spellUseType)]]"></span>
                   </div>
 
-                  <span hidden$="[[_hideAtWill(item.spellUseType)]]">At Will</span>
+                  <div class="spell-at-will" hidden$="[[_hideAtWill(item.spellUseType)]]">At Will</div>
         
                   <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
                   <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>

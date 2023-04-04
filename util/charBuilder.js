@@ -938,7 +938,7 @@ async function getAttributeScoreModifiers(character = selectedCharacter) {
 
 async function getAttributeModifier(attribute, character = selectedCharacter) {
   const attributeModifiers = await getAttributeScoreModifiers();
-  const attributeScore = parseInt(character.attr[attribute]) + attributeModifiers[attribute];
+  const attributeScore = parseInt(character.attr[attribute.toLowerCase()]) + attributeModifiers[attribute.toLowerCase()];
   const attributeModifier = Math.floor((attributeScore - 10) / 2);
   return attributeModifier;
 }

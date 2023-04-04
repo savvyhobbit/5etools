@@ -1133,6 +1133,10 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         return list && list.length && index === list.length - 1;
     }
 
+    _or(a, b) {
+        return a || b
+    }
+
     static get template() {
         return html`
             <style include="material-styles">
@@ -1338,7 +1342,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     </dnd-select-add>
                     
                     <template is="dom-if" if="[[_exists(selectedFeat)]]">
-                        <dnd-character-builder-suboptions storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
+                        <dnd-character-builder-suboptions label="[[_or(label, 'Feat')]]" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
                     </template>
                 </template>
 
@@ -1346,7 +1350,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     <dnd-asi-select change-callback="[[_asiChangeCallback()]]" checked="[[asiChecked]]" selected-feat="[[asiFeat]]" selected-ability-one="[[asiAbility1]]" selected-ability-two="[[asiAbility2]]"></dnd-asi-select>
 
                     <template is="dom-if" if="[[asiChecked]]">
-                        <dnd-character-builder-suboptions class="asi-suboption" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[asiFeatItem]]"></dnd-character-builder-suboptions>
+                        <dnd-character-builder-suboptions label="[[_or(label, 'ASI Feat')]]" class="asi-suboption" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[asiFeatItem]]"></dnd-character-builder-suboptions>
                     </template>
                 </template>
             </div>

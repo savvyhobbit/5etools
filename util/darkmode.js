@@ -27,7 +27,7 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-on-surface", "hsla(214, 96%, 96%, 0.9)");
         root.style.setProperty("--mdc-theme-on-error", "#000");
         root.style.setProperty("--mdc-theme-text-primary-on-background", "var(--lumo-body-text-color)"); // Body Text
-        root.style.setProperty("--mdc-theme-text-secondary-on-background", "rgba(255, 255, 255, 0.87)");
+        root.style.setProperty("--mdc-theme-text-secondary-on-background", "rgba(255, 255, 255, 0.6)");
         root.style.setProperty("--mdc-theme-text-hint-on-background", "rgba(255, 255, 255, 0.6)");
         root.style.setProperty("--mdc-theme-text-disabled-on-background", "rgba(255, 255, 255, 0.38)");
         root.style.setProperty("--mdc-theme-text-divider-on-background", "rgba(255, 255, 255, 0.12)");

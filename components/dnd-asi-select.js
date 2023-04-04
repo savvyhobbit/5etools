@@ -89,7 +89,7 @@ class DndAsiSelect extends PolymerElement {
       }
       this.changeCallback({
         checked: this.checked,
-        selectedFeat: { name: this.selectedFeat.name, source: this.selectedFeat.source },
+        selectedFeat: this.selectedFeat ? { name: this.selectedFeat.name, source: this.selectedFeat.source } : undefined,
         selectedAbilityOne: this.selectedAbilityOne,
         selectedAbilityTwo: this.selectedAbilityTwo,
       });
