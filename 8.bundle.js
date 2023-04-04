@@ -123,7 +123,7 @@
           </div>
           <div class="missing-text" hidden$="[[_exists(selectedRaceRef)]]">Enter edit mode to select a Race.</div>
           <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>
-          <dnd-character-builder-suboptions label="[[selectedRace.name]]" storage-key="race" selected-item="[[selectedRaceRef]]"></dnd-character-builder-suboptions>
+          <dnd-character-builder-suboptions label="Race" storage-key="race" selected-item="[[selectedRaceRef]]"></dnd-character-builder-suboptions>
         </div>
 
         <div class="row-wrap">
@@ -133,7 +133,7 @@
           </div>
           <div class="missing-text" hidden$="[[_exists(selectedBackgroundRef)]]">Enter edit mode to select a Background.</div>
           <dnd-select-add model="backgrounds" value="[[selectedBackground]]" placeholder="<Choose Background>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedBackground)]]"></dnd-select-add>
-          <dnd-character-builder-suboptions label="[[selectedBackground.name]]" storage-key="background" selected-item="[[selectedBackgroundRef]]"></dnd-character-builder-suboptions>
+          <dnd-character-builder-suboptions label="Background" storage-key="background" selected-item="[[selectedBackgroundRef]]"></dnd-character-builder-suboptions>
         </div>
 
         <div class="row-wrap">
@@ -155,7 +155,7 @@
               <div>
                 Extra [[item.choiceKey]]
                 <button class="mdc-icon-button material-icons" on-click="_deleteAdditionalOption">delete</button>
-                <dnd-character-builder-suboptions dont-create-if-missing storage-key="[[item.key]]" selected-item="[[item]]"></dnd-character-builder-suboptions>
+                <dnd-character-builder-suboptions label="Extra [[item.choiceKey]]" dont-create-if-missing storage-key="[[item.key]]" selected-item="[[item]]"></dnd-character-builder-suboptions>
               </div>
             </template>
           </div>
