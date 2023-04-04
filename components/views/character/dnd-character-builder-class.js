@@ -1015,11 +1015,11 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                     <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
                       <div class="choices-col__choice">
                         <template is="dom-if" if="[[_equal(choice.id, 'classSubOptions')]]">
-                          <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level)]]" selected-item="[[choice.classSubOptions]]"></dnd-character-builder-suboptions>
+                          <dnd-character-builder-suboptions label="[[choice.class]]" storage-key="[[_joinUnderscore(choice.class, choice.level)]]" selected-item="[[choice.classSubOptions]]"></dnd-character-builder-suboptions>
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'subclassSubOptions')]]">
-                          <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, choice.subclass)]]" selected-item="[[choice.subclassSubOptions]]"></dnd-character-builder-suboptions>
+                          <dnd-character-builder-suboptions label="[[choice.class]]" storage-key="[[_joinUnderscore(choice.class, choice.level, choice.subclass)]]" selected-item="[[choice.subclassSubOptions]]"></dnd-character-builder-suboptions>
                         </template>
           
                         <template is="dom-if" if="[[_equal(choice.id, 'replacement')]]">
@@ -1033,14 +1033,14 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'asi')]]">
-                          <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, 'asi')]]" selected-item="[[choice.asiItem]]"></dnd-asi-select>
+                          <dnd-character-builder-suboptions label="ASI" storage-key="[[_joinUnderscore(choice.class, choice.level, 'asi')]]" selected-item="[[choice.asiItem]]"></dnd-asi-select>
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
                           <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
                             options="[[choice.from]]" choices="1" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
                           <template is="dom-repeat" items="[[choice.selectionsArray]]" as="subfeature">
-                            <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
+                            <dnd-character-builder-suboptions label="[[choice.class]]" storage-key="[[_joinUnderscore(choice.class, choice.level, 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
                           </template>
                         </template>
 
@@ -1048,7 +1048,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                           <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
                             options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
                           <template is="dom-repeat" items="[[choice.selectionsArray]]" as="subfeature">
-                            <dnd-character-builder-suboptions storage-key="[[_joinUnderscore(choice.class, choice.level, 'sub', 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
+                            <dnd-character-builder-suboptions label="[[choice.class]]" storage-key="[[_joinUnderscore(choice.class, choice.level, 'sub', 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
                           </template>
                         </template>
                       </div>

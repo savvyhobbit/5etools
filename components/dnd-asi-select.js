@@ -1,5 +1,6 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import { encodeForHash } from "../js/utils";
+import { loadModel } from "../util/data";
 import { getEditModeChannel, isEditMode } from "../util/editMode";
 
 class DndAsiSelect extends PolymerElement {
@@ -42,7 +43,7 @@ class DndAsiSelect extends PolymerElement {
     ]
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     super.connectedCallback();
 
     this.switchChangeHandler = (e) => {
@@ -66,7 +67,7 @@ class DndAsiSelect extends PolymerElement {
   }
 
   _changeHandler(key) {
-    return ((val) => {
+    return (async (val) => {
       switch (key) {
         case 'a1':
           this.selectedAbilityOne = val;
@@ -77,7 +78,10 @@ class DndAsiSelect extends PolymerElement {
           break;
 
         case 'feat':
-          this.selectedFeat = val;
+          if (!this.featOptions) {
+            this.featOptions = await loadModel('feats');
+          }
+          this.selectedFeat = this.featOptions.find(feat => feat.name === val.name && feat.source === val.source);
           break;
       
         default:
@@ -85,7 +89,7 @@ class DndAsiSelect extends PolymerElement {
       }
       this.changeCallback({
         checked: this.checked,
-        selectedFeat: this.selectedFeat,
+        selectedFeat: { name: this.selectedFeat.name, source: this.selectedFeat.source },
         selectedAbilityOne: this.selectedAbilityOne,
         selectedAbilityTwo: this.selectedAbilityTwo,
       });
@@ -163,7 +167,7 @@ class DndAsiSelect extends PolymerElement {
         <dnd-select-add add-callback="[[_changeHandler('a2')]]" value="[[selectedAbilityTwo]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
       </div>
       <div class="feat-pick-wrap" hidden$=[[!checked]]>
-        <dnd-select-add add-callback="[[_changeHandler('feat')]]" model="feats" value="[[selectedFeat.name]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
+        <dnd-select-add add-callback="[[_changeHandler('feat')]]" model="feats" value="[[selectedFeat]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
         <button class="reference-link mdc-icon-button material-icons" on-click="_linkClick" hidden$="[[disabled]]">logout</button>
       </div>
     `;

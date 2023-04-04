@@ -14,7 +14,7 @@ class DndSelectAdd extends PolymerElement {
       },
       options: {
         type: Array,
-        observer: "optionsUpdated"
+        // observer: "optionsUpdated"
       },
       model: {
         type: String

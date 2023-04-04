@@ -267,7 +267,7 @@ function mergeSubclass(character = selectedCharacter, className, subclass, previ
       source: subclass.source
     };
     // Removing any choices set by subclass or subclass features
-    const choiceKeysToRemove = Object.keys(character.choices).filter(key => key.includes(className.toLowerCase()) && (key.includes(previousSubclass.shortName) || key.includes('sub_feature')) );
+    const choiceKeysToRemove = Object.keys(character.choices).filter(key => key.includes(className.toLowerCase()) && ((previousSubclass && key.includes(previousSubclass.shortName)) || key.includes('sub_feature')) );
     choiceKeysToRemove.forEach(key => {
       delete character.choices[key];
     });

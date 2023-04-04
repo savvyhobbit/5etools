@@ -2,6 +2,7 @@ import { findInPath } from "../js/utils";
 
 export default function registerSwipe(element, direction, handler, mustBeInEl, cantBeInEl) {
     const TOUCH_DISTANCE_DELTA = 50;
+    const CANCEL_DISTANCE_DELTA = 20;
 
     // Prevents TouchMove
     var hardStop = false;
@@ -52,14 +53,22 @@ export default function registerSwipe(element, direction, handler, mustBeInEl, c
 
         if (xDiff > TOUCH_DISTANCE_DELTA) {
             if (direction === 'left') {
-                handler();
+                if (yDiff < CANCEL_DISTANCE_DELTA && -1 * yDiff < CANCEL_DISTANCE_DELTA) {
+                    handler();
+                } else {
+                    console.error('swipe cancelled');
+                }
             }
             xDown = null;
             yDown = null;
         }
         if (-1 * xDiff > TOUCH_DISTANCE_DELTA) {
             if (direction === "right") {
-                handler();
+                if (yDiff < CANCEL_DISTANCE_DELTA && -1 * yDiff < CANCEL_DISTANCE_DELTA) {
+                    handler();
+                } else {
+                    console.error('swipe cancelled');
+                }
             }
             xDown = null;
             yDown = null;

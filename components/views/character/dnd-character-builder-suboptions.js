@@ -27,6 +27,9 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             storageKey: {
                 type: String
             },
+            label: {
+                type: String
+            },
             // This selectedItem provided is used to populate the sub option fields using the option data structure setup in data
             selectedItem: {
                 type: Object
@@ -239,13 +242,17 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     if (storedItem[storageKey].selectedItemName !== this.selectedItem.name || storedItem[storageKey].selectedItemSource !== this.selectedItem.source) {
                         storedItem[storageKey] = {
                             selectedItemName: this.selectedItem.name,
-                            selectedItemSource: this.selectedItem.source
+                            selectedItemSource: this.selectedItem.source,
+                            label: this.label || undefined
                         }
                     }
                 }
                 storedItem = storedItem[storageKey];
             }
             this.storedItem = storedItem;
+            if (this.label) {
+                this.storedItem.label = this.label;
+            }
 
             // Retrieving the selected choices for attribute, feat, or proficiency off of the storedItem
 
@@ -609,7 +616,10 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             this.featChoices = null;
             this.selectedFeat = null;
             if (this.selectedItem.feats) {
-                this.featOptions = await loadModel('feats');
+                if (!this.featModel || !this.featModel.length) {
+                    this.featModel = await loadModel('feats');
+                }
+                this.featOptions = this.featModel;
                 this.featChoices = this.selectedItem.feats;
                 this.selectedFeat = this.featOptions.find(feat => this.storedItem.selectedFeat && feat.name === this.storedItem.selectedFeat.name && feat.source === this.storedItem.selectedFeat.source);
             }
@@ -618,7 +628,12 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             if (this.selectedItem.asi) {
                 this.hasASI = true;
                 this.asiChecked = !!this.storedItem.selectedFeat;
-                this.asiFeat = this.storedItem.selectedFeat || this.storedItem.previouslySelectedFeat;
+                if (!this.featModel || !this.featModel.length) {
+                    this.featModel = await loadModel('feats');
+                }
+                const asiFeatStored = this.storedItem.selectedFeat || this.storedItem.previouslySelectedFeat;
+                this.asiFeat = asiFeatStored;
+                this.asiFeatItem = this.featModel.find(feat => asiFeatStored && feat.name === asiFeatStored.name && feat.source === asiFeatStored.source);
                 const attributes = this.storedItem.selectedAttributes ? this.storedItem.selectedAttributes.split(',') : this.storedItem.previouslySelectedAttributes ? this.storedItem.previouslySelectedAttributes.split(',') : [];
                 this.asiAbility1 = attributes.length ? attributes[0] : null;
                 this.asiAbility2 = attributes.length > 1 ? attributes[1] : null;
@@ -687,9 +702,11 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                                         Object.entries(adjAddtlSpellResetValue).forEach(([addtlSpellCountKey, addtlSpellCountValue]) => {
                                             const path = [addtlSpellSetIndex, addtlSpellTypeKey, addtlSpellLevelKey, addtlSpellResetKey, addtlSpellCountKey].join('.');
                                             const type = addtlSpellResetKey;
-                                            const uses = parseInt(addtlSpellResetKey.split('e').join(''));
+                                            let uses = parseInt(addtlSpellCountKey.split('e').join(''));
+                                            uses = uses === 99 ? undefined : uses;
 
                                             addtlSpellCountValue.forEach( (spellEntry) => {
+                                                // This is the level in class, not spell level
                                                 const level = addtlSpellLevelKey === '_' ? 1 : parseInt(addtlSpellLevelKey);
                                                 if (spellEntry.choose !== undefined) {
                                                     const spellLookupPromise = filterModel('spells', spellEntry.choose).then((options) => {
@@ -1007,11 +1024,12 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
     _spellChoiceCallback(choice, index) {
         return ((spells) => {
             const mappedSpells = spells.map((spell) => { return { name: spell.name, source: spell.source } });
-            let spellChoiceAtPath = this.storedItem.additionalSpells.selectedSpells.find((selected) => selected.path === choice.path);
-            if (!spellChoiceAtPath) {
-                spellChoiceAtPath = { path: choice.path, type: choice.type, level: choice.level, resource: choice.resource, count: choice.count, uses: choice.uses };
-                this.storedItem.additionalSpells.selectedSpells.push(spellChoiceAtPath);
+            let spellChoiceAtPathIndex = this.storedItem.additionalSpells.selectedSpells.findIndex((selected) => selected.path === choice.path);
+            if (spellChoiceAtPathIndex > -1) {
+                this.storedItem.additionalSpells.selectedSpells.splice(spellChoiceAtPathIndex, 1);
             }
+            let spellChoiceAtPath = { path: choice.path, type: choice.type, level: choice.level, resource: choice.resource, count: choice.count, uses: choice.uses };
+            this.storedItem.additionalSpells.selectedSpells.push(spellChoiceAtPath);
             spellChoiceAtPath.spells = mappedSpells;
             const newSelectedSpellSet = cloneDeep(this.selectedSpellSet);
             newSelectedSpellSet.spellChoices[index].selectedSpells = mappedSpells;
@@ -1029,6 +1047,11 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             } else {
                 this.storedItem.previouslySelectedFeat = asi.selectedFeat;
                 delete this.storedItem.selectedFeat;
+                const suboptionKeys = Object.keys(this.character.choices).filter(ck => ck.startsWith(this.storageKey + '_'));
+                if (suboptionKeys && suboptionKeys.length) {
+                    suboptionKeys.forEach((removalKey) => delete this.character.choices[removalKey]);
+                }
+                this.asiFeatItem = null;
                 this.storedItem.selectedAttributes = [asi.selectedAbilityOne, asi.selectedAbilityTwo].filter(a => !!a).join(',')
             }
             saveCharacter(this.character);
@@ -1323,7 +1346,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     <dnd-asi-select change-callback="[[_asiChangeCallback()]]" checked="[[asiChecked]]" selected-feat="[[asiFeat]]" selected-ability-one="[[asiAbility1]]" selected-ability-two="[[asiAbility2]]"></dnd-asi-select>
 
                     <template is="dom-if" if="[[asiChecked]]">
-                        <dnd-character-builder-suboptions class="asi-suboption" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[asiFeat]]"></dnd-character-builder-suboptions>
+                        <dnd-character-builder-suboptions class="asi-suboption" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[asiFeatItem]]"></dnd-character-builder-suboptions>
                     </template>
                 </template>
             </div>

@@ -389,6 +389,46 @@
 				"Proficiency Versatility|Warlock||19|UAClassFeatureVariants",
 				"Eldritch Master|Warlock||20"
 			],
+			"additionalSpells": [{
+				"innate": {
+					"11": {
+						"daily": {
+							"1": [
+								{
+									"choose": "level=6|class=Warlock"
+								}
+							]
+						}
+					},
+					"13": {
+						"daily": {
+							"1": [
+								{
+									"choose": "level=7|class=Warlock"
+								}
+							]
+						}
+					},
+					"15": {
+						"daily": {
+							"1": [
+								{
+									"choose": "level=8|class=Warlock"
+								}
+							]
+						}
+					},
+					"17": {
+						"daily": {
+							"1": [
+								{
+									"choose": "level=9|class=Warlock"
+								}
+							]
+						}
+					}
+				}
+			}],
 			"subclassTitle": "Otherworldly Patron",
 			"fluff": [
 				{
