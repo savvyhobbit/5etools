@@ -19,6 +19,7 @@ import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "@vaadin/vaadin-grid/vaadin-grid-column";
+import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "./dnd-character-builder-equipment-item-detail";
 
 class DndCharacterBuilderEquipment extends PolymerElement {
@@ -591,7 +592,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                     </span>
                   </div>
                   <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
-                    <!-- <vaadin-integer-field min="0" value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field> -->
+                    <vaadin-integer-field value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
                   </div>
                   <div class="mdc-buttom-icon material-icons item-wrap__close" hidden$="[[!isEditMode]]" on-click="_deleteItem">close</div>
                 </div>

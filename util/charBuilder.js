@@ -8,6 +8,10 @@ import droll from "../lib/droll";
 import { emitRoll } from "./roll";
 import EntryRenderer from "./entryrender";
 
+window.saveCharacter = () => {
+  saveCharacter(window.character);
+};
+
 const renderer = new EntryRenderer();
 let schema = {
   name: '',
@@ -98,6 +102,7 @@ function saveCharacter(character) {
   let characterIndex = findCharacterIndex(character),
     characters = getCharacters();
 
+  window.character = character;
   characters[characterIndex] = character;
   saveCharacters(characters);
 }
