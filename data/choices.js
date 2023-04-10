@@ -156,6 +156,30 @@ export const classOptionsMap = {
         type: "fs:f",
         count: 1
       }
+    },
+    subclasses: {
+      "Battle Master": {
+        3: {
+          name: "Maneuvers",
+          type: "mv:b",
+          count: 3
+        },
+        7: {
+          name: "Maneuvers",
+          type: "mv:b",
+          count: 2
+        },
+        10: {
+          name: "Maneuvers",
+          type: "mv:b",
+          count: 2
+        },
+        15: {
+          name: "Maneuvers",
+          type: "mv:b",
+          count: 2
+        }
+      }
     }
   },
   paladin: {
@@ -326,112 +350,6 @@ export const proficiencyGains = {
   }
 };
 
-export const spellGains = {
-  classes: {
-    "artificer(ua)": {
-      subclasses: {
-        "Gunsmith": {
-          1: {
-            name: "",
-            value: "mending"
-          }
-        }
-      }
-    },
-    "Artificer (Revisited)": {
-      subclasses: {
-        "Alchemist": {
-          14: {
-            name: "Chemical Savant",
-            value: "greater restoration",
-            noSlot: true,
-            noMaterial: true,
-            recharge: "long rest"
-          }
-        }
-      }
-    },
-    "artificer": {
-      subclasses: {
-        "Alchemist": {
-          14: {
-            name: "Chemical Mastery",
-            value: ["greater restoration", "heal"],
-            noSlot: true,
-            noMaterial: true,
-            recharge: "long rest"
-          }
-        }
-      }
-    },
-    barbarian: {
-      subclasses: {
-        "Path of the Totem Warrior": {
-          3: {
-            name: "Spirit Seeker",
-            value: ["beast sense", "speak with animals"],
-            ritualOnly: true,
-            noSlot: true
-          }
-        },
-        "Path of the Ancestral Guardian v2 (UA)": {
-          10: {
-            name: "Consult the Spirits",
-            value: "clairvoyance",
-            noSlot: true
-          }
-        },
-        "Path of the Ancestral Guardian": {
-          10: {
-            name: "Consult the Spirits",
-            value: ["augury", "clairvoyance"],
-            noSlot: true,
-            noMaterial: true,
-            recharge: "short rest"
-          }
-        },
-        "Path of the Wild Soul (UA)": {
-          3: {
-            name: "Lingering Magic",
-            value: "detect magic",
-            noSlot: true,
-            noMaterial: true,
-            recharge: "long rest",
-            charges: "con"
-          }
-        }
-      }
-    },
-    bard: {
-      subclasses: {
-        "College of Lore": {
-          6: {
-            name: "",
-            count: 2,
-            list: "any"
-          }
-        }
-      },
-      class: {
-        10: {
-          name: "Magical Secrets",
-          count: 2,
-          list: "any"
-        },
-        14: {
-          name: "",
-          count: 2,
-          list: "any"
-        },
-        18: {
-          name: "",
-          count: 2,
-          list: "any"
-        }
-      }
-    }
-  }
-};
 
 export const expertiseClasses = {
   "artificer(ua)": {
