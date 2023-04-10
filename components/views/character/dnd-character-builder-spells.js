@@ -613,16 +613,16 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
           // Combine all class spell levels into single references
           for (let spellClass of spellDisplay) {
-            if (!spellClass.isWarlock) {
-              multiclassLevel += spellClass.multiclassingLevels;
-              isMulticlass ++;
-            } else {
-              warlockSpellLevel = spellClass.warlockSpellLevel;
-              warlockSpellSlots = spellClass.warlockSpellSlots;
-              isMulticlass ++;
-            }
-
             if (spellClass.className !== 'Other') {
+              if (!spellClass.isWarlock) {
+                multiclassLevel += spellClass.multiclassingLevels;
+                isMulticlass ++;
+              } else {
+                warlockSpellLevel = spellClass.warlockSpellLevel;
+                warlockSpellSlots = spellClass.warlockSpellSlots;
+                isMulticlass ++;
+              }
+
               spellClass.children.forEach((spellLevel, index) => {
                 const adjIndex = index + spellClass.hasCantrips;
                 if (!newSpellDisplay[adjIndex]) {

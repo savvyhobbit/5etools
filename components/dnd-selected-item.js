@@ -166,14 +166,12 @@ class DndSelectedItem extends PolymerElement {
           color: var(--lumo-contrast-70pct);
           height: 44px;
         }
-        /* .non-global .page-title {
-          font-size: 24px;
-          margin-bottom: 0;
-          line-height: 1.5;
+        .non-global .page-title {
+          margin: 12px 0 0;
         }
         .non-global .source-text {
-          font-size: 16px;
-        } */
+          height: unset;
+        }
         dnd-svg:not([hide]) + .title-text-wrap  {
           margin-left: 110px;
         }

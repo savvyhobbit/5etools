@@ -97,6 +97,7 @@ class DndCharacterBuilderView extends PolymerElement {
 
     this.setStateFromCharacter(getSelectedCharacter());
     this.characterChangeHandler = (e) => {
+      console.error('character_change_handler', e);
       this.setStateFromCharacter(e.detail.character);
     };
     getCharacterChannel().addEventListener("character-selected", this.characterChangeHandler);
@@ -215,6 +216,7 @@ class DndCharacterBuilderView extends PolymerElement {
   }
 
   async setStateFromCharacter(character) {
+    console.error(character);
     this.characterName = character.name;
     this.classLevel = getClassString(character);
     this.background = getFeatureString("backgrounds", character, true);

@@ -673,6 +673,19 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     return items.join('_')
   }
 
+  _featureLinkClick(e) {
+    const item = e.target.__dataHost.__data.item;
+    
+    this.dispatchEvent(new CustomEvent("open-drawer", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        selectedItem: item,
+        viewId: 'features'
+      }
+    }));
+  }
+
   static get template() {
     return html`
       <style include="material-styles my-styles fa-styles">
@@ -957,6 +970,28 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           margin-top: 0;
         }
 
+        .add-with-links {
+          display: flex;
+          align-items: flex-start;
+        }
+
+        .add-with-links dnd-select-add {
+          width: calc(100% - 48px);
+        }
+
+        .links-list {
+          display: flex;
+          flex-direction: column;
+          margin-top: 34px;
+          margin-left: 8px;
+        }
+        .links-list .mdc-icon-button {
+          padding: 4px;
+          height: 28px;
+          width: 28px;
+          font-size: 20px;
+        }
+
         @media(min-width: 921px) {
           .features-col {
             margin: 0 30px 0 12px;
@@ -1037,16 +1072,30 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'classFeature')]]">
-                          <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                            options="[[choice.from]]" choices="1" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                          <div class="add-with-links">
+                            <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                              options="[[choice.from]]" choices="1" value="[[choice.selections]]" add-callback="[[_classFeatureOptionAddCallback(choice.class, choice.level, choice.feature)]]"></dnd-select-add>
+                            <div class="links-list">
+                              <template is="dom-repeat" items="[[choice.selections]]">
+                                <button class="mdc-icon-button material-icons" on-click="_featureLinkClick" >logout</button>
+                              </template>
+                            </div>
+                          </div>
                           <template is="dom-repeat" items="[[choice.selectionsArray]]" as="subfeature">
                             <dnd-character-builder-suboptions label="[[choice.class]]" storage-key="[[_joinUnderscore(choice.class, choice.level, 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
                           </template>
                         </template>
 
                         <template is="dom-if" if="[[_equal(choice.id, 'subclassFeature')]]">
-                          <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
-                            options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
+                          <div class="add-with-links">
+                            <dnd-select-add choices="[[choice.count]]" label="[[choice.name]]" placeholder="<Choose Option>" disabled$="[[!isEditMode]]"
+                              options="[[choice.from]]" value="[[choice.selections]]" add-callback="[[_subclassFeatureOptionAddCallback(choice.class, choice.subclass, choice.level, choice.feature)]]"></dnd-select-add>
+                            <div class="links-list">
+                              <template is="dom-repeat" items="[[choice.selections]]">
+                                <button class="mdc-icon-button material-icons" on-click="_featureLinkClick" >logout</button>
+                              </template>
+                            </div>
+                          </div>
                           <template is="dom-repeat" items="[[choice.selectionsArray]]" as="subfeature">
                             <dnd-character-builder-suboptions label="[[choice.class]]" storage-key="[[_joinUnderscore(choice.class, choice.level, 'sub', 'feature', index)]]" selected-item="[[subfeature]]"></dnd-character-builder-suboptions>
                           </template>

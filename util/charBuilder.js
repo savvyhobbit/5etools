@@ -8,8 +8,8 @@ import droll from "../lib/droll";
 import { emitRoll } from "./roll";
 import EntryRenderer from "./entryrender";
 
-window.saveCharacter = () => {
-  saveCharacter(window.character);
+window.saveCharacter = (char = window.character) => {
+  saveCharacter(char);
 };
 
 const renderer = new EntryRenderer();
@@ -53,8 +53,9 @@ function initSelectedCharacter() {
     let characters = getCharacters();
     if (characters && characters.length) {
       let defaultCharIndex;
+      const defaultCharId = window.localStorage.getItem("defaultCharacter");
       for (let i = 0; i < characters.length; i ++) {
-        if (characters[i].isDefault) {
+        if (defaultCharId && characters[i].id + "" === defaultCharId) {
           defaultCharIndex = i;
           break;
         }
@@ -127,14 +128,14 @@ function removeSelectedCharacter() {
 function newCharacter(name = "New Character") {
   let newCharacter = JSON.parse(JSON.stringify(schema));
   newCharacter.name = name;
-  newCharacter.isDefault = true;
   newCharacter.id = Date.now();
+  makeDefault(newCharacter);
   return newCharacter;
 }
 
 function uploadCharacter(uploadedChar) {
   uploadedChar.id = Date.now();
-  uploadedChar.isDefault = true;
+  makeDefault(uploadedChar);
   addCharacter(uploadedChar.name, uploadedChar);
 }
 
@@ -150,6 +151,7 @@ function selectCharacter(char) {
   if (char) {
     selectedCharacter = char;
     makeDefault(selectedCharacter);
+    emitChangeEvent()
   }
 }
 
@@ -157,9 +159,8 @@ function selectCharacterFromIndex(index) {
   let characters = getCharacters();
 
   if (characters[index]) {
-    selectedCharacter = characters[index];
+    selectCharacter(characters[index]);
     console.log('selected character', selectedCharacter);
-    makeDefault(selectedCharacter);
   } else {
     selectedCharacter = undefined;
     initSelectedCharacter();
@@ -168,15 +169,7 @@ function selectCharacterFromIndex(index) {
 }
 
 function makeDefault(char) {
-  let characters = getCharacters();
-  for (let character of characters) {
-    if (character.id === char.id) {
-      character.isDefault = true
-    } else {
-      character.isDefault = false;
-    }
-  }
-  saveCharacters(characters);
+  window.localStorage.setItem("defaultCharacter", char.id);
 }
 
 function addFeature(type, feature, character = selectedCharacter) {

@@ -120,6 +120,10 @@ class DndAsiSelect extends PolymerElement {
     }));
   }
 
+  _exists(a) {
+    return !!a;
+  }
+
   static get template() {
     return html`
       <style include="material-styles">
@@ -168,7 +172,7 @@ class DndAsiSelect extends PolymerElement {
       </div>
       <div class="feat-pick-wrap" hidden$=[[!checked]]>
         <dnd-select-add add-callback="[[_changeHandler('feat')]]" model="feats" value="[[selectedFeat]]" placeholder="<Choose Feat>" disabled$="[[disabled]]"></dnd-select-add>
-        <button class="reference-link mdc-icon-button material-icons" on-click="_linkClick" hidden$="[[disabled]]">logout</button>
+        <button class="reference-link mdc-icon-button material-icons" on-click="_linkClick">logout</button>
       </div>
     `;
   }

@@ -31,14 +31,13 @@ class DndCharacterSelect extends PolymerElement {
     this.characterChangeHandler = (e) => {
       this.selectedCharacter = JSON.parse(JSON.stringify(e.detail.character));
       this.characterOptions = e.detail.characters;
-      this.$.select.value = this.selectedCharacter.id + "";
+      this.$.select.value = this.selectedCharacter && this.selectedCharacter.id + "";
       this.$.select.render();
     };
 
     getCharacterChannel().addEventListener("character-selected", this.characterChangeHandler);
     initSelectedCharacter();
 
-    this.$.select.value = this.selectedCharacter.id + "";
     this.$.select.addEventListener("change", () => {
       const selectedChar = this.characterOptions.find(c => c.id == this.$.select.value);
       selectCharacter(selectedChar);
