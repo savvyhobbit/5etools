@@ -362,7 +362,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
 
         vaadin-grid {
-          margin-bottom: 200px;
+          margin-bottom: var(--tab-bottom-margin);
         }
 
         .heading {
@@ -384,9 +384,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
         .row-wrap {
           width: 100%;
-        }
-        .row-wrap:not(:last-child) {
-          margin-bottom: 24px;
         }
 
         .row-wrap > *:not(h2):not(:last-child) {

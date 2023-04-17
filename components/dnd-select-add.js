@@ -7,11 +7,6 @@ import {loadModel} from "../util/data";
 class DndSelectAdd extends PolymerElement {
   static get properties() {
     return {
-      test: {
-        type: Boolean,
-        reflectToAttribute: true,
-        value: false
-      },
       options: {
         type: Array,
         // observer: "optionsUpdated"
@@ -239,7 +234,7 @@ class DndSelectAdd extends PolymerElement {
           color: var(--lumo-body-text-color);
         }
       </style>
-      <vaadin-select test$="[[test]]" theme="dark" add id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+      <vaadin-select add theme="dark add" id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
         <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
           <span class="prefix">[[multiValue]]</span>
         </div>

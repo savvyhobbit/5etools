@@ -346,6 +346,7 @@ class DndLayout extends PolymerElement {
         .hide-me {
           background: transparent;
           border: none;
+          outline: none !important;
         }
 
         .mdc-list-item i {

@@ -160,7 +160,6 @@ function selectCharacterFromIndex(index) {
 
   if (characters[index]) {
     selectCharacter(characters[index]);
-    console.log('selected character', selectedCharacter);
   } else {
     selectedCharacter = undefined;
     initSelectedCharacter();
@@ -964,6 +963,50 @@ function getSpellSlots(level, character = selectedCharacter) {
   return 0;
 }
 
+async function getSpellCastingStats(character = selectedCharacter) {
+  if (character) {
+    const classRefs = await getClassReferences(character),
+      classLevels = getClassLevelGroups(character);
+    // DCs and Spell Modifier
+    const newSpellStats = [];
+    const overallLevel = Object.entries(classLevels).reduce((total, [className, level]) => total + level, 0);
+    const profBonus = getProfBonus(overallLevel);
+
+    for (const [className, level] of Object.entries(classLevels)) {
+      const classRef = classRefs[className];
+      if (classRef.casterProgression) {
+        const alreadyAdded = newSpellStats.find(spellMod => classRef.spellcastingAbility === spellMod.spellcastingAbility);
+        if (alreadyAdded) {
+          alreadyAdded.classes.push(className);
+        } else {
+          const attributeModifier = await getAttributeModifier(classRef.spellcastingAbility);
+          const spellAttackBonus = attributeModifier + profBonus
+          const dc = 8 + spellAttackBonus;
+          newSpellStats.push({ classes: [className], mod: attributeModifier, spellAttackBonus, dc, spellcastingAbility: classRef.spellcastingAbility});
+        }
+      }
+    }
+
+    const additionalSpellsAbilities = Object.values(character.choices).filter(c => c.additionalSpells && (c.additionalSpells.defaultAbility || c.additionalSpells.selectedAbility));
+    for (const choice of additionalSpellsAbilities) {
+      const spellcastingAbility = choice.additionalSpells.defaultAbility || choice.additionalSpells.selectedAbility;
+      const alreadyAdded = newSpellStats.find(spellMod => spellcastingAbility.toLowerCase() === spellMod.spellcastingAbility);
+      if (alreadyAdded) {
+        alreadyAdded.classes.push(spellcastingAbility);
+      } else {
+        const attributeModifier = await getAttributeModifier(spellcastingAbility);
+        const spellAttackBonus = attributeModifier + profBonus
+        const dc = 8 + spellAttackBonus;
+        newSpellStats.push({ classes: [spellcastingAbility], mod: attributeModifier, spellAttackBonus, dc, spellcastingAbility: spellcastingAbility});
+      }
+    }
+
+    return newSpellStats;
+  } else {
+    return [];
+  }
+}
+
 function updateLevelHP(character, selectedItem, forceRoll) {
   const className = selectedItem.name || selectedItem;
   const newLevel = character.levels.length;
@@ -1622,7 +1665,7 @@ async function getCharacterSpeed(character = selectedCharacter) {
       return result;
     }
   }
-  return '';
+  return 'N / A';
 }
 
 function getCharacterProficiencyBonus(character = selectedCharacter) {
@@ -1845,4 +1888,5 @@ export {
   getChoiceConditionImmunes,
   getChoiceFeats,
   getChoiceDarkvision,
+  getSpellCastingStats,
 };

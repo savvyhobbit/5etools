@@ -1,7 +1,7 @@
 import { PolymerElement,html } from "@polymer/polymer";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSubclassChoice } from "../../../util/charBuilder";
+import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSubclassChoice, getSpellCastingStats } from "../../../util/charBuilder";
 import { filterModel, loadModel } from "../../../util/data";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { spellHtml } from "../../../js/spells";
@@ -194,48 +194,6 @@ class DndCharacterBuilderSpells extends PolymerElement {
     return array;
   }
 
-  async updateSpellStats(classRefs, classLevels, character) {
-    if (classLevels && classRefs && character) {
-      // DCs and Spell Modifier
-      const newSpellMods = [];
-      const overallLevel = Object.entries(classLevels).reduce((total, [className, level]) => total + level, 0);
-      const profBonus = getProfBonus(overallLevel);
-
-      for (const [className, level] of Object.entries(classLevels)) {
-        const classRef = classRefs[className];
-        if (classRef.casterProgression) {
-          const alreadyAdded = newSpellMods.find(spellMod => classRef.spellcastingAbility === spellMod.spellcastingAbility);
-          if (alreadyAdded) {
-            alreadyAdded.classes.push(className);
-          } else {
-            const attributeModifier = await getAttributeModifier(classRef.spellcastingAbility);
-            const spellAttackBonus = attributeModifier + profBonus
-            const dc = 8 + spellAttackBonus;
-            newSpellMods.push({ classes: [className], mod: attributeModifier, spellAttackBonus, dc, spellcastingAbility: classRef.spellcastingAbility});
-          }
-        }
-      }
-
-      const additionalSpellsAbilities = Object.values(character.choices).filter(c => c.additionalSpells && (c.additionalSpells.defaultAbility || c.additionalSpells.selectedAbility));
-      for (const choice of additionalSpellsAbilities) {
-        const spellcastingAbility = choice.additionalSpells.defaultAbility || choice.additionalSpells.selectedAbility;
-        const alreadyAdded = newSpellMods.find(spellMod => spellcastingAbility.toLowerCase() === spellMod.spellcastingAbility);
-        if (alreadyAdded) {
-          alreadyAdded.classes.push(spellcastingAbility);
-        } else {
-          const attributeModifier = await getAttributeModifier(spellcastingAbility);
-          const spellAttackBonus = attributeModifier + profBonus
-          const dc = 8 + spellAttackBonus;
-          newSpellMods.push({ classes: [spellcastingAbility], mod: attributeModifier, spellAttackBonus, dc, spellcastingAbility: spellcastingAbility});
-        }
-      }
-
-      this.spellMods = newSpellMods;
-    } else {
-      this.spellMods = [];
-    }
-  }
-
   async updateFromCharacter(character) {
     if (character && this.refresh) {
       this.noContentMessage = true;
@@ -245,7 +203,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         spellsKnownObj = {};
       let spellDisplay = [];
 
-      this.updateSpellStats(classRefs, classLevels, character);
+      this.spellMods = await getSpellCastingStats(character);
 
       for (const [ className, classLevel ] of Object.entries(classLevels)) {
         const classRef = classRefs[className];
@@ -1039,10 +997,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
         }
 
         vaadin-grid {
-          margin-bottom: 200px;
+          margin-bottom: var(--tab-bottom-margin);
         }
 
-        vaadin-grid-tree-toggle { 
+        vaadin-grid-tree-toggle {
           width: 100%;
           cursor: pointer;
         }
@@ -1304,82 +1262,77 @@ class DndCharacterBuilderSpells extends PolymerElement {
           transition: background-color 0.2s ease-in;
         }
 
-        .mods {
-          display: flex;
-          flex-wrap: nowrap;
-          justify-content: space-around;
-          margin: 16px 0;
+        .filter {
+          margin-left: 16px;
         }
-        .mod-row {
+
+        .basic-box__wrap-wrap {
+          padding: 0 16px;
+        }
+        .basic-box__wrap {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          margin: 16px auto 40px;
+          max-width: 360px;
+        }
+        .basic-box {
           display: flex;
           flex-direction: column;
           align-items: center;
-          font-size: 12px;
-          text-align: center;
-          margin: 0 4px;
-          width: 130px;
-        }
-        .mod-val-wrap {
-          font-size: 16px;
-        }
-        .mod-val:focus {
-          outline: none;
-        }
-        .mod-val:not(:first-child)::before {
-          content: '|';
-          margin-right: 4px;
-          color: var(--lumo-contrast-30pct);
-        }
-        .mod-label {
-          font-weight: bold;
-          color: var(--mdc-theme-primary);
-          font-size: 15px;
-        }
-        .edit-mode .mod-label {
-          font-weight: bold;
-          color: var(--mdc-theme-secondary);
-        }
-        @media(min-width: 420px) {
-          .mods {
-            justify-content: center;
-          }
-          .mod-row {
-            font-size: 14px;
-          }
-          .mod-val-wrap {
-            font-size: 18px;
-          }
-        }
-
-        @media(min-width: 921px) {
-          .mods {
-            justify-content: flex-start;
-          }
-        }
-
-        .filter {
-          margin-left: 16px;
-
-        }
-
-        .tooltip {
-          position: absolute;
-          background: lightgray;
-          color: black;
-          padding: 2px 10px;
+          padding: 4px 0;
+          background: var(--lumo-contrast-10pct);
           border-radius: 4px;
-          white-space: nowrap;
-          left: 15px;
-          top: -35px;
-          opacity: 0;
-          transition: opacity 0.3s ease;
+          height: min-content;
+          width: calc(33% - 8px);
+          max-width: 120px;
         }
+        .basic-box--short {
+          height: fit-content;
+        }
+        
+        .basic-box__label {
+          color: var(--mdc-theme-primary);
+          font-size: 14px;
+          text-align: center;
+        }
+        .basic-box__value {
+          font-size: 18px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          text-align: center;
+        }
+        .basic-box__no-flex {
+          display: block;
+        }
+
         .mod-val {
           position: relative;
         }
         .mod-val:focus .tooltip,
         .mod-val:hover .tooltip {
-          opacity: 1;
+          display: block;
+        }
+        .mod-val:focus {
+          outline: none;
+        }
+        .mod-val:not(:last-of-type)::after {
+          content: '|';
+          margin-left: 4px;
+          color: var(--lumo-contrast-30pct);
+        }
+        .tooltip {
+          position: absolute;
+          background: lightgray;
+          color: black;
+          font-size: 14px;
+          padding: 2px 10px;
+          border-radius: 4px;
+          white-space: nowrap;
+          left: 5px;
+          top: -32px;
+          display: none;
         }
         .tooltip::after {
           content: '';
@@ -1388,10 +1341,9 @@ class DndCharacterBuilderSpells extends PolymerElement {
           position: absolute;
           border-left: 5px solid transparent;
           border-right: 5px solid transparent;
-          border-bottom: 5px solid lightgray;
+          border-top: 5px solid lightgray;
           bottom: -4px;
-          left: 1px;
-          transform: rotate(180deg);
+          left: 2px;
         }
 
         .no-content-message {
@@ -1404,34 +1356,36 @@ class DndCharacterBuilderSpells extends PolymerElement {
       <div class$="[[_wrapClassString(isEditMode)]]" hidden$="[[noContentMessage]]">
         <div class="heading">
           <h2>Spells</h2>
-          <dnd-button class="prepare-spells-button link" hidden$="[[_hidePrepareSpellsButton(isEditMode, spellsKnown)]]" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Prepare Your Spells!" icon="edit" on-click="_toggleEditMode"></dnd-button>
+          <dnd-button class="prepare-spells-button" link hidden$="[[_hidePrepareSpellsButton(isEditMode, spellsKnown)]]" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Prepare Your Spells!" icon="edit" on-click="_toggleEditMode"></dnd-button>
         </div>
 
         <!-- Spell Mods -->
-        <div class="mods" >
-          <div class="mod-row">
-            <span class="mod-val-wrap">
-              <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-              </template>
-            </span>
-            <span class="mod-label">Modifier</span>
-          </div>
-          <div class="mod-row">
-            <span class="mod-val-wrap">
-              <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-              </template>
-            </span>
-            <span class="mod-label">Attack +</span>
-          </div>
-          <div class="mod-row">
-            <span class="mod-val-wrap">
-              <template is="dom-repeat" items="[[spellMods]]">
-                <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-              </template>
-            </span>
-            <span class="mod-label">DC</span>
+        <div class="basic-box__wrap-wrap">
+          <div class="basic-box__wrap">
+            <div class="basic-box">
+              <span class="basic-box__value basic-box__no-flex">
+                <template is="dom-repeat" items="[[spellMods]]">
+                  <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                </template>
+              </span>
+              <span class="basic-box__label">Spell Mod</span>
+            </div>
+            <div class="basic-box">
+              <span class="basic-box__value basic-box__no-flex">
+                <template is="dom-repeat" items="[[spellMods]]">
+                  <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                </template>
+              </span>
+              <span class="basic-box__label">Spell ATK+</span>
+            </div>
+            <div class="basic-box">
+              <span class="basic-box__value basic-box__no-flex">
+                <template is="dom-repeat" items="[[spellMods]]">
+                  <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                </template>
+              </span>
+              <span class="basic-box__label">Spell DC</span>
+            </div>
           </div>
         </div>
 

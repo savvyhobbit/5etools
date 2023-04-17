@@ -35,7 +35,8 @@ import {
   getChoiceFeats,
   getChoiceDarkvision,
   getChoiceConditionImmunes,
-  getChoiceResists
+  getChoiceResists,
+  getSpellCastingStats
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, findInPath } from "../../../js/utils";
@@ -322,7 +323,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.conditionImmunes = getChoiceConditionImmunes().map(util_capitalizeAll).join(', ');
       this.hasDarkvision = this.darkvision !== null;
       
-      console.error('character', character);
+      this.spellMods = await getSpellCastingStats(character);
+
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
   }
@@ -350,6 +352,14 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   _contains(saves, str) {
     return saves.indexOf(str) > -1;
+  }
+
+  _join(a) {
+    return a.join(', ');
+  }
+
+  _abs(num) {
+    return num >= 0 ? `+${num}`: num;
   }
 
   _exists() {
@@ -636,7 +646,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           flex-direction: column;
           min-width: 0;
           flex-shrink: 0;
-          padding-top: 10px;
         }
 
         /* Other profs */
@@ -738,7 +747,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             transform: scale(.9, .9);
           }
         }
-
 
         /* Stat Box */
         .stat-box {
@@ -861,7 +869,22 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           right: 0;
           position: absolute;
         }
-
+        .prof-bonus-box {
+          padding: 6px;
+          width: calc(2 * (100vw - 54px) / 3);
+          max-width: 200px;
+          cursor: initial;
+        }
+        .prof-bonus-box__label {
+          font-size: 15px;
+          color: var(--mdc-theme-primary);
+          text-align: center;
+          line-height: 1.2;
+          margin-top: 5px;
+        }
+        .prof-bonus-box__value {
+          font-size: 24px;
+        }
 
         /* Button Field */
         .btn-field {
@@ -956,25 +979,33 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .hit-dice__item-label {
           width: 100%;
           display: flex;
-          justify-content: space-around;
+          justify-content: space-between;
           align-items: center;
-          padding: 4px 0 0;
         }
         .hit-dice__item-label dnd-svg {
           stroke: var(--mdc-theme-on-primary);
           fill: var(--mdc-theme-primary);
           width: 30px;
+          height: 30px;
+        }
+        .hit-dice__count {
+          color: var(--mdc-theme-on-surface);
         }
         .hit-dice__reset {
           margin-top: auto;
         }
 
         .basic-box__wrap {
-          width: 100%;
           display: flex;
           justify-content: space-between;
-          margin-bottom: 40px;
+          margin-bottom: 16px;
+        }
+        .basic-box__wrap-wrap {
+          width: 100%;
           max-width: 360px;
+        }
+        .basic-box__margin {
+          margin-bottom: 40px;
         }
         .basic-box {
           display: flex;
@@ -994,6 +1025,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .basic-box__label {
           color: var(--mdc-theme-primary);
           font-size: 14px;
+          text-align: center;
         }
         .basic-box__value {
           font-size: 18px;
@@ -1001,6 +1033,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           display: flex;
           flex-direction: column;
           text-align: center;
+        }
+        .basic-box__no-flex {
+          display: block;
         }
         .not-edit-mode .initiative {
           cursor: pointer;
@@ -1027,12 +1062,60 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           margin-bottom: 16px;
         }
 
+        .mod-val {
+          position: relative;
+        }
+        .mod-val:focus .tooltip,
+        .mod-val:hover .tooltip {
+          display: block;
+        }
+        .mod-val:focus {
+          outline: none;
+        }
+        .mod-val:not(:last-of-type)::after {
+          content: '|';
+          margin-left: 4px;
+          color: var(--lumo-contrast-30pct);
+        }
+        .tooltip {
+          position: absolute;
+          background: lightgray;
+          color: black;
+          font-size: 14px;
+          padding: 2px 10px;
+          border-radius: 4px;
+          white-space: nowrap;
+          left: 5px;
+          top: -32px;
+          display: none;
+        }
+        .tooltip::after {
+          content: '';
+          height: 0;
+          width: 0;
+          position: absolute;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 5px solid lightgray;
+          bottom: -4px;
+          left: 2px;
+        }
+
+        @media(max-width: 380px) {
+          .prof-bonus-box__label span {
+            display: none;
+          }
+        }
+
         @media(min-width: 420px) {
           .wrap {
             padding-bottom: 0;
           }
           .other {
             max-width: calc(100vw - 305px);
+          }
+          .prof-bonus-box {
+            max-width: 224px;
           }
         }
         @media(min-width: 505px) {
@@ -1050,7 +1133,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           }
         }
         @media(min-width: 920px) {
-          .basic-box__wrap {
+          .basic-box__wrap-wrap {
             position: absolute;
             right: 0;
           }
@@ -1150,60 +1233,94 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             </div>
           </div>
 
-          <div class="basic-box__wrap">
-            <div class="basic-box basic-box--short ac">
-              <div class="basic-box__value">
-                <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
-                  <span class="custom-val__option" hidden$=[[customAC]]><span class="material-icons">edit</span> Edit</span>
-                  <span class="custom-val__option" hidden$=[[!customAC]]><span class="material-icons">restart_alt</span> Use Standard</span>
-                </div>
+          <div class="basic-box__wrap-wrap">
+            <div class="basic-box__wrap">
+              <div class="basic-box basic-box--short ac">
+                <div class="basic-box__value">
+                  <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
+                    <span class="custom-val__option" hidden$=[[customAC]]><span class="material-icons">edit</span> Edit</span>
+                    <span class="custom-val__option" hidden$=[[!customAC]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                  </div>
 
-                <div hidden$=[[!customAC]]>
-                  <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
-                  <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                  <div hidden$=[[!customAC]]>
+                    <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                    <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                  </div>
+                  <div hidden$=[[customAC]]>[[ac]]</div>
                 </div>
-                <div hidden$=[[customAC]]>[[ac]]</div>
+                <div class="basic-box__label">AC</div>
               </div>
-              <div class="basic-box__label">AC</div>
-            </div>
 
-            <div class="basic-box basic-box--short initiative" on-click="_roll">
-              <div class="basic-box__value">
-                <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
-                  <span class="custom-val__option" hidden$=[[customInitiative]]><span class="material-icons">edit</span> Edit</span>
-                  <span class="custom-val__option" hidden$=[[!customInitiative]]><span class="material-icons">restart_alt</span> Use Standard</span>
-                </div>
+              <div class="basic-box basic-box--short initiative" on-click="_roll">
+                <div class="basic-box__value">
+                  <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
+                    <span class="custom-val__option" hidden$=[[customInitiative]]><span class="material-icons">edit</span> Edit</span>
+                    <span class="custom-val__option" hidden$=[[!customInitiative]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                  </div>
 
-                <div hidden$=[[!customInitiative]]>
-                  <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
-                  <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                  <div hidden$=[[!customInitiative]]>
+                    <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                    <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                  </div>
+                  <div hidden$=[[customInitiative]]>[[initiative]]</div>
                 </div>
-                <div hidden$=[[customInitiative]]>[[initiative]]</div>
+                <div class="basic-box__label">Initiative</div>
               </div>
-              <div class="basic-box__label">Initiative</div>
+
+              <div class="basic-box basic-box--short speed">
+                <div class="basic-box__value" inner-h-t-m-l=[[speed]]></div>
+                <div class="basic-box__label">Speed</div>
+              </div>
+
+              <!--  Short Rest -->
+              <!-- <dnd-button icon="watch" class="rest-btn rest-btn--short" background="var(--lumo-contrast-10pct)" label="Short" on-click="_triggerShortRest"></dnd-button> -->
+
+              <!--  Long Rest -->
+              <!-- <dnd-button icon="watch_later" class="rest-btn rest-btn--long" background="var(--lumo-contrast-10pct)" label="Long" on-click="_triggerLongRest"></dnd-button> -->
             </div>
 
-            <div class="basic-box basic-box--short speed">
-              <div class="basic-box__value" inner-h-t-m-l=[[speed]]></div>
-              <div class="basic-box__label">Speed</div>
+            <!-- Spell Mods -->
+            <div hidden$="[[!_exists(spellMods)]]" class="basic-box__wrap basic-box__margin">
+              <div class="basic-box">
+                <span class="basic-box__value basic-box__no-flex">
+                  <template is="dom-repeat" items="[[spellMods]]">
+                    <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                  </template>
+                </span>
+                <span class="basic-box__label">Spell Mod</span>
+              </div>
+              <div class="basic-box">
+                <span class="basic-box__value basic-box__no-flex">
+                  <template is="dom-repeat" items="[[spellMods]]">
+                    <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                  </template>
+                </span>
+                <span class="basic-box__label">Spell ATK+</span>
+              </div>
+              <div class="basic-box">
+                <span class="basic-box__value basic-box__no-flex">
+                  <template is="dom-repeat" items="[[spellMods]]">
+                    <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                  </template>
+                </span>
+                <span class="basic-box__label">Spell DC</span>
+              </div>
             </div>
-
-            <!--  Short Rest -->
-            <!-- <dnd-button icon="watch" class="rest-btn rest-btn--short" background="var(--lumo-contrast-10pct)" label="Short" on-click="_triggerShortRest"></dnd-button> -->
-
-            <!--  Long Rest -->
-            <!-- <dnd-button icon="watch_later" class="rest-btn rest-btn--long" background="var(--lumo-contrast-10pct)" label="Long" on-click="_triggerLongRest"></dnd-button> -->
-            </div>
+          </div>
 
           <div class="stats-other-wrap">
             <div class="stats">
+              <div class="stat-box prof-bonus-box">
+                <span class="prof-bonus-box__value">+[[proficiencyBonus]]</span>
+                <span class="prof-bonus-box__label">Proficiency Bonus</span>
+              </div>
               <!--  Attributes -->
               <div class="attribute-wrap">
                 <div class="stat-box" on-click="_roll">
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'str')]]"></div>
                   <div class="stat-box__mod">[[_mod(strAdj, str)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" value={{str}} min="1" max="20" has-controls label="Strength" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" value={{str}} min="1" max="25" has-controls label="Strength" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(strAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1217,7 +1334,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'dex')]]"></div>
                   <div class="stat-box__mod">[[_mod(dexAdj, dex)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" value={{dex}} min="1" max="20" has-controls label="Dexterity" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" value={{dex}} min="1" max="25" has-controls label="Dexterity" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(dexAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1234,7 +1351,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'con')]]"></div>
                   <div class="stat-box__mod">[[_mod(conAdj, con)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" mini-label value={{con}} min="1" max="20" has-controls label="Constitution" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" mini-label value={{con}} min="1" max="25" has-controls label="Constitution" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(conAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1248,7 +1365,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'int')]]"></div>
                   <div class="stat-box__mod">[[_mod(intAdj, int)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" mini-ish-label value={{int}} min="1" max="20" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" mini-ish-label value={{int}} min="1" max="25" has-controls label="Intelligence" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(intAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1266,7 +1383,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'wis')]]"></div>
                   <div class="stat-box__mod">[[_mod(wisAdj, wis)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" value={{wis}} min="1" max="20" has-controls label="Wisdom" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" value={{wis}} min="1" max="25" has-controls label="Wisdom" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(wisAdj)]]</span>
                     </vaadin-integer-field>
                   </div>
@@ -1284,7 +1401,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="stat-box__save" enabled$="[[_contains(saves, 'cha')]]"></div>
                   <div class="stat-box__mod">[[_mod(chaAdj, cha)]]</div>
                   <div class="stat-box__footer">
-                    <vaadin-integer-field theme="mini" value={{cha}} min="1" max="20" has-controls label="Charisma" disabled$="[[!isEditMode]]">
+                    <vaadin-integer-field theme="mini" value={{cha}} min="1" max="25" has-controls label="Charisma" disabled$="[[!isEditMode]]">
                       <span class="stat-box__adj" slot="suffix">[[_adjustString(chaAdj)]]</span>
                     </vaadin-integer-field>
                   </div>

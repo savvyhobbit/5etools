@@ -177,44 +177,41 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
   }
 
   _expandDetails(e) {
-    let rowIndex = e.model.__data.index;
+    let feature = e.model.__data.item;
+    let levelIndex = e.model.__dataHost.__dataHost.__data.index;
     
-    if (this.expandedIndex === rowIndex) {
+    if (this.expandedIndex === levelIndex && this.expandedFeatureName === feature.name && this.expandedFeatureSource === feature.source) {
       this.expandedIndex = null;
+      this.expandedFeatureName = null;
+      this.expandedFeatureSource = null;
     } else {
-      this.expandedIndex = rowIndex;
+      this.expandedIndex = levelIndex;
+      this.expandedFeatureName = feature.name;
+      this.expandedFeatureSource = feature.source;
     }
   }
 
-  _renderDetails(expandedIndex, rowIndex) {
-    let renderStack = [];
+  _renderDetails(expandedIndex, expandedFeatureName, expandedFeatureSource, rowIndex) {
     if (expandedIndex === rowIndex) {
+      let renderStack = [];
       const renderer = new EntryRenderer();
       const features = this._getClassLevelFeatures(this.levels, rowIndex, this.classes, this.subclasses);
       
       if (features && features.length) {
-        for (let feature of features) {
-          const isUnselectedReplacementChoice = this.classChoices && this.classChoices[rowIndex] && this.classChoices[rowIndex].some((choice) => {
-            const isNotSelectedOptionalFeature = choice.selection && (choice.selection.name !== feature.name || choice.selection.source !== feature.source);
-            const isOptionalFeature = choice.from && choice.from.some((optionalFeature) => {return optionalFeature.name === feature.name && optionalFeature.source === feature.source});
-            
-            return choice.id === 'replacement' && isNotSelectedOptionalFeature && isOptionalFeature;
-          });
-          if (!isUnselectedReplacementChoice) {
-            renderer.recursiveEntryRender(
-              feature,
-              renderStack,
-              0,
-              undefined,
-              true
-            );
-          }
+        const foundFeature = features.find(feature => feature.name === expandedFeatureName && feature.source === expandedFeatureSource);
+        if (foundFeature) {
+          renderer.recursiveEntryRender(
+            foundFeature,
+            renderStack,
+            0,
+            undefined,
+            true
+          );
+          return "<div class='details stats-wrapper'>" + renderStack.join("") + "</div>"
         }
       }
-      return "<div class='details stats-wrapper'>" + renderStack.join("") + "</div>"
-    } else {
-      return "";
     }
+    return "";
   }
 
   async _findLevelChoices(character, classes) {
@@ -694,7 +691,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
 
         .class-grid {
-          margin-bottom: 200px;
+          margin-bottom: var(--tab-bottom-margin);
         }
 
         .heading-wrap {
@@ -760,13 +757,9 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
 
         .open-details {
-          cursor: pointer;
           display: flex;
           align-items: flex-start;
           flex-wrap: wrap;
-        }
-        .open-details:hover .level-col {
-          color: var(--mdc-theme-secondary);
         }
 
         .level-col {
@@ -805,13 +798,19 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           width: 100%;
           margin: 0;
           padding: 16px 0 8px;
-          font-size: 15px;
+          font-size: 16px;
         }
-        .class-feature:not(:last-of-type)::after {
-          content: ', ';
+        .class-feature__text {
+          cursor: pointer;
         }
-        .class-feature[subclass] {
+        .class-feature__text:hover {
+          text-decoration: underline;
+        }
+        .class-feature__text[subclass] {
           color: var(--mdc-theme-secondary);
+        }
+        .class-feature:last-of-type .class-feature__separator {
+          display: none;
         }
 
         .choices-col {
@@ -915,12 +914,13 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .hp-col {
           position: absolute;
           right: 0;
-          top: 8px;
+          top: 15px;
           overflow: hidden;
           display: flex;
         }
         .not-edit-mode .hp-col {
           right: 0px;
+          top: 18px;
         }
         .hp-col .fal {
           font-size: 20px;
@@ -958,7 +958,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
 
         .details {
-          font-size: 15px;
+          font-size: 14px;
           width: calc(100% - 30px);
           margin: 0 auto 13px !important;
           background: var(--lumo-contrast-10pct);
@@ -968,6 +968,19 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
         .details > .statsBlockHead:first-child > .stat-name {
           margin-top: 0;
+        }
+        .details.stats-wrapper .statsBlockHead .stat-name {
+          font-size: 22px;
+          margin-bottom: 10px;
+        }
+        .details.stats-wrapper .statsBlockSubHead .stat-name {
+          font-size: 18px;
+        }
+        .details.stats-wrapper p {
+          margin-bottom: 8px;
+        }
+        .details.stats-wrapper .statsInlineHead .stat-name {
+          font-size: inherit;
         }
 
         .add-with-links {
@@ -996,7 +1009,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           .features-col {
             margin: 0 30px 0 12px;
             width: unset;
-            font-size: 16px;
           }
           .class-grid {
             margin-bottom: 0;
@@ -1032,7 +1044,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
             <template is="dom-repeat" items=[[levels]]>
               <div class="row-wrap">
                 <div class="row">
-                  <div class="open-details" on-click="_expandDetails">
+                  <div class="open-details">
                     <div class="level-col">
                       <span class="level-col__level">[[_level(index)]]</span>
                       <span class="level-col__image-wrap" ><dnd-svg class="level-col__image" default-color id="[[_svgFromClass(item.name)]]"></dnd-svg></span>
@@ -1041,10 +1053,15 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
                     <div class="features-col">
                       <template is="dom-repeat" items="[[_getClassLevelFeatureStringArray(levels, index, classes, subclasses, classChoices)]]">
-                        <span class="class-feature" subclass$="[[item.isSubclass]]">[[item.name]]</span>
+                        <span class="class-feature">
+                          <span class="class-feature__text" subclass$="[[item.isSubclass]]" on-click="_expandDetails">[[item.name]]</span><span
+                            class="class-feature__separator">, 
+                        </span></span>
                       </template>
+
                     </div>
                   </div>
+                  <div class="details-wrap" inner-h-t-m-l="[[_renderDetails(expandedIndex, expandedFeatureName, expandedFeatureSource, index)]]"></div>
 
                   <div class="choices-col">
                     <template is="dom-repeat" items="[[_atIndex(classChoices, index)]]" as="choice">
@@ -1127,7 +1144,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                     </div>
                   </div>
                 </div>
-                <div class="details-wrap" inner-h-t-m-l="[[_renderDetails(expandedIndex, index)]]"></div>
               </div>
             </template>
           </div>

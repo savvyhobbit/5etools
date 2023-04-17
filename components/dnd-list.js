@@ -51,13 +51,27 @@ class DndList extends PolymerElement {
       },
       selectedItem: {
         type: Object,
-        notify: true,
+        notify: true
       },
       listTitle: {
         type: String,
         value: ''
       }
     };
+  }
+
+  static get observers() {
+    return ['_selectedItemChange(selectedItem)']
+  }
+
+  _selectedItemChange(item) {
+    if (item && this.listItems) {
+      this.previousSelectedIndex = this.listItems.indexOf(item);
+    } else {
+      setTimeout(() => {
+        this.$.grid._scrollToIndex(this.previousSelectedIndex - 5);
+      }, 100);
+    }
   }
 
   ready() {
@@ -152,7 +166,7 @@ class DndList extends PolymerElement {
           const val = item[`render-${id}`];
           if (!options.some(option => option.value === val)) {
             options.push({
-              label: Parser.sourceJsonToFullCompactPrefix(val) || val,
+              label: Parser.sourceJsonToFullCompactPrefix(item.source) || val,
               value: val
             })
           }
@@ -410,7 +424,7 @@ class DndList extends PolymerElement {
 
       <div class="search-wrap">
         <vaadin-text-field theme="label--secondary" on-keyup="_selectFilter" label="Search"></vaadin-text-field>
-        <dnd-button class="search-reset" on-click="_clearFilters" label="Reset"></dnd-button>
+        <dnd-button class="search-reset" border on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 
       <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" page-size="15" size="{{resultsCount}}">

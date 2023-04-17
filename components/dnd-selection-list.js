@@ -358,7 +358,7 @@ class DndSelectionList extends PolymerElement {
         <dnd-selected-item non-global$="[[nonGlobal]]" model-id="[[modelId]]" selected-item="{{selectedItem}}" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
 
         <div class="list-wrap">
-          <dnd-button icon="launch" class="icon-only" on-click="_changeView"></dnd-button>
+          <dnd-button icon="launch" on-click="_changeView"></dnd-button>
           <dnd-list non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
         </div>
 

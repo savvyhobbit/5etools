@@ -196,7 +196,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           display: flex;
           justify-content: space-between;
           flex-wrap: wrap;
-          margin-bottom: 200px;
+          margin-bottom: var(--tab-bottom-margin);
         }
 
         .row-wrap {
@@ -217,15 +217,6 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         }
         .reference-link:hover {
           color: var(--mdc-theme-secondary);
-        }
-
-        .default-selection {
-          font-size: 14px;
-          margin-bottom: 0 !important;
-        }
-
-        .default-selection span {
-          color: var(--mdc-theme-secondary)
         }
 
         .missing-text {

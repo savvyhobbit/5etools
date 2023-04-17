@@ -14,6 +14,11 @@ class DndButton extends PolymerElement {
         type: String,
         value: ''
       },
+      iconOnly: {
+        type: Boolean,
+        computed: '_iconOnly(icon, label)',
+        reflectToAttribute: true
+      },
       svg: {
         type: String,
         value: ''
@@ -23,8 +28,8 @@ class DndButton extends PolymerElement {
         value: ''
       },
       border: {
-        type: String,
-        value: ''
+        type: Boolean,
+        value: false
       },
       svgFill: {
         type: String,
@@ -43,19 +48,24 @@ class DndButton extends PolymerElement {
     }, 10)
   }
 
+  _iconOnly(icon, label) {
+    return !!icon && !label;
+  }
+
   _exists(i) {
     return !!i;
   }
 
-  _styleStr(background, border, label) {
+  _styleStr(background) {
     let result = '';
     if (background) {
       result+= `background: ${background}; `
     }
-    if (border) {
-      result+= `border: ${border}; `
-    }
     return result;
+  }
+
+  _classStr(border) {
+    return `mdc-button ${border ? 'mdc-button--outlined' : ''}`;
   }
 
   _svgStyleStr(fill, stroke) {
@@ -82,7 +92,7 @@ class DndButton extends PolymerElement {
           display: inline;
           overflow: hidden;
           white-space: nowrap;
-          border-radius: 6px;
+          border-radius: 4px;
         }
         .mdc-button {
           display: inline-flex;
@@ -111,7 +121,6 @@ class DndButton extends PolymerElement {
           flex-grow: 0;
         }
 
-        
         :host(.btn-field__btn) dnd-svg {
           padding-left: 0;
         }
@@ -119,11 +128,11 @@ class DndButton extends PolymerElement {
           margin-left: 0;
         }
 
-        :host(.icon-only) dnd-svg {
+        :host([icon-only]) dnd-svg {
           margin-left: -24px;
           padding-left: 0;
         }
-        :host(.icon-only) i {
+        :host([icon-only]) i {
           margin-left: 0;
           padding-left: 0;
         }
@@ -131,19 +140,19 @@ class DndButton extends PolymerElement {
           margin-left: -24px;
         }
 
-        :host(.link) .mdc-button__label {
+        :host([link]) .mdc-button__label {
           text-transform: none;
           color: var(--lumo-body-text-color);
           letter-spacing: normal;
         }
-        :host(.link) i {
+        :host([link]) i {
           color: var(--lumo-body-text-color);
         }
-        :host(.link) button:hover::before {
+        :host([link]) button:hover::before {
           background: none;
         }
-        :host(.link) button:hover i,
-        :host(.link) button:hover .mdc-button__label {
+        :host([link]) button:hover i,
+        :host([link]) button:hover .mdc-button__label {
           color: var(--mdc-theme-secondary);
         }
 
@@ -178,7 +187,7 @@ class DndButton extends PolymerElement {
         }
 
       </style>
-      <button id="button" class="mdc-button" style$="[[_styleStr(background, border, label)]]">
+      <button id="button" class$="[[_classStr(border)]]" style$="[[_styleStr(background)]]">
         <div class="mdc-button__ripple"></div>
         <span class="mdc-button__label">[[label]]</span>
         <slot name="label"></slot>

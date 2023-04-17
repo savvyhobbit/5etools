@@ -13,6 +13,7 @@ import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../ut
 import { rollEventChannel } from '../../util/roll.js';
 import { readRouteSelection, routeEventChannel, setRouteSelection } from '../../util/routing.js';
 import { togglePrimarySecondary } from '../../util/darkmode.js';
+import '@vaadin/vaadin-dialog';
 
 class DndCharacterBuilderView extends PolymerElement {
   static get properties() {
@@ -40,6 +41,10 @@ class DndCharacterBuilderView extends PolymerElement {
       routeSelection: {
         type: String,
         observer: 'routeSelectionChange'
+      },
+      deleteModalOpen: {
+        type: Boolean,
+        value: false
       }
     }
   }
@@ -97,7 +102,7 @@ class DndCharacterBuilderView extends PolymerElement {
 
     this.setStateFromCharacter(getSelectedCharacter());
     this.characterChangeHandler = (e) => {
-      console.error('character_change_handler', e);
+      console.error('character_change_handler', e.detail.character);
       this.setStateFromCharacter(e.detail.character);
     };
     getCharacterChannel().addEventListener("character-selected", this.characterChangeHandler);
@@ -146,7 +151,7 @@ class DndCharacterBuilderView extends PolymerElement {
             this.$.tabs.tabBar.activateTab(newIndex);
           }
         }
-      });
+      },null, ".table");
       registerSwipe(this.$.tabTarget, "left", () => {
         if (this.indexForTabs < this.tabs.length - 1) {
           const newIndex = this.indexForTabs + 1;
@@ -157,7 +162,7 @@ class DndCharacterBuilderView extends PolymerElement {
             this.$.tabs.tabBar.activateTab(newIndex);
           }
         }
-      });
+      }, null, ".table");
     }
 
     this.rollHandler = (e) => {
@@ -216,7 +221,6 @@ class DndCharacterBuilderView extends PolymerElement {
   }
 
   async setStateFromCharacter(character) {
-    console.error(character);
     this.characterName = character.name;
     this.classLevel = getClassString(character);
     this.background = getFeatureString("backgrounds", character, true);
@@ -289,6 +293,15 @@ class DndCharacterBuilderView extends PolymerElement {
 
   removeCharacter() {
     removeSelectedCharacter();
+    this.deleteModalOpen = false;
+  }
+  
+  openDeleteModal() {
+    this.deleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.deleteModalOpen = false;
   }
 
   downloadCharacter(e) {
@@ -345,6 +358,7 @@ class DndCharacterBuilderView extends PolymerElement {
       <style>
         :host {
           display: block;
+          --tab-bottom-margin: 250px;
         }
         .head-wrap {
           display: flex;
@@ -379,10 +393,10 @@ class DndCharacterBuilderView extends PolymerElement {
           flex-direction: column;
         }
         .char-detail__class {
-          font-size: 17px;
+          font-size: 20px;
         }
         .char-detail__race-background {
-          font-size: 13px;
+          font-size: 16px;
           font-style: italic;
         }
         .roll-container {
@@ -468,6 +482,19 @@ class DndCharacterBuilderView extends PolymerElement {
           justify-content: flex-end;
           height: 55px;
         }
+        
+        .modal-content {
+          display: flex;
+          justify-content: center;
+        }
+        .modal-footer {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20px;
+        }
+        .modal-footer dnd-button:first-child {
+          margin-right: 40px;
+        }
 
         .not-edit-mode .delete-char,
         .not-edit-mode .add-char {
@@ -499,7 +526,7 @@ class DndCharacterBuilderView extends PolymerElement {
         }
 
 
-        @media(max-width: 420px) {
+        @media(max-width: 419px) {
           .thumb-menu {
             bottom: 90px;
           }
@@ -581,7 +608,7 @@ class DndCharacterBuilderView extends PolymerElement {
               <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="openDrawer">logout</button>
             </div>
             <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
-            <button class="mdc-icon-button material-icons delete-char" on-click="removeCharacter">delete</button>
+            <button class="mdc-icon-button material-icons delete-char" on-click="openDeleteModal">delete</button>
             <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
             <button class="mdc-icon-button material-icons download-all-char" on-click="downloadCharacters">file_download <span class="material-icons">playlist_add</span></button>
             <label class="upload-char">
@@ -592,6 +619,16 @@ class DndCharacterBuilderView extends PolymerElement {
             </label>
           </div>
         </div>
+
+        <vaadin-dialog no-close-on-esc no-close-on-outside-click opened="[[deleteModalOpen]]">
+          <template>
+            <div class="modal-content">Delete this character?</div>
+            <div class="modal-footer">
+              <dnd-button label="Delete" on-click="removeCharacter"></dnd-button>
+              <dnd-button label="Cancel" on-click="closeDeleteModal"></dnd-button>
+            </div>
+          </template>
+        </vaadin-dialog>
 
         <div class="character-builder--tabs-wrapper">
           <dnd-tabs id="tabs" class='fixed--bottom' theme="large" tabs="[[tabs]]" initial-selected-index="[[initialSelectedTab]]"></dnd-tabs>

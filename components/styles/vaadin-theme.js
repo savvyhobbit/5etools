@@ -106,6 +106,12 @@ registerStyles('vaadin-select-overlay', css`
     }
 `);
 
+registerStyles('vaadin-dialog-overlay', css`
+    [part="backdrop"] {
+      background-color: var(--lumo-shade-70pct);
+    }
+`);
+
 registerStyles('vaadin-list-box', css`
     [part="items"] ::slotted([focus-ring]:not([disabled])) {
       box-shadow: unset !important;
@@ -155,6 +161,8 @@ registerStyles('vaadin-integer-field', css`
       background-color: transparent;
       top: -2px;
       position: relative;
+      color: var(--lumo-contrast-60pct);
+      opacity: 1 !important;
     }
     :host([theme="mini"]) [part="decrease-button"]::before, 
     :host([theme="mini"]) [part="increase-button"]::before {

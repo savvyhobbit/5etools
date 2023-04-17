@@ -20,6 +20,7 @@
     "@polymer/polymer": "^3.0.0-pre.12",
     "@vaadin/vaadin-checkbox": "^2.5.0",
     "@vaadin/vaadin-combo-box": "*",
+    "@vaadin/vaadin-dialog": "^2.6.0",
     "@vaadin/vaadin-grid": "*",
     "@vaadin/vaadin-material-styles": "*",
     "@vaadin/vaadin-select": "*",

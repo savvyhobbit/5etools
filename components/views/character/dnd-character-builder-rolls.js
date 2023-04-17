@@ -171,7 +171,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
         display: flex; 
         justify-content: space-between;
         flex-wrap: wrap;
-        margin-bottom: 56px;
+        margin-bottom: var(--tab-bottom-margin);
       }
       .row-wrap {
         width: 100%;
@@ -211,7 +211,6 @@ class DndCharacterBuilderRolls extends PolymerElement {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding-bottom: 60px;
       }
 
       @media(min-width: 500px) {
@@ -309,7 +308,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
       <div class="row-wrap">
         <div class="heading">
           <h2>Rolls</h2>
-          <dnd-button class="rolls__add-button link" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add a Roll" icon="edit"  on-click="_addRoll"></dnd-button>
+          <dnd-button class="rolls__add-button" link edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add a Roll" icon="edit"  on-click="_addRoll"></dnd-button>
         </div>
 
         <div hidden$="[[isEditMode]]" class="rolls__toolbar">
@@ -362,7 +361,7 @@ class DndCharacterBuilderRolls extends PolymerElement {
                   <div class="roll__damages">
                     <template is="dom-repeat" items="[[item.damages]]" as="damage">
                       <div class="roll__damage" index$="[[index]]">
-                        <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                        <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove'></dnd-button>
                         <div class="roll__damage-roll--edit">
                           <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
                         </div>

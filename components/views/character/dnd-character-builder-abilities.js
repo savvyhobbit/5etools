@@ -244,7 +244,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
 
         .abilities {
           width: 100%;
-          margin-bottom: 200px;
+          margin-bottom: var(--tab-bottom-margin);
         }
 
         .ability {
@@ -335,7 +335,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
           <div class='rest-buttons'>
             <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
             <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
-            <dnd-button class="add-ability link" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add an Ability" icon="edit"  on-click="_addAbility"></dnd-button>
+            <dnd-button class="add-ability" link edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add an Ability" icon="edit"  on-click="_addAbility"></dnd-button>
           </div>
         </div>
 
@@ -380,7 +380,7 @@ class DndCharacterBuilderAbilities extends PolymerElement {
                 </div>
               </div>
               
-              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete link" icon="delete" on-click="_deleteAbility"></dnd-button>
+              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete" link icon="delete" on-click="_deleteAbility"></dnd-button>
 
             </div>
           </template>
