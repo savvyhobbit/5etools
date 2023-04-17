@@ -109,7 +109,7 @@ const d=document.createElement("template");d.innerHTML='<dom-module id="vaadin-i
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(i.content);n(78);var r=n(3),l=n(93),o=n(35),s=n(20);
+</dom-module>`;document.head.appendChild(i.content);n(78);var r=n(3),l=n(94),o=n(34),s=n(20);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
@@ -271,7 +271,7 @@ class d extends(Object(o.a)(Object(l.a)(Object(s.a)(r.a)))){static get template(
       }
     </style>
   </template>
-</dom-module>`;document.head.appendChild(i.content);var r=n(3),l=(n(43),n(10)),o=n(20),s=n(34),d=n(6);
+</dom-module>`;document.head.appendChild(i.content);var r=n(3),l=(n(43),n(10)),o=n(20),s=n(35),d=n(6);
 /**
 @license
 Copyright (c) 2017 Vaadin Ltd.
@@ -336,5 +336,5 @@ const c=document.createElement("template");c.innerHTML="<custom-style>\n  <style
     <span id="level-spacer"></span>
     <span part="toggle"></span>
     <slot></slot>
-`}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style["---level"]=t,this._debouncerUpdateLevel=l.a.debounce(this._debouncerUpdateLevel,d.c,()=>this.updateStyles({"---level":t}))}}customElements.define(h.is,h)},164:function(e,t,n){"use strict";n(82)}}]);
+`}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style["---level"]=t,this._debouncerUpdateLevel=l.a.debounce(this._debouncerUpdateLevel,d.c,()=>this.updateStyles({"---level":t}))}}customElements.define(h.is,h)},165:function(e,t,n){"use strict";n(82)}}]);
 //# sourceMappingURL=1.bundle.js.map
