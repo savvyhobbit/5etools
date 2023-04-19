@@ -1,9 +1,11 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import "@polymer/polymer/lib/elements/dom-repeat.js";
 import '@polymer/polymer/lib/elements/dom-if.js';
+import '@vaadin/polymer-legacy-adapter/template-renderer.js';
 import "@vaadin/vaadin-select";
-import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-combo-box";
+import "@vaadin/vaadin-grid";
+import "@vaadin/vaadin-grid/vaadin-grid-column.js";
 import "@vaadin/vaadin-grid/vaadin-grid-filter";
 import "@vaadin/vaadin-grid/vaadin-grid-filter-column"
 import "@vaadin/vaadin-grid/vaadin-grid-sorter";
@@ -60,20 +62,6 @@ class DndList extends PolymerElement {
     };
   }
 
-  static get observers() {
-    return ['_selectedItemChange(selectedItem)']
-  }
-
-  _selectedItemChange(item) {
-    if (item && this.listItems) {
-      this.previousSelectedIndex = this.listItems.indexOf(item);
-    } else {
-      setTimeout(() => {
-        this.$.grid._scrollToIndex(this.previousSelectedIndex - 5);
-      }, 100);
-    }
-  }
-
   ready() {
     super.ready();
 
@@ -81,12 +69,14 @@ class DndList extends PolymerElement {
       this.$.grid.addEventListener('active-item-changed', (e) => {
         const item = e.detail.value;
         this.$.grid.selectedItems = item ? [item] : [];
-        const linkData = [item.name];
-        if (item.source) {
-          linkData.push(item.source);
-        }
-        if (!this.nonGlobal) {
-          setRouteSelection(encodeForHash(linkData));
+        if (item) {
+          const linkData = [item.name];
+          if (item.source) {
+            linkData.push(item.source);
+          }
+          if (!this.nonGlobal) {
+            setRouteSelection(encodeForHash(linkData));
+          }
         }
         this.set('selectedItem', item);
       });
@@ -227,6 +217,7 @@ class DndList extends PolymerElement {
     if (selectedFilters && selectedFilters[id]) {
       return selectedFilters[id];
     }
+    return null;
   }
 
   _selectFilter(e) {
@@ -237,10 +228,7 @@ class DndList extends PolymerElement {
   }
 
   _clearFilters() {
-    const filters = this.root.querySelectorAll('vaadin-select, vaadin-combo-box, vaadin-grid-filter, vaadin-text-field');
-    filters.forEach(filter => {
-      filter.value = '';
-    });
+    this.set('selectedFilters', {});
   }
 
   _isComboBoxFilter(colId) {
@@ -449,7 +437,7 @@ class DndList extends PolymerElement {
                 <vaadin-grid-filter path="[[_renderPath(col.id)]]" value="[[_filterValue(col.id, selectedFilters)]]"></vaadin-grid-filter>
                     
                 <template is="dom-if" if="[[!_isComboBoxFilter(col.id)]]">
-                  <vaadin-select placeholder="[[col.label]]" on-change="_selectFilter">
+                  <vaadin-select placeholder="[[col.label]]" on-change="_selectFilter" value="[[_filterValue(col.id, selectedFilters)]]">
                     <template>
                       <vaadin-list-box>
                         <template is="dom-repeat" items="[[_filterOptions(listItems, col.id)]]" as="option">

@@ -1,14 +1,15 @@
 import { PolymerElement,html } from "@polymer/polymer";
-import "@vaadin/vaadin-grid";
-import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSubclassChoice, getSpellCastingStats } from "../../../util/charBuilder";
+import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSpellCastingStats } from "../../../util/charBuilder";
 import { filterModel, loadModel } from "../../../util/data";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { spellHtml } from "../../../js/spells";
-import { findInPath, util_capitalize, util_capitalizeAll, getProfBonus, throttle, debounce, cloneDeep } from "../../../js/utils";
+import { findInPath, util_capitalize, util_capitalizeAll, debounce, cloneDeep } from "../../../js/utils";
 import Parser from "../../../util/Parser";
+import '@vaadin/polymer-legacy-adapter/template-renderer.js';
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-text-field";
+import "@vaadin/vaadin-grid";
+import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "../../dnd-button";
 
 class DndCharacterBuilderSpells extends PolymerElement {
@@ -646,7 +647,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
   }
 
   _renderSpell(spell) {
-    return spellHtml(spell);
+    return `<div class="statsBlockHead"><span class="stat-name">${spell.name}</span></div>` + spellHtml(spell);
   }
 
   _toggleSpellPrepared(e) {
@@ -1036,12 +1037,15 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .prepared-count {
           color: var(--mdc-theme-primary);
           font-weight: bold;
+          margin-left: 6px;
         }
         .prepared-count[edit-mode] {
           color: var(--mdc-theme-secondary);
         }
         .cantrips-prepared {
           margin-right: 0;
+          display: inline-flex;
+          align-items: center;
         }
 
         .level-outer-wrap {
@@ -1196,20 +1200,39 @@ class DndCharacterBuilderSpells extends PolymerElement {
           white-space: pre-line;
         }
 
-        .spell-def-wrap .margin-bottom_med {
-          margin-bottom: 0px !important;
+        .details.stats-wrapper {
+          margin: -8px 14px 0;
+          font-size: 14px;
+          line-height: 1.5;
         }
-
-        .spell-def-wrap .text {
+        .details > .statsBlockHead:first-child > .stat-name {
+          margin-top: 0;
+        }
+        .details.stats-wrapper .statsBlockHead .stat-name {
+          font-size: 22px;
+          margin-bottom: 2px;
+        }
+        .details.stats-wrapper .statsBlockSubHead .stat-name {
+          font-size: 18px;
+        }
+        .details.stats-wrapper .text {
           margin-top: 16px;
         }
-
-        .spell-def-wrap p {
-          margin-bottom: 16px;
+        .details.stats-wrapper p {
+          margin-bottom: 8px;
         }
-
-        .stats-wrapper {
-          margin: -18px 14px 0;
+        .details.stats-wrapper .statsInlineHead .stat-name {
+          font-size: inherit;
+        }
+        .details.stats-wrapper .margin-bottom_med {
+          margin-bottom: 0px !important;
+        }
+        .details.stats-wrapper .source {
+          display: block !important;
+          color: var(--lumo-contrast-70pct);
+          font-size: 13px;
+          margin-top: 0px;
+          margin-bottom: 12px;
         }
 
         .spell-button {
@@ -1396,7 +1419,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
       <div class="no-content-message" hidden$="[[!noContentMessage]]">Enter edit mode to add classes and levels.</div>
 
-      <vaadin-grid id="grid" theme="no-border no-row-borders" expanded-items="{{expandedItems}}" height-by-rows hidden$="[[noContentMessage]]">
+      <vaadin-grid id="grid" theme="no-border no-row-borders" expanded-items="{{expandedItems}}" all-rows-visible hidden$="[[noContentMessage]]">
         <vaadin-grid-column flex-grow="1">
           <template>
               <template is="dom-if" if="[[_equal(item.id, 'class')]]">
@@ -1413,11 +1436,12 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 <div class="level-outer-wrap">
                   <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" on-click='_recordScrollHeight'>
                     <h4 class="level-wrap">[[_toLevel(item.level)]]<span hidden$="[[_hideSlotsLabel(isEditMode, item.level, item.parentClass)]]" class="label">([[item.spellSlots]] Slots)</span></h4>
-                    <div class="cantrips-prepared spells-prepared-text" hidden$="[[!_equal(item.level, 0)]]">
-                      <span>Cantrips Known:</span>
-                      <span class='prepared-count' edit-mode$=[[isEditMode]]>[[_currentCantripsKnownCount(item.parentClass, spellsKnown)]] / [[_maxCantripsKnownCount(item.parentClass, spellsKnown)]]</span>
-                    </div>
                   </vaadin-grid-tree-toggle>
+
+                  <div class="cantrips-prepared spells-prepared-text" hidden$="[[!_equal(item.level, 0)]]">
+                    <span>Cantrips Known:</span>
+                    <span class='prepared-count' edit-mode$=[[isEditMode]]>[[_currentCantripsKnownCount(item.parentClass, spellsKnown)]] / [[_maxCantripsKnownCount(item.parentClass, spellsKnown)]]</span>
+                  </div>
 
                   <div class="slot-checkboxes" hidden$="[[_hideCheckboxes(item.warlockSpellSlots, isEditMode)]]" on-click="_toggleSpellSlot" warlock-spell>
                     <template is='dom-repeat' items='[[_countToArray(item.warlockSpellSlots)]]' as="thing">
@@ -1467,7 +1491,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
               <template is="dom-if" if="[[_equal(item.id, 'spelldef')]]">
                 <div class="spell-def-wrap">
-                  <div class= "stats-wrapper" inner-h-t-m-l="[[_renderSpell(item)]]"></div>
+                  <div class="details stats-wrapper" inner-h-t-m-l="[[_renderSpell(item)]]"></div>
                 </div>
               </template>
           </template>

@@ -185,8 +185,8 @@ class DndButton extends PolymerElement {
         :host([not-edit-mode]) button:hover .mdc-button__label {
           color: var(--mdc-theme-on-primary);
         }
-
       </style>
+
       <button id="button" class$="[[_classStr(border)]]" style$="[[_styleStr(background)]]">
         <div class="mdc-button__ripple"></div>
         <span class="mdc-button__label">[[label]]</span>

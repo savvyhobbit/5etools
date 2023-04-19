@@ -8,8 +8,7 @@ class DndSelectAdd extends PolymerElement {
   static get properties() {
     return {
       options: {
-        type: Array,
-        // observer: "optionsUpdated"
+        type: Array
       },
       model: {
         type: String
@@ -52,15 +51,7 @@ class DndSelectAdd extends PolymerElement {
       this.listBox.remove();
       delete this.listBox;
     }
-    this.$.select.render();
-  }
-
-  soptionsUpdated() {
-    if (this.listBox) {
-      this.listBox.remove();
-      delete this.listBox;
-    }
-    this.$.select.render();
+    this.$.select.requestContentUpdate();
   }
 
   valueUpdated() {

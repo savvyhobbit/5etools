@@ -579,7 +579,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
         /* Proficiencies */
         .proficiencies {
-          margin-left: 8px;
+          margin-left: 10px;
           line-height: 1.4;
           min-width: 0;
           position: relative;
@@ -819,7 +819,13 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           position: absolute;
           bottom: -10px;
           right: 5px;
-          font-size: 16px;
+          font-size: 18px;
+        }
+        .stat-box--hp .stat-box__adj--hp span {
+          transform: rotate(200deg);
+          font-size: 24px;
+          display: inline-block;
+
         }
         .stat-box--hp .stat-box__footer {
           width: 100%;
@@ -1041,6 +1047,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           cursor: pointer;
         }
 
+        .speed-val {
+          font-size: 16px;
+        }
+
         .custom-val__swap {
           font-size: 10px;
           margin: -4px 0 8px auto;
@@ -1175,7 +1185,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
             <div class="stat-box stat-box--hp">
 
               <vaadin-integer-field hidden$=[[isEditMode]] id="hpField" theme="hp" value={{currentHP}} on-change="hpBlurHandler" on-blur="hpChangeHandler" min="0" max="[[_maxHP(customHealthVal, maxHP, customHealth)]]" has-controls label="Hit Points">
-                <span class="stat-box__adj--hp" slot="suffix">/ [[_maxHP(customHealthVal, maxHP, customHealth)]] [[_tempHpStr(tempHP)]]</span>
+                <span class="stat-box__adj--hp" slot="suffix"><span>/</span> [[_maxHP(customHealthVal, maxHP, customHealth)]] [[_tempHpStr(tempHP)]]</span>
               </vaadin-integer-field>
 
               <div class="stat-box--hp-edit" hidden$=[[!isEditMode]]>

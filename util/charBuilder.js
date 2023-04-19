@@ -1658,10 +1658,11 @@ async function getCharacterSpeed(character = selectedCharacter) {
     if (typeof race.speed === 'number') {
       return race.speed;
     } else {
-      let result = '';
+      let result = '<div class="speed-val">';
       Object.entries(race.speed).forEach((entry) => {
         result += `${util_capitalize(entry[0])}: ${entry[1]}<br/>`
       });
+      result += '</div>'
       return result;
     }
   }

@@ -5,6 +5,7 @@ import "../dnd-tabs.js";
 import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-switch";
+import "../dnd-icon";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
 import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters } from '../../util/charBuilder.js';
@@ -14,6 +15,7 @@ import { rollEventChannel } from '../../util/roll.js';
 import { readRouteSelection, routeEventChannel, setRouteSelection } from '../../util/routing.js';
 import { togglePrimarySecondary } from '../../util/darkmode.js';
 import '@vaadin/vaadin-dialog';
+import '@vaadin/vaadin-menu-bar';
 
 class DndCharacterBuilderView extends PolymerElement {
   static get properties() {
@@ -71,6 +73,7 @@ class DndCharacterBuilderView extends PolymerElement {
     // ]
     
     this.tabs = this.defaultTabs();
+    this.menuItems = this.defaultMenu();
   }
 
   connectedCallback() {
@@ -286,6 +289,60 @@ class DndCharacterBuilderView extends PolymerElement {
       { label: "", icon: "dice", viewId: "rolls" },
     ]
   }
+  
+  defaultMenu() {
+    return [
+      { component: this.createMenuItem('plus'), key: 'add', tooltip: 'Create New Character'},
+      { component: this.createMenuItem('trash'), key: 'delete' , tooltip: 'Delete Character'},
+      { component: this.createMenuItem('download'), tooltip: 'Download Character Data', children: [
+        { text: 'Download', key: 'download' },
+        { text: 'Download All', key: 'download-all' }
+      ]},
+      { component: this.createMenuItem('upload'), tooltip: 'Upload Character Data', key: 'upload' }
+    ];
+  }
+
+  _menuItemSelected(e) {
+    switch(e.detail.value.key) {
+      case 'add':
+        this.newCharacter();
+        break;
+
+      case 'delete':
+        this.openDeleteModal();
+        break;
+
+      case 'download':
+        this.downloadCharacter();
+        break;
+
+      case 'download-all':
+        this.downloadCharacters();
+        break;
+
+      case 'upload':
+        this.$.fileSelector.click();
+        break;
+    }
+  }
+
+  createMenuItem(iconName, text, isChild = false) {
+    const item = document.createElement('vaadin-context-menu-item');
+    const icon = document.createElement('dnd-icon');
+
+    if (isChild) {
+      icon.style.width = 'var(--lumo-icon-size-s)';
+      icon.style.height = 'var(--lumo-icon-size-s)';
+      icon.style.marginRight = 'var(--lumo-space-s)';
+    }
+
+    icon.setAttribute('icon', iconName);
+    item.appendChild(icon);
+    if (text) {
+      item.appendChild(document.createTextNode(text));
+    }
+    return item;
+  }
 
   newCharacter() {
     addCharacter();
@@ -365,26 +422,17 @@ class DndCharacterBuilderView extends PolymerElement {
           flex-direction: column;
         }
 
-        .char-change {
-          display: flex;
-          flex-wrap: wrap;
-        }
-        .char-change vaadin-text-field {
+        vaadin-text-field {
           font-size: 24px;
           margin: 0 8px 12px 0;
-          max-width: calc(100% - 50px);
+          --vaadin-field-default-width: null;
         }
-        .char-change .mdc-icon-button {
-          margin-left: 0px;
-        }
-        .char-name {
+        .char-input-wrap {
           display: flex;
-          flex-direction: column;
         }
-        .char-detail-edit {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 16px;
+        .char-input-wrap.fixed {
+          position: fixed;
+          top: 0;
         }
         .char-detail {
           font-size: 16px;
@@ -399,6 +447,7 @@ class DndCharacterBuilderView extends PolymerElement {
           font-size: 16px;
           font-style: italic;
         }
+
         .roll-container {
           position: relative;
         }
@@ -456,13 +505,6 @@ class DndCharacterBuilderView extends PolymerElement {
         .drawer-btn {
           margin-bottom: 20px;
         }
-        .download-mobile {
-          margin-bottom: 20px;
-          background: var(--mdc-theme-secondary) !important;
-        }
-        .not-edit-mode .download-mobile {
-          display: none;
-        }
 
         .tab-wrap {
           background-color: var(--mdc-theme-surface);
@@ -473,58 +515,13 @@ class DndCharacterBuilderView extends PolymerElement {
         #tabTarget {
           flex-grow: 1;
         }
-
-        .buttons {
-          display: flex;
-          width: 100%;
-          margin-left: auto;
-          margin-top: -30px;
-          justify-content: flex-end;
-          height: 55px;
-        }
-        
-        .modal-content {
-          display: flex;
-          justify-content: center;
-        }
-        .modal-footer {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 20px;
-        }
-        .modal-footer dnd-button:first-child {
-          margin-right: 40px;
-        }
-
-        .not-edit-mode .delete-char,
-        .not-edit-mode .add-char {
-          display: none;
-        }
-        .not-edit-mode .download-char,
-        .not-edit-mode .download-all-char,
-        .not-edit-mode .upload-char {
-          display: block;
-        }
-        .download-char,
-        .download-all-char,
-        .upload-char {
-          display: none;
-        }
-        .download-all-char .material-icons {
-          font-size: 16px;
-          position: absolute;
-          right: 4px;
-          top: 8px;
-        }
-
-        .upload-char input {
+        #fileSelector {
           display: none;
         }
 
-        .upload-char .mdc-icon-button {
-          overflow: hidden;
+        vaadin-menu-bar {
+          margin: 4px 0;
         }
-
 
         @media(max-width: 419px) {
           .thumb-menu {
@@ -557,6 +554,10 @@ class DndCharacterBuilderView extends PolymerElement {
           .tab-wrap {
             min-height: calc(var(--vh, 1vh) * 100 - 250px);
           }
+
+          vaadin-menu-bar {
+            margin-right: -12px;
+          }
         }
 
         @media(min-width: 921px) {
@@ -568,16 +569,6 @@ class DndCharacterBuilderView extends PolymerElement {
             position: relative;
             top: -10px;
           }
-          .upload-char,
-          .download-char,
-          .download-all-char,
-          .delete-char,
-          .add-char {
-            display: block;
-          }
-          .buttons {
-            margin-top: 0;
-          }
           .drawer-btn {
             display: none;
           }
@@ -586,49 +577,25 @@ class DndCharacterBuilderView extends PolymerElement {
 
       <div class$="[[_editModeClass(isEditMode)]]">
         <div class="head-wrap">
-          <div class="char-change">
-            <div class="char-name">
-              <div>
-                <vaadin-text-field id="name" class="name" value="{{characterName}}" disabled$="[[!isEditMode]]"></vaadin-text-field>
-                <dnd-character-select mini></dnd-character-select>
-              </div>
-
-              <div class="char-detail-edit">
-                <div class="char-detail">
-                  <span class="char-detail__class">[[classLevel]]</span>
-                  <span class="char-detail__race-background">[[race]], [[background]]</span>
-                </div>
-              </div>
-            </div>
+          <div class="char-input-wrap">
+            <vaadin-text-field id="name" class="name" value="{{characterName}}" disabled$="[[!isEditMode]]"></vaadin-text-field>
+            <dnd-character-select mini></dnd-character-select>
           </div>
-          <div class="buttons">
-            <div class="thumb-menu">
-              <div class="roll-container" id="rollContainer"></div>
-              <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
-              <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="openDrawer">logout</button>
-            </div>
-            <button class="mdc-icon-button material-icons add-char" on-click="newCharacter">person_add</button>
-            <button class="mdc-icon-button material-icons delete-char" on-click="openDeleteModal">delete</button>
-            <button class="mdc-icon-button material-icons download-char" on-click="downloadCharacter">file_download</button>
-            <button class="mdc-icon-button material-icons download-all-char" on-click="downloadCharacters">file_download <span class="material-icons">playlist_add</span></button>
-            <label class="upload-char">
-              <span class="mdc-icon-button">
-                <span class=" material-icons">file_upload</span>
-              </span>
-              <input type="file" id="file-selector" accept=".json" on-change="processUpload" />
-            </label>
+
+          <div class="char-detail">
+            <span class="char-detail__class">[[classLevel]]</span>
+            <span class="char-detail__race-background">[[race]], [[background]]</span>
           </div>
         </div>
 
-        <vaadin-dialog no-close-on-esc no-close-on-outside-click opened="[[deleteModalOpen]]">
-          <template>
-            <div class="modal-content">Delete this character?</div>
-            <div class="modal-footer">
-              <dnd-button label="Delete" on-click="removeCharacter"></dnd-button>
-              <dnd-button label="Cancel" on-click="closeDeleteModal"></dnd-button>
-            </div>
-          </template>
-        </vaadin-dialog>
+        <div class="thumb-menu">
+          <div class="roll-container" id="rollContainer"></div>
+          <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
+          <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="openDrawer">logout</button>
+        </div>
+
+        <vaadin-menu-bar theme="icon end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>
+        <input type="file" id="fileSelector" accept=".json" on-change="processUpload" />
 
         <div class="character-builder--tabs-wrapper">
           <dnd-tabs id="tabs" class='fixed--bottom' theme="large" tabs="[[tabs]]" initial-selected-index="[[initialSelectedTab]]"></dnd-tabs>
@@ -638,6 +605,31 @@ class DndCharacterBuilderView extends PolymerElement {
             <dnd-spinner loading$="[[loading]]"></dnd-spinner>
           </div>
         </div>
+
+        <vaadin-dialog opened="{{deleteModalOpen}}">
+          <template>
+            <style>
+              .modal-content {
+                display: flex;
+                justify-content: center;
+              }
+              .modal-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+              }
+              .modal-footer dnd-button:first-child {
+                margin-right: 40px;
+                --mdc-theme-primary: var(--mdc-theme-error);
+              }
+            </style>
+            <div class="modal-content">Delete this character?</div>
+            <div class="modal-footer">
+              <dnd-button label="Delete" border on-click="removeCharacter"></dnd-button>
+              <dnd-button label="Cancel" border on-click="closeDeleteModal"></dnd-button>
+            </div>
+          </template>
+        </vaadin-dialog>
       </div>
     `;
   }

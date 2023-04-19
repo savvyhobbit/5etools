@@ -313,7 +313,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         <div class="row-wrap">
           <div class="heading">
             <h2>Extra Features</h2>
-            <vaadin-select add theme="large" id="optionAdd" class="label--secondary" on-change="_addAdditionalOption" placeholder="<Add Additional Feature>" disabled$="[[!isEditMode]]" hidden$="[[!isEditMode]]">
+            <vaadin-select add-button id="optionAdd" class="label--secondary" on-change="_addAdditionalOption" placeholder="<Add Additional Feature>" disabled$="[[!isEditMode]]" hidden$="[[!isEditMode]]">
               <template>
                 <vaadin-list-box>
                   <template is="dom-repeat" items="[[additionalOptionAddOptions]]">

@@ -156,7 +156,6 @@ class DndSelectionList extends PolymerElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    console.error("selection-list disconnected");
   }
 
   _loadingChange() {

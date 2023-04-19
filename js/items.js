@@ -28,11 +28,6 @@ function renderSelection(item, rootEl, data, makeSmall) {
 	if (makeSmall) {
 		wrap.querySelector('.stats-wrapper').classList.add('small');
 	}
-	
-	// const sourceEl = rootEl.querySelector(".stats-wrapper .source")
-	// const source = item.source;
-	// const sourceFull = Parser.sourceJsonToFull(source);
-	// sourceEl.innerHTML = (`<span class="source${item.source}">${sourceFull},</span> page ${item.page}`);
 
 	rootEl.querySelector(".stats-wrapper .value").innerHTML = (item.value ? item.value+(item.weight ? ", " : "") : "");
 	rootEl.querySelector(".stats-wrapper .weight").innerHTML = (item.weight ? item.weight+(item.weight == 1 ? " lb." : " lbs.") : "");

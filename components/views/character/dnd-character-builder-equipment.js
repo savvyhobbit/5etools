@@ -14,7 +14,9 @@ import {
   getItemAtId,
   addItem
 } from "../../../util/charBuilder";
+import "../../dnd-icon";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
+import '@vaadin/polymer-legacy-adapter/template-renderer.js';
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
@@ -249,6 +251,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   }
 
   _deleteItem(e) {
+    e.preventDefault();
+    e.stopPropagation();
     let uniqueId = e.model.__data.item && e.model.__data.item.uniqueId !== undefined ? e.model.__data.item.uniqueId : undefined;
     removeItem(uniqueId);
   }
@@ -369,10 +373,12 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           display: flex;
           flex-direction: row;
           align-items: center;
-          justify-content: space-between;
           border-bottom: 1px solid var(--lumo-contrast-10pct);
         }
-        .reference-link:hover {
+        .reference-link {
+          margin-right: auto;
+        }
+        .mdc-icon-button:hover {
           color: var(--mdc-theme-secondary);
         }
 
@@ -560,12 +566,13 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
       <div class="heading">
         <h2>Inventory</h2>
-        <button class="mdc-icon-button material-icons" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">logout</button>
+        <button class="mdc-icon-button reference-link material-icons" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">logout</button>
+        <button class="mdc-icon-button add-item" hidden$="[[_hasActive(activeItem)]]" on-click="_addItem"><dnd-icon icon="plus"></dnd-icon></button>
         <button class="mdc-icon-button close-item material-icons" hidden$="[[!_hasActive(activeItem)]]" on-click="_clearSelection">close</button>
       </div>
       <div class="col-wrap">
         <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
-          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" active-item="{{activeItem}}" height-by-rows rows-draggable theme="no-border no-row-borders no-row-padding" >
+          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" active-item="{{activeItem}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
@@ -582,10 +589,10 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                   </div>
                   <div hidden$="[[item.hasQuantity]]" class="item-wrap__checkboxes">
                     <span on-click="_setItemEquipped">
-                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]">Equip</vaadin-checkbox>
+                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]" label="Equip"></vaadin-checkbox>
                     </span>
                     <span on-click="_setItemAttuned">
-                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]">Attune</vaadin-checkbox>
+                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]" label="Attune"></vaadin-checkbox>
                     </span>
                   </div>
                   <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
@@ -600,7 +607,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
         <div class="row-wrap details-row" hidden$="[[!_hasActive(activeItem)]]">
           <div class="details-wrap">          
-            <dnd-character-builder-equipment-item-detail small-render item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
+            <dnd-character-builder-equipment-item-detail item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
           </div>
         </div>
       </div>

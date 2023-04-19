@@ -965,6 +965,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           border-radius: 4px;
           white-space: pre-line;
           padding: 14px 14px 1px;
+          line-height: 1.5;
         }
         .details > .statsBlockHead:first-child > .stat-name {
           margin-top: 0;

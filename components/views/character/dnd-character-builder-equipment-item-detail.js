@@ -80,11 +80,6 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
       itemType: {
         type: String,
         value: ''
-      },
-      smallRender: {
-        type: Boolean,
-        reflectToAttribute: true,
-        value: false
       }
     };
   }
@@ -180,7 +175,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
 
     if (this.item.itemRef && !this.item.lookupFailed) {
       this.hasRenderedOutput = true;
-      renderSelection(this.item, this.$.renderedOutput, undefined, this.smallRender);
+      renderSelection(this.item, this.$.renderedOutput);
     } else {
       this.hasRenderedOutput = false;
     }
@@ -420,6 +415,10 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     return false;
   }
 
+  _sourceFull(source) {
+    return source && Parser.sourceJsonToFull(source);
+  }
+
   static get template() {
     return html`
       <style include="material-styles my-styles"></style>
@@ -480,13 +479,6 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           display: block;
         }
 
-        h2 {
-          margin-top: 0;
-          font-size: 16px;
-          font-weight: bold;
-          margin-bottom: 8px;
-        }
-
         vaadin-checkbox {
           width: fit-content;
         }
@@ -511,28 +503,71 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           margin-left: 10px;
         }
 
-        .margin-bottom_large {
-          margin-bottom: 0 !important;
+
+        h2 {
+          margin-top: 0;
+          font-size: 24px;
+          margin-bottom: 2px;
+          line-height: 1.2;
+        }
+        .notes-container {
+          margin-top: 16px;
+          line-height: 1.4;
+        }
+        .notes-container__label {
+          font-weight: bold;
         }
 
-        @media(min-width: 921px) {
-          h2 {
-            font-size: 24px;
-          }
+        .stats-wrapper {
+          font-size: 14px;
+          line-height: 1.4;
+          margin-top: 16px;
+        }
+        .stats-wrapper > .statsBlockHead:first-child > .stat-name {
+          margin-top: 0;
+        }
+        .stats-wrapper .statsBlockHead .stat-name {
+          font-size: 22px;
+          margin-bottom: 2px;
+        }
+        .stats-wrapper .statsBlockSubHead .stat-name {
+          font-size: 18px;
+        }
+        .stats-wrapper .text {
+          margin-top: 16px;
+        }
+        .stats-wrapper p {
+          margin-bottom: 8px;
+        }
+        .stats-wrapper .statsInlineHead:last-child {
+          margin-bottom: 0;
+        }
+        .stats-wrapper .statsInlineHead .stat-name {
+          font-size: inherit;
+        }
+        .margin-bottom_large,
+        .stats-wrapper .margin-bottom_med {
+          margin-bottom: 0 !important;
+        }
+        .source {
+          display: block !important;
+          color: var(--lumo-contrast-70pct);
+          font-size: 13px;
+          margin-top: 0px;
+          margin-bottom: 12px;
         }
       </style>
 
       <div hidden$="[[!item]]">
         <div hidden$="[[isEditMode]]">
-          <div hidden$="[[!hasRenderedOutput]]">
-            <h2>[[item.name]]</h4>
-            <div>[[item.notes]]</div>
-            <div hidden$="[[item.hideRef]]" id="renderedOutput"></div>
+          <h2>[[item.name]]</h2>
+          <div hidden="[[!item.source]]" class="source">[[_sourceFull(item.source)]]</div>
+          <div hidden="[[!item.notes]]" class="notes-container">
+            <span hidden$="[[!hasRenderedOutput]]" class="notes-container__label">Notes.</span>
+            [[item.notes]]
           </div>
-
-          <div hidden$="[[hasRenderedOutput]]">
-            <h2>[[item.name]]</h4>
-            <div>[[item.notes]]</div>
+          <div hidden$="[[!hasRenderedOutput]]">
+            <div hidden$="[[item.hideRef]]" id="renderedOutput"></div>
           </div>
         </div>
 
@@ -604,11 +639,11 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
             </vaadin-select>
 
             <div class="edit__checkboxes">
-              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem">Has Quantity</vaadin-checkbox>
-              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem">Disadvantage on Stealth</vaadin-checkbox>
-              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem">Requires Attunement</vaadin-checkbox>
-              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem">Wondrous</vaadin-checkbox>
-              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem">Hide Reference</vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem" label="Has Quantity"></vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem" label="Disadvantage on Stealth"></vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem" label="Requires Attunement"></vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem" label="Wondrous"></vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem" label="Hide Reference"></vaadin-checkbox>
             </div>
 
             <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-blur="_updateItem"></vaadin-text-area>

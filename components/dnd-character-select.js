@@ -29,10 +29,9 @@ class DndCharacterSelect extends PolymerElement {
     super.connectedCallback();
 
     this.characterChangeHandler = (e) => {
-      this.selectedCharacter = JSON.parse(JSON.stringify(e.detail.character));
+      this.selectedCharacter = e.detail.character;
       this.characterOptions = e.detail.characters;
       this.$.select.value = this.selectedCharacter && this.selectedCharacter.id + "";
-      this.$.select.render();
     };
 
     getCharacterChannel().addEventListener("character-selected", this.characterChangeHandler);
