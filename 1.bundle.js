@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{166:function(t,e,i){"use strict";i(90),i(42);var n=i(103),a=i(56),s=i(2);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{166:function(t,e,i){"use strict";i(91),i(42);var n=i(104),a=i(56),s=i(2);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
@@ -46,7 +46,7 @@ const r=s.b`
   :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
     --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
   }
-`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(72);var l=i(3),o=i(32),d=i(33),u=i(57),p=i(102),h=i(55),c=i(73);
+`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(73);var l=i(3),o=i(32),d=i(33),u=i(57),p=i(103),h=i(55),c=i(74);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
@@ -136,7 +136,7 @@ Object(s.c)("vaadin-number-field",c.a,{moduleId:"vaadin-number-field-styles"});c
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-class v extends m{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(null!=t&&!this.__hasOnlyDigits(t))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${t}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d+$/.test(String(t))}}customElements.define(v.is,v);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},169:function(t,e,i){"use strict";i(125);
+class v extends m{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(null!=t&&!this.__hasOnlyDigits(t))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${t}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d+$/.test(String(t))}}customElements.define(v.is,v);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},169:function(t,e,i){"use strict";i(126);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -147,7 +147,7 @@ class v extends m{static get is(){return"vaadin-integer-field"}constructor(){sup
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-i(99).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},182:function(t,e,i){"use strict";i(90),i(29),i(42),i(45);var n=i(56),a=i(2);
+i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},182:function(t,e,i){"use strict";i(91),i(29),i(42),i(45);var n=i(56),a=i(2);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -204,7 +204,7 @@ const s=a.b`
   [part='input-field'] ::slotted(vaadin-icon) {
     margin-top: calc((var(--lumo-icon-size-m) - 1em * var(--lumo-line-height-s)) / -2);
   }
-`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(72);var r=i(3),l=i(32),o=i(108),d=i(33),u=i(102),p=i(55),h=i(77),c=i(73),m=i(34);
+`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(73);var r=i(3),l=i(32),o=i(109),d=i(33),u=i(103),p=i(55),h=i(78),c=i(74),m=i(34);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
