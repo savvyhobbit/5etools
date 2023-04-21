@@ -123,19 +123,19 @@ class DndCharacterPopup extends PolymerElement {
         .left-wrap {
           display: flex;
           align-items: center;
+          flex-grow: 1;
         }
         .open-char-button {
           margin-right: 10px;
         }
         dnd-character-select {
           width: 100%;
+          --vaadin-field-default-width: some;
         }
         .char-select-wrap {
           display: flex;
           flex-direction: column;
-        }
-        .char-select-wrap[smaller] {
-          width: 140px;
+          flex-grow: 1;
         }
 
         .feature-button {

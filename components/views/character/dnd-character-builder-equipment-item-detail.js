@@ -122,7 +122,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
 
     this.rarityTypes = RARITY_TYPES;
     this.damageTypes = DAMAGE_TYPES;
-    this.resistTypes = ['<None>', ...DAMAGE_TYPES];
+    this.resistTypes = ['None', ...DAMAGE_TYPES];
     this.weaponPropertyOptions = [
       { name: 'Two-Handed', value: '2H' },
       { name: 'Ammunition', value: 'A' },
@@ -172,25 +172,18 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
       return;
     }
     console.error('itemDetail:', this.item);
-
-    if (this.item.itemRef && !this.item.lookupFailed) {
-      this.hasRenderedOutput = true;
-      renderSelection(this.item, this.$.renderedOutput);
-    } else {
-      this.hasRenderedOutput = false;
-    }
+    renderSelection(this.item, this.$.renderedOutput);
     this.itemType = this._getItemType();
     this.hasAC = this.item.type === 'S' || !!this.item.armor;
-    if (this.hasAC) {
-      this.armorAC = this.item.ac;
-    }
+    this.armorAC = this.item.ac;
     this.isArmor = !!this.item.armor;
     this.isMartial = this.item.weaponCategory === 'Martial';
-    if (this.item.weapon) {
+    this.weaponProperties = [];
+    this.weaponMagicModifier = 0;
+    if (this.item.weapon || this.item.weaponCategory) {
       this.weaponMagicModifier = parseInt(this.item.genericBonus, 10);
-      const propStr = this.item.property;
-      if (propStr) {
-        const props = propStr.split(',').map(prop => {
+      if (this.item.property) {
+        const props = this.item.property.split(',').map(prop => {
           const propObj = this.weaponPropertyOptions.find((option) => option.value === prop.trim());
           if (propObj) {
             return propObj.name;
@@ -207,8 +200,8 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
       }
     }
     this.itemRarity = this.item.rarity;
-    this.itemName = this.item.name;
-    this.itemWeight = this.item.weight;
+    this.itemName = this.item.name || '';
+    this.itemWeight = this.item.weight || null;
     this.canHaveResist = this.item.armor || this.item.type === 'P' || this.item.type === 'RG';
     this.itemResist = this.item.resist;
     this.canHaveQuantity = this.item.type === 'P' || this.item.type === 'A' || this.item.type === 'EXP' || this.item.type === '$';
@@ -390,7 +383,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
 
   _itemResistChange() {
     if (this.itemResist) {
-      this.storedItem.resist = this.itemResist === '<None>' ? null : this.itemResist;
+      this.storedItem.resist = this.itemResist === 'None' ? null : this.itemResist;
       setItem(this.item);
     }
   }
@@ -563,12 +556,10 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           <h2>[[item.name]]</h2>
           <div hidden="[[!item.source]]" class="source">[[_sourceFull(item.source)]]</div>
           <div hidden="[[!item.notes]]" class="notes-container">
-            <span hidden$="[[!hasRenderedOutput]]" class="notes-container__label">Notes.</span>
+            <span class="notes-container__label">Notes.</span>
             [[item.notes]]
           </div>
-          <div hidden$="[[!hasRenderedOutput]]">
-            <div hidden$="[[item.hideRef]]" id="renderedOutput"></div>
-          </div>
+          <div id="renderedOutput"></div>
         </div>
 
         <template is="dom-if" if="[[isEditMode]]">
@@ -643,7 +634,6 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
               <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem" label="Disadvantage on Stealth"></vaadin-checkbox>
               <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem" label="Requires Attunement"></vaadin-checkbox>
               <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem" label="Wondrous"></vaadin-checkbox>
-              <vaadin-checkbox hidden$="[[!storedItem.itemRef]]" checked="{{storedItem.hideRef}}" on-change="_updateItem" label="Hide Reference"></vaadin-checkbox>
             </div>
 
             <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-blur="_updateItem"></vaadin-text-area>

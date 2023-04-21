@@ -426,6 +426,8 @@ class DndCharacterBuilderView extends PolymerElement {
           font-size: 24px;
           margin: 0 8px 12px 0;
           --vaadin-field-default-width: null;
+          flex-grow: 1;
+          max-width: 500px;
         }
         .char-input-wrap {
           display: flex;
@@ -498,9 +500,6 @@ class DndCharacterBuilderView extends PolymerElement {
         .thumb-menu__btn {
           border-radius: 50%;
           box-shadow: 0px 0px 20px -5px var(--mdc-theme-text-primary-on-background);
-        }
-        .edit-mode .edit-button {
-          background: var(--mdc-theme-secondary) !important;
         }
         .drawer-btn {
           margin-bottom: 20px;

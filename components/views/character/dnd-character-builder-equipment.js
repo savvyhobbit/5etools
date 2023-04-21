@@ -15,7 +15,7 @@ import {
   addItem
 } from "../../../util/charBuilder";
 import "../../dnd-icon";
-import { getEditModeChannel, isEditMode } from "../../../util/editMode";
+import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import '@vaadin/polymer-legacy-adapter/template-renderer.js';
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-grid";
@@ -46,9 +46,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       },
       activeItem: {
         type: Object,
-      },
-      isMobile: {
-        type: Boolean
+        observer: '_activeItemChange'
       },
     };
   }
@@ -57,6 +55,27 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     return [
       '_expandedItemsChange(expandedItems.*)'
     ]
+  }
+
+  _activeItemChange(nextActiveItem, prevActiveItem) {
+    if ((!prevActiveItem || !this.isMobile() )&& nextActiveItem) {
+      this.previousScrollPosition = window.scrollY;
+      if (this.getBoundingClientRect().y < 0) {
+        const activeItemTop = window.scrollY + this.getBoundingClientRect().y - 57;
+        setTimeout(() => {
+          window.scrollTo(0, activeItemTop);
+        }, 0);
+      }
+    } else if (!nextActiveItem && prevActiveItem && this.previousScrollPosition && this.isMobile()) {
+      setTimeout(() => {
+        window.scrollTo(0, this.previousScrollPosition);
+        this.previousScrollPosition = 0;
+      }, 0);
+    }
+  }
+
+  isMobile() {
+    return window.innerWidth <= 768;
   }
 
   _expandedItemsChange() {
@@ -303,7 +322,11 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   }
 
   _addItem() {
-    addItem({}, false);
+    const newItemId = addItem({name: ''}, false);
+    dispatchEditModeChange(true);
+    setTimeout(() => {
+      this.activeItem = getItemAtId(this.inventory, newItemId);
+    }, 0);
   }
 
   _preventDefault(e) {
@@ -540,6 +563,10 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
 
         @media(min-width: 921px) {
+          .reference-link,
+          .add-item {
+            display: block !important;
+          }
           .item-wrap[active] {
             background: var(--_lumo-grid-selected-row-color);
           }

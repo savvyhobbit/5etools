@@ -137,7 +137,7 @@ styleElement.innerHTML = `
         background-color: var(--mdc-theme-surface, #fff) !important;
       }
 
-      headerdark.mdc-theme--on-primary,
+      header.dark.mdc-theme--on-primary,
       header.dark .mdc-theme--on-primary {
         color: #000 !important;
         color: var(--mdc-theme-text-primary-on-background, #000) !important

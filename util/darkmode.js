@@ -6,9 +6,11 @@ export function togglePrimarySecondary(isPrimary, el) {
     if (isPrimary) {
         styleProp.setProperty("--mdc-theme-primary", "var(--mdc-theme-secondary)");
         styleProp.setProperty("--mdc-theme-primary-darker", "var(--mdc-theme-secondary-lighter)");
+        styleProp.setProperty("--lumo-primary-text-color", "var(--mdc-theme-secondary)");
     } else {
         styleProp.removeProperty("--mdc-theme-primary");
         styleProp.removeProperty("--mdc-theme-primary-darker");
+        styleProp.removeProperty("--lumo-primary-text-color");
     }
 }
 

@@ -86,7 +86,13 @@ function renderSelection(item, rootEl, data, makeSmall) {
 	const entryList = {type: "entries", entries: item.entries};
 	const renderStack = [];
 	renderer.recursiveEntryRender(entryList, renderStack, 1);
-	rootEl.querySelector(".stats-wrapper .text").innerHTML = (utils_makeRoller(renderStack.join("")).split(item.name.toLowerCase()).join("<i>"+item.name.toLowerCase()+"</i>"));
+	let result = utils_makeRoller(renderStack.join(""));
+	if (item.name) {
+		result = result
+			.split(item.name.toLowerCase())
+			.join("<i>"+item.name.toLowerCase()+"</i>");
+	}
+	rootEl.querySelector(".stats-wrapper .text").innerHTML = result;
 }
 
 function adjustItem(item) {

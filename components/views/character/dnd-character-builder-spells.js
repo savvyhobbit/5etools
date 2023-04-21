@@ -43,21 +43,6 @@ class DndCharacterBuilderSpells extends PolymerElement {
     };
   }
 
-  static get observers() {
-    return [
-      '_expandedItemsChange(expandedItems.*)'
-    ]
-  }
-
-  _expandedItemsChange() {
-    window.scrollTo(0, this.originalScrollHeight);
-  }
-
-  _recordScrollHeight() {
-    // Fix reposition issue after tree expand/collapse toggle
-    this.originalScrollHeight = window.scrollY;
-  }
-
   __filterChangeThrottled() {
     if (this.filterStr.length) {
       if (!this.oldExpanded) {
@@ -1033,6 +1018,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .spells-prepared-text {
           margin-right: 6px;
           margin-left: auto;
+          user-select: none;
         }
         .prepared-count {
           color: var(--mdc-theme-primary);
@@ -1152,7 +1138,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         .spell-super-text {
           position: absolute;
           top: 0px;
-          font-size: 10px;
+          font-size: 11px;
           left: 0px;
           color: var(--mdc-theme-text-secondary-on-background);
         }
@@ -1434,7 +1420,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
   
               <template is="dom-if" if="[[_equal(item.id, 'level')]]">
                 <div class="level-outer-wrap">
-                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" on-click='_recordScrollHeight'>
+                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}">
                     <h4 class="level-wrap">[[_toLevel(item.level)]]<span hidden$="[[_hideSlotsLabel(isEditMode, item.level, item.parentClass)]]" class="label">([[item.spellSlots]] Slots)</span></h4>
                   </vaadin-grid-tree-toggle>
 
@@ -1461,7 +1447,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
               <template is="dom-if" if="[[_equal(item.id, 'spell')]]">
                 <div class="spell-outer-wrap">
-                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" class="spell-wrap" on-click='_recordScrollHeight'>
+                  <vaadin-grid-tree-toggle leaf="[[!item.hasChildren]]" expanded="{{expanded}}" class="spell-wrap">
                     <div class="spell-inner-wrap" has-super$="[[!_hideAbility(item.superLabel)]]" not-edit-mode$="[[!isEditMode]]">
                       <span class=spell-super-text>[[item.superLabel]]</span>
                       [[item.name]]

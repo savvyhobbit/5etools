@@ -10,7 +10,7 @@ import "./dnd-character-popup.js";
 import registerSwipe from '../util/swipe.js';
 import { setDarkmode } from "../util/darkmode.js";
 import { clearRouteSelection, routeEventChannel, readRouteView, notifyPreviewOpen } from '../util/routing.js';
-import { jqEmpty, timeout, util_capitalize } from '../js/utils.js';
+import { timeout } from '../js/utils.js';
 import './views/dnd-backgrounds-view';
 import './views/dnd-bestiary-view';
 import './views/dnd-conditions-view';
@@ -20,6 +20,7 @@ import './views/dnd-items-view';
 import './views/dnd-races-view';
 import './views/dnd-spells-view';
 import './views/dnd-variantrules-view';
+import { getEditModeChannel, isEditMode } from '../util/editMode.js';
 
 class DndLayout extends PolymerElement {
   static get properties() {
@@ -83,6 +84,12 @@ class DndLayout extends PolymerElement {
         }
       }
     });
+
+    this.editModeHandler = (e) => {
+      this.isEditMode = e.detail.isEditMode;
+    };
+    getEditModeChannel().addEventListener('editModeChange', this.editModeHandler.bind(this));
+    this.isEditMode = isEditMode();
   }
 
   disconnectedCallback() {
@@ -91,6 +98,7 @@ class DndLayout extends PolymerElement {
     this.removeEventListener("open-preview", this._openDrawerPreview.bind(this));
     this.removeEventListener("close-preview", this._closeDrawerPreview.bind(this));
     this.removeEventListener("open-drawer", this._openDrawer.bind(this));
+    getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler.bind(this));
   }
 
   selectedTitleChange() {
@@ -111,9 +119,9 @@ class DndLayout extends PolymerElement {
     darkModeSwitch.checked = this.darkModeSwitchChecked;
 
     if (this.darkModeSwitchChecked) {
-      this.shadowRoot.querySelector("header").classList.add("dark");
+      this.$.header.classList.add("dark");
     } else {
-      this.shadowRoot.querySelector("header").classList.remove("dark");
+      this.$.header.classList.remove("dark");
     }
     this.shadowRoot.querySelector(".darkmode-label").addEventListener("click", () => {
       darkModeSwitch.checked = !darkModeSwitch.checked;
@@ -122,9 +130,9 @@ class DndLayout extends PolymerElement {
     this.shadowRoot.querySelector(".mdc-switch__native-control").addEventListener("change", () => {
       window.localStorage.setItem("darkMode", darkModeSwitch.checked);
       if (darkModeSwitch.checked) {
-        document.body.classList.add("dark");
+        this.$.header.classList.add("dark");
       } else {
-        document.body.classList.remove("dark");
+        this.$.header.classList.remove("dark");
       }
       setDarkmode(darkModeSwitch.checked);
     });
@@ -357,6 +365,11 @@ class DndLayout extends PolymerElement {
           transition: padding-left 150ms ease-out;
         }
 
+        .mdc-theme--primary-bg[edit-mode] {
+          background-color: var(--mdc-theme-secondary) !important;
+          color: var(--mdc-theme-on-secondary) !important;
+        }
+
         @media(min-width: 921px) {
           .page-title[hidden] {
             display: block !important;
@@ -367,7 +380,7 @@ class DndLayout extends PolymerElement {
         }
       </style>
 
-      <header class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--primary-bg mdc-theme--on-primary">
+      <header id="header" edit-mode$="[[isEditMode]]" class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--primary-bg mdc-theme--on-primary">
         <div class="mdc-top-app-bar__row">
           <div class="breadcrumbs mdc-theme--on-primary">
             <div id="breadcrumbcontainer" class="container breadcrumbs__list">
@@ -506,7 +519,7 @@ class DndLayout extends PolymerElement {
               </a> -->
 
             </div>
-            <template is="dom-if" if="[[hasPreview]]">
+            <template is="dom-if" if="[[hasPreview]]" restamp>
               <div class="preview-wrap" id="previewTarget">
                 <dnd-selection-list model-id="[[previewViewId]]" selected-item-key="[[previewSelectedItem]]" non-global></dnd-selection-list>
               </div>

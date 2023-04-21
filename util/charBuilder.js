@@ -1191,6 +1191,7 @@ function addItem(item, isFromRef = false, character = selectedCharacter) {
   }
   
   saveCharacter(character);
+  return character.itemCounter - 1;
 }
 
 function spliceItems(index, item, character = selectedCharacter) {
@@ -1273,8 +1274,7 @@ async function parseItem(storedItem, index, parentItem, character) {
   newItem = {
     ...newItem,
     ...cloneDeep(storedItem),
-    storedItem: cloneDeep(storedItem),
-    storedItemREF: storedItem
+    storedItem: cloneDeep(storedItem)
   };
 
   if (parentItem) {
