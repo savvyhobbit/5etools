@@ -172,7 +172,7 @@ function renderSelection(mon, rootEl) {
 	var name = mon.name;
 	window.monsterName = name;
 	var source = mon.source;
-	var type = mon._pTypes.asText;
+	var type = mon.type;
 
 	rootEl.querySelector("#name").innerHTML = (
 		`<span class="source source${source}" title="${Parser.sourceJsonToAbv(source)}">${Parser.sourceJsonToFull(source)}</span>`

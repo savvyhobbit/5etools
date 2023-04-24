@@ -288,27 +288,6 @@ function parseListData(data, columns) {
             // filters.categoryFilter = new Filter({header: "Category", items: ["Basic", "Generic Variant", "Specific Variant", "Other"], deselFn: deselectFilter("category", "Specific Variant")});
             // filters.categoryFilter.metric = "category";
           }
-          let attunement = "No";
-          if (curItem.reqAttune !== undefined) {
-            if (curItem.reqAttune === "YES") {
-              attunement = "Yes";
-              curItem.reqAttune = "(Requires Attunement)";
-            } else if (curItem.reqAttune === "OPTIONAL") {
-              attunement = "Optional";
-              curItem.reqAttune = "(Attunement Optional)";
-            } else if (curItem.reqAttune.toLowerCase().startsWith("by")) {
-              attunement = "By...";
-              curItem.reqAttune = "(Requires Attunement " + curItem.reqAttune + ")";
-            } else {
-              attunement = "Yes"; // throw any weird ones in the "Yes" category (e.g. "outdoors at night")
-              curItem.reqAttune = "(Requires Attunement " + curItem.reqAttune + ")";
-            }
-          }
-          // const tierTags = [];
-          // tierTags.push(curItem.tier ? curItem.tier : "None");
-          // tierTags.forEach(tt => filters.tierFilter.addIfAbsent(tt));
-          // curItem._fTier = tierTags;
-          curItem._fAttunement = attunement;
           curItem['render-item-rarity'] = curItem.rarity;
           break;
 

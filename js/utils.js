@@ -1015,7 +1015,7 @@ function getItemTypes(curItem) {
 	if (curItem.wondrous) type.push("Wondrous Item");
 	if (curItem.technology) type.push(curItem.technology);
 	if (curItem.age) type.push(curItem.age);
-	if (curItem.weaponCategory) type.push(curItem.weaponCategory + " Weapon");
+	if (curItem.weaponCategory) type.push(util_capitalize(curItem.weaponCategory) + " Weapon");
 	if (curItem.type) type.push(Parser.itemTypeToAbv(curItem.type));
 	return type;
 }

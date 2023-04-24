@@ -430,7 +430,7 @@ function loadAllItemData() {
 	promises.push(loadJSON(`${DATA_ROOT}magicvariants.json`));
 
 	return Promise.all(promises).then((data) => {
-		return mergeItemsData(data[0], data[1], data[2]);
+		return mergeItemsData(data[0].item, data[1], data[2].magicvariant);
 	});
 }
 
@@ -439,70 +439,79 @@ function mergeItemsData(itemData, basicItemData, variantData) {
 	const typeList = {};
 	let itemList = itemData;
 
-	let basicItemList = basicItemData.basicitems;
-	const itemPropertyList = basicItemData.itemProperty;
-	const itemTypeList = basicItemData.itemType;
 	// Convert the property and type list JSONs into look-ups, i.e. use the abbreviation as a JSON property name
-	for (let i = 0; i < itemPropertyList.length; i++) propertyList[itemPropertyList[i].abbreviation] = itemPropertyList[i].name ? JSON.parse(JSON.stringify(itemPropertyList[i])) : {"name": itemPropertyList[i].entries[0].name.toLowerCase(), "entries": itemPropertyList[i].entries};
-	for (let i = 0; i < itemTypeList.length; i++) typeList[itemTypeList[i].abbreviation] = itemTypeList[i].name ? JSON.parse(JSON.stringify(itemTypeList[i])): {"name": itemTypeList[i].entries[0].name.toLowerCase(), "entries": itemTypeList[i].entries};
-
-	let variantList = variantData;
-	itemList = itemList.concat(basicItemList);
-	for (let i = 0; i < variantList.length; i++) {
-		variantList[i].tier = variantList[i].inherits.tier;
-		variantList[i].rarity = variantList[i].inherits.rarity;
-		variantList[i].source = variantList[i].inherits.source;
-		variantList[i].page = variantList[i].inherits.page;
-		if(!variantList[i].entries && variantList[i].inherits.entries) variantList[i].entries=JSON.parse(JSON.stringify(variantList[i].inherits.entries));
-		if(variantList[i].requires.armor) variantList[i].armor = variantList[i].requires.armor
+	for (const itemProperty of basicItemData.itemProperty) {
+		propertyList[itemProperty.abbreviation]
+			= itemProperty.name 
+				? JSON.parse(JSON.stringify(itemProperty)) 
+				: {"name": itemProperty.entries[0].name.toLowerCase(), "entries": itemProperty.entries};
 	}
-	itemList = itemList.concat(variantList);
-	for (let i = 0; i < basicItemList.length; i++) {
-		const curBasicItem = basicItemList[i];
-		basicItemList[i].category = "Basic";
-		if(curBasicItem.entries === undefined) curBasicItem.entries=[];
-		const curBasicItemName = curBasicItem.name.toLowerCase();
-		for (let j = 0; j < variantList.length; j++) {
-			const curVariant = variantList[j];
-			const curRequires = curVariant.requires;
-			let hasRequired = curBasicItemName.indexOf(" (") === -1;
-			for (const requiredProperty in curRequires) if (curRequires.hasOwnProperty(requiredProperty) && curBasicItem[requiredProperty] !== curRequires[requiredProperty]) hasRequired=false;
-			if (curVariant.excludes) {
-				const curExcludes = curVariant.excludes;
-				for (const excludedProperty in curExcludes) if (curExcludes.hasOwnProperty(excludedProperty) && curBasicItem[excludedProperty] === curExcludes[excludedProperty]) hasRequired=false;
+	for (const itemType of basicItemData.itemType) {
+		typeList[itemType.abbreviation]
+			= itemType.name 
+				? JSON.parse(JSON.stringify(itemType))
+				: {"name": itemType.entries[0].name.toLowerCase(), "entries": itemType.entries};
+	}
+	window.itemPropertyList = propertyList;
+	window.itemTypeList = typeList;
+
+	itemList = itemList.concat(basicItemData.baseitem);
+
+	for (const basicItem of basicItemData.baseitem) {
+		basicItem.category = "Basic";
+		if (basicItem.entries === undefined) {
+			basicItem.entries=[];
+		}
+		const basicItemName = basicItem.name.toLowerCase();
+
+		for (const variantItem of variantData) {
+			let shouldApplyVariants = false;
+			for (const requiredProperty of variantItem.requires) {
+				for (const [requiredPropKey, requiredPropVal] of Object.entries(requiredProperty)) {
+					if (basicItem[requiredPropKey] === requiredPropVal) {
+						shouldApplyVariants = true;
+						break;
+					}
+				}
 			}
-			if (hasRequired) {
-				const curInherits = curVariant.inherits;
-				const tmpBasicItem = JSON.parse(JSON.stringify(curBasicItem));
+			if (variantItem.excludes) {
+				for (const excludedProperty in variantItem.excludes) {
+					if (basicItem[excludedProperty] === variantItem.excludes[excludedProperty]) {
+						shouldApplyVariants = false;
+						break;
+					}
+				}
+			}
+
+			if (shouldApplyVariants) {
+				const tmpBasicItem = JSON.parse(JSON.stringify(basicItem));
+				// todo, set value and weight based on valueExpression or weightExpression
 				delete tmpBasicItem.value; // Magic items do not inherit the value of the non-magical item
 				tmpBasicItem.category = "Specific Variant";
-				for (const inheritedProperty in curInherits) {
-					if (curInherits.hasOwnProperty(inheritedProperty)) {
-						if (inheritedProperty === "namePrefix") {
-							tmpBasicItem.name = curInherits.namePrefix+tmpBasicItem.name;
-						} else if (inheritedProperty === "nameSuffix") {
-							tmpBasicItem.name += curInherits.nameSuffix;
-						} else if (inheritedProperty === "entries") {
-							for (let k = curInherits.entries.length-1; k > -1; k--) {
-								let tmpText = curInherits.entries[k];
-								if (typeof tmpText === "string") {
-									if (tmpBasicItem.dmgType) tmpText = tmpText.replace("{@dmgType}", Parser.dmgTypeToFull(tmpBasicItem.dmgType));
-									if (curInherits.genericBonus) tmpText = tmpText.replace("{@genericBonus}", curInherits.genericBonus);
-									if (tmpText.indexOf("{@lowerName}") !== -1) tmpText = tmpText.split("{@lowerName}").join(curBasicItemName);
-								}
-								tmpBasicItem.entries.unshift(tmpText);
+				for (const inheritedProperty in variantItem.inherits) {
+					if (inheritedProperty === "namePrefix") {
+						tmpBasicItem.name = variantItem.inherits.namePrefix + tmpBasicItem.name;
+					} else if (inheritedProperty === "nameSuffix") {
+						tmpBasicItem.name += variantItem.inherits.nameSuffix;
+					} else if (inheritedProperty === "entries") {
+						for (let k = variantItem.inherits.entries.length - 1; k > -1; k--) {
+							let tmpText = variantItem.inherits.entries[k];
+							if (typeof tmpText === "string") {
+								if (tmpBasicItem.dmgType) tmpText = tmpText.replace("{@dmgType}", Parser.dmgTypeToFull(tmpBasicItem.dmgType));
+								if (variantItem.inherits.genericBonus) tmpText = tmpText.replace("{@genericBonus}", variantItem.inherits.genericBonus);
+								if (tmpText.indexOf("{@lowerName}") !== -1) tmpText = tmpText.split("{@lowerName}").join(basicItemName);
 							}
-						} else
-							tmpBasicItem[inheritedProperty] = curInherits[inheritedProperty];
+							tmpBasicItem.entries.unshift(tmpText);
+						}
+					} else {
+						tmpBasicItem[inheritedProperty] = variantItem.inherits[inheritedProperty];
 					}
 				}
 				itemList.push(tmpBasicItem);
 			}
 		}
 	}
-	window.itemPropertyList = propertyList;
-	window.itemTypeList = typeList;
-  	return itemList;
+	return itemList;
 }
 
 function parseSubraces(race) {

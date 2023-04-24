@@ -29,11 +29,21 @@ function renderSelection(item, rootEl, data, makeSmall) {
 		wrap.querySelector('.stats-wrapper').classList.add('small');
 	}
 
-	rootEl.querySelector(".stats-wrapper .value").innerHTML = (item.value ? item.value+(item.weight ? ", " : "") : "");
-	rootEl.querySelector(".stats-wrapper .weight").innerHTML = (item.weight ? item.weight+(item.weight == 1 ? " lb." : " lbs.") : "");
-	rootEl.querySelector(".stats-wrapper .rarity").innerHTML = ((item.tier ? ", "+item.tier : "")+(item.rarity ? ", "+item.rarity : ""));
-	rootEl.querySelector(".stats-wrapper .attunement").innerHTML = (item.reqAttune ? item.reqAttune : "");
-	rootEl.querySelector(".stats-wrapper .type").innerHTML = (item.typeText);
+	rootEl.querySelector(".stats-wrapper .value").innerHTML = item.value ? item.value + (item.weight ? ", " : "") : "";
+	rootEl.querySelector(".stats-wrapper .weight").innerHTML = item.weight ? item.weight + (item.weight == 1 ? " lb." : " lbs.") : "";
+	let attunement;
+	if (item.reqAttune) {
+		if (item.reqAttune === true) {
+			attunement = "requires attunement";
+		} else if (item.reqAttune === "optional") {
+			attunement = "attunement optional";
+		} else {
+			attunement = "requires attunement " + item.reqAttune;
+		}
+	}
+	rootEl.querySelector(".stats-wrapper .type").innerHTML = item.typeText ? item.typeText + (item.rarity ? ", ": "") : "";
+	rootEl.querySelector(".stats-wrapper .rarity").innerHTML = item.rarity ? item.rarity + (item.reqAttune ? " " : "") : "";
+	rootEl.querySelector(".stats-wrapper .attunement").innerHTML = attunement ? "(" + attunement + ")" : "";
 
 	rootEl.querySelector(".stats-wrapper .damage").innerHTML = ("");
 	rootEl.querySelector(".stats-wrapper .damageType").innerHTML = ("");
@@ -71,7 +81,7 @@ function renderSelection(item, rootEl, data, makeSmall) {
 
 	rootEl.querySelector(".stats-wrapper .properties").innerHTML = ("");
 	if (item.property) {
-		const properties = item.property.split(",");
+		const properties = item.property;
 		for (let i = 0; i < properties.length; i++) {
 			const prop = properties[i];
 			let a = window.itemPropertyList[prop].name;
@@ -106,6 +116,9 @@ function adjustItem(item) {
 	if (item.type === "GV") {
 		item.category = "Generic Variant";
 	}
+	if (item.type === "OTH") {
+		item.category = "Other";
+	}
 	if (item.category === undefined) {
 		item.category = "Other";
 	}
@@ -120,7 +133,7 @@ function adjustItem(item) {
 		}
 	}
 	if (item.property) {
-		const properties = item.property.split(",");
+		const properties = item.property;
 		for (let j = 0; j < properties.length; j++) {
 			if (window.itemPropertyList[properties[j]].entries) {
 				for (let k = 0; k < window.itemPropertyList[properties[j]].entries.length; k++) {

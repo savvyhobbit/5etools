@@ -183,7 +183,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     if (this.item.weapon || this.item.weaponCategory) {
       this.weaponMagicModifier = parseInt(this.item.genericBonus, 10);
       if (this.item.property) {
-        const props = this.item.property.split(',').map(prop => {
+        const props = this.item.property.map(prop => {
           const propObj = this.weaponPropertyOptions.find((option) => option.value === prop.trim());
           if (propObj) {
             return propObj.name;
@@ -354,7 +354,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
             return propObj.value;
           }
         }).filter(prop => !!prop);
-        this.storedItem.property = propCodes.join(',');
+        this.storedItem.property = propCodes;
         setItem(this.item);
       }
     }).bind(this);

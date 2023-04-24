@@ -205,7 +205,7 @@ class DndLayout extends PolymerElement {
   _openDrawer(e) {
     console.error('_openDrawer', e);
     if (e && e.detail && e.detail.viewId) {
-      this._openDrawerPreview(e.detail.viewId, e.detail.selectedItem);
+      this._openDrawerPreview(e.detail.viewId, e.detail.selectedItem, e.detail.decode);
     } else if (this.hasPreview) {
       this._adjustPreviewWidth();
     }
@@ -258,7 +258,10 @@ class DndLayout extends PolymerElement {
     }, 200)
   }
 
-  async _openDrawerPreview(viewId, selectedItem) {
+  async _openDrawerPreview(viewId, selectedItem, decodeName) {
+    if (decodeName) {
+      selectedItem.name = decodeURIComponent(selectedItem.name);
+    }
     this.previewSelectedItem = selectedItem || null;
     this._adjustPreviewWidth();
     console.error('_openDrawerPreview', { viewId, selectedItem });

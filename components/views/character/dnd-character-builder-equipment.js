@@ -46,6 +46,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       },
       activeItem: {
         type: Object,
+        value: null,
         observer: '_activeItemChange'
       },
     };
@@ -81,19 +82,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   _expandedItemsChange() {
     if (this.expandedItems && this.expandedItems.length) {
       this.expandedIds = this.expandedItems.filter(item => !!item).map((item) => item.uniqueId);
-      console.error(this.expandedIds);
-
-      if (this.openedItemID) {
-        this.$.grid.closeItemDetails(this.openedItemID);
-        this.openedItemID = undefined;
-      }
     }
-    window.scrollTo(0, this.originalScrollHeight);
-  }
-
-  _recordScrollHeight(e) {
-    // Fix reposition issue after tree expand/collapse toggle
-    this.originalScrollHeight = window.scrollY;
   }
 
   connectedCallback() {
@@ -213,47 +202,32 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       this.character = character;
       this.inventory = await getItems(character);
       console.error('inventory:', this.inventory);
-      const originalScrollHeight = window.scrollY;
       this.$.grid.clearCache();
-      if (this.openedItemID) {
-        const openedItem = getItemAtId(this.inventory, this.openedItemID.uniqueId);
-        if (openedItem) {
-          this.$.grid.openItemDetails(openedItem);
-        }
-      }
       if (this.expandedIds) {
         const expandedItems = this.expandedIds.map((id) => {
           return getItemAtId(this.inventory, id);
         });
         this.expandedItems = expandedItems;
       }
-      if (this.activeItem) {
-        this.activeItem = getItemAtId(this.inventory, this.activeItem.uniqueId);
+      if (this.activeItemID) {
+        this.activeItem = getItemAtId(this.inventory, this.activeItemID);
       }
-      window.scrollTo(0, originalScrollHeight);
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
   }
 
   _expandDetails(e) {
-    let data = e.model.__data.item,
-      stayClosed = this.$.grid.detailsOpenedItems.indexOf(data) > -1;
-
-    const originalScrollHeight = window.scrollY;
-
-    for (let item of this.$.grid.detailsOpenedItems) {
-      this.$.grid.closeItemDetails(item);
-    }
+    let item = e.model.__data.item,
+      stayClosed = this.activeItemID === item.uniqueId;
 
     if (stayClosed) {
-      this.$.grid.closeItemDetails(data);
-      this.openedItemID = undefined;
+      this.activeItemID = undefined;
+      this.activeItem = undefined;
+
     } else {
-      this.$.grid.openItemDetails(data);
-      this.openedItemID = data;
+      this.activeItemID = item.uniqueId;
+      this.activeItem = item;
     }
-    this.$.grid.notifyResize();
-    window.scrollTo(0, originalScrollHeight);
   }
 
   _flashCheckbox(checkboxEl) {
@@ -375,7 +349,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
   static get template() {
     return html`
-      <style include="material-styles"></style>
+      <style include="material-styles fa-styles"></style>
       <style>
         :host {
           display: block;
@@ -429,7 +403,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           flex-wrap: nowrap;
           flex-direction: row;
           justify-content: space-between;
-          align-items: flex-start;
+          align-items: center;
           padding: 10px 6px;
           min-height: 28px;
           border-bottom: 1px solid var(--_lumo-grid-secondary-border-color);
@@ -487,8 +461,12 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
         .item-wrap__close {
           font-size: 14px;
-          margin-top: 6px;
           cursor: pointer;
+          background: none;
+          border: none;
+          height: 100%;
+          padding: 11px;
+          margin-left: 5px;
         }
         .item-wrap__checkboxes {
           display: flex;
@@ -510,7 +488,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           margin-left: auto;
         }
         vaadin-integer-field {
-          margin: -13px 0 8px;
+          margin: -13px 0 5px;
         }
         vaadin-checkbox {
           pointer-events: none;
@@ -599,7 +577,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       </div>
       <div class="col-wrap">
         <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
-          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" active-item="{{activeItem}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
+          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
@@ -625,7 +603,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                   <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
                     <vaadin-integer-field value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
                   </div>
-                  <div class="mdc-buttom-icon material-icons item-wrap__close" hidden$="[[!isEditMode]]" on-click="_deleteItem">close</div>
+                  <button class="item-wrap__close" hidden$="[[!isEditMode]]" on-click="_deleteItem"><i class="fas fa-trash"></i></button>
                 </div>
               </template>
             </vaadin-grid-column>

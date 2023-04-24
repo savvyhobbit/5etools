@@ -277,15 +277,23 @@ function EntryRenderer() {
 			let href;
 			if (entry.href.type === "internal") {
 				// baseURL is blank by default
-				href = `${self.baseUrl}${entry.href.path}#`;
-				if (entry.href.hash !== undefined) {
-					href += entry.href.hash;
-					if (entry.href.subhashes !== undefined) {
-						for (let i = 0; i < entry.href.subhashes.length; i++) {
-							const subHash = entry.href.subhashes[i];
-							href += `,${encodeForHash(subHash.key)}:${encodeForHash(subHash.value)}`
-						}
+				if (entry.href.hash) {
+					const partMatch = entry.href.hash.match(/\/([^\/]+)\/([^_]+)_(.*)/);
+					if (partMatch.length === 4) {
+						href = `javascript: (() => {
+							document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
+								bubbles: true,
+								composed: true,
+								detail: {
+										decode: true,
+										selectedItem: {name: "${partMatch[2].trim()}", source: "${partMatch[3].toLowerCase().trim()}"},
+										viewId: "${partMatch[1].trim()}"
+								}
+							}));
+						})();`
 					}
+				} else {
+					href = `${self.baseUrl}${entry.href.path}#`;
 				}
 			} else if (entry.href.type === "external") {
 				href = entry.href.url;
@@ -387,6 +395,8 @@ function EntryRenderer() {
 								}
 								self.recursiveEntryRender(fauxEntry, textStack, depth);
 								break;
+							default:
+								textStack.push(name);
 						}
 					}
 				} else {

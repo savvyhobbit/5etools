@@ -103,6 +103,16 @@ function saveCharacter(character) {
   let characterIndex = findCharacterIndex(character),
     characters = getCharacters();
 
+  if (character.choices && character.choices.firstClass) {
+    delete character.choices.firstClass;
+  }
+  if (character.backgroundSkillProficiencies) {
+    delete character.backgroundSkillProficiencies;
+  }
+  if (character.raceAttributes) {
+    delete character.raceAttributes;
+  }
+
   window.character = character;
   characters[characterIndex] = character;
   saveCharacters(characters);
@@ -1443,6 +1453,11 @@ async function setItemsFromBackground(character = selectedCharacter) {
       if (itemStrTrimmed.startsWith('and')) {
         itemStrTrimmed = itemStrTrimmed.substring(3).trim();
       }
+      if (itemStrTrimmed.indexOf('@filter') > -1) {
+        itemStrTrimmed = itemStrTrimmed.replace(/{@filter\s+([^|}]+).+?}/g, (match, p1) => {
+          return p1.split("|")[0];
+        });
+      }
       if (itemStrTrimmed.indexOf('@item') > -1) {
         itemStrTrimmed.split('@item').forEach((itemFunc, index) => {
           if (index === 0) {
@@ -1450,7 +1465,7 @@ async function setItemsFromBackground(character = selectedCharacter) {
           }
           const itemParams = itemFunc.substring(0, itemFunc.indexOf('}')).split('|');
           console.error('background items', itemParams, itemStrTrimmed);
-          const newItem = { 
+          const newItem = {
             itemRef: {
               name: itemParams[0].trim(),
               source: itemParams[1].trim()

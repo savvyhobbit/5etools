@@ -1248,7 +1248,13 @@ Parser.ITEM_TYPE_JSON_TO_ABV = {
   TG: "Trade Good",
   VEH: "Vehicle",
   WD: "Wand",
-  $: "Currency"
+  $: "Currency",
+  OTH: "Other",
+  AIR: "Airship",
+  FD: "Food",
+  MR: "Magic Rune",
+  SHP: "Ship",
+  SPC: "Spaceship",
 };
 
 Parser.OPT_FEATURE_TYPE_TO_FULL = {

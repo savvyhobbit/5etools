@@ -13,10 +13,11 @@ import './styles/material-styles.js';
 import "./styles/my-styles.js";
 import "./dnd-spinner.js";
 import "./dnd-button.js";
-import { setRouteSelection } from '../util/routing';
+import { clearRouteSelection, setRouteSelection, readRouteSelection } from '../util/routing';
 import { cloneDeep, encodeForHash, isFirstCharNum } from '../js/utils.js';
 import Parser from "../util/Parser.js";
 import { RARITY_TYPES } from '../util/consts.js';
+import { resolveHash } from '../util/renderTable.js';
 
 class DndList extends PolymerElement {
   static get properties() {
@@ -25,7 +26,8 @@ class DndList extends PolymerElement {
         type: Array
       },
       listItems: {
-        type: Array
+        type: Array,
+        observer: 'listItemsChange'
       },
       filters: {
         type: Array
@@ -37,7 +39,8 @@ class DndList extends PolymerElement {
         type: String
       },
       selectedFilters: {
-        type: Object
+        type: Object,
+        observer: 'selectedFiltersChange'
       },
       resultsCount: {
         type: Number
@@ -53,7 +56,8 @@ class DndList extends PolymerElement {
       },
       selectedItem: {
         type: Object,
-        notify: true
+        notify: true,
+        observer: 'selectedItemChange'
       },
       listTitle: {
         type: String,
@@ -62,36 +66,68 @@ class DndList extends PolymerElement {
     };
   }
 
-  ready() {
-    super.ready();
+  listItemsChange() {
+    console.error('listItemsChange');
+    this.resultsCount = this.listItems ? this.listItems.length : 0;
+    
+    if (!this.hasSetFromURL && !this.nonGlobal) {
+      const routeSelection = readRouteSelection();
+      if (routeSelection && this.listItems) {
+        this.hasSetFromURL = true;
+        const selectedItem = resolveHash(this.listItems, routeSelection);
+        this.set('selectedItem', selectedItem);
+      }
+    }
+  }
 
+  selectedFiltersChange() {
+    console.error('selectedFiltersChange');
     setTimeout(() => {
-      this.$.grid.addEventListener('active-item-changed', (e) => {
-        const item = e.detail.value;
-        this.$.grid.selectedItems = item ? [item] : [];
-        if (item) {
-          const linkData = [item.name];
-          if (item.source) {
-            linkData.push(item.source);
-          }
-          if (!this.nonGlobal) {
-            setRouteSelection(encodeForHash(linkData));
-          }
-        }
-        this.set('selectedItem', item);
-      });
-    }, 0);
+      this.resultsCount = this.$.grid.__data._effectiveSize;
+    }, 500);
+  }
 
-    window.addEventListener('resize', () => {
+  selectedItemChange() {
+    if (!this.nonGlobal) {
+      if (this.selectedItem) {
+        const linkData = [this.selectedItem.name];
+        if (this.selectedItem.source) {
+          linkData.push(this.selectedItem.source);
+        }
+        setRouteSelection(encodeForHash(linkData));
+      } else {
+        clearRouteSelection();
+      }
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.hasSetFromURL = false;
+
+    this.$.grid.addEventListener('active-item-changed', (e) => {
+      const item = e.detail.value;
+      this.$.grid.selectedItems = item ? [item] : [];
+      this.set('selectedItem', item);
+    });
+
+    this.resizeHandler = (() => {
       this._checkBreakpoint();
       this._adjustHeight();
-    });
+    }).bind(this);
+    window.addEventListener('resize', this.resizeHandler);
+
     this._checkBreakpoint();
     this._adjustHeight();
     setTimeout(() => {
       this._checkBreakpoint();
       this._adjustHeight();
     }, 500);
+  }
+  
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('resize', this.resizeHandler);
   }
 
   _checkBreakpoint() {
@@ -415,7 +451,7 @@ class DndList extends PolymerElement {
         <dnd-button class="search-reset" border on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 
-      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" page-size="15" size="{{resultsCount}}">
+      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" page-size="15">
         <vaadin-grid-column frozen width="[[_nameColWidth(isMobile, halfWidth, nonGlobal)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">

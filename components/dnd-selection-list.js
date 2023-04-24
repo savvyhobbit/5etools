@@ -183,7 +183,9 @@ class DndSelectionList extends PolymerElement {
 
   _selectedItemKeyChange() {
     loadModel(this.modelId).then(result => {
-      this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
+      if (this.selectedItemKey) {
+        this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
+      }
     });
   }
 
@@ -214,7 +216,6 @@ class DndSelectionList extends PolymerElement {
       this.listTitle = title;
 
       switch (this.modelId) {
-        case "feats":
         case "races":
         case "backgrounds":
         case "items":
@@ -313,7 +314,6 @@ class DndSelectionList extends PolymerElement {
           height: 85px;
           bottom: 0;
           margin-left: -16px;
-          background: var(--mdc-theme-surface);
           overflow: hidden;
         }
         :host([non-global]) .footer-bar {
