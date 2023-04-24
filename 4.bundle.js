@@ -20,7 +20,7 @@ l(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is 
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-l(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},172:function(e,t,l){"use strict";l(29),l(36),l(19);var s=l(2);Object(s.c)("vaadin-grid-tree-toggle",s.b`
+l(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},172:function(e,t,l){"use strict";l(29),l(36),l(20);var s=l(2);Object(s.c)("vaadin-grid-tree-toggle",s.b`
     :host {
       --vaadin-grid-tree-toggle-level-offset: 2em;
       align-items: center;
@@ -122,7 +122,7 @@ l(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" i
     :host([dir='rtl'][expanded]) [part='toggle']::before {
       content: var(--lumo-icons-angle-left);
     }
-  `,{moduleId:"lumo-grid-tree-toggle"});var a=l(3),n=l(24),i=l(108);
+  `,{moduleId:"lumo-grid-tree-toggle"});var a=l(3),n=l(25),i=l(108);
 /**
  * @license
  * Copyright (c) 2016 - 2022 Vaadin Ltd.
