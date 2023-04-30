@@ -1022,9 +1022,13 @@
 			"additionalSpells": [
 				{
 					"innate": {
-						"6": [
-							"command"
-						]
+						"6": {
+							"daily": {
+								"1": [
+									"command"
+								]
+							}
+						}
 					}
 				}
 			],

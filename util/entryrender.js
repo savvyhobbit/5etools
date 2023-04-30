@@ -279,7 +279,7 @@ function EntryRenderer() {
 				// baseURL is blank by default
 				if (entry.href.hash) {
 					const partMatch = entry.href.hash.match(/\/([^\/]+)\/([^_]+)_(.*)/);
-					if (partMatch.length === 4) {
+					if (partMatch && partMatch.length === 4) {
 						href = `javascript: (() => {
 							document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
 								bubbles: true,
@@ -291,6 +291,8 @@ function EntryRenderer() {
 								}
 							}));
 						})();`
+					} else {
+						console.error('!!!!', entry.href.hash);
 					}
 				} else {
 					href = `${self.baseUrl}${entry.href.path}#`;

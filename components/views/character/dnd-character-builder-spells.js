@@ -1,5 +1,5 @@
 import { PolymerElement,html } from "@polymer/polymer";
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSpellCastingStats } from "../../../util/charBuilder";
+import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSpellCastingStats, getCharacterProficiencyBonus } from "../../../util/charBuilder";
 import { filterModel, loadModel } from "../../../util/data";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { spellHtml } from "../../../js/spells";
@@ -185,6 +185,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
       this.noContentMessage = true;
       const classRefs = await getClassReferences(character),
         classLevels = getClassLevelGroups(character),
+        proficiencyBonus = await getCharacterProficiencyBonus(),
         expandedItems = [],
         spellsKnownObj = {};
       let spellDisplay = [];
@@ -262,7 +263,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
             }
           }
 
-          // Getting subclass spell list (always prepared)
+          // Spell lists borrowed from other classes
           if (subclassName) {
             if (subclassName === 'Eldritch Knight') {
               classSpellList = await filterModel('spells', { key: 'classes.fromClassList', value: { name: 'wizard', source: 'phb' } } );
@@ -397,14 +398,14 @@ class DndCharacterBuilderSpells extends PolymerElement {
         const allAddtlSpells = spellChoice.additionalSpells.defaultSpells.concat(spellChoice.additionalSpells.selectedSpells);
 
         allAddtlSpells.forEach((spellChoiceEntry) => {
-          const spellsForThisEntry = spellChoiceEntry.spells ? spellChoiceEntry.spells : [spellChoiceEntry];
+          const spellsForThisEntry = spellChoiceEntry.spells ? spellChoiceEntry.spells.map(s=> { return {...spellChoiceEntry, ...s}}) : [spellChoiceEntry];
 
           spellsForThisEntry.forEach((addtlSpell) => {
             const spellDef = spellsModel.find(s => s.name.toLowerCase() === addtlSpell.name.toLowerCase() && s.source.toLowerCase() === addtlSpell.source.toLowerCase());
             
             if (spellDef) {
               const spellLevel = spellDef.level;
-              const spellClass = spellChoice.label && (addtlSpell.type === 'expanded' || addtlSpell.type === 'prepared') && Object.keys(classLevels).find((c) => c.toLowerCase() === spellChoice.label.toLowerCase()) ? spellChoice.label : 'Other';
+              const spellClass = spellChoice.label && (addtlSpell.type === 'expanded' || addtlSpell.type === 'prepared' || addtlSpell.type === 'known') && Object.keys(classLevels).find((c) => c.toLowerCase() === spellChoice.label.toLowerCase()) ? spellChoice.label : 'Other';
 
               if (!addtlSpellsObj[spellClass]) {
                 addtlSpellsObj[spellClass] = {};
@@ -418,67 +419,88 @@ class DndCharacterBuilderSpells extends PolymerElement {
           })
         });
       });
-      console.error('addtlSpellsObj', addtlSpellsObj);
+      console.error('addtlSpellsObj', addtlSpellsObj, spellDisplay);
 
       // Adding additional spells
       Object.entries(addtlSpellsObj).forEach(([addtlSpellsClass, addtlSpellsClassVal]) => {
         this.noContentMessage = false;
 
         if (addtlSpellsClass !== 'Other') {
-          const spellDisplayForClass = spellDisplay.find((sdClass) => sdClass.className.toLowerCase() === addtlSpellsClass);
+          let spellDisplayForClass = spellDisplay.find((sdClass) => sdClass.className.toLowerCase() === addtlSpellsClass),
+            hadToAddClass = false;
 
-          if (spellDisplayForClass) {
-            Object.entries(addtlSpellsClassVal).forEach(([addtlSpellsClassLevel, addtlSpellsClassLevelVal]) => {
-              let spellDisplayForClassLevel = spellDisplayForClass.children[addtlSpellsClassLevel] ? spellDisplayForClass.children[addtlSpellsClassLevel] : null;
-              // while (!spellDisplayForClassLevel) {
-              //   spellDisplayForClass.children.push({
-              //     id: 'level',
-              //     level: spellDisplayForClass.children.length,
-              //     hasChildren: false,
-              //     spellSlots: 0,
-              //     currentSlots: 0,
-              //     children: [],
-              //     parentClass: addtlSpellsClass
-              //   });
-              //   spellDisplayForClassLevel = spellDisplayForClass.children[addtlSpellsClassLevel] ? spellDisplayForClass.children[addtlSpellsClassLevel] : null;
-              // }
-
-              if (spellDisplayForClassLevel) {
-                addtlSpellsClassLevelVal.forEach(addtlSpell => {
-                  const spellAlreadyAdded = spellDisplayForClassLevel.children.find((s) => s.children[0].name === addtlSpell.spellDef.name && s.children[0].source === addtlSpell.spellDef.source);
-
-                  if (spellAlreadyAdded) {
-                    spellAlreadyAdded.isAlwaysPrepared = true;
-                    spellAlreadyAdded.spellSlots = addtlSpell.uses;
-                    spellAlreadyAdded.spellUseType = addtlSpell.type;
-                    spellAlreadyAdded.currentSlots = character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0
-                    spellAlreadyAdded.ability = addtlSpell.selectedAbility || addtlSpell.defaultAbility;
-                    spellAlreadyAdded.superLabel = [addtlSpell.label, addtlSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ');
-                  } else {
-                    spellDisplayForClassLevel.children.push({
-                      id: 'spell',
-                      name: addtlSpell.spellDef.name,
-                      children: [{...addtlSpell.spellDef, hasChildren: false, id: 'spelldef', parentClass: addtlSpellsClass, parentLevel: addtlSpellsClassLevel, uses: addtlSpell.uses} ],
-                      hasChildren: true,
-                      parentClass: addtlSpellsClass,
-                      parentLevel: addtlSpellsClassLevel,
-                      isCantrip: addtlSpellsClassLevel === 0,
-                      isAlwaysPrepared: true,
-                      isWarlock: addtlSpellsClass === 'warlock',
-                      spellUseType: addtlSpell.type,
-                      spellSlots: addtlSpell.uses,
-                      ability: addtlSpell.selectedAbility || addtlSpell.defaultAbility,
-                      currentSlots: character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0,
-                      superLabel: [addtlSpell.label, addtlSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ')
-                    })
-                    spellDisplayForClassLevel.hasChildren = true;
-                  }
-                })
-              }
+          // If no class entry exists, class is not a spell caster so adding one manually
+          if (!spellDisplayForClass) {
+            hadToAddClass = true;
+            spellDisplay.push({
+              id: 'class',
+              className: util_capitalize(addtlSpellsClass),
+              level: 0,
+              hasCantrips: false,
+              children: [],
+              spellsKnown: 0,
+              hasChildren: true,
+              spellPrepType: 'always',
+              multiclassingLevels: 0,
+              isWarlock: false,
+              warlockSpellLevel: 0,
+              warlockSpellSlots: 0,
+              hadToAddClass: true
             });
-          } else {
-            console.error('Additional spell for class that doesnt have regular spells');
+            spellDisplayForClass = spellDisplay[spellDisplay.length - 1];
+            expandedItems.push(spellDisplayForClass);
           }
+          Object.entries(addtlSpellsClassVal).forEach(([addtlSpellsClassLevel, addtlSpellsClassLevelVal]) => {
+            const parsedAddtlSpellsClassLevel = parseInt(addtlSpellsClassLevel);
+            let spellDisplayForClassLevel = spellDisplayForClass.children.find(sdLevel => sdLevel.level === parsedAddtlSpellsClassLevel) || null;
+
+            // Adding level if needed and not already present for class
+            if (!spellDisplayForClassLevel && (parsedAddtlSpellsClassLevel === 0 || hadToAddClass)) {
+              spellDisplayForClass.children = [{
+                id: 'level',
+                level: parsedAddtlSpellsClassLevel,
+                hasChildren: true,
+                children: [],
+                parentClass: addtlSpellsClass
+              }].concat(spellDisplayForClass.children);
+              spellDisplayForClassLevel = spellDisplayForClass.children[0];
+              if (spellDisplayForClass.children.find((c => c.level === 0))) {
+                spellDisplayForClass.hasCantrips = 0;
+              }
+            }
+
+            if (spellDisplayForClassLevel) {
+              addtlSpellsClassLevelVal.forEach(addtlSpell => {
+                const spellAlreadyAdded = spellDisplayForClassLevel.children.find((s) => s.children[0].name === addtlSpell.spellDef.name && s.children[0].source === addtlSpell.spellDef.source);
+
+                if (spellAlreadyAdded) {
+                  spellAlreadyAdded.isAlwaysPrepared = true;
+                  spellAlreadyAdded.spellSlots = addtlSpell.uses === 'proficiency' ? proficiencyBonus : addtlSpell.uses;
+                  spellAlreadyAdded.spellUseType = addtlSpell.type;
+                  spellAlreadyAdded.currentSlots = character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0
+                  spellAlreadyAdded.ability = addtlSpell.selectedAbility || addtlSpell.defaultAbility;
+                  spellAlreadyAdded.superLabel = [addtlSpell.label, addtlSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ');
+                } else {
+                  spellDisplayForClassLevel.children.push({
+                    id: 'spell',
+                    name: addtlSpell.spellDef.name,
+                    children: [{...addtlSpell.spellDef, hasChildren: false, id: 'spelldef', parentClass: addtlSpellsClass, parentLevel: addtlSpellsClassLevel, uses: addtlSpell.uses} ],
+                    hasChildren: true,
+                    parentClass: addtlSpellsClass,
+                    parentLevel: addtlSpellsClassLevel,
+                    isCantrip: addtlSpellsClassLevel === 0,
+                    isAlwaysPrepared: true,
+                    isWarlock: addtlSpellsClass === 'warlock',
+                    spellUseType: addtlSpell.type,
+                    spellSlots: addtlSpell.uses === 'proficiency' ? proficiencyBonus : addtlSpell.uses,
+                    ability: addtlSpell.selectedAbility || addtlSpell.defaultAbility,
+                    currentSlots: character.spellSlots && character.spellSlots[addtlSpell.spellDef.name] ? character.spellSlots[addtlSpell.spellDef.name] : 0,
+                    superLabel: [addtlSpell.label, addtlSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ')
+                  });
+                }
+              })
+            }
+          });
 
         // Other additional Spells
         } else {
@@ -510,7 +532,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 isAlwaysPrepared: true,
                 isWarlock: false,
                 spellUseType: otherSpell.type,
-                spellSlots: otherSpell.uses,
+                spellSlots: otherSpell.uses === 'proficiency' ? proficiencyBonus : addtlSpell.uses,
                 ability: otherSpell.selectedAbility || otherSpell.defaultAbility,
                 currentSlots: character.spellSlots && character.spellSlots[otherSpell.spellDef.name] ? character.spellSlots[otherSpell.spellDef.name] : 0,
                 superLabel: [otherSpell.label, otherSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ')
@@ -558,13 +580,15 @@ class DndCharacterBuilderSpells extends PolymerElement {
           // Combine all class spell levels into single references
           for (let spellClass of spellDisplay) {
             if (spellClass.className !== 'Other') {
-              if (!spellClass.isWarlock) {
-                multiclassLevel += spellClass.multiclassingLevels;
-                isMulticlass ++;
-              } else {
-                warlockSpellLevel = spellClass.warlockSpellLevel;
-                warlockSpellSlots = spellClass.warlockSpellSlots;
-                isMulticlass ++;
+              if (!spellClass.hadToAddClass) {
+                if (!spellClass.isWarlock) {
+                  multiclassLevel += spellClass.multiclassingLevels;
+                  isMulticlass ++;
+                } else {
+                  warlockSpellLevel = spellClass.warlockSpellLevel;
+                  warlockSpellSlots = spellClass.warlockSpellSlots;
+                  isMulticlass ++;
+                }
               }
 
               spellClass.children.forEach((spellLevel, index) => {
@@ -576,7 +600,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                   newSpellDisplay[adjIndex].hasChildren = !!newSpellDisplay[adjIndex].children.length;
                 }
               });
-            } else {
+            } else if (spellClass.className === 'Other') {
               otherClass = spellClass;
             }
           }
@@ -587,20 +611,23 @@ class DndCharacterBuilderSpells extends PolymerElement {
           // Changing spell slots for multiclass rules
           const hasCantrips = newSpellDisplay.length && newSpellDisplay[0].level === 0;
           if (isMulticlass > 0) {
-            const multiclassSlotsArray = this.multiclassSlotsDef[multiclassLevel + 1];
+            const multiclassSlotsArray = this.multiclassSlotsDef[multiclassLevel - 1];
 
-            for (let i = (hasCantrips ? 1 : 0); i < multiclassSlotsArray.length; i++) {
-              const spellSlots =  multiclassSlotsArray[i - (hasCantrips ? 1 : 0)];
-              if (newSpellDisplay[i]) {
-                newSpellDisplay[i].spellSlots = spellSlots;
+            for (let i = 0; i < multiclassSlotsArray.length; i++) {
+              const spellLvl = i + 1;
+              const spellSlots =  multiclassSlotsArray[i];
+              const spellDisplayForLevel = newSpellDisplay.find(sd => sd.level === spellLvl);
+
+              if (spellDisplayForLevel) {
+                spellDisplayForLevel.spellSlots = spellSlots;
               } else {
                 newSpellDisplay.push({
                   children: [],
-                  currentSlots: getSpellSlots(i + 1 - (hasCantrips ? 1 : 0)),
+                  currentSlots: getSpellSlots(spellSlots),
                   hasChildren: false,
                   id: "level",
                   isWarlock: false,
-                  level: i,
+                  level: spellLvl,
                   spellSlots
                 });
               }
@@ -611,7 +638,6 @@ class DndCharacterBuilderSpells extends PolymerElement {
           if (warlockSpellLevel) {
             newSpellDisplay[warlockSpellLevel - (hasCantrips ? 0 : 1)].warlockSpellSlots = warlockSpellSlots;
             newSpellDisplay[warlockSpellLevel - (hasCantrips ? 0 : 1)].currentWarlockSlots = character.warlockSpellSlots || 0;
-
           }
 
           if (otherClass) {
@@ -621,6 +647,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
         spellDisplay = newSpellDisplay;
       }
 
+      console.error('spellDisplay', spellDisplay);
       this.refresh = false;
       saveCharacter(character);
       this.spellsKnown = spellsKnownObj;
@@ -886,7 +913,11 @@ class DndCharacterBuilderSpells extends PolymerElement {
   }
 
   _hidePreparedCountLabel(className, spellsKnown) {
-    return this._currentSpellsKnownCount(className, spellsKnown) === 0
+    return this._maxSpellsKnownCount(className, spellsKnown) === 0
+  }
+
+  _hideCantripsPreparedCountLabel(item, spellsKnown) {
+    return item.level !== 0 || !spellsKnown || !item.parentClass || !spellsKnown[item.parentClass] || spellsKnown[item.parentClass].maxCantrips === 0;
   }
 
   _spellLevel(item) {
@@ -1424,7 +1455,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     <h4 class="level-wrap">[[_toLevel(item.level)]]<span hidden$="[[_hideSlotsLabel(isEditMode, item.level, item.parentClass)]]" class="label">([[item.spellSlots]] Slots)</span></h4>
                   </vaadin-grid-tree-toggle>
 
-                  <div class="cantrips-prepared spells-prepared-text" hidden$="[[!_equal(item.level, 0)]]">
+                  <div class="cantrips-prepared spells-prepared-text" hidden$="[[_hideCantripsPreparedCountLabel(item, spellsKnown)]]">
                     <span>Cantrips Known:</span>
                     <span class='prepared-count' edit-mode$=[[isEditMode]]>[[_currentCantripsKnownCount(item.parentClass, spellsKnown)]] / [[_maxCantripsKnownCount(item.parentClass, spellsKnown)]]</span>
                   </div>

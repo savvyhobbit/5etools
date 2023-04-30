@@ -8,7 +8,7 @@ import "../dnd-switch";
 import "../dnd-icon";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
-import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters } from '../../util/charBuilder.js';
+import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
 import { rollEventChannel } from '../../util/roll.js';
@@ -292,8 +292,9 @@ class DndCharacterBuilderView extends PolymerElement {
   
   defaultMenu() {
     return [
-      { component: this.createMenuItem('plus'), key: 'add', tooltip: 'Create New Character'},
-      { component: this.createMenuItem('trash'), key: 'delete' , tooltip: 'Delete Character'},
+      { component: this.createMenuItem('user-plus'), key: 'add', tooltip: 'Create New Character'},
+      { component: this.createMenuItem('user-slash'), key: 'delete' , tooltip: 'Delete Character'},
+      { component: this.createMenuItem('clone'), key: 'clone' , tooltip: 'Clone Character'},
       { component: this.createMenuItem('download'), tooltip: 'Download Character Data', children: [
         { text: 'Download', key: 'download' },
         { text: 'Download All', key: 'download-all' }
@@ -305,7 +306,7 @@ class DndCharacterBuilderView extends PolymerElement {
   _menuItemSelected(e) {
     switch(e.detail.value.key) {
       case 'add':
-        this.newCharacter();
+        addCharacter();
         break;
 
       case 'delete':
@@ -322,6 +323,10 @@ class DndCharacterBuilderView extends PolymerElement {
 
       case 'upload':
         this.$.fileSelector.click();
+        break;
+
+      case 'clone':
+        cloneCharacter();
         break;
     }
   }
@@ -342,10 +347,6 @@ class DndCharacterBuilderView extends PolymerElement {
       item.appendChild(document.createTextNode(text));
     }
     return item;
-  }
-
-  newCharacter() {
-    addCharacter();
   }
 
   removeCharacter() {
@@ -541,7 +542,6 @@ class DndCharacterBuilderView extends PolymerElement {
             bottom: 0;
             z-index: 2;
             box-shadow: 0px 0px 30px -10px var(--mdc-theme-text-primary-on-background);
-            border-top: 1px solid var(--mdc-theme-text-divider-on-background);
             height: 64px
           }
           #tabs.fixed--bottom + .tab-wrap {

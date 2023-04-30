@@ -23,6 +23,7 @@ import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "@vaadin/vaadin-grid/vaadin-grid-column";
 import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "./dnd-character-builder-equipment-item-detail";
+import { clearRouteSubSelection, readRouteSubSelection, routeEventChannel, setRouteSubSelection } from "../../../util/routing";
 
 class DndCharacterBuilderEquipment extends PolymerElement {
   
@@ -106,6 +107,19 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     }
     getEditModeChannel().addEventListener('editModeChange', this.editModeHandler);
     this.isEditMode = isEditMode();
+
+    this.routeSubSelectionChangeHandler = ((e) => {
+      const subSelection = e.detail.subSelection;
+      if (this.inventory) {
+        this.activeItem = getItemAtId(this.inventory, parseInt(subSelection));
+      }
+    }).bind(this);
+    routeEventChannel().addEventListener('sub-selection-change', this.routeSubSelectionChangeHandler);
+
+    this.routeSubSelectionDeselectedHandler = (() => {
+      this.activeItem = undefined;
+    }).bind(this);
+    routeEventChannel().addEventListener('sub-selection-deselected', this.routeSubSelectionDeselectedHandler);
   }
 
   disconnectedCallback() {
@@ -113,6 +127,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
     getCharacterChannel().removeEventListener("character-selected", this.characterChangeHandler);
     getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
+    routeEventChannel().removeEventListener('selection-change', this.routeSubSelectionDeselectedHandler);
+    routeEventChannel().removeEventListener('sub-selection-change', this.routeSubSelectionChangeHandler);
   }
 
   ready() {
@@ -139,7 +155,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
           // Prevent loops
           const isChild = isChildItem(draggedItem, dropTargetItem.uniqueId);
-          if (draggedItem.container && isChild) {
+          if ((draggedItem.containerCapacity || draggedItem.packContents) && isChild) {
             return;
           }
 
@@ -148,7 +164,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
           // Dropping into container
           if (e.detail.dropLocation === 'on-top') {
-            if (dropTargetItem.container) {
+            if (dropTargetItem.containerCapacity || dropTargetItem.packContents) {
               if (dropTargetItem.storedItem && dropTargetItem.storedItem.children) {
                 // Add child item
                 dropTargetItem.storedItem.children.push(draggedItem.storedItem);
@@ -194,7 +210,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
       }).bind(this);
     }, 0);
-    
   }
 
   async updateFromCharacter(character) {
@@ -209,24 +224,20 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         });
         this.expandedItems = expandedItems;
       }
-      if (this.activeItemID) {
-        this.activeItem = getItemAtId(this.inventory, this.activeItemID);
+      if (readRouteSubSelection()) {
+        this.activeItem = getItemAtId(this.inventory, parseInt(readRouteSubSelection()));
       }
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
   }
 
   _expandDetails(e) {
-    let item = e.model.__data.item,
-      stayClosed = this.activeItemID === item.uniqueId;
-
+    let itemId = e.model.__data.item.uniqueId,
+      stayClosed = readRouteSubSelection() === itemId;
     if (stayClosed) {
-      this.activeItemID = undefined;
-      this.activeItem = undefined;
-
+      clearRouteSubSelection();
     } else {
-      this.activeItemID = item.uniqueId;
-      this.activeItem = item;
+      setRouteSubSelection(itemId);
     }
   }
 
@@ -299,7 +310,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     const newItemId = addItem({name: ''}, false);
     dispatchEditModeChange(true);
     setTimeout(() => {
-      this.activeItem = getItemAtId(this.inventory, newItemId);
+      setRouteSubSelection(newItemId);
     }, 0);
   }
 
@@ -344,7 +355,11 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   }
 
   _clearSelection() {
-    this.set('activeItem', null);
+    window.history.back();
+  }
+
+  _isLeaf(item) {
+    return !item.containerCapacity && !item.packContents;
   }
 
   static get template() {
@@ -467,6 +482,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           height: 100%;
           padding: 11px;
           margin-left: 5px;
+          color: var(--mdc-theme-on-surface);
         }
         .item-wrap__checkboxes {
           display: flex;
@@ -581,7 +597,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
-                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[!item.container]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[_isLeaf(item)]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
                   <div class="item-wrap__name-wrap" on-click="_expandDetails">
                     <span class="item-wrap__name">[[item.name]]
                       <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>

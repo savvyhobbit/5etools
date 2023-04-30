@@ -17,7 +17,7 @@ import Parser from "../../../util/Parser";
 
 
 // TODO parsing
-//// skillToolLanguageProficiencies, additionalSpells, "expertise"
+//// "expertise"
 //// class entry parsing - "gain proficiency" - {@item brewer's supplies|phb}, martial weapons, {@skill Performance}, or, choose one, 
 ///
 
@@ -702,7 +702,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                                         Object.entries(adjAddtlSpellResetValue).forEach(([addtlSpellCountKey, addtlSpellCountValue]) => {
                                             const path = [addtlSpellSetIndex, addtlSpellTypeKey, addtlSpellLevelKey, addtlSpellResetKey, addtlSpellCountKey].join('.');
                                             const type = addtlSpellResetKey;
-                                            let uses = parseInt(addtlSpellCountKey.split('e').join(''));
+                                            let uses = addtlSpellCountKey === 'proficiency' ? addtlSpellCountKey : parseInt(addtlSpellCountKey.split('e').join(''));
                                             uses = uses === 99 ? undefined : uses;
 
                                             addtlSpellCountValue.forEach( (spellEntry) => {
@@ -1114,6 +1114,17 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
         }));
     }
 
+    _featLinkClick(e) {
+        this.dispatchEvent(new CustomEvent("open-drawer", {
+            bubbles: true,
+            composed: true,
+            detail: {
+                selectedItem: e.target.__dataHost.__data.selectedFeat,
+                viewId: 'feats'
+            }
+        }));
+    }
+
     _spellLevel(level) {
         switch (level) {
             case 0:
@@ -1152,6 +1163,12 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 }
                 .spell-link:hover {
                 }
+                .feat-wrap {
+                    display: flex;
+                    width: 100%;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                }
                 table {
                     line-height: 1.3;
                     margin-left: 12px;
@@ -1173,11 +1190,10 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     width: 100%;
                     display: block;
                 }
-                dnd-select-add,
-                dnd-character-builder-suboptions:not(.asi-suboption) {
-                    width: var(--suboptions__width);
-                    max-width: var(--suboptions__max-width);
-                }
+                /* dnd-select-add {
+                    width: var(--suboptions__width, 100%);
+                    max-width: var(--suboptions__max-width, unset);
+                } */
                 .default-selection {
                     font-size: 14px;
                     margin-bottom: 6px;
@@ -1335,12 +1351,15 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 </template>
 
                 <template is="dom-if" if="[[_exists(featOptions)]]">
-                    <dnd-select-add disabled$="[[!isEditMode]]"
-                        placeholder="<Select Feat>" label="Selected Feat"
-                        options="[[featOptions]]" value="[[selectedFeat]]"
-                        add-callback="[[_featAddCallback()]]">
-                    </dnd-select-add>
-                    
+                    <div class="feat-wrap">
+                        <dnd-select-add disabled$="[[!isEditMode]]"
+                            placeholder="<Select Feat>" label="Selected Feat"
+                            options="[[featOptions]]" value="[[selectedFeat]]"
+                            add-callback="[[_featAddCallback()]]">
+                        </dnd-select-add>
+                        <button hidden$="[[!_exists(selectedFeat)]]" class="mdc-icon-button material-icons" on-click="_featLinkClick">logout</button>
+                    </div>
+
                     <template is="dom-if" if="[[_exists(selectedFeat)]]">
                         <dnd-character-builder-suboptions label="[[_or(label, 'Feat')]]" storage-key="[[_suboptionStorageKey(storageKey)]]" selected-item="[[selectedFeat]]"></dnd-character-builder-suboptions>
                     </template>

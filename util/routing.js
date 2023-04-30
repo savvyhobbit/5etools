@@ -26,8 +26,10 @@ function initRouting() {
 function hashChangeHandler(e) {
 	let oldHashView = readRouteView(e.oldURL),
 		oldHashSelection = readRouteSelection(e.oldURL),
+		oldHashSubSelection = readRouteSubSelection(e.oldURL),
 		newHashView = readRouteView(e.newURL),
 		newHashSelection = readRouteSelection(e.newURL),
+		newHashSubSelection = readRouteSubSelection(e.newURL),
 		eventDetail = {}
 
 	if (newHashView !== oldHashView) {
@@ -61,6 +63,26 @@ function hashChangeHandler(e) {
 			routingChannel.dispatchEvent(selectionChangeEvent);
 		}
 		eventDetail.selection = newHashSelection;
+	}
+
+	if (newHashSubSelection !== oldHashSubSelection) {
+		if (!newHashSubSelection) {
+			let deselectionEvent = new CustomEvent("sub-selection-deselected", {
+				bubbles: true,
+				composed: true
+			});
+			routingChannel.dispatchEvent(deselectionEvent);
+		} else {
+			let subSelectionChangeEvent = new CustomEvent("sub-selection-change", {
+				bubbles: true,
+				composed: true,
+				detail: {
+					subSelection: newHashSubSelection
+				}
+			});
+			routingChannel.dispatchEvent(subSelectionChangeEvent);
+		}
+		eventDetail.subSelection = newHashSubSelection;
 	}
 
 	if (Object.keys(eventDetail).length) {
@@ -110,6 +132,16 @@ function readRouteSelection(newURL) {
 	}
 }
 
+function readRouteSubSelection(newURL) {
+	let hashArray = readHashRouting(newURL);
+
+	if (hashArray.length > 2) {
+		return hashArray[2]
+	} else {
+		return null;
+	}
+}
+
 function clearRouteSelection(noHistory) {
 	let hashView = readRouteView();
 	// if (noHistory) {
@@ -126,6 +158,12 @@ function clearRouteSelection(noHistory) {
 		detail: { }
 	});
 	routingChannel.dispatchEvent(titleChangeEvent);
+}
+
+function clearRouteSubSelection() {
+	let hashView = readRouteView()
+	let hashSelection = readRouteSelection();
+	window.location.hash = "#/" + hashView + "/" + hashSelection;
 }
 
 function setRouteView(newRoute) {
@@ -145,7 +183,19 @@ function setRouteSelection(newSelection, noHistory) {
 	}
 }
 
-
+function setRouteSubSelection(newSubSelection, noHistory) {
+	let hashView = readRouteView();
+	let hashSelection = readRouteSelection();
+	if (noHistory) {
+		let oldURL = window.location.href,
+			urlSansHash = window.location.href.substring(0, window.location.href.lastIndexOf("#")),
+			newURL = urlSansHash + "#/" + hashView + "/" + hashSelection + "/" + newSubSelection;
+		window.history.replaceState(null, "", newURL);
+		hashChangeHandler({oldURL, newURL});
+	} else {
+		window.location.hash = "#/" + hashView + "/" + hashSelection + "/" + newSubSelection;
+	}
+}
 
 function notifyPreviewOpen(isPreviewOpen, isDrawerOpen) {
 	let titleChangeEvent = new CustomEvent("preview-state-change", {
@@ -162,8 +212,11 @@ export {
   readHashRouting,
   readRouteView,
   readRouteSelection,
+	readRouteSubSelection,
 	clearRouteSelection,
+	clearRouteSubSelection,
 	setRouteView,
 	setRouteSelection,
+	setRouteSubSelection,
 	notifyPreviewOpen
 }

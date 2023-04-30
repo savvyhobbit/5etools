@@ -824,13 +824,17 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           margin-right: 16px;
           width: 100%;
         }
+
         .choices-col__choice dnd-select-add {
           min-width: 250px;
           width: calc(100% - 20px);
         }
         .choices-col__choice dnd-character-builder-suboptions {
-          --suboptions__min-width: 250px;
-          --suboptions__width: calc(100% - 20px);
+          min-width: 250px;
+          width: calc(100% - 20px);
+        }
+        .add-with-links dnd-select-add {
+          width: calc(100% - 48px);
         }
 
         @media(min-width: 420px) {
@@ -838,7 +842,10 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
             width: calc(50% - 20px);
           }
           .choices-col__choice dnd-character-builder-suboptions {
-            --suboptions__width: calc(50% - 20px);
+            width: calc(50% - 20px);
+          }
+          .add-with-links dnd-select-add {
+            width: calc(50% - 48px);
           }
         }
 
@@ -987,10 +994,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         .add-with-links {
           display: flex;
           align-items: flex-start;
-        }
-
-        .add-with-links dnd-select-add {
-          width: calc(100% - 48px);
         }
 
         .links-list {

@@ -118,13 +118,20 @@ function saveCharacter(character) {
   saveCharacters(characters);
 }
 
-function addCharacter(name, charObject) {
+function addCharacter(charObject) {
   let characters = getCharacters(),
-    newChar = charObject ? charObject : newCharacter(name);
+    newChar = charObject ? charObject : newCharacter();
 
+  newChar.id = Date.now();
   characters.push(newChar);
   selectCharacter(newChar);
   saveCharacters(characters);
+}
+
+function cloneCharacter(character = selectedCharacter) {
+  const clonedCharacter = cloneDeep(character);
+  clonedCharacter.name = "Clone of " + clonedCharacter.name;
+  addCharacter(clonedCharacter);
 }
 
 function removeSelectedCharacter() {
@@ -139,14 +146,11 @@ function newCharacter(name = "New Character") {
   let newCharacter = JSON.parse(JSON.stringify(schema));
   newCharacter.name = name;
   newCharacter.id = Date.now();
-  makeDefault(newCharacter);
   return newCharacter;
 }
 
 function uploadCharacter(uploadedChar) {
-  uploadedChar.id = Date.now();
-  makeDefault(uploadedChar);
-  addCharacter(uploadedChar.name, uploadedChar);
+  addCharacter(uploadedChar);
 }
 
 function findCharacterIndex(char) {
@@ -1264,7 +1268,7 @@ async function parseItem(storedItem, index, parentItem, character) {
       newItem = { ...itemRef };
 
       // Storing Pack items
-      if (!storedItem.children && itemRef.container && itemRef.name.indexOf(' Pack') > -1 && itemRef.entries && itemRef.entries.length > 1 && itemRef.entries[0] === "Includes:") {
+      if (!storedItem.children && (itemRef.containerCapacity || itemRef.packContents) && itemRef.name.indexOf(' Pack') > -1 && itemRef.entries && itemRef.entries.length > 1 && itemRef.entries[0] === "Includes:") {
         storedItem.children = itemRef.entries[1].items.map((includedItem) => {
           return { name: includedItem, uniqueId: character.itemCounter++ };
         });
@@ -1299,7 +1303,7 @@ async function parseItem(storedItem, index, parentItem, character) {
     canEquip: newItem.armor || newItem.weaponCategory || newItem.type === 'S' || isShieldInherited,
     typeText: getItemType(newItem)
   };
-  if (newItem.container) {
+  if (newItem.containerCapacity || newItem.packContents) {
     if (!newItem.children) {
       newItem.children = [];
       newItem.storedItem.children = [];
@@ -1810,6 +1814,7 @@ function removeAbilityUsage(index, character = selectedCharacter) {
 export {
   getCharacters,
   addCharacter,
+  cloneCharacter,
   uploadCharacter,
   addFeature,
   addFeatureById,
