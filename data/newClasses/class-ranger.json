@@ -3587,6 +3587,64 @@
 			"classSource": "PHB",
 			"level": 3,
 			"isClassFeatureVariant": true,
+			"additionalSpells": [
+				{
+					"known": {
+						"3": [
+							"speak with animals"
+						],
+						"5": [
+							"beast sense"
+						],
+						"9": [
+							"speak with plants"
+						],
+						"13": [
+							"locate creature"
+						],
+						"17": [
+							"commune with nature"
+						]
+					},
+					"innate": {
+						"3": {
+							"daily": {
+								"1": [
+									"speak with animals"
+								]
+							}
+						},
+						"5": {
+							"daily": {
+								"1": [
+									"beast sense"
+								]
+							}
+						},
+						"9":  {
+							"daily": {
+								"1": [
+									"speak with plants"
+								]
+							}
+						},
+						"13":  {
+							"daily": {
+								"1": [
+									"locate creature"
+								]
+							}
+						},
+						"17": {
+							"daily": {
+								"1": [
+									"commune with nature"
+								]
+							} 
+						}
+					}
+				}
+			],
 			"entries": [
 				"{@i 3rd-level ranger {@variantrule optional class features|tce|optional feature}, which replaces the Primeval Awareness feature}",
 				"You can focus your awareness through the interconnections of nature: you learn additional spells when you reach certain levels in this class if you don't already know them, as shown in the Primal Awareness Spells table. These spells don't count against the number of ranger spells you know.",
