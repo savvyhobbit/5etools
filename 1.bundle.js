@@ -46,7 +46,7 @@ const r=s.b`
   :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
     --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
   }
-`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(73);var l=i(3),o=i(32),d=i(33),u=i(57),p=i(103),h=i(55),c=i(74);
+`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(73);var l=i(3),o=i(32),d=i(33),u=i(57),p=i(102),h=i(55),c=i(74);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
@@ -147,7 +147,7 @@ class v extends m{static get is(){return"vaadin-integer-field"}constructor(){sup
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},182:function(t,e,i){"use strict";i(91),i(29),i(42),i(45);var n=i(56),a=i(2);
+i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},181:function(t,e,i){"use strict";i(91),i(29),i(42),i(45);var n=i(56),a=i(2);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -204,7 +204,7 @@ const s=a.b`
   [part='input-field'] ::slotted(vaadin-icon) {
     margin-top: calc((var(--lumo-icon-size-m) - 1em * var(--lumo-line-height-s)) / -2);
   }
-`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(73);var r=i(3),l=i(32),o=i(109),d=i(33),u=i(103),p=i(55),h=i(78),c=i(74),m=i(34);
+`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(73);var r=i(3),l=i(32),o=i(109),d=i(33),u=i(102),p=i(55),h=i(78),c=i(74),m=i(34);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
