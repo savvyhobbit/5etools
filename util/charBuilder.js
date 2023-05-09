@@ -532,13 +532,21 @@ function addAdditionalChoice(choiceKey, newIndex, character = selectedCharacter)
       }];
       break;
   }
-  character.choices[`additionalChoice_${newIndex}`] = newChoice;
+  if (!character.addedFeatures) {
+    character.addedFeatures = {};
+  }
+  character.addedFeatures[`additionalChoice_${newIndex}`] = newChoice;
   saveCharacter(character);
 }
 
 function deleteAdditionalChoice(key, character = selectedCharacter) {
-  if (character && character.choices && character.choices[key]) {
-    delete character.choices[key];
+  for (const choiceKey in character.choices) {
+    if (choiceKey.startsWith(key)) {
+      delete character.choices[choiceKey];
+    }
+  }
+  if (character && character.addedFeatures && character.addedFeatures[key]) {
+    delete character.addedFeatures[key];
   }
   saveCharacter(character)
 }
@@ -1006,7 +1014,9 @@ async function getSpellCastingStats(character = selectedCharacter) {
       const spellcastingAbility = choice.additionalSpells.defaultAbility || choice.additionalSpells.selectedAbility;
       const alreadyAdded = newSpellStats.find(spellMod => spellcastingAbility.toLowerCase() === spellMod.spellcastingAbility);
       if (alreadyAdded) {
-        alreadyAdded.classes.push(spellcastingAbility);
+        if (!alreadyAdded.classes.find((c) => c === spellcastingAbility)) {
+          alreadyAdded.classes.push(spellcastingAbility);
+        }
       } else {
         const attributeModifier = await getAttributeModifier(spellcastingAbility);
         const spellAttackBonus = attributeModifier + profBonus

@@ -2,7 +2,6 @@ import { PolymerElement, html } from "@polymer/polymer";
 import { MutableData } from '@polymer/polymer/lib/mixins/mutable-data.js';
 import { getCharacterChannel, getSelectedCharacter, getClassReferences, setClassLevels, mergeSubclass, getSubclassChoiceLevel, mergeFeature, setSubclassChoice, setClassChoice, getSubclassChoice, getClassChoice, getHPRollForClassLevel, getHPDiceForLevel, setHpRoll, getClassString, getOptionFeatureChoice, setOptionFeatureChoice } from "../../../util/charBuilder";
 import "../../dnd-select-add";
-import "../../dnd-switch";
 import "../../dnd-button";
 import "../../dnd-asi-select";
 import "../../dnd-svg";

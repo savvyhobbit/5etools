@@ -688,7 +688,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           border: 0;
         }
         .other__header:hover {
-          color: var(--lumo-primary-color-50pct);
+          color: var(--mdc-theme-primary-darker);
         }
         .other__header .material-icons {
           font-size: 24px;
@@ -1017,11 +1017,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 4px 0;
+          padding: 4px;
           background: var(--lumo-contrast-10pct);
           border-radius: 4px;
           height: min-content;
-          width: calc(33% - 8px);
+          width: calc(33% - 16px);
           max-width: 120px;
         }
         .basic-box--short {
@@ -1149,6 +1149,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           }
           .others {
             margin-bottom: 0;
+            top: 20px;
           }
           .other .other__header {
             cursor: unset;

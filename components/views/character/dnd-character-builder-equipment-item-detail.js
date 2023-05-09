@@ -176,12 +176,13 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     this.itemType = this._getItemType();
     this.hasAC = this.item.type === 'S' || !!this.item.armor;
     this.armorAC = this.item.ac;
+    this.acLabel = this.itemType === 'Armor (Light)' ? 'AC (+DEX)' : this.itemType === 'Armor (Medium)' ? 'AC (+DEX max 2)' : 'AC';
     this.isArmor = !!this.item.armor;
     this.isMartial = this.item.weaponCategory === 'Martial';
     this.weaponProperties = [];
     this.weaponMagicModifier = 0;
     if (this.item.weapon || this.item.weaponCategory) {
-      this.weaponMagicModifier = parseInt(this.item.genericBonus, 10);
+      this.weaponMagicModifier = parseInt(this.item.bonusWeapon, 10);
       if (this.item.property) {
         const props = this.item.property.map(prop => {
           const propObj = this.weaponPropertyOptions.find((option) => option.value === prop.trim());
@@ -204,9 +205,12 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     this.itemWeight = this.item.weight || null;
     this.canHaveResist = this.item.armor || this.item.type === 'P' || this.item.type === 'RG';
     this.itemResist = this.item.resist;
-    this.canHaveQuantity = this.item.type === 'P' || this.item.type === 'A' || this.item.type === 'EXP' || this.item.type === '$';
+    this.canHaveQuantity = true;
     this.itemQuantity = this.item.quantity || 1;
     this.canHaveSpell = this.item.type === 'SC';
+    this.canHaveSpellMod = true;
+    this.spellAttack = this.item.bonusSpellAttack;
+    this.spellDC = this.item.bonusSpellSaveDc;
 
     if (this.item.storedItem) {
       this.storedItem = this.item.storedItem;
@@ -327,7 +331,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     if (isNaN(parsedMod)) {
       parsedMod = 0;
     }
-    this.storedItem.genericBonus = parsedMod > 0 ? `+${parsedMod}` : parsedMod;
+    this.storedItem.bonusWeapon = parsedMod > 0 ? `+${parsedMod}` : parsedMod;
     setItem(this.item);
   }
 
@@ -396,6 +400,26 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     }
     this.storedItem.quantity = parsedQuantity;
     this.storedItem.hasQuantity = true;
+    setItem(this.item);
+  }
+
+  _itemSpellAttackChange() {
+    let parsedSpellAttack = parseInt(this.spellAttack, 10);
+
+    if (isNaN(parsedSpellAttack)) {
+      parsedSpellAttack = 0;
+    }
+    this.storedItem.bonusSpellAttack = parsedSpellAttack;
+    setItem(this.item);
+  }
+
+  _itemSpellDCChange() {
+    let parsedSpellDC = parseInt(this.spellDC, 10);
+
+    if (isNaN(parsedSpellDC)) {
+      parsedSpellDC = 0;
+    }
+    this.storedItem.bonusSpellSaveDc = parsedSpellDC;
     setItem(this.item);
   }
 
@@ -481,7 +505,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
         }
         vaadin-number-field,
         vaadin-integer-field {
-          width: calc(33% - 10px);
+          width: calc(33% - 12px);
         }
         vaadin-text-field,
         vaadin-text-area,
@@ -496,6 +520,15 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           margin-left: 10px;
         }
 
+        .ac-field {
+          width: calc(50% - 14px);
+        }
+        .ac-suffix {
+          font-size: 12px;
+        }
+        .full-width-field {
+          width: calc(100% - 20px);
+        }
 
         h2 {
           margin-top: 0;
@@ -589,8 +622,8 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
 
             <div class="edit__weapon" hidden$="[[!item.weapon]]">
               <h4 class="section_heading">Weapon</h4>
-              <dnd-select-add choices="100" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
-              <vaadin-integer-field theme="label--secondary"  min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Magic Modifier" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+              <dnd-select-add choices="100" class="full-width-field" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
+
               <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
 
               <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
@@ -615,9 +648,15 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
               <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
             </div>
 
-            <vaadin-integer-field theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="AC" on-change="_armorACChange"></vaadin-integer-field>
-            
-            <vaadin-integer-field theme="label--secondary"  hidden$="[[!item.hasQuantity]]" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
+            <vaadin-integer-field class="ac-field" theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="[[acLabel]]" on-change="_armorACChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!item.weapon]]" min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Weapon Mod" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!canHaveSpellMod]]" min="0" max="5" has-controls value="{{spellAttack}}" label="Spell Attack" on-change="_itemSpellAttackChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!canHaveSpellMod]]" min="0" max="5" has-controls value="{{spellDC}}" label="Spell DC" on-change="_itemSpellDCChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
 
             <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
               <template>

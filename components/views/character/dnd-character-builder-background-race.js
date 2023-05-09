@@ -9,8 +9,10 @@ import {
 } from "../../../util/charBuilder";
 import './dnd-character-builder-suboptions';
 import "@vaadin/vaadin-select";
+import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { encodeForHash } from "../../../js/utils"; 
+import Parser from "../../../util/Parser";
 
 class DndCharacterBuilderBackgroundRace extends PolymerElement {
   
@@ -48,7 +50,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
   constructor() {
     super();
     
-    this.additionalOptionAddOptions = ["Feat", "Attribute +1", "Attribute +2", "Skill", "Language", "Tool", "Weapon", "Armor"];
+    this.additionalOptionAddOptions = ["Feat", "Spell", "Attribute +1", "Attribute +2", "Skill", "Language", "Tool", "Weapon", "Armor"];
   }
 
   connectedCallback() {
@@ -78,8 +80,9 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
   async updateFromCharacter(character) {
     if (character) {
+      this.character = character;
       let maxAdditionalOptionsIndex = 0;
-      let additionalOptions = Object.entries(character.choices)
+      let additionalOptions = character.addedFeatures ? Object.entries(character.addedFeatures)
         .filter(([key, value]) => {
           if (key.includes("additionalChoice") && !key.includes("suboptions")) {
             const index = parseInt(key.substring(key.indexOf('_') + 1));
@@ -98,7 +101,7 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         .map(([key, value]) => {
           value.key = key;
           return value;
-        });
+        }) : [];
       this.maxAdditionalOptionsIndex = maxAdditionalOptionsIndex;
       this.set('additionalOptions', additionalOptions);
 
@@ -158,7 +161,11 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
 
   _addAdditionalOption(e) {
     const optionChoice = this.$.optionAdd.value;
-    addAdditionalChoice(optionChoice, this.maxAdditionalOptionsIndex + 1);
+    if (optionChoice !== "Spell") {
+      addAdditionalChoice(optionChoice, this.maxAdditionalOptionsIndex + 1);
+    } else {
+      this.openAdditionalSpellModal();
+    }
     this.$.optionAdd.value = "";
   }
 
@@ -167,8 +174,83 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
     deleteAdditionalChoice(optionKey);
   }
 
+  openAdditionalSpellModal() {
+    this.addtlSpellUsageType = "At Will";
+    this.addtlSpellUsageCount = 1;
+    this.addtlSpellCastingAbility = "inherit";
+    this.addtlSpellUsageProficiency = false;
+    this.additionalSpellModalOpened = true;
+  }
+
+  closeAdditionalSpellModal() {
+    this.additionalSpellModalOpened = false;
+  }
+
+  addAdditionalSpell() {
+    const addtlSpellItem = { choiceKey: 'Spell', addtlSpellUsageType: this.addtlSpellUsageType, addtlSpellUsageProficiency: this.addtlSpellUsageProficiency, addtlSpellUsageCount: this.addtlSpellUsageCount, addtlSpellCastingAbility: this.addtlSpellCastingAbility};
+
+    switch (this.addtlSpellUsageType) {
+      case 'At Will':
+        addtlSpellItem.additionalSpells=[{innate:{_:[{choose:"level=1;2;3;4;5;6;7;8;9"}]}}];
+        break;
+      case 'Known':
+        addtlSpellItem.additionalSpells=[{known:{_:[{choose:"level=1;2;3;4;5;6;7;8;9"}]}}];
+        break;
+      case 'Long Rest':
+        addtlSpellItem.additionalSpells=[{innate:{_:{daily:{}}}}];
+        addtlSpellItem.additionalSpells[0].innate._.daily[`${this.addtlSpellUsageProficiency ? 'proficiency' : this.addtlSpellUsageCount||1}`]=[{choose:"level=1;2;3;4;5;6;7;8;9"}];
+        break;
+      case 'Short Rest':
+        addtlSpellItem.additionalSpells=[{innate:{_:{rest:{}}}}];
+        addtlSpellItem.additionalSpells[0].innate._.rest[`${this.addtlSpellUsageProficiency ? 'proficiency' : this.addtlSpellUsageCount||1}`]=[{choose:"level=1;2;3;4;5;6;7;8;9"}];
+        break;
+      case 'Ritual':
+        addtlSpellItem.additionalSpells=[{innate:{_:{ritual:[{choose:"level=1;2;3;4;5;6;7;8;9|components & miscellaneous=ritual"}]}}}];
+        break;
+    }
+
+    if (addtlSpellItem.additionalSpells) {
+      if (this.addtlSpellCastingAbility && this.addtlSpellCastingAbility !== 'inherit') {
+        addtlSpellItem.additionalSpells[0].ability = this.addtlSpellCastingAbility
+      }
+      if (!this.character.addedFeatures) {
+        this.character.addedFeatures = {};
+      }
+      this.character.addedFeatures[`additionalChoice_${this.maxAdditionalOptionsIndex + 1}`] = addtlSpellItem;
+      saveCharacter(this.character);    
+    }
+    this.closeAdditionalSpellModal();
+  }
+
   _showEmpty(isEditMode, value) {
     return !isEditMode && !value;
+  }
+
+  _spellUsageText(item) {
+    let result = '';
+    if (this._dailyOrRest(item.addtlSpellUsageType)) {
+      if (item.addtlSpellUsageProficiency) {
+        result += 'Proficiency Bonus times';
+      } else if (item.addtlSpellUsageCount === '1') {
+        result += 'Once'
+      } else {
+        result += `${item.addtlSpellUsageCount} times`;
+      }
+      result += ` per ${item.addtlSpellUsageType}`;
+
+    } else if (item.addtlSpellUsageType === 'Ritual') {
+      result += 'Ritual only';
+    } else {
+      result += item.addtlSpellUsageType;
+    }
+
+    result += '.'
+
+    if (item.addtlSpellCastingAbility !== 'inherit') {
+      result += ` ${Parser.ATB_ABV_TO_FULL[item.addtlSpellCastingAbility]} is your spellcasting ability.`;
+    }
+
+    return result;
   }
 
   _exists() {
@@ -178,6 +260,14 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
       }
     }
     return false;
+  }
+
+  _equal(a, b) {
+    return a === b;
+  }
+  
+  _dailyOrRest(addtlSpellUsageType) {
+    return addtlSpellUsageType === 'Long Rest' || addtlSpellUsageType === 'Short Rest';
   }
 
   static get template() {
@@ -263,13 +353,24 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         .stats-wrapper.margin-bottom_large {
           margin-bottom: 0px !important;
         }
-        vaadin-select {
+        .spell-usage-text {
+          font-size: 14px;
+          margin-left: 30px;
+          font-style: italic;
+          margin-bottom: -10px;
+        }
+        .extra-title {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 10px;
+          height: 48px;
+        }
+        vaadin-select[add-button] {
           cursor: pointer;
           margin-left: 20px;
           --lumo-font-size-m: 20px;
           --vaadin-text-field-default-width: 0;
-          position: relative;
-          left: -50px;
         }
         
         dnd-select-add {
@@ -280,12 +381,6 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         dnd-character-builder-suboptions {
           display: block;
           margin-left: 30px;
-        }
-
-        @media(min-width: 420px) {
-          vaadin-select {
-            left: 0;
-          }
         }
       </style>
 
@@ -327,13 +422,89 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           <div class="added-options">
             <template is="dom-repeat" items="[[additionalOptions]]">
               <div>
-                Extra [[item.choiceKey]]
-                <button class="mdc-icon-button material-icons" on-click="_deleteAdditionalOption">delete</button>
-                <dnd-character-builder-suboptions label="Extra [[item.choiceKey]]" dont-create-if-missing storage-key="[[item.key]]" selected-item="[[item]]"></dnd-character-builder-suboptions>
+                <div class="extra-title">
+                  Extra [[item.choiceKey]]
+                  <button hidden$="[[!isEditMode]]" class="mdc-icon-button material-icons" on-click="_deleteAdditionalOption">delete</button>
+                </div>
+                <div class="spell-usage-text" hidden="[[!_equal(item.choiceKey, 'Spell')]]" inner-h-t-m-l="[[_spellUsageText(item)]]"></div>
+                <dnd-character-builder-suboptions label="Extra [[item.choiceKey]]" storage-key="[[item.key]]" selected-item="[[item]]"></dnd-character-builder-suboptions>
               </div>
             </template>
           </div>
         </div>
+
+        <vaadin-dialog opened="[[additionalSpellModalOpened]]">
+          <template>
+            <style>
+              h2 {
+                margin: 0;
+              }
+              .modal-content {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+              }
+              .modal-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+              }
+              .modal-footer dnd-button:last-child {
+                --mdc-theme-primary: var(--mdc-theme-error);
+              }
+              .modal-footer dnd-button:first-child {
+                margin-right: 40px;
+              }
+              .use-wrap {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-top: 10px;
+              }
+              [hidden] {
+                display: none !important;
+              }
+            </style>
+            <div class="modal-content">
+              <h2>Additional Spell Options</h2>
+              
+              <vaadin-select label="Spell Usage" value="{{addtlSpellUsageType}}">
+                <template>
+                  <vaadin-list-box>
+                    <vaadin-item>At Will</vaadin-item>
+                    <vaadin-item>Long Rest</vaadin-item>
+                    <vaadin-item>Short Rest</vaadin-item>
+                    <vaadin-item>Known</vaadin-item>
+                    <vaadin-item>Ritual</vaadin-item>
+                  </vaadin-list-box>
+                </template>
+              </vaadin-select>
+
+              <div class="use-wrap" hidden$="[[!_dailyOrRest(addtlSpellUsageType)]]">
+                <dnd-switch label='Set Usage' secondary-label='Proficiency Usage' checked={{addtlSpellUsageProficiency}}></dnd-switch>
+                <vaadin-integer-field hidden$="[[addtlSpellUsageProficiency]]" has-controls label="Uses" min="1" max="10" value="{{addtlSpellUsageCount}}"></vaadin-integer-field>
+              </div>
+
+              <vaadin-select value="{{addtlSpellCastingAbility}}" label="Spellcasting Ability">
+                <template>
+                  <vaadin-list-box>
+                    <vaadin-item value='inherit'>Inherit</vaadin-item>
+                    <vaadin-item value='str'>Strength</vaadin-item>
+                    <vaadin-item value='dex'>Dexterity</vaadin-item>
+                    <vaadin-item value='con'>Constitution</vaadin-item>
+                    <vaadin-item value='wis'>Wisdom</vaadin-item>
+                    <vaadin-item value='int'>Intelligence</vaadin-item>
+                    <vaadin-item value='cha'>Charisma</vaadin-item>
+                  </vaadin-list-box>
+                </template>
+              </vaadin-select>
+            </div>
+            <div class="modal-footer">
+              <dnd-button label="Add Spell" border on-click="addAdditionalSpell"></dnd-button>
+              <dnd-button label="Cancel" border on-click="closeAdditionalSpellModal"></dnd-button>
+            </div>
+          </template>
+        </vaadin-dialog>
       </div>
     `;
   }

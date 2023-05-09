@@ -391,7 +391,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           margin-right: auto;
         }
         .mdc-icon-button:hover {
-          color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-primary);
         }
 
         .col-wrap {
@@ -429,9 +429,10 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           display: flex;
           flex-direction: column;
           cursor: pointer;
+          min-height: 28px;
         }
         .item-wrap__name-wrap:hover {
-          color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-primary);
         }
         .item-wrap__name {
           font-weight: bold;
@@ -562,7 +563,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             display: block !important;
           }
           .item-wrap[active] {
-            background: var(--_lumo-grid-selected-row-color);
+            background: var(--lumo-primary-color-10pct);
           }
           .row-wrap {
             width: calc(50% - 10px);
@@ -597,7 +598,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
-                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[_isLeaf(item)]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]] on-click='_recordScrollHeight'></vaadin-grid-tree-toggle>
+                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[_isLeaf(item)]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]]></vaadin-grid-tree-toggle>
                   <div class="item-wrap__name-wrap" on-click="_expandDetails">
                     <span class="item-wrap__name">[[item.name]]
                       <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>

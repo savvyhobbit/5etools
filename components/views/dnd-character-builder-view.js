@@ -47,6 +47,10 @@ class DndCharacterBuilderView extends PolymerElement {
       deleteModalOpen: {
         type: Boolean,
         value: false
+      },
+      pulse: {
+        type: Boolean,
+        value: true
       }
     }
   }
@@ -137,6 +141,7 @@ class DndCharacterBuilderView extends PolymerElement {
 
     this.editModeHandler = (e) => {
       this.isEditMode = e.detail.isEditMode;
+      this.pulse = false;
       togglePrimarySecondary(this.isEditMode, this);
     }
     getEditModeChannel().addEventListener('editModeChange', this.editModeHandler);
@@ -432,6 +437,7 @@ class DndCharacterBuilderView extends PolymerElement {
         }
         .char-input-wrap {
           display: flex;
+          height: 58px;
         }
         .char-input-wrap.fixed {
           position: fixed;
@@ -500,7 +506,6 @@ class DndCharacterBuilderView extends PolymerElement {
         }
         .thumb-menu__btn {
           border-radius: 50%;
-          box-shadow: 0px 0px 20px -5px var(--mdc-theme-text-primary-on-background);
         }
         .drawer-btn {
           margin-bottom: 20px;
@@ -521,6 +526,27 @@ class DndCharacterBuilderView extends PolymerElement {
 
         vaadin-menu-bar {
           margin: 4px 0;
+        }
+
+        [pulse] {
+          box-shadow: var(--pulse-shadow);
+          animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0% {
+            transform: scale(0.95);
+            box-shadow: var(--pulse-shadow-0);
+          }
+          
+          70% {
+            transform: scale(1);
+            box-shadow: var(--pulse-shadow-70);
+          }
+          
+          100% {
+            transform: scale(0.95);
+            box-shadow: var(--pulse-shadow-100);
+          }
         }
 
         @media(max-width: 419px) {
@@ -560,9 +586,6 @@ class DndCharacterBuilderView extends PolymerElement {
         }
 
         @media(min-width: 921px) {
-          .thumb-menu {
-            position: static;
-          }
           .thumb-menu__btn {
             margin-left: auto;
             position: relative;
@@ -570,6 +593,12 @@ class DndCharacterBuilderView extends PolymerElement {
           }
           .drawer-btn {
             display: none;
+          }
+          .edit-button {
+            height: 80px;
+            width: 80px;
+            font-size: 36px;
+            right: 36px;
           }
         }
       </style>
@@ -589,11 +618,12 @@ class DndCharacterBuilderView extends PolymerElement {
 
         <div class="thumb-menu">
           <div class="roll-container" id="rollContainer"></div>
-          <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
-          <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons"  on-click="openDrawer">logout</button>
+          <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
+          <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="openDrawer">logout</button>
         </div>
 
-        <vaadin-menu-bar theme="icon end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>
+        <vaadin-menu-bar theme="end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>
+
         <input type="file" id="fileSelector" accept=".json" on-change="processUpload" />
 
         <div class="character-builder--tabs-wrapper">

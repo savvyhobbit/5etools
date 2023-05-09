@@ -172,12 +172,6 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                 type: Boolean,
                 value: false
             },
-            
-            dontCreateIfMissing: {
-                type: Boolean,
-                value: false,
-                reflectToAttribute: true
-            }
         };
     }
 
@@ -226,15 +220,10 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             for (let i = 0; i < storageKeys.length; i++) {
                 const storageKey = storageKeys[i];
                 if (!storedItem[storageKey]) {
-                    if (!this.dontCreateIfMissing) {
-                        if (storageKeys.length < i + 1 && !isNaN(parseInt(storageKeys[i + 1], 10))) {
-                            storedItem[storageKey] = new Array(20);
-                        } else {
-                            storedItem[storageKey] = {};
-                        }
+                    if (storageKeys.length < i + 1 && !isNaN(parseInt(storageKeys[i + 1], 10))) {
+                        storedItem[storageKey] = new Array(20);
                     } else {
-                        this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
-                        return;
+                        storedItem[storageKey] = {};
                     }
                 }
                 if (i === storageKeys.length - 1) {
@@ -681,7 +670,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                             //type    innate: 
                             //level     <character level> - or 1, 2, 3, 4, 5, 6, 7, 8, 9:
                             //reset       <cost or reset type> rest, daily, will, ritual, resource:
-                            //                      rest (eg once per short or long rest)
+                            //                      rest (eg once per short rest)
                             //                      daily (eg once per long rest)
                             //                      will (eg cast it without spending a spell slot)
                             //                      ritual (eg only cast as a ritual, infinite uses)
@@ -1028,7 +1017,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
             if (spellChoiceAtPathIndex > -1) {
                 this.storedItem.additionalSpells.selectedSpells.splice(spellChoiceAtPathIndex, 1);
             }
-            let spellChoiceAtPath = { path: choice.path, type: choice.type, level: choice.level, resource: choice.resource, count: choice.count, uses: choice.uses };
+            let spellChoiceAtPath = { path: choice.path, type: choice.type, level: choice.level, resource: choice.resource, resourceName: this.selectedSpellSet.resourceName, count: choice.count, uses: choice.uses };
             this.storedItem.additionalSpells.selectedSpells.push(spellChoiceAtPath);
             spellChoiceAtPath.spells = mappedSpells;
             const newSelectedSpellSet = cloneDeep(this.selectedSpellSet);

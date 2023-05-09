@@ -1,16 +1,29 @@
 
 export function togglePrimarySecondary(isPrimary, el) {
-    let root = document.documentElement;
-    const styleProp = el && el.style ? el.style : root.style;
+    const styleProp = el && el.style ? el.style : document.documentElement.style;
     
     if (isPrimary) {
         styleProp.setProperty("--mdc-theme-primary", "var(--mdc-theme-secondary)");
         styleProp.setProperty("--mdc-theme-primary-darker", "var(--mdc-theme-secondary-lighter)");
         styleProp.setProperty("--lumo-primary-text-color", "var(--mdc-theme-secondary)");
+        styleProp.setProperty("--lumo-primary-color", "var(--mdc-theme-secondary)");
+        styleProp.setProperty("--lumo-primary-color-10pct", "var(--mdc-theme-secondary-10pct");
+        styleProp.setProperty("--lumo-primary-color-50pct", "var(--mdc-theme-secondary-50pct");
+        styleProp.setProperty("--pulse-shadow", "var(--pulse-shadow-secondary)");
+        styleProp.setProperty("--pulse-shadow-0", "var(--pulse-shadow-secondary-0)");
+        styleProp.setProperty("--pulse-shadow-70", "var(--pulse-shadow-secondary-70)");
+        styleProp.setProperty("--pulse-shadow-100", "var(--pulse-shadow-secondary-100)");
     } else {
         styleProp.removeProperty("--mdc-theme-primary");
         styleProp.removeProperty("--mdc-theme-primary-darker");
         styleProp.removeProperty("--lumo-primary-text-color");
+        styleProp.removeProperty("--lumo-primary-color");
+        styleProp.removeProperty("--lumo-primary-color-10pct");
+        styleProp.removeProperty("--lumo-primary-color-50pct");
+        styleProp.removeProperty("--pulse-shadow");
+        styleProp.removeProperty("--pulse-shadow-0");
+        styleProp.removeProperty("--pulse-shadow-70");
+        styleProp.removeProperty("--pulse-shadow-100");
     }
 }
 
@@ -20,6 +33,8 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-primary", "#bb86fc");
         root.style.setProperty("--mdc-theme-primary-darker", "#a359fc");
         root.style.setProperty("--mdc-theme-secondary", "#03dac6");
+        root.style.setProperty("--mdc-theme-secondary-10pct", "#1C3432");
+        root.style.setProperty("--mdc-theme-secondary-50pct", "#137269");
         root.style.setProperty("--mdc-theme-secondary-lighter", "rgba(1, 135, 134, .8)");
         root.style.setProperty("--mdc-theme-background", "#121212");
         root.style.setProperty("--mdc-theme-surface", "#1f1f1f");
@@ -41,6 +56,21 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-text-hint-on-light", "#fff");
         root.style.setProperty("--mdc-theme-text-disabled-on-light", "#fff");
         root.style.setProperty("--mdc-theme-text-icon-on-light", "#fff");
+
+        root.style.setProperty("--pulse-shadow", "0 0 0 0 rgb(187, 134, 252, 1)");
+        root.style.setProperty("--pulse-shadow-0", "0 0 0 0 rgb(187, 134, 252, 0.7)");
+        root.style.setProperty("--pulse-shadow-70", "0 0 0 20px rgb(187, 134, 252, 0)");
+        root.style.setProperty("--pulse-shadow-100", "0 0 0 0 rgb(187, 134, 252, 0)");
+
+        root.style.setProperty("--pulse-shadow-gold", "0 0 0 0 rgb(218,198,3, 1)");
+        root.style.setProperty("--pulse-shadow-gold-0", "0 0 0 0 rgb(218,198,3, 0.7)");
+        root.style.setProperty("--pulse-shadow-gold-70", "0 0 0 20px rgb(218,198,3, 0)");
+        root.style.setProperty("--pulse-shadow-gold-100", "0 0 0 0 rgb(218,198,3, 0)");
+
+        root.style.setProperty("--pulse-shadow-secondary", "0 0 0 0 rgb(3, 218, 198, 1)");
+        root.style.setProperty("--pulse-shadow-secondary-0", "0 0 0 0 rgb(3, 218, 198, 0.7)");
+        root.style.setProperty("--pulse-shadow-secondary-70", "0 0 0 20px rgb(3, 218, 198, 0)");
+        root.style.setProperty("--pulse-shadow-secondary-100", "0 0 0 0 rgb(3, 218, 198, 0)");
         
         // Lumo
         root.style.setProperty("--lumo-base-color", "var(--mdc-theme-surface)");
@@ -106,6 +136,8 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-primary", "#6200ee");
         root.style.setProperty("--mdc-theme-primary-darker", "#5000c1");
         root.style.setProperty("--mdc-theme-secondary", "#018786");
+        root.style.setProperty("--mdc-theme-secondary-10pct", "#E3F2F2");
+        root.style.setProperty("--mdc-theme-secondary-50pct", "#72BCBC");
         root.style.setProperty("--mdc-theme-secondary-lighter", "rgba(1, 135, 134, .5)");
         root.style.setProperty("--mdc-theme-background", "#fff");
         root.style.setProperty("--mdc-theme-surface", "#fff");
@@ -128,6 +160,21 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-text-hint-on-light", "rgba(0, 0, 0, 0.38)");
         root.style.setProperty("--mdc-theme-text-disabled-on-light", "rgba(0, 0, 0, 0.38)");
         root.style.setProperty("--mdc-theme-text-icon-on-light", "rgba(0, 0, 0, 0.38)");
+
+        root.style.setProperty("--pulse-shadow", "0 0 0 0 rgb(98, 0, 238, 1)");
+        root.style.setProperty("--pulse-shadow-0", "0 0 0 0 rgb(98, 0, 238, 0.7)");
+        root.style.setProperty("--pulse-shadow-70", "0 0 0 20px rgb(98, 0, 238, 0)");
+        root.style.setProperty("--pulse-shadow-100", "0 0 0 0 rgb(98, 0, 238, 0)");
+
+        root.style.setProperty("--pulse-shadow-gold", "0 0 0 0 rgb(135,134,1, 1)");
+        root.style.setProperty("--pulse-shadow-gold-0", "0 0 0 0 rgb(135,134,1, 0.7)");
+        root.style.setProperty("--pulse-shadow-gold-70", "0 0 0 20px rgb(135,134,1, 0)");
+        root.style.setProperty("--pulse-shadow-gold-100", "0 0 0 0 rgb(135,134,1, 0)");
+
+        root.style.setProperty("--pulse-shadow-secondary", "0 0 0 0 rgb(1, 135, 134, 1)");
+        root.style.setProperty("--pulse-shadow-secondary-0", "0 0 0 0 rgb(1, 135, 134, 0.7)");
+        root.style.setProperty("--pulse-shadow-secondary-70", "0 0 0 20px rgb(1, 135, 134, 0)");
+        root.style.setProperty("--pulse-shadow-secondary-100", "0 0 0 0 rgb(1, 135, 134, 0)");
 
         // Lumo
         root.style.setProperty("--lumo-base-color", "var(--mdc-theme-surface)");

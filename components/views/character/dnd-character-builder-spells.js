@@ -532,7 +532,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 isAlwaysPrepared: true,
                 isWarlock: false,
                 spellUseType: otherSpell.type,
-                spellSlots: otherSpell.uses === 'proficiency' ? proficiencyBonus : addtlSpell.uses,
+                spellSlots: otherSpell.uses === 'proficiency' ? proficiencyBonus : otherSpell.uses,
                 ability: otherSpell.selectedAbility || otherSpell.defaultAbility,
                 currentSlots: character.spellSlots && character.spellSlots[otherSpell.spellDef.name] ? character.spellSlots[otherSpell.spellDef.name] : 0,
                 superLabel: [otherSpell.label, otherSpell.storedItemName].filter(l => !!l).map(util_capitalize).join(': ')
@@ -623,7 +623,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
               } else {
                 newSpellDisplay.push({
                   children: [],
-                  currentSlots: getSpellSlots(spellSlots),
+                  currentSlots: getSpellSlots(spellLvl),
                   hasChildren: false,
                   id: "level",
                   isWarlock: false,
@@ -939,15 +939,11 @@ class DndCharacterBuilderSpells extends PolymerElement {
   }
 
   _hideCheckboxes(spellSlots, isEditMode, type) {
-    return !spellSlots || spellSlots > 0 && this.isEditMode || type === 'known' || type === 'will'
+    return !spellSlots || spellSlots > 0 && this.isEditMode || type === 'known' || type === 'will' || type === 'resource'
   }
 
   _hideAbility(ability) {
     return !ability;
-  }
-
-  _hideAtWill(type) {
-    return type !== 'will';
   }
   
   _hideSlotsLabel(isEditMode, level, className) {
@@ -1158,9 +1154,10 @@ class DndCharacterBuilderSpells extends PolymerElement {
           display: flex;
           align-items: center;
           color: var(--mdc-theme-text-secondary-on-background);
+          margin-right: 6px;
         }
 
-        .spell-at-will {
+        .innate-spell-label {
           font-size: 12px;
           display: flex;
           align-items: center;
@@ -1499,7 +1496,11 @@ class DndCharacterBuilderSpells extends PolymerElement {
                     <span class="label" inner-h-t-m-l="[[_innateUsageString(item.spellUseType)]]"></span>
                   </div>
 
-                  <div class="spell-at-will" hidden$="[[_hideAtWill(item.spellUseType)]]">At Will</div>
+                  <div class="innate-spell-label" hidden$="[[!_equal(item.spellUseType, 'will')]]">At Will</div>
+
+                  <div class="innate-spell-label" hidden$="[[!_equal(item.spellUseType, 'ritual')]]">Ritual Only</div>
+
+                  <div class="innate-spell-label" hidden$="[[!_equal(item.spellUseType, 'resource')]]">[[item.spellSlots]] Ki</div>
         
                   <button class$="[[_isPreparedClass(spellsKnown, item, isEditMode)]]" hidden$="[[!isEditMode]]" on-click="_toggleSpellPrepared">[[_isPreparedText(spellsKnown, item)]]</button>
                   <dnd-svg class="class-icon" hidden$="[[isEditMode]]" id='[[_spellClassText(item.parentClass)]]' default-color></dnd-svg>
