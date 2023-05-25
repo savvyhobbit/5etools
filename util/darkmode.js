@@ -7,8 +7,8 @@ export function togglePrimarySecondary(isPrimary, el) {
         styleProp.setProperty("--mdc-theme-primary-darker", "var(--mdc-theme-secondary-lighter)");
         styleProp.setProperty("--lumo-primary-text-color", "var(--mdc-theme-secondary)");
         styleProp.setProperty("--lumo-primary-color", "var(--mdc-theme-secondary)");
-        styleProp.setProperty("--lumo-primary-color-10pct", "var(--mdc-theme-secondary-10pct");
-        styleProp.setProperty("--lumo-primary-color-50pct", "var(--mdc-theme-secondary-50pct");
+        styleProp.setProperty("--lumo-primary-color-10pct", "var(--mdc-theme-secondary-10pct)");
+        styleProp.setProperty("--lumo-primary-color-50pct", "var(--mdc-theme-secondary-50pct)");
         styleProp.setProperty("--pulse-shadow", "var(--pulse-shadow-secondary)");
         styleProp.setProperty("--pulse-shadow-0", "var(--pulse-shadow-secondary-0)");
         styleProp.setProperty("--pulse-shadow-70", "var(--pulse-shadow-secondary-70)");

@@ -469,20 +469,110 @@ function getSubclassChoiceLevel(classDef) {
   }
 }
 
-async function toggleCustomSkill(skill, character = selectedCharacter) {
+/////////////////////
+// 0 prof from choice
+// empty -> + -> ++ -> empty
+// 
+// 1 prof from choice
+// c -> +c -> - -> c
+// 
+// 2 prof from choice
+// cc -> -c -> -- -> cc
+function toggleCustomSkill(skill, character = selectedCharacter) {
   if (character) {
-    const allSkills = await getSkillProfs(undefined, selectedCharacter);
-    if (character.customSkills) {
-      if (allSkills.filter(currentSkill => currentSkill === skill).length < 2) {
-        character.customSkills.push(skill)
-      } else {
-        character.customSkills = character.customSkills.join('$%').replaceAll(skill, '').split('$%').filter((i) => !!i);
-      }
-    } else {
-      character.customSkills = [skill];
+    if (!character.customSkills) {
+      character.customSkills = [];
     }
+    if (!character.negatedSkills) {
+      character.negatedSkills = []
+    }
+
+    const skillCountCustom = character.customSkills.filter(currentSkill => currentSkill === skill).length;
+    const skillCountNegated = character.negatedSkills.filter(currentSkill => currentSkill === skill).length;
+    const skillCountChoices = getChoiceSkillProfs(character).filter(currentSkill => currentSkill === skill).length;
+
+    switch (skillCountChoices) {
+      case 0:
+        // remove any stragglers from negated
+        character.negatedSkills = character.negatedSkills.filter(currentSkill => currentSkill !== skill);
+        if (skillCountCustom < 2) {
+          character.customSkills.push(skill);
+        } else {
+          character.customSkills = character.customSkills.filter(currentSkill => currentSkill !== skill);
+        }
+        break;
+
+      case 1:
+        if (skillCountCustom === 1) {
+          character.customSkills = character.customSkills.filter(currentSkill => currentSkill !== skill);
+          character.negatedSkills.push(skill);
+        } else if (skillCountNegated === 1) {
+          character.negatedSkills = character.negatedSkills.filter(currentSkill => currentSkill !== skill);
+          character.customSkills = character.customSkills.filter(currentSkill => currentSkill !== skill);
+
+        } else {
+          character.customSkills.push(skill);
+        }
+        break;
+
+      case 2:
+        // remove any stragglers from custom
+        character.customSkills = character.customSkills.filter(currentSkill => currentSkill !== skill);
+        if (skillCountNegated < 2) {
+          character.negatedSkills.push(skill);
+        } else {
+          character.negatedSkills = character.negatedSkills.filter(currentSkill => currentSkill !== skill);
+        }
+        break;
+    }
+
     saveCharacter(character);
   }
+}
+
+async function getSaves(character = selectedCharacter) {
+  let classSaves = await getClassSaves(),
+    customSaves = character.customSaves || [],
+    negatedSaves = character.negatedSaves || [],
+    allSaves = classSaves.concat(customSaves);
+
+  negatedSaves.forEach((negatedSave) => {
+    const index = allSaves.indexOf(negatedSave);
+    if (index !== -1) {
+      allSaves.splice(index, 1);
+    }
+  });
+  return allSaves;
+}
+
+async function toggleCustomSave(attr, character = selectedCharacter) {
+  if (!character.customSaves) {
+    character.customSaves = [];
+  }
+  if (!character.negatedSaves) {
+    character.negatedSaves = [];
+  }
+  const classSave = (await getClassSaves()).includes(attr),
+    customSave = character.customSaves.includes(attr),
+    negatedSave = character.negatedSaves.includes(attr);
+
+  if (classSave) {
+    character.customSaves = character.customSaves.filter(currentSave => currentSave !== attr);
+    if (negatedSave) {
+      character.negatedSaves = character.negatedSaves.filter(currentSave => currentSave !== attr);
+    } else {
+      character.negatedSaves.push(attr);
+    }
+  } else {
+    character.negatedSaves = character.negatedSaves.filter(currentSave => currentSave !== attr);
+    if (customSave) {
+      character.customSaves = character.customSaves.filter(currentSave => currentSave !== attr);
+    } else {
+      character.customSaves.push(attr);
+    }
+  }
+
+  saveCharacter(character);
 }
 
 function addAdditionalChoice(choiceKey, newIndex, character = selectedCharacter) {
@@ -713,83 +803,18 @@ function getChoiceAttributes(character = selectedCharacter) {
 }
 
 
-async function getSkillProfs(attr, character = selectedCharacter) {
+function getSkillProfs(character = selectedCharacter) {
   let choiceSkills = getChoiceSkillProfs(character),
     customSkills = character.customSkills || [],
+    negatedSkills = character.negatedSkills || [],
     allSkills = choiceSkills.concat(customSkills);
-  
-  if (attr) {
-    let skillsForAttr = [];
-    switch(attr) {
-      case 'str':
-        if (allSkills.includes('athletics')) {
-          skillsForAttr.push('athletics');
-        }
-        break;
-      case 'dex':
-        if (allSkills.includes('acrobatics')) {
-          skillsForAttr.push('acrobatics');
-        }
-        if (allSkills.includes('sleight of hand')) {
-          skillsForAttr.push('sleight of hand');
-        }
-        if (allSkills.includes('stealth')) {
-          skillsForAttr.push('stealth');
-        }
-        break;
-      case 'int':
-        if (allSkills.includes('arcana')) {
-          skillsForAttr.push('arcana');
-        }
-        if (allSkills.includes('history')) {
-          skillsForAttr.push('history');
-        }
-        if (allSkills.includes('investigation')) {
-          skillsForAttr.push('investigation');
-        }
-        if (allSkills.includes('nature')) {
-          skillsForAttr.push('nature');
-        }
-        if (allSkills.includes('religion')) {
-          skillsForAttr.push('religion');
-        }
-        break;
-      case 'wis':
-        if (allSkills.includes('animal handling')) {
-          skillsForAttr.push('animal handling');
-        }
-        if (allSkills.includes('insight')) {
-          skillsForAttr.push('insight');
-        }
-        if (allSkills.includes('medicine')) {
-          skillsForAttr.push('medicine');
-        }
-        if (allSkills.includes('perception')) {
-          skillsForAttr.push('perception');
-        }
-        if (allSkills.includes('survival')) {
-          skillsForAttr.push('survival');
-        }
-        break;
-      case 'cha':
-        if (allSkills.includes('deception')) {
-          skillsForAttr.push('deception');
-        }
-        if (allSkills.includes('intimidation')) {
-          skillsForAttr.push('intimidation');
-        }
-        if (allSkills.includes('performance')) {
-          skillsForAttr.push('performance');
-        }
-        if (allSkills.includes('persuasion')) {
-          skillsForAttr.push('persuasion');
-        }
-        break
+  negatedSkills.forEach((negatedSkill) => {
+    const index = allSkills.indexOf(negatedSkill);
+    if (index !== -1) {
+      allSkills.splice(index, 1);
     }
-    return skillsForAttr;
-  } else {
-    return allSkills;
-  }
+  });
+  return allSkills;
 }
 
 function getClassChoice(classs, level, feature, character = selectedCharacter) {
@@ -1909,6 +1934,8 @@ export {
   setAbilityUsage,
   removeAbilityUsage,
   toggleCustomSkill,
+  toggleCustomSave,
+  getSaves,
   addAdditionalChoice,
   deleteAdditionalChoice,
   getChoiceWeaponProfs,
