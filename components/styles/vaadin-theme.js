@@ -31,6 +31,21 @@ registerStyles('vaadin-select', css`
       width: unset;
     }
 
+    :host([tiny]) {
+      height: 20px;
+    }
+    :host([tiny])::before {
+      content: unset;
+    }
+    :host([tiny]) [part="toggle-button"] {
+      font-size: 18px;
+      margin-left: -11px !important;
+    }
+    :host([tiny]) [part="input-field"] {
+      width: 20px;
+      height: 20px;
+    }
+
     :host([add-button]) [part="toggle-button"],
     :host([add]) [part="toggle-button"] {
       margin-left: -10px;

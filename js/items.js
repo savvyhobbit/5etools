@@ -29,7 +29,7 @@ function renderSelection(item, rootEl, data, makeSmall) {
 		wrap.querySelector('.stats-wrapper').classList.add('small');
 	}
 
-	rootEl.querySelector(".stats-wrapper .value").innerHTML = item.value ? item.value + (item.weight ? ", " : "") : "";
+	rootEl.querySelector(".stats-wrapper .value").innerHTML = item.value ? item.value / 100 + (item.weight ? " gp, " : " gp") : "";
 	rootEl.querySelector(".stats-wrapper .weight").innerHTML = item.weight ? item.weight + (item.weight == 1 ? " lb." : " lbs.") : "";
 	let attunement;
 	if (item.reqAttune) {

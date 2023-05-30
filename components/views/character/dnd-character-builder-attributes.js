@@ -26,6 +26,7 @@ import {
   toggleCustomInitiative,
   setCustomInitiativeVal,
   toggleCustomAC,
+  toggleCustomSpeed,
   toggleCustomHealth,
   setCustomACVal,
   setCustomHealthVal,
@@ -37,10 +38,13 @@ import {
   getChoiceDarkvision,
   getChoiceConditionImmunes,
   getChoiceResists,
-  getSpellCastingStats
+  getSpellCastingStats,
+  addCustomSpeedItem,
+  deleteCustomSpeedItem,
+  editCustomSpeedItem,
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
-import { util_capitalizeAll, absInt, findInPath } from "../../../js/utils";
+import { util_capitalizeAll, absInt, findInPath, cloneDeep } from "../../../js/utils";
 import { rollDice } from "../../../util/roll";
 
 class DndCharacterBuilderAttributes extends PolymerElement {
@@ -302,7 +306,9 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.customInitiativeVal = character.customInitiativeVal;
       this.initiative = await getCharacterInitiative();
 
-      this.speed = await getCharacterSpeed();
+      this.customSpeed = !!character.customSpeed;
+      this.speed = cloneDeep(await getCharacterSpeed());
+      this.additionalCustomSpeedItems = ["Fly", "Swim", "Climb"].filter(item => !character.customSpeedVal.some((customSpeed) => customSpeed.type === item.toLowerCase()));
 
       this.proficiencyBonus = await getCharacterProficiencyBonus();
 
@@ -501,6 +507,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     toggleCustomAC();
   }
 
+  _swapCustomSpeed(e) {
+    toggleCustomSpeed();
+  }
+
   _swapCustomHealth(e) {
     toggleCustomHealth();
   }
@@ -531,6 +541,33 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   _toggleFeatures() {
     this.featuresOpen = !this.featuresOpen;
+  }
+
+  _hideCustomSpeed(isEdit, customSpeed) {
+    return !isEdit || !customSpeed;
+  }
+
+  _removeSpeedItem(e) {
+    deleteCustomSpeedItem(e.model.__data.index);
+  }
+
+  _addSpeedItem(e) {
+    const newSpeedItem = { type: e.currentTarget.value.toLowerCase(), speed: 0 };
+    addCustomSpeedItem(newSpeedItem);
+  }
+
+  _speedItemChange(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    const index = e.model.__data.index;
+    editCustomSpeedItem(index, newValue);
+  }
+
+  _uppercase(str) {
+    return str && typeof str === 'string' ? util_capitalizeAll(str) : '';
+  }
+
+  _arrayOfOne(array) {
+    return Array.isArray(array) && array.length === 1;
   }
 
   static get template() {
@@ -565,6 +602,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           flex-shrink: 0;
           justify-content: space-between;
           max-width: 360px;
+          width: 100%;
         }
         .health-wrap > div {
           width: calc(33% - 8px);
@@ -711,7 +749,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           font-size: 24px;
           position: relative;
           transition: transform .1s ease-in;
-          margin: -2px 8px 0 0;
+          margin: -2px 4px 0 0;
         }
         .other__wrap {
           opacity: 0;
@@ -909,6 +947,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           top: 0px;
           right: 0;
           position: absolute;
+          margin-right: 0px;
         }
         .prof-bonus-box {
           padding: 6px;
@@ -997,6 +1036,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           padding: 6px 0 0;
           background: var(--lumo-contrast-10pct);
           margin-bottom: 16px;
+          height: min-content;
+          min-height: 143px;
         }
         .hit-dice__heading {
           display: inline-block;
@@ -1082,15 +1123,45 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           cursor: pointer;
         }
 
+        .speed .basic-box__label {
+          display: flex;
+          align-items: center;
+        }
+        .speed .basic-box__label vaadin-select {
+          margin-left: 8px;
+        }
         .speed-val {
           font-size: 16px;
+          display: flex;
+          justify-content: space-between;
+        }
+        .speed-val vaadin-integer-field {
+          width: 70px;
+          padding: 0;
+          margin: -16px 4px 7px;
+        }
+        .speed-val button {
+          height: 24px;
+          border: unset;
+          background: unset;
+          cursor: pointer;
+          font-weight: 300;
+        }
+        .speed-val--center {
+          justify-content: center;
+        }
+        .speed-val--center span:last-child {
+          margin-left: 8px;
+        }
+        .speed-val[smaller] {
+          font-size: 14px;
+          line-height: 1.4;
         }
 
         .custom-val__swap {
           font-size: 10px;
-          margin: -4px 0 8px auto;
+          margin: -4px -4px 8px auto;
           background-color: var(--lumo-contrast-10pct);
-          /* background-color: var(--mdc-theme-secondary-lighter); */
           padding: 4px 5px 4px;
           line-height: 1;
           border-radius: 4px;
@@ -1178,13 +1249,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           }
         }
         @media(min-width: 920px) {
-          .basic-box__wrap-wrap {
-            position: absolute;
-            right: 0;
+          .health-wrap-wrap {
+            display: flex;
+            justify-content: space-between;
           }
           .others {
             margin-bottom: 0;
-            top: 20px;
           }
           .other .other__header {
             cursor: unset;
@@ -1216,140 +1286,173 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
       <div class$="[[_editModeClass(isEditMode)]]">
         <div class="wrap">
-          <div class="health-wrap">
-            <!-- Hit Points -->
-            <div class="stat-box stat-box--hp">
+          <div class="health-wrap-wrap">
+            <div class="health-wrap">
+              <!-- Hit Points -->
+              <div class="stat-box stat-box--hp">
 
-              <vaadin-integer-field hidden$=[[isEditMode]] id="hpField" theme="hp" value={{currentHP}} on-change="hpBlurHandler" on-blur="hpChangeHandler" min="0" max="[[_maxHP(customHealthVal, maxHP, customHealth)]]" has-controls label="Hit Points">
-                <span class="stat-box__adj--hp" slot="suffix"><span>/</span> [[_maxHP(customHealthVal, maxHP, customHealth)]] [[_tempHpStr(tempHP)]]</span>
-              </vaadin-integer-field>
+                <vaadin-integer-field hidden$=[[isEditMode]] id="hpField" theme="hp" value={{currentHP}} on-change="hpBlurHandler" on-blur="hpChangeHandler" min="0" max="[[_maxHP(customHealthVal, maxHP, customHealth)]]" has-controls label="Hit Points">
+                  <span class="stat-box__adj--hp" slot="suffix"><span>/</span> [[_maxHP(customHealthVal, maxHP, customHealth)]] [[_tempHpStr(tempHP)]]</span>
+                </vaadin-integer-field>
 
-              <div class="stat-box--hp-edit" hidden$=[[!isEditMode]]>
-                <div class="custom-val__swap" on-click="_swapCustomHealth" hidden$=[[!isEditMode]]>
-                  <span class="custom-val__option" hidden$=[[customHealth]]><span class="material-icons">edit</span> Edit</span>
-                  <span class="custom-val__option" hidden$=[[!customHealth]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                <div class="stat-box--hp-edit" hidden$=[[!isEditMode]]>
+                  <div class="custom-val__swap" on-click="_swapCustomHealth" hidden$=[[!isEditMode]]>
+                    <span class="custom-val__option" hidden$=[[customHealth]]><span class="material-icons">edit</span> Edit</span>
+                    <span class="custom-val__option" hidden$=[[!customHealth]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                  </div>
+                  <div class="basic-box__label">Max HP</div>
+
+                  <div hidden$=[[!customHealth]]>
+                    <vaadin-integer-field  value={{customHealthVal}} min="0" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                    <span hidden$="[[isEditMode]]">[[customHealthVal]]</span>
+                  </div>
+                  <div hidden$=[[customHealth]]>[[maxHP]]</div>
                 </div>
-                <div class="basic-box__label">Max HP</div>
 
-                <div hidden$=[[!customHealth]]>
-                  <vaadin-integer-field  value={{customHealthVal}} min="0" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
-                  <span hidden$="[[isEditMode]]">[[customHealthVal]]</span>
+                <div class="stat-box__side" hidden$=[[isEditMode]]>
+                  <!--  Healing / Damage -->
+                  <div class="btn-field btn-field--heal">
+                      <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-heart"></i></button>
+                      <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
+                        <span slot="prefix">+</span>
+                      </vaadin-integer-field>
+                  </div>
+                  <div class="btn-field btn-field--dmg">
+                      <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-swords"></i></button>
+                      <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
+                        <span slot="prefix">-</span>
+                      </vaadin-integer-field>
+                  </div>
+                  <div class="btn-field btn-field--temp">
+                      <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-shield-cross"></i></button>
+                      <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
+                        <span slot="prefix">+</span>
+                      </vaadin-integer-field>
+                  </div>
                 </div>
-                <div hidden$=[[customHealth]]>[[maxHP]]</div>
               </div>
 
-              <div class="stat-box__side" hidden$=[[isEditMode]]>
-                <!--  Healing / Damage -->
-                <div class="btn-field btn-field--heal">
-                    <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-heart"></i></button>
-                    <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
-                      <span slot="prefix">+</span>
-                    </vaadin-integer-field>
-                </div>
-                <div class="btn-field btn-field--dmg">
-                    <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-swords"></i></button>
-                    <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
-                      <span slot="prefix">-</span>
-                    </vaadin-integer-field>
-                </div>
-                <div class="btn-field btn-field--temp">
-                    <button class="mdc-button btn-field__btn" on-click="_toggleButtonField"><i class="fas fa-lg fa-shield-cross"></i></button>
-                    <vaadin-integer-field class="btn-field__input" min="0" on-keydown="_submitButtonField" on-blur="_blurButtonField">
-                      <span slot="prefix">+</span>
-                    </vaadin-integer-field>
-                </div>
+
+              <!--  Hit Dice -->
+              <div class="hit-dice">
+                <div class="hit-dice__heading">Hit Dice</div>
+                <template is="dom-repeat" items="[[hitDice]]">
+                  <div class="hit-dice__item" data-class-name$="[[item.className]]">
+                    <dnd-button on-click="_useHitDice">
+                      <div class="hit-dice__item-label" slot="label">
+                        <dnd-svg id="[[item.die]]"></dnd-svg>
+                        <div class="hit-dice__count">[[item.current]] / [[item.total]]</div>
+                      </div>
+                    </dnd-button>
+                  </div>
+                </template>
+                <dnd-button class="hit-dice__reset" label="Reset" on-click="_resetHitDice"></dnd-button>
               </div>
             </div>
 
-
-            <!--  Hit Dice -->
-            <div class="hit-dice">
-              <div class="hit-dice__heading">Hit Dice</div>
-              <template is="dom-repeat" items="[[hitDice]]">
-                <div class="hit-dice__item" data-class-name$="[[item.className]]">
-                  <dnd-button on-click="_useHitDice">
-                    <div class="hit-dice__item-label" slot="label">
-                      <dnd-svg id="[[item.die]]"></dnd-svg>
-                      <div class="hit-dice__count">[[item.current]] / [[item.total]]</div>
+            <div class="basic-box__wrap-wrap">
+              <div class="basic-box__wrap">
+                <div class="basic-box basic-box--short ac">
+                  <div class="basic-box__value">
+                    <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
+                      <span class="custom-val__option" hidden$=[[customAC]]><span class="material-icons">edit</span> Edit</span>
+                      <span class="custom-val__option" hidden$=[[!customAC]]><span class="material-icons">restart_alt</span> Use Standard</span>
                     </div>
-                  </dnd-button>
+
+                    <div hidden$=[[!customAC]]>
+                      <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                    </div>
+                    <div hidden$=[[customAC]]>[[ac]]</div>
+                  </div>
+                  <div class="basic-box__label">AC</div>
                 </div>
-              </template>
-              <dnd-button class="hit-dice__reset" label="Reset" on-click="_resetHitDice"></dnd-button>
-            </div>
-          </div>
 
-          <div class="basic-box__wrap-wrap">
-            <div class="basic-box__wrap">
-              <div class="basic-box basic-box--short ac">
-                <div class="basic-box__value">
-                  <div class="custom-val__swap" on-click="_swapCustomAC" hidden$=[[!isEditMode]]>
-                    <span class="custom-val__option" hidden$=[[customAC]]><span class="material-icons">edit</span> Edit</span>
-                    <span class="custom-val__option" hidden$=[[!customAC]]><span class="material-icons">restart_alt</span> Use Standard</span>
-                  </div>
+                <div class="basic-box basic-box--short initiative" on-click="_roll">
+                  <div class="basic-box__value">
+                    <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
+                      <span class="custom-val__option" hidden$=[[customInitiative]]><span class="material-icons">edit</span> Edit</span>
+                      <span class="custom-val__option" hidden$=[[!customInitiative]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                    </div>
 
-                  <div hidden$=[[!customAC]]>
-                    <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
-                    <div hidden$="[[isEditMode]]">[[customACVal]]</div>
+                    <div hidden$=[[!customInitiative]]>
+                      <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                    </div>
+                    <div hidden$=[[customInitiative]]>[[initiative]]</div>
                   </div>
-                  <div hidden$=[[customAC]]>[[ac]]</div>
+                  <div class="basic-box__label">Initiative</div>
                 </div>
-                <div class="basic-box__label">AC</div>
-              </div>
 
-              <div class="basic-box basic-box--short initiative" on-click="_roll">
-                <div class="basic-box__value">
-                  <div class="custom-val__swap" on-click="_swapCustomInitiative" hidden$=[[!isEditMode]]>
-                    <span class="custom-val__option" hidden$=[[customInitiative]]><span class="material-icons">edit</span> Edit</span>
-                    <span class="custom-val__option" hidden$=[[!customInitiative]]><span class="material-icons">restart_alt</span> Use Standard</span>
-                  </div>
+                <div class="basic-box basic-box--short speed">
+                  <div class="basic-box__value">
+                    <div class="custom-val__swap" on-click="_swapCustomSpeed" hidden$=[[!isEditMode]]>
+                      <span class="custom-val__option" hidden$=[[customSpeed]]><span class="material-icons">edit</span> Edit</span>
+                      <span class="custom-val__option" hidden$=[[!customSpeed]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                    </div>
 
-                  <div hidden$=[[!customInitiative]]>
-                    <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
-                    <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
+                    <div class="speed__wrap">
+                      <template is="dom-repeat" items="[[speed]]">
+                        <div class="speed-val" hidden$="[[_hideCustomSpeed(isEditMode, customSpeed)]]">
+                          <vaadin-integer-field label=[[_uppercase(item.type)]] value="[[item.speed]]" on-change="_speedItemChange" theme="mini" min="0" max="200" step="5" has-controls></vaadin-integer-field>
+                          <button hidden$="[[!_exists(index)]]" on-click="_removeSpeedItem" index="[[index]]" class="fa fal fa-times"></button>
+                        </div>
+                        <div class="speed-val speed-val--center" smaller$="[[!_arrayOfOne(speed)]]" hidden$="[[!_hideCustomSpeed(isEditMode, customSpeed)]]">
+                          <span hidden$="[[_arrayOfOne(speed)]]">[[_uppercase(item.type)]]:</span>
+                          <span>[[item.speed]] ft.</span>
+                        </div>
+                      </template>
+                    </div>
                   </div>
-                  <div hidden$=[[customInitiative]]>[[initiative]]</div>
+                  <div class="basic-box__label">
+                    <span>Speed</span>
+                    <div hidden$='[[_hideCustomSpeed(isEditMode, customSpeed)]]'>
+                      <vaadin-select add-button tiny on-change="_addSpeedItem">
+                        <template>
+                          <vaadin-list-box>
+                            <template is="dom-repeat" items="[[additionalCustomSpeedItems]]" as="option">
+                              <vaadin-item value="[[option]]">[[option]]</vaadin-item>
+                            </template>
+                          </vaadin-list-box>
+                        </template>
+                      </vaadin-select>
+                    </div>
+                  </div>
                 </div>
-                <div class="basic-box__label">Initiative</div>
+
+                <!--  Short Rest -->
+                <!-- <dnd-button icon="watch" class="rest-btn rest-btn--short" background="var(--lumo-contrast-10pct)" label="Short" on-click="_triggerShortRest"></dnd-button> -->
+
+                <!--  Long Rest -->
+                <!-- <dnd-button icon="watch_later" class="rest-btn rest-btn--long" background="var(--lumo-contrast-10pct)" label="Long" on-click="_triggerLongRest"></dnd-button> -->
               </div>
 
-              <div class="basic-box basic-box--short speed">
-                <div class="basic-box__value" inner-h-t-m-l=[[speed]]></div>
-                <div class="basic-box__label">Speed</div>
-              </div>
-
-              <!--  Short Rest -->
-              <!-- <dnd-button icon="watch" class="rest-btn rest-btn--short" background="var(--lumo-contrast-10pct)" label="Short" on-click="_triggerShortRest"></dnd-button> -->
-
-              <!--  Long Rest -->
-              <!-- <dnd-button icon="watch_later" class="rest-btn rest-btn--long" background="var(--lumo-contrast-10pct)" label="Long" on-click="_triggerLongRest"></dnd-button> -->
-            </div>
-
-            <!-- Spell Mods -->
-            <div hidden$="[[!_exists(spellMods)]]" class="basic-box__wrap basic-box__margin">
-              <div class="basic-box">
-                <span class="basic-box__value basic-box__no-flex">
-                  <template is="dom-repeat" items="[[spellMods]]">
-                    <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                  </template>
-                </span>
-                <span class="basic-box__label">Spell Mod</span>
-              </div>
-              <div class="basic-box">
-                <span class="basic-box__value basic-box__no-flex">
-                  <template is="dom-repeat" items="[[spellMods]]">
-                    <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                  </template>
-                </span>
-                <span class="basic-box__label">Spell ATK+</span>
-              </div>
-              <div class="basic-box">
-                <span class="basic-box__value basic-box__no-flex">
-                  <template is="dom-repeat" items="[[spellMods]]">
-                    <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                  </template>
-                </span>
-                <span class="basic-box__label">Spell DC</span>
+              <!-- Spell Mods -->
+              <div hidden$="[[!_exists(spellMods)]]" class="basic-box__wrap basic-box__margin">
+                <div class="basic-box">
+                  <span class="basic-box__value basic-box__no-flex">
+                    <template is="dom-repeat" items="[[spellMods]]">
+                      <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                    </template>
+                  </span>
+                  <span class="basic-box__label">Spell Mod</span>
+                </div>
+                <div class="basic-box">
+                  <span class="basic-box__value basic-box__no-flex">
+                    <template is="dom-repeat" items="[[spellMods]]">
+                      <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                    </template>
+                  </span>
+                  <span class="basic-box__label">Spell ATK+</span>
+                </div>
+                <div class="basic-box">
+                  <span class="basic-box__value basic-box__no-flex">
+                    <template is="dom-repeat" items="[[spellMods]]">
+                      <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                    </template>
+                  </span>
+                  <span class="basic-box__label">Spell DC</span>
+                </div>
               </div>
             </div>
           </div>

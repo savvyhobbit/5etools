@@ -1659,6 +1659,15 @@ function toggleCustomAC(toggle, character = selectedCharacter) {
   }
 }
 
+function toggleCustomSpeed(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customSpeed = toggle;
+  } else {
+    toggleCustomSpeed(!character.customSpeed, character);
+    saveCharacter(character);
+  }
+}
+
 function setCustomACVal(customACVal, character = selectedCharacter) {
   character.customACVal = customACVal;
   saveCharacter(character);
@@ -1708,19 +1717,60 @@ function setCustomInitiativeVal(customInitiativeVal, character = selectedCharact
 async function getCharacterSpeed(character = selectedCharacter) {
   let race = await getRaceReference(character);
 
-  if (race && race.speed) {
-    if (typeof race.speed === 'number') {
-      return race.speed;
-    } else {
-      let result = '<div class="speed-val">';
-      Object.entries(race.speed).forEach((entry) => {
-        result += `${util_capitalize(entry[0])}: ${entry[1]}<br/>`
-      });
-      result += '</div>'
-      return result;
+  if (!character.customSpeedVal || !character.customSpeedVal.length) {
+    character.customSpeedVal = [{ type: 'walk', speed: 30 }];
+  }
+
+  if (character.customSpeed) {
+    return character.customSpeedVal;
+  } else {
+    if (race && race.speed) {
+      if (typeof race.speed === 'number') {
+        return [{ type: 'walk', speed: race.speed }];
+      } else {
+        return Object.entries(race.speed).map((entry) => {
+          return { type: entry[0], speed: entry[1] }
+        }).sort((speedEntry) => {
+          return speedEntry.type === 'walk' ? -1 : 0;
+        });
+      }
+    }
+    return null;
+  }
+}
+
+function deleteCustomSpeedItem(index, character = selectedCharacter) {
+  if (character) {
+    if (!character.customSpeedVal || !character.customSpeedVal.length) {
+      character.customSpeedVal = [{ type: 'walk', speed: 30 }];
+    }
+    if (character.customSpeedVal.length > index) {
+      character.customSpeedVal.splice(index, 1);
+      saveCharacter(character);
     }
   }
-  return 'N / A';
+}
+
+function addCustomSpeedItem(item, character = selectedCharacter) {
+  if (character) {
+    if (!character.customSpeedVal || !character.customSpeedVal.length) {
+      character.customSpeedVal = [{ type: 'walk', speed: 30 }];
+    }
+    character.customSpeedVal.push(item);
+    saveCharacter(character);
+  }
+}
+
+function editCustomSpeedItem(index, speedValue, character = selectedCharacter) {
+  if (character) {
+    if (!character.customSpeedVal || !character.customSpeedVal.length) {
+      character.customSpeedVal = [{ type: 'walk', speed: 30 }];
+    }
+    if (character.customSpeedVal.length > index) {
+      character.customSpeedVal[index].speed = speedValue;
+      saveCharacter(character);
+    }
+  }
 }
 
 function getCharacterProficiencyBonus(character = selectedCharacter) {
@@ -1917,10 +1967,14 @@ export {
   getItemAtId,
   getCharacterAC,
   toggleCustomAC,
+  toggleCustomSpeed,
   setCustomACVal,
   toggleCustomHealth,
   setCustomHealthVal,
   getCharacterSpeed,
+  addCustomSpeedItem,
+  deleteCustomSpeedItem,
+  editCustomSpeedItem,
   getCharacterInitiative,
   toggleCustomInitiative,
   setCustomInitiativeVal,
