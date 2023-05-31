@@ -25,6 +25,12 @@ import {
   getCharacterProficiencyBonus,
   toggleCustomInitiative,
   setCustomInitiativeVal,
+  toggleCustomSpellMod,
+  setCustomSpellModVal,
+  toggleCustomSpellDC,
+  setCustomSpellDCVal,
+  toggleCustomSpellAttackBonus,
+  setCustomSpellAttackBonusVal,
   toggleCustomAC,
   toggleCustomSpeed,
   toggleCustomHealth,
@@ -174,33 +180,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
   static get observers() {
     return [
       "updateCharAttr(str, dex, con, int, wis, cha)",
-      "updateCustomInitiative(customInitiativeVal)",
-      "updateCustomAC(customACVal)",
-      "updateCustomHealth(customHealthVal)"
     ]
   }
 
   updateCharAttr(str, dex, con, int, wis, cha) {
     if (str && dex && con && int && wis && cha) {
       updateAttr({str, dex, con, int, wis, cha});
-    }
-  }
-
-  updateCustomInitiative(customInitiativeVal) {
-    if (customInitiativeVal !== undefined && customInitiativeVal !== "") {
-      setCustomInitiativeVal(customInitiativeVal);
-    }
-  }
-
-  updateCustomAC(customACVal) {
-    if (customACVal !== undefined && customACVal !== "") {
-      setCustomACVal(customACVal);
-    }
-  }
-
-  updateCustomHealth(customHealthVal) {
-    if (customHealthVal !== undefined && customHealthVal !== "") {
-      setCustomHealthVal(customHealthVal);
     }
   }
 
@@ -323,6 +308,12 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.hasDarkvision = this.darkvision !== null;
       
       this.spellMods = await getSpellCastingStats(character);
+      this.customSpellMod = !!character.customSpellMod;
+      this.customSpellModVal = character.customSpellModVal;
+      this.customSpellDC = !!character.customSpellDC;
+      this.customSpellDCVal = character.customSpellDCVal;
+      this.customSpellAttackBonus = !!character.customSpellAttackBonus;
+      this.customSpellAttackBonusVal = character.customSpellAttackBonusVal;
 
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
@@ -457,6 +448,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     if (!this.isEditMode) {
       const attrEl = findInPath('.stat-box', e);
       const initEl = findInPath('.initiative', e);
+      const spellAttackEl = findInPath('.spellAttack', e);
       let mod, isProficient, name, isExpertise;
 
       if (profEl) {
@@ -474,6 +466,23 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         isProficient = false;
         mod = this.customInitiative ? this.customInitiativeVal : parseInt(this.initiative, 10);
         name = "Initiative";
+
+      } else if (spellAttackEl) {
+        isProficient = false;
+
+        if (this.customSpellAttackBonus) {
+          mod = this.customSpellAttackBonusVal;
+          name = "Spell Attack (Custom)";
+          
+        } else if (e.srcElement.classList.contains('mod-val')) {
+          const clickedSpellModIndex = e.srcElement.dataset.index;
+          mod = this.spellMods[clickedSpellModIndex].spellAttackBonus;
+          name = `Spell Attack (${this.spellMods[clickedSpellModIndex].classes.join(', ')})`;
+
+        } else {
+          mod = this.spellMods[0].spellAttackBonus;
+          name = `Spell Attack (${this.spellMods[0].classes.join(', ')})`;
+        }
       }
 
       if (name) {
@@ -503,6 +512,18 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     toggleCustomInitiative();
   }
 
+  _swapCustomSpellMod(e) {
+    toggleCustomSpellMod();
+  }
+
+  _swapCustomSpellAttackBonus(e) {
+    toggleCustomSpellAttackBonus();
+  }
+
+  _swapCustomSpellDC(e) {
+    toggleCustomSpellDC();
+  }
+
   _swapCustomAC(e) {
     toggleCustomAC();
   }
@@ -513,6 +534,51 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   _swapCustomHealth(e) {
     toggleCustomHealth();
+  }
+
+  _updateCustomInitiative(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomInitiativeVal(newValue);
+  }
+
+  _updateCustomAC(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomACVal(newValue);
+  }
+
+  _updateCustomHealth(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomHealthVal(newValue);
+  }
+
+  _updateCustomSpellMod(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomSpellModVal(newValue);
+  }
+
+  _updateCustomSpellDC(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomSpellDCVal(newValue);
+  }
+
+  _updateCustomSpellAttackBonus(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomSpellAttackBonusVal(newValue);
+  }
+
+  _removeSpeedItem(e) {
+    deleteCustomSpeedItem(e.model.__data.index);
+  }
+
+  _addSpeedItem(e) {
+    const newSpeedItem = { type: e.currentTarget.value.toLowerCase(), speed: 0 };
+    addCustomSpeedItem(newSpeedItem);
+  }
+
+  _speedItemChange(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    const index = e.model.__data.index;
+    editCustomSpeedItem(index, newValue);
   }
 
   _plusMinus(val) {
@@ -545,21 +611,6 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
   _hideCustomSpeed(isEdit, customSpeed) {
     return !isEdit || !customSpeed;
-  }
-
-  _removeSpeedItem(e) {
-    deleteCustomSpeedItem(e.model.__data.index);
-  }
-
-  _addSpeedItem(e) {
-    const newSpeedItem = { type: e.currentTarget.value.toLowerCase(), speed: 0 };
-    addCustomSpeedItem(newSpeedItem);
-  }
-
-  _speedItemChange(e) {
-    const newValue = parseInt(e.currentTarget.value);
-    const index = e.model.__data.index;
-    editCustomSpeedItem(index, newValue);
   }
 
   _uppercase(str) {
@@ -1119,7 +1170,8 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         .basic-box__no-flex {
           display: block;
         }
-        .not-edit-mode .initiative {
+        .not-edit-mode .initiative,
+        .not-edit-mode .spellAttack {
           cursor: pointer;
         }
 
@@ -1303,7 +1355,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   <div class="basic-box__label">Max HP</div>
 
                   <div hidden$=[[!customHealth]]>
-                    <vaadin-integer-field  value={{customHealthVal}} min="0" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                    <vaadin-integer-field  value=[[customHealthVal]] on-change="_updateCustomHealth" min="0" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
                     <span hidden$="[[isEditMode]]">[[customHealthVal]]</span>
                   </div>
                   <div hidden$=[[customHealth]]>[[maxHP]]</div>
@@ -1360,7 +1412,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                     </div>
 
                     <div hidden$=[[!customAC]]>
-                      <vaadin-integer-field theme="mini" value={{customACVal}} min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <vaadin-integer-field theme="mini" value=[[customACVal]] on-change="_updateCustomAC" min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
                       <div hidden$="[[isEditMode]]">[[customACVal]]</div>
                     </div>
                     <div hidden$=[[customAC]]>[[ac]]</div>
@@ -1376,7 +1428,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                     </div>
 
                     <div hidden$=[[!customInitiative]]>
-                      <vaadin-integer-field theme="mini" value={{customInitiativeVal}} min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <vaadin-integer-field theme="mini" value=[[customInitiativeVal]] on-change="_updateCustomInitiative" min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
                       <div hidden$="[[isEditMode]]">[[_plusMinus(customInitiativeVal)]][[customInitiativeVal]]</div>
                     </div>
                     <div hidden$=[[customInitiative]]>[[initiative]]</div>
@@ -1430,26 +1482,56 @@ class DndCharacterBuilderAttributes extends PolymerElement {
               <!-- Spell Mods -->
               <div hidden$="[[!_exists(spellMods)]]" class="basic-box__wrap basic-box__margin">
                 <div class="basic-box">
-                  <span class="basic-box__value basic-box__no-flex">
-                    <template is="dom-repeat" items="[[spellMods]]">
-                      <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                    </template>
+                  <span class="basic-box__value">
+                    <div class="custom-val__swap" on-click="_swapCustomSpellMod" hidden$=[[!isEditMode]]>
+                      <span class="custom-val__option" hidden$=[[customSpellMod]]><span class="material-icons">edit</span> Edit</span>
+                      <span class="custom-val__option" hidden$=[[!customSpellMod]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                    </div>
+                    <div hidden$=[[customSpellMod]]>
+                      <template is="dom-repeat" items="[[spellMods]]">
+                        <span class="mod-val" tabindex="0" data-index$="[[index]]">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                      </template>
+                    </div>
+                    <div hidden$=[[!customSpellMod]]>
+                      <vaadin-integer-field theme="mini" value=[[customSpellModVal]] on-change="_updateCustomSpellMod" min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <span hidden$=[[isEditMode]] class="mod-val">[[_abs(customSpellModVal)]]<span class="tooltip">Custom</span></span>
+                    </div>
                   </span>
                   <span class="basic-box__label">Spell Mod</span>
                 </div>
-                <div class="basic-box">
-                  <span class="basic-box__value basic-box__no-flex">
-                    <template is="dom-repeat" items="[[spellMods]]">
-                      <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                    </template>
+                <div class="basic-box spellAttack" on-click="_roll">
+                  <span class="basic-box__value">
+                    <div class="custom-val__swap" on-click="_swapCustomSpellAttackBonus" hidden$=[[!isEditMode]]>
+                      <span class="custom-val__option" hidden$=[[customSpellAttackBonus]]><span class="material-icons">edit</span> Edit</span>
+                      <span class="custom-val__option" hidden$=[[!customSpellAttackBonus]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                    </div>
+                    <div hidden$=[[customSpellAttackBonus]]>
+                      <template is="dom-repeat" items="[[spellMods]]">
+                        <span class="mod-val" tabindex="0" data-index$="[[index]]">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                      </template>
+                    </div>
+                    <div hidden$=[[!customSpellAttackBonus]]>
+                      <vaadin-integer-field theme="mini" value=[[customSpellAttackBonusVal]] on-change="_updateCustomSpellAttackBonus" min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <span hidden$=[[isEditMode]] class="mod-val">[[_abs(customSpellAttackBonusVal)]]<span class="tooltip">Custom</span></span>
+                    </div>
                   </span>
                   <span class="basic-box__label">Spell ATK+</span>
                 </div>
                 <div class="basic-box">
-                  <span class="basic-box__value basic-box__no-flex">
-                    <template is="dom-repeat" items="[[spellMods]]">
-                      <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                    </template>
+                  <span class="basic-box__value">
+                    <div class="custom-val__swap" on-click="_swapCustomSpellDC" hidden$=[[!isEditMode]]>
+                      <span class="custom-val__option" hidden$=[[customSpellDC]]><span class="material-icons">edit</span> Edit</span>
+                      <span class="custom-val__option" hidden$=[[!customSpellDC]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                    </div>
+                    <div hidden$=[[customSpellDC]]>
+                      <template is="dom-repeat" items="[[spellMods]]">
+                        <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                      </template>
+                    </div>
+                    <div hidden$=[[!customSpellDC]]>
+                      <vaadin-integer-field theme="mini" value=[[customSpellDCVal]] on-change="_updateCustomSpellDC" min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                      <span hidden$=[[isEditMode]] class="mod-val">[[customSpellDCVal]]<span class="tooltip">Custom</span></span>
+                    </div>
                   </span>
                   <span class="basic-box__label">Spell DC</span>
                 </div>

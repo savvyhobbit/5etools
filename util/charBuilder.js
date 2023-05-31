@@ -1714,6 +1714,48 @@ function setCustomInitiativeVal(customInitiativeVal, character = selectedCharact
   saveCharacter(character);
 }
 
+function toggleCustomSpellMod(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customSpellMod = toggle;
+  } else {
+    toggleCustomSpellMod(!character.customSpellMod, character);
+    saveCharacter(character);
+  }
+}
+
+function setCustomSpellModVal(value, character = selectedCharacter) {
+  character.customSpellModVal = value;
+  saveCharacter(character);
+}
+
+function toggleCustomSpellDC(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customSpellDC = toggle;
+  } else {
+    toggleCustomSpellDC(!character.customSpellDC, character);
+    saveCharacter(character);
+  }
+}
+
+function setCustomSpellDCVal(value, character = selectedCharacter) {
+  character.customSpellDCVal = value;
+  saveCharacter(character);
+}
+
+function toggleCustomSpellAttackBonus(toggle, character = selectedCharacter) {
+  if (toggle !== undefined) {
+    character.customSpellAttackBonus = toggle;
+  } else {
+    toggleCustomSpellAttackBonus(!character.customSpellAttackBonus, character);
+    saveCharacter(character);
+  }
+}
+
+function setCustomSpellAttackBonusVal(value, character = selectedCharacter) {
+  character.customSpellAttackBonusVal = value;
+  saveCharacter(character);
+}
+
 async function getCharacterSpeed(character = selectedCharacter) {
   let race = await getRaceReference(character);
 
@@ -1978,6 +2020,12 @@ export {
   getCharacterInitiative,
   toggleCustomInitiative,
   setCustomInitiativeVal,
+  toggleCustomSpellMod,
+  setCustomSpellModVal,
+  toggleCustomSpellDC,
+  setCustomSpellDCVal,
+  toggleCustomSpellAttackBonus,
+  setCustomSpellAttackBonusVal,
   getCharacterProficiencyBonus,
   getCustomRolls,
   setCustomRoll,

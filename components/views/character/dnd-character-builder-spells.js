@@ -1,5 +1,27 @@
 import { PolymerElement,html } from "@polymer/polymer";
-import { getCharacterChannel, getSelectedCharacter, getClassReferences, getClassLevelGroups, toggleSpellPrepared, saveCharacter, getAttributeModifier, isSpellPreparedFromObj, setSpellSlots, getSpellSlots, toggleCantripPrepared, getSubclassChoiceLevel, getSpellCastingStats, getCharacterProficiencyBonus } from "../../../util/charBuilder";
+import {
+  getCharacterChannel,
+  getSelectedCharacter,
+  getClassReferences,
+  getClassLevelGroups,
+  toggleSpellPrepared,
+  saveCharacter,
+  getAttributeModifier,
+  isSpellPreparedFromObj,
+  setSpellSlots,
+  getSpellSlots,
+  toggleCantripPrepared,
+  getSubclassChoiceLevel,
+  getSpellCastingStats,
+  getCharacterProficiencyBonus,
+  toggleCustomSpellMod,
+  setCustomSpellModVal,
+  toggleCustomSpellDC,
+  setCustomSpellDCVal,
+  toggleCustomSpellAttackBonus,
+  setCustomSpellAttackBonusVal,
+} from "../../../util/charBuilder";
+import { rollDice } from "../../../util/roll";
 import { filterModel, loadModel } from "../../../util/data";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { spellHtml } from "../../../js/spells";
@@ -8,6 +30,7 @@ import Parser from "../../../util/Parser";
 import '@vaadin/polymer-legacy-adapter/template-renderer.js';
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-text-field";
+import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "../../dnd-button";
@@ -181,6 +204,14 @@ class DndCharacterBuilderSpells extends PolymerElement {
   }
 
   async updateFromCharacter(character) {
+    if (character) {
+      this.customSpellMod = !!character.customSpellMod;
+      this.customSpellModVal = character.customSpellModVal;
+      this.customSpellDC = !!character.customSpellDC;
+      this.customSpellDCVal = character.customSpellDCVal;
+      this.customSpellAttackBonus = !!character.customSpellAttackBonus;
+      this.customSpellAttackBonusVal = character.customSpellAttackBonusVal;
+    }
     if (character && this.refresh) {
       this.noContentMessage = true;
       const classRefs = await getClassReferences(character),
@@ -793,6 +824,48 @@ class DndCharacterBuilderSpells extends PolymerElement {
     }
   }
 
+  _roll(e) {
+    if (!this.isEditMode) {
+      const spellAttackEl = findInPath('.spellAttack', e);
+      let mod, isProficient, name, isExpertise;
+
+      if (spellAttackEl) {
+        isProficient = false;
+
+        if (this.customSpellAttackBonus) {
+          mod = this.customSpellAttackBonusVal;
+          name = "Spell Attack (Custom)";
+          
+        } else if (e.srcElement.classList.contains('mod-val')) {
+          const clickedSpellModIndex = e.srcElement.dataset.index;
+          mod = this.spellMods[clickedSpellModIndex].spellAttackBonus;
+          name = `Spell Attack (${this.spellMods[clickedSpellModIndex].classes.join(', ')})`;
+
+        } else {
+          mod = this.spellMods[0].spellAttackBonus;
+          name = `Spell Attack (${this.spellMods[0].classes.join(', ')})`;
+        }
+      }
+
+      if (name) {
+        let rollForm = '1d20';
+  
+        if (isProficient) {
+          mod = mod + this.proficiencyBonus;
+        }
+        if (isExpertise) {
+          mod = mod + this.proficiencyBonus;
+        }
+        if (mod > 0) {
+          rollForm += `+${mod}`
+        } else if (mod < 0) {
+          rollForm += mod;
+        }
+        rollDice(name, rollForm);
+      }
+    }
+  }
+
   _isPreparedClass(spellsKnown, item, isEditMode) {
     const className = item.parentClass;
     const spellName = item.name;
@@ -882,6 +955,34 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
   _toggleEditMode() {
     dispatchEditModeChange(!this.isEditMode);
+  }
+
+
+  _updateCustomSpellMod(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomSpellModVal(newValue);
+  }
+
+  _updateCustomSpellDC(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomSpellDCVal(newValue);
+  }
+
+  _updateCustomSpellAttackBonus(e) {
+    const newValue = parseInt(e.currentTarget.value);
+    setCustomSpellAttackBonusVal(newValue);
+  }
+
+  _swapCustomSpellMod(e) {
+    toggleCustomSpellMod();
+  }
+
+  _swapCustomSpellAttackBonus(e) {
+    toggleCustomSpellAttackBonus();
+  }
+
+  _swapCustomSpellDC(e) {
+    toggleCustomSpellDC();
   }
 
   _spellsKnownString(spellPrepType) {
@@ -982,7 +1083,7 @@ class DndCharacterBuilderSpells extends PolymerElement {
 
   static get template() {
     return html`
-      <style include='my-styles'>
+      <style include='my-styles material-styles'>
         :host {}
         :host {
           display: block;
@@ -1303,6 +1404,21 @@ class DndCharacterBuilderSpells extends PolymerElement {
           margin-left: 16px;
         }
 
+        .custom-val__swap {
+          font-size: 10px;
+          margin: -4px 0px 8px auto;
+          background-color: var(--lumo-contrast-10pct);
+          padding: 4px 5px 4px;
+          line-height: 1;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        .custom-val__swap .material-icons {
+          font-size: 11px;
+          position: relative;
+          top: 1px;
+        }
+
         .basic-box__wrap-wrap {
           padding: 0 16px;
         }
@@ -1400,26 +1516,56 @@ class DndCharacterBuilderSpells extends PolymerElement {
         <div class="basic-box__wrap-wrap">
           <div class="basic-box__wrap">
             <div class="basic-box">
-              <span class="basic-box__value basic-box__no-flex">
-                <template is="dom-repeat" items="[[spellMods]]">
-                  <span class="mod-val" tabindex="0">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                </template>
+              <span class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomSpellMod" hidden$=[[!isEditMode]]>
+                  <span class="custom-val__option" hidden$=[[customSpellMod]]><span class="material-icons">edit</span> Edit</span>
+                  <span class="custom-val__option" hidden$=[[!customSpellMod]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                </div>
+                <div hidden$=[[customSpellMod]]>
+                  <template is="dom-repeat" items="[[spellMods]]">
+                    <span class="mod-val" tabindex="0" data-index$="[[index]]">[[_abs(item.mod)]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                  </template>
+                </div>
+                <div hidden$=[[!customSpellMod]]>
+                  <vaadin-integer-field theme="mini" value=[[customSpellModVal]] on-change="_updateCustomSpellMod" min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <span hidden$=[[isEditMode]] class="mod-val">[[_abs(customSpellModVal)]]<span class="tooltip">Custom</span></span>
+                </div>
               </span>
               <span class="basic-box__label">Spell Mod</span>
             </div>
-            <div class="basic-box">
-              <span class="basic-box__value basic-box__no-flex">
-                <template is="dom-repeat" items="[[spellMods]]">
-                  <span class="mod-val" tabindex="0">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                </template>
+            <div class="basic-box spellAttack" on-click="_roll">
+              <span class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomSpellAttackBonus" hidden$=[[!isEditMode]]>
+                  <span class="custom-val__option" hidden$=[[customSpellAttackBonus]]><span class="material-icons">edit</span> Edit</span>
+                  <span class="custom-val__option" hidden$=[[!customSpellAttackBonus]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                </div>
+                <div hidden$=[[customSpellAttackBonus]]>
+                  <template is="dom-repeat" items="[[spellMods]]">
+                    <span class="mod-val" tabindex="0" data-index$="[[index]]">+[[item.spellAttackBonus]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                  </template>
+                </div>
+                <div hidden$=[[!customSpellAttackBonus]]>
+                  <vaadin-integer-field theme="mini" value=[[customSpellAttackBonusVal]] on-change="_updateCustomSpellAttackBonus" min="-20" max="20" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <span hidden$=[[isEditMode]] class="mod-val">[[_abs(customSpellAttackBonusVal)]]<span class="tooltip">Custom</span></span>
+                </div>
               </span>
               <span class="basic-box__label">Spell ATK+</span>
             </div>
             <div class="basic-box">
-              <span class="basic-box__value basic-box__no-flex">
-                <template is="dom-repeat" items="[[spellMods]]">
-                  <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
-                </template>
+              <span class="basic-box__value">
+                <div class="custom-val__swap" on-click="_swapCustomSpellDC" hidden$=[[!isEditMode]]>
+                  <span class="custom-val__option" hidden$=[[customSpellDC]]><span class="material-icons">edit</span> Edit</span>
+                  <span class="custom-val__option" hidden$=[[!customSpellDC]]><span class="material-icons">restart_alt</span> Use Standard</span>
+                </div>
+                <div hidden$=[[customSpellDC]]>
+                  <template is="dom-repeat" items="[[spellMods]]">
+                    <span class="mod-val" tabindex="0">[[item.dc]]<span class="tooltip">[[_join(item.classes)]]</span></span>
+                  </template>
+                </div>
+                <div hidden$=[[!customSpellDC]]>
+                  <vaadin-integer-field theme="mini" value=[[customSpellDCVal]] on-change="_updateCustomSpellDC" min="0" max="40" has-controls hidden$="[[!isEditMode]]"></vaadin-integer-field>
+                  <span hidden$=[[isEditMode]] class="mod-val">[[customSpellDCVal]]<span class="tooltip">Custom</span></span>
+                </div>
               </span>
               <span class="basic-box__label">Spell DC</span>
             </div>
