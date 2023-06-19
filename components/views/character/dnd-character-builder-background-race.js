@@ -13,6 +13,7 @@ import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { encodeForHash } from "../../../js/utils"; 
 import Parser from "../../../util/Parser";
+import "../../dnd-switch";
 
 class DndCharacterBuilderBackgroundRace extends PolymerElement {
   

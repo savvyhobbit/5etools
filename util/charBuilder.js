@@ -1,7 +1,7 @@
 import { readRouteView, readRouteSelection } from "./routing";
 import { loadModel } from "./data";
 import { resolveHash } from './renderTable.js';
-import { entryTextSearch, util_capitalize, getProfBonus, entrySearch, util_capitalizeAll, cloneDeep } from "../js/utils";
+import { entryTextSearch, util_capitalize, getProfBonus, entrySearch, util_capitalizeAll, cloneDeep, absInt } from "../js/utils";
 import Parser from "./Parser";
 
 import droll from "../lib/droll";
@@ -99,7 +99,7 @@ function saveCharacters(characters) {
   emitChangeEvent(selectedCharacter, characters);
 }
 
-function saveCharacter(character) {
+function saveCharacter(character = selectedCharacter) {
   let characterIndex = findCharacterIndex(character),
     characters = getCharacters();
 
@@ -1319,6 +1319,17 @@ async function parseItem(storedItem, index, parentItem, character) {
     delete storedItem.name;
   }
 
+  if (!storedItem.damages) {
+    if (newItem.dmg1) {
+      storedItem.damages = [{roll: newItem.dmg1, type: util_capitalizeAll(Parser.dmgTypeToFull(newItem.dmgType))}];
+      if (newItem.dmg2) {
+        storedItem.damages[0].versRoll = newItem.dmg2;
+      }
+    } else {
+      storedItem.damages = [];
+    }
+  }
+
   // Item reference props are overwritten by storedItem props
   newItem = {
     ...newItem,
@@ -1335,7 +1346,7 @@ async function parseItem(storedItem, index, parentItem, character) {
     ...newItem,
     id: index,
     type: isShieldInherited ? 'S' : newItem.type,
-    canEquip: newItem.armor || newItem.weaponCategory || newItem.type === 'S' || isShieldInherited,
+    canEquip: !!(newItem.armor || newItem.weaponCategory || newItem.type === 'S' || isShieldInherited),
     typeText: getItemType(newItem)
   };
   if (newItem.containerCapacity || newItem.packContents) {
@@ -1822,14 +1833,6 @@ function getCharacterProficiencyBonus(character = selectedCharacter) {
   return 0;
 }
 
-
-function getCustomRolls(character = selectedCharacter) {
-  if (character && character.customRolls) {
-    return character.customRolls;
-  }
-  return [];
-}
-
 function setCustomRoll(roll, index, character = selectedCharacter) {
   if (character) {
     if (!character.customRolls) {
@@ -1938,6 +1941,95 @@ function removeAbilityUsage(index, character = selectedCharacter) {
   }
 }
 
+function isProficientWithWeapon(weapon, character = selectedCharacter) {
+  if (!character) {
+    return;
+  }
+  const weaponProfs = getChoiceWeaponProfs(character);
+  console.error('isProficientWithWeapon', weaponProfs, weapon);
+  if (weapon.weaponCategory) {
+    if (weapon.weaponCategory === 'simple' && weaponProfs.includes('simple')) {
+      return true;
+    }
+    if (weapon.weaponCategory === 'martial' && weaponProfs.includes('martial')) {
+      return true;
+    }
+  }
+  if (weapon.baseItem) {
+    const baseItemName = weapon.baseItem.split('|')[0];
+    if (weaponProfs.includes(baseItemName)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function getCustomRolls(character = selectedCharacter) {
+  const rolls = character.customRolls ? cloneDeep(character.customRolls) : [];
+
+  return rolls.map((roll, index) => {
+    if (!roll.type) {
+      roll.type = 'custom';
+    }
+    roll.customIndex = index;
+    return roll;
+  });
+}
+
+async function getWeaponItemRolls(character = selectedCharacter) {
+  if (!character) {
+    return;
+  }
+  const weaponItems = await getWeaponItems(character);
+  
+  if (weaponItems.length) {
+    const dexMod = await getAttributeModifier('dex', character);
+    const strMod = await getAttributeModifier('str', character);
+    const proficiencyBonus = await getCharacterProficiencyBonus(character);
+
+    return weaponItems.map((weapon) => {
+      const rollObj = { damages: [] };
+      rollObj.name = weapon.name;
+      const magicBonus = weapon.bonusWeapon ? parseInt(weapon.bonusWeapon) : 0;
+      const isProficient = isProficientWithWeapon(weapon, character);
+      console.error('isProficient', isProficient);
+      let statMod;
+      if (weapon.type === 'R') {
+        statMod = dexMod;
+      } else if (weapon.property && weapon.property.includes('F')) {
+        if (dexMod > strMod) {
+          statMod = dexMod;
+        } else {
+          statMod = strMod;
+        }
+      } else {
+        statMod = strMod;
+      }
+      rollObj.toHit = statMod + (isProficient ? proficiencyBonus : 0) + magicBonus;
+      rollObj.isEquipped = weapon.isEquipped;
+      rollObj.isProficient = isProficient;
+      rollObj.type = 'weapon';
+  
+      if (weapon.damages) {
+        rollObj.damages = weapon.damages.map((weaponDmg, i) => {
+          let roll = weaponDmg.roll; // todo: versatility roll
+          if (i === 0 && roll.indexOf('+') === -1 && roll.indexOf('-') === -1) {
+            const totalDmgMod = statMod + magicBonus;
+            roll += totalDmgMod > 0 ? `+${totalDmgMod}`: totalDmgMod === 0 ? '' : `${totalDmgMod}`;
+            roll = roll.split('+').join(' + ');
+            roll = roll.split('-').join(' - ');
+          }
+          return {
+            roll,
+            type: weaponDmg.type
+          }
+        });
+      }
+      return rollObj;
+    });
+  }
+}
+
 export {
   getCharacters,
   addCharacter,
@@ -2004,6 +2096,7 @@ export {
   canEquipItem,
   canAttuneItem,
   getWeaponItems,
+  getWeaponItemRolls,
   getArmorItems,
   isChildItem,
   getItemAtId,

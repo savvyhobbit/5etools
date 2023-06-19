@@ -66,11 +66,62 @@ function loadJSON(url) {
 async function loadModelFromSingleJSON(modelId) {
 	const modelData = await loadJSON(`${DATA_ROOT}${modelId}.json`);
 	if (Array.isArray(modelData)) {
-		return modelData;
+		return modelData.map(resolveCopies);
 	} else {
 		console.error("Array data not found from model JSON");
 		return [];
 	}
+}
+
+function resolveCopies(item, index, model) {
+	let result = item;
+	if (item._copy) {
+		const foundCopyParent = model.find((i) => item._copy.name === i.name && item._copy.source === i.source);
+		if (foundCopyParent) {
+			result = cloneDeep(foundCopyParent);
+
+			for (const [key, value] of Object.entries(item)) {
+				if (key[0] !== '_') {
+					result[key] = value;
+				}
+			}
+
+			if (item._copy._mod && item._copy._mod.entries) {
+				const modEntries = Array.isArray(item._copy._mod.entries) ? item._copy._mod.entries : [item._copy._mod.entries];
+				for (const entry of modEntries) {
+					if (entry.mode === 'replaceArr') {
+						if (entry.replace) {
+							let replaceEntry;
+							if (entry.replace.index !== undefined) {
+								// replace is an index
+								replaceEntry = result.entries[entry.replace.index];
+							} else {
+								// replace is a string name
+								replaceEntry = result.entries.find(e => e.name === entry.replace);
+							}
+							if (replaceEntry) {
+								for (const [replaceKey, replaceValue] of Object.entries(entry.items)) {
+									replaceEntry[replaceKey] = replaceValue;
+								}
+							} else {
+								console.error('replaceArr replacement entry not found');
+							}
+						}
+					} else if (entry.mode === 'insertArr' && entry.index !== undefined) {
+						const entryItems = Array.isArray(entry.items) ? entry.items : [entry.items];
+						const beforeSlice = result.entries.slice(0, entry.index);
+						const afterSlice = result.entries.slice(entry.index);
+						result.entries = beforeSlice.concat(entryItems.concat(afterSlice));
+					}
+				}
+			}
+
+		} else {
+			console.error('_copy parent not found', item);
+		}
+	}
+
+	return result;
 }
 
 async function loadModelFromIndex(modelId, isSpells) {

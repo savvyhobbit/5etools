@@ -38,10 +38,12 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-secondary-lighter", "rgba(1, 135, 134, .8)");
         root.style.setProperty("--mdc-theme-background", "#121212");
         root.style.setProperty("--mdc-theme-surface", "#1f1f1f");
+        root.style.setProperty("--mdc-theme-header", "var(--mdc-theme-surface)");
         root.style.setProperty("--mdc-theme-error", "#cf6679");
         root.style.setProperty("--mdc-theme-on-primary", "#000");
         root.style.setProperty("--mdc-theme-on-secondary", "#000");
         root.style.setProperty("--mdc-theme-on-surface", "hsla(214, 96%, 96%, 0.9)");
+        root.style.setProperty("--mdc-theme-on-header", "var(--mdc-theme-on-surface)");
         root.style.setProperty("--mdc-theme-on-error", "#000");
         root.style.setProperty("--mdc-theme-text-primary-on-background", "var(--lumo-body-text-color)"); // Body Text
         root.style.setProperty("--mdc-theme-text-secondary-on-background", "rgba(255, 255, 255, 0.6)");
@@ -141,10 +143,12 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-secondary-lighter", "rgba(1, 135, 134, .5)");
         root.style.setProperty("--mdc-theme-background", "#fff");
         root.style.setProperty("--mdc-theme-surface", "#fff");
+        root.style.setProperty("--mdc-theme-header", "var(--mdc-theme-primary)");
         root.style.setProperty("--mdc-theme-error", "#b00020");
         root.style.setProperty("--mdc-theme-on-primary", "#fff");
         root.style.setProperty("--mdc-theme-on-secondary", "#fff");
         root.style.setProperty("--mdc-theme-on-surface", "#000");
+        root.style.setProperty("--mdc-theme-on-header", "var(--mdc-theme-on-primary)");
         root.style.setProperty("--mdc-theme-on-error", "#fff");
         root.style.setProperty("--mdc-theme-text-primary-on-background", "var(--lumo-body-text-color)");
         root.style.setProperty("--mdc-theme-text-secondary-on-background", "rgba(0, 0, 0, 0.54)");

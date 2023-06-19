@@ -97,12 +97,16 @@ class DndBaseRoutingView extends PolymerElement {
     switch (viewId) {
       case 'variantrules':
         title = 'Variant Rules';
+        break;
       case 'index':
-        title = undefined;
+        title = '';
+        break;
       case 'dice':
         title = 'Dice Roller';
+        break;
       case 'character-builder':
         title = 'Character Sheets'
+        break;
       default:
         title = viewId ? util_capitalize(viewId) : '';
     }

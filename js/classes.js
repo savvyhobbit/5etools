@@ -78,7 +78,7 @@ function onDataLoad(classes, rootEl) {
 function onClassChange(curClass, rootEl) {
   rootEl.querySelector("#classtable").innerHTML = window.classTableDefault;
   rootEl.querySelector("#subclasses").classList.remove("fixed");
-  rootEl.querySelector("#subclasses").classList.remove("closed");
+  // rootEl.querySelector("#subclasses").classList.remove("closed");
   rootEl.querySelector("#subclasses").classList.remove("hidden");
   rootEl.querySelector(".mobile-clone-spells") && rootEl.querySelector(".mobile-clone-spells").remove();
 
@@ -296,7 +296,7 @@ function onClassChange(curClass, rootEl) {
       console.error('feature', feature);
       const featureId = HASH_FEATURE + encodeForHash(feature.name) + "_" + i;
       const featureLinkPart = HASH_FEATURE + encodeForHash(feature.name) + i;
-      const featureLinkClasses = [CLSS_FEATURE_LINK];
+      const featureLinkClasses = [CLSS_FEATURE_LINK, feature.gainSubclassFeature ? 'subclass-feature-link' : undefined];
       if (isNonstandardSource(feature.source)) featureLinkClasses.push(CLSS_NON_STANDARD_SOURCE);
       const featureLink = parseHTML(
         `<a href="#${encodeForHash([curClass.name, curClass.source])}${HASH_PART_SEP}${featureLinkPart}"
@@ -334,18 +334,10 @@ function onClassChange(curClass, rootEl) {
 
             for (let i = 0; i < subFeatureList.length; i++) {
               const subFeature = subFeatureList[i];
-              // if this is not the subclass intro, add the subclass to the feature name
-              // this will only be shown if there are multiple subclasses displayed
-              if (subFeature.name === undefined) {
-                for (let m = 0; m < subFeature.entries.length; m++) {
-                  const childEntry = subFeature.entries[m];
-                  if (
-                    childEntry.name !== undefined &&
-                    !childEntry.name.startsWith(`<span class="${CLSS_SUBCLASS_PREFIX}">`)
-                  ) {
-                    childEntry.name = `<span class="${CLSS_SUBCLASS_PREFIX}">${subClass.name}: </span>${childEntry.name}`;
-                  }
-                }
+              console.error('subFeature', subFeature);
+
+              if (subclassIndex !== 0 || i !== 0) {
+                subFeature.name = `${subFeature.subclassShortName}: ${subFeature.name}`;
               }
 
               const styleClasses = [CLSS_SUBCLASS_FEATURE];

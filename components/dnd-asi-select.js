@@ -2,6 +2,7 @@ import { PolymerElement, html } from "@polymer/polymer";
 import { encodeForHash } from "../js/utils";
 import { loadModel } from "../util/data";
 import { getEditModeChannel, isEditMode } from "../util/editMode";
+import "./dnd-switch";
 
 class DndAsiSelect extends PolymerElement {
   
@@ -165,7 +166,7 @@ class DndAsiSelect extends PolymerElement {
       </style>
 
       <div class="disable-label" hidden$="[[!disabled]]">[[_disableLabel(checked)]]</div>
-      <dnd-switch initial-value=[[checked]] label="ASI" secondary-label="Feat" hidden$="[[disabled]]"></dnd-switch>
+      <dnd-switch initial-value=[[checked]] label="ASI" secondary-label="Feat" hidden$="[[disabled]]" extra-padding></dnd-switch>
       <div class="abilities" hidden$=[[checked]]>
         <dnd-select-add add-callback="[[_changeHandler('a1')]]" value="[[selectedAbilityOne]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>
         <dnd-select-add add-callback="[[_changeHandler('a2')]]" value="[[selectedAbilityTwo]]" options="[[attributeOptions]]" placeholder="<ASI>" disabled$="[[disabled]]"></dnd-select-add>

@@ -48,6 +48,9 @@ class DndLayout extends PolymerElement {
         type: Boolean,
         value: false
       },
+      isDarkMode: {
+        type: Boolean
+      }
     };
   }
 
@@ -79,7 +82,7 @@ class DndLayout extends PolymerElement {
     routeEventChannel().addEventListener("title-change", e => {
       if (e.detail) {
         const {title} = e.detail;
-        if (title) {
+        if (title !== undefined) {
           this.lastTitle = title
         }
       }
@@ -107,34 +110,21 @@ class DndLayout extends PolymerElement {
 
   _initDarkmode() {
     // Darkmode Switch
-    let storedDarkMode = window.localStorage.getItem("darkMode");
+    const storedDarkMode = window.localStorage.getItem("darkMode") === "true";
+    setDarkmode(storedDarkMode);
+    this.isDarkMode = storedDarkMode;
 
-    if (storedDarkMode === "true") {
-      this.darkModeSwitchChecked = true;
-    } else {
-      this.darkModeSwitchChecked = false;
-    }
-    setDarkmode(this.darkModeSwitchChecked);
     const darkModeSwitch = new MDCSwitch(this.shadowRoot.querySelector(".mdc-switch"));
-    darkModeSwitch.checked = this.darkModeSwitchChecked;
+    darkModeSwitch.checked = storedDarkMode;
 
-    if (this.darkModeSwitchChecked) {
-      this.$.header.classList.add("dark");
-    } else {
-      this.$.header.classList.remove("dark");
-    }
     this.shadowRoot.querySelector(".darkmode-label").addEventListener("click", () => {
       darkModeSwitch.checked = !darkModeSwitch.checked;
     });
 
     this.shadowRoot.querySelector(".mdc-switch__native-control").addEventListener("change", () => {
       window.localStorage.setItem("darkMode", darkModeSwitch.checked);
-      if (darkModeSwitch.checked) {
-        this.$.header.classList.add("dark");
-      } else {
-        this.$.header.classList.remove("dark");
-      }
       setDarkmode(darkModeSwitch.checked);
+      this.isDarkMode = darkModeSwitch.checked;
     });
   }
 
@@ -383,25 +373,25 @@ class DndLayout extends PolymerElement {
         }
       </style>
 
-      <header id="header" edit-mode$="[[isEditMode]]" class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--primary-bg mdc-theme--on-primary">
+      <header id="header" edit-mode$="[[isEditMode]]" class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--header-bg">
         <div class="mdc-top-app-bar__row">
-          <div class="breadcrumbs mdc-theme--on-primary">
+          <div class="breadcrumbs">
             <div id="breadcrumbcontainer" class="container breadcrumbs__list">
-              <div class="breadcrumbs__crumb" >
-                <a on-click="_resetHashClickHandler">[[lastTitle]]</a>
+              <div class="breadcrumbs__crumb">
+                <a class="mdc-theme--on-header" on-click="_resetHashClickHandler">[[lastTitle]]</a>
               </div>
             </div>
           </div>
           <div class="nav-button">
             <button
-              class="material-icons mdc-top-app-bar__navigation-icon mdc-theme--on-primary hidden-desktop-up margin-left_small"
+              class="material-icons mdc-theme--on-header mdc-top-app-bar__navigation-icon hidden-desktop-up margin-left_small"
             >
               menu
             </button>
-            <a href="#/index"><div class="logo logo-white light-only"></div></a>
-            <a href="#/index"><div class="logo dark-only"></div></a>
+            <a href="#/index" hidden$="[[isDarkMode]]"><div class="logo logo-white"></div></a>
+            <a href="#/index" hidden$="[[!isDarkMode]]"><div class="logo"></div></a>
             <a href="#/index"
-              ><span class="mdc-top-app-bar__title mdc-theme--on-primary typography_mono hidden-tablet-down"
+              ><span class="mdc-top-app-bar__title mdc-theme--on-header typography_mono hidden-tablet-down"
                 >5e Tools</span
               ></a
             >

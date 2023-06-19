@@ -72,6 +72,7 @@ class RollResult {
     }
 
     toString() {
+        console.error(this.rolls, this.modifier, this.total);
         if (this.rolls.length === 1 && this.modifier === 0) {
             return this.rolls[0] + '';
         }

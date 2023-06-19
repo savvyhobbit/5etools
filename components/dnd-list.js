@@ -67,7 +67,6 @@ class DndList extends PolymerElement {
   }
 
   listItemsChange() {
-    console.error('listItemsChange');
     this.resultsCount = this.listItems ? this.listItems.length : 0;
     
     if (!this.hasSetFromURL && !this.nonGlobal) {
@@ -81,7 +80,6 @@ class DndList extends PolymerElement {
   }
 
   selectedFiltersChange() {
-    console.error('selectedFiltersChange');
     setTimeout(() => {
       this.resultsCount = this.$.grid.__data._effectiveSize;
     }, 500);
@@ -265,6 +263,7 @@ class DndList extends PolymerElement {
 
   _clearFilters() {
     this.set('selectedFilters', {});
+    this.$.search.value = "";
   }
 
   _isComboBoxFilter(colId) {
@@ -447,7 +446,7 @@ class DndList extends PolymerElement {
       </div>
 
       <div class="search-wrap">
-        <vaadin-text-field theme="label--secondary" on-keyup="_selectFilter" label="Search"></vaadin-text-field>
+        <vaadin-text-field theme="label--secondary" id="search" on-keyup="_selectFilter" label="Search"></vaadin-text-field>
         <dnd-button class="search-reset" border on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 

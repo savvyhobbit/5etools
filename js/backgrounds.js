@@ -25,10 +25,6 @@ function renderSelection(curbg, rootEl, allBgs) {
   } else {
     rootEl.innerHTML = stats_wrapper;
   }
-  while (curbg._copy) {
-    const foundCopy = resolveHash(allBgs, encodeForHash([curbg._copy.name, curbg._copy.source]));
-    curbg = foundCopy;
-  }
   const source = curbg.source;
   const sourceAbv = Parser.sourceJsonToAbv(source);
   const sourceFull = Parser.sourceJsonToFull(source);

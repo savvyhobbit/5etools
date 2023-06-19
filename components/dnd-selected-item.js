@@ -234,7 +234,7 @@ class DndSelectedItem extends PolymerElement {
       </style>
 
       <div class$="[[_mainClass(selectedItem, nonGlobal)]]">
-        <button class="mdc-icon-button close-item material-icons" on-click="clearSelection">close</button>
+        <button class="mdc-icon-button close-item material-icons mdc-theme--on-header" on-click="clearSelection">close</button>
         <h1 class="page-title mdc-typography--headline2" hidden$="[[!selectedItem]]">
           <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
           <div class="title-text-wrap">

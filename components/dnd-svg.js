@@ -29,7 +29,7 @@ class DndSvg extends PolymerElement {
 	}
 
   _rerender() {
-    	if (this.id) {
+		if (this.id) {
 			let fixedId = this.transformId(this.id);
 			if (this[fixedId] && typeof this[fixedId] === "function") {
 				this.$.svg.innerHTML = this[fixedId](this.color);
@@ -113,6 +113,9 @@ class DndSvg extends PolymerElement {
 				:host {
 					display: inline-block;
 					width: 100px;
+				}
+				:host([hide]) {
+          display: none !important;
 				}
       </style>
       <svg

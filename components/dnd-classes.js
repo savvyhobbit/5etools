@@ -69,7 +69,16 @@ class DndClasses extends PolymerElement {
 
     routeEventChannel().addEventListener("title-change", e => {
       if (e.detail) {
-        const {title, name, source} = e.detail;
+        const { title } = e.detail;
+        let routeSelection = readRouteSelection(),
+          name, source;
+        if (routeSelection) {
+          const split = routeSelection.split('_');
+          name = decodeURIComponent(split[0]);
+          if (split.length > 1) {
+            source = split[1].split(',')[0];
+          }
+        }
         if (title) {
           this.lastTitle = title;
         }
@@ -77,6 +86,20 @@ class DndClasses extends PolymerElement {
         this.selectedSource = source;
         this.selectedSourceFull = Parser.sourceJsonToFull(source);
         this.selectedSourceAbv = Parser.sourceJsonToAbv(source);
+      }
+    });
+
+    routeEventChannel().addEventListener("selection-change", (e) => {
+      console.error("selection-change", e.detail);
+      const routeSelection = e.detail.selection;
+      if (routeSelection) {
+        const split = routeSelection.split('_');
+        this.selectedTitle = decodeURIComponent(split[0]);
+        if (split.length > 1) {
+          this.selectedSource = split[1].split(',')[0];
+          this.selectedSourceFull = Parser.sourceJsonToFull(this.selectedSource);
+          this.selectedSourceAbv = Parser.sourceJsonToAbv(this.selectedSource);
+        }
       }
     });
 
@@ -200,17 +223,31 @@ class DndClasses extends PolymerElement {
 
   static get template() {
     return html`
-      <style include="material-styles my-styles"></style>
+      <style include="material-styles my-styles">
+        .page-title {
+          display: flex;
+          align-items: center;
+        }
+        .page-title dnd-svg {
+          position: static;
+          margin-right: 20px;
+        }
+        .source-text {
+          font-size: 18px;
+          color: var(--lumo-contrast-50pct);
+        }
+      </style>
+
       <div class$="[[_mainClass(itemOpened)]]">
 
-        <button class="mdc-icon-button close-item material-icons" on-click="_clearSelectionHandler">close</button>
+        <button class="mdc-icon-button close-item material-icons mdc-theme--on-header" on-click="_clearSelectionHandler">close</button>
         <button id="backToTop" class="mdc-icon-button mdc-button--raised back-to-top material-icons hidden">arrow_upward</button>
 
         <h1 class="page-title mdc-typography--headline2" hidden$="[[!selectedTitle]]">
           <dnd-svg id$="[[selectedTitle]]"></dnd-svg>
           <div class="title-text-wrap">
             <span class="title-text">[[selectedTitle]]</span>
-            <span class="source-text" hidden$=[[!selectedSourceFull]]><span class$="[[_selectedSourceClass(selectedSource)]]">[[selectedSourceFull]]<span hidden hiddens$="[[_same(selectedSourceFull, selectedSourceAbv)]]"> ([[selectedSourceAbv]])</span><span></span>
+            <div hidden$=[[!selectedSourceFull]] class="source-text">[[selectedSourceFull]]</div>
           </div>
         </h1>
 
@@ -219,7 +256,7 @@ class DndClasses extends PolymerElement {
         <div class="class-page--class-container stats-wrapper">
 
           <div id="subclassHeight"></div>
-          <div id="subclasses"></div>
+          <div id="subclasses" class="closed"></div>
 
           <div id="classtable">
             <table class="table">

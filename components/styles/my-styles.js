@@ -131,16 +131,12 @@ styleElement.innerHTML = `
         border-color: var(--mdc-theme-text-divider-on-background, rgba(0, 0, 0, .12));
       }
 
-
-      header.dark.mdc-theme--primary-bg {
-        background-color: #fff !important;
-        background-color: var(--mdc-theme-surface, #fff) !important;
+      .mdc-theme--header-bg {
+        background-color: var(--mdc-theme-header, #fff) !important;
       }
 
-      header.dark.mdc-theme--on-primary,
-      header.dark .mdc-theme--on-primary {
-        color: #000 !important;
-        color: var(--mdc-theme-text-primary-on-background, #000) !important
+      .mdc-theme--on-header {
+        color: var(--mdc-theme-on-header, #000) !important
       }
 
       .container {
@@ -441,7 +437,6 @@ styleElement.innerHTML = `
         text-overflow: ellipsis;
       }
       .breadcrumbs__crumb a {
-        color: inherit;
         text-decoration: none;
         cursor: pointer;
         transition: color .2s;
@@ -1196,10 +1191,16 @@ styleElement.innerHTML = `
       .feature-link {
         color: var(--mdc-theme-secondary, '#018786');
       }
+      .stats-wrapper a.subclass-feature-link {
+        color: var(--mdc-theme-primary, '#018786') !important;
+      }
       .feature-link + .feature-link:before {
         content: ', ';
         display: inline-block;
         margin-right: 4px;
+      }
+      .subclass-feature-link + .feature-link:before {
+        color: var(--mdc-theme-primary, '#018786') !important;
       }
       .mobile-clone-spells {
         margin-top: 24px;
@@ -1400,7 +1401,7 @@ styleElement.innerHTML = `
       }
       .stats-wrapper .statsBlockHead .stat-name {
         display: block;
-        font-size: 2rem;
+        font-size: 1.4rem;
         font-weight: normal;
         line-height: 1.2;
         margin: 24px 0 16px;
@@ -1452,7 +1453,8 @@ styleElement.innerHTML = `
         font-size: 1rem;
       }
       .stats-wrapper .subclass-feature.referenced-subclass-feature .statsBlockSubHead  .stat-name {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+        font-weight: normal;
       }
       .stats-wrapper.small .subclass-feature.referenced-subclass-feature .statsBlockSubHead  .stat-name {
         font-size: 1.2rem;
@@ -1611,6 +1613,9 @@ styleElement.innerHTML = `
         .page-title dnd-svg {
           width: 75px;
           top: -10px;
+        }
+        .stats-wrapper .statsBlockHead .stat-name {
+          font-size: 2rem;
         }
         .grid-item {
           width: calc(100% / 3 - 34px);
@@ -1814,8 +1819,9 @@ styleElement.innerHTML = `
         }
         .breadcrumbs__crumb {
           flex: 1;
-          //max-width: calc(100% - 205px);
           justify-content: center;
+          position: relative;
+          left: -8px;
         }
       }
       /* Below Desktop */
@@ -1883,15 +1889,6 @@ styleElement.innerHTML = `
       }
 
       /* Fixers */
-      .dark-only {
-        display: none;
-      }
-      .dark .dark-only {
-        display: block;
-      }
-      .dark .light-only { 
-        display: none;
-      }
       .full-width {
         width: 100% !important;
       }

@@ -1,5 +1,6 @@
 import { PolymerElement, html } from "@polymer/polymer";
 import {
+  saveCharacter,
   setItem
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
@@ -12,13 +13,65 @@ import "@vaadin/vaadin-text-field/vaadin-text-area";
 import Parser from '../../../util/Parser';
 import "../../dnd-select-add";
 import "../../dnd-button";
+import "../../dnd-switch";
 
+////////
+// Item Modifiers
+// - attachedSpells: []
+// - conditionImmune: []
+// - resist: []
+// - immune: [
+//     "cold"
+//   ]
+// - bonusSavingThrow: "+1"
+// - bonusAbilityCheck": "-2"
+// - bonusWeapon: "+1"
+// - bonusSpellAttack: "+1"
+// - bonusSpellDC: "+1"
+// - bonusAc: "+1"
+// - ac: 2
+// - grantsProficiency: true
+// - critThreshold: 19
+// - recharge: "dawn"
+// - rechargeAmount: "{@dice 1d3}"
+// - charges: 3
+// - focus: ["Wizard"]
+// - optionalfeatures: ""
+// - baseItem": "longsword|phb"
+// - miscTags: [
+//     "CF/W"
+//   ]
+// - ability: {
+//     "static": {
+//       "con": 19
+//     }
+//   }
+// - modifySpeed: {
+//     "static": {
+//       "fly": 150
+//     }
+//   },
+// - modifySpeed: {
+//   "equal": {
+//     "fly": "walk"
+//   }
+// }
+// - sentient: true
+// - curse: true
+// - staff: true
+// - reqAttuneTags: 
+// - reqAttune: true
+// - value: 9000
 
-//// BOONS
-// Resistance
-// DC+
-// Proficiency?
-// Spells known
+// Ships
+// - crewMin: 6,
+// - crewMax: 10,
+// - vehSpeed: 10,
+// - capPassenger: 30,
+// - capCargo: 10,
+// - travelCost: 200,
+// - shippingCost: 100
+// - seeAlsoVehicle: ["Apparatus of Kwalish|DMG"]
 class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
   
   static get properties() {
@@ -191,13 +244,6 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
           }
         }).filter(prop => !!prop);
         this.weaponProperties = props;
-        if (!this.item.damages) {
-          if (this.item.dmg1) {
-            this.item.storedItem.damages = [{roll: this.item.dmg1, type: util_capitalizeAll(Parser.dmgTypeToFull(this.item.dmgType))}];
-          } else {
-            this.item.storedItem.damages = [];
-          }
-        }
       }
     }
     this.itemRarity = this.item.rarity;
@@ -620,7 +666,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
               </template>
             </vaadin-select>
 
-            <div class="edit__weapon" hidden$="[[!item.weapon]]">
+            <div class="edit__weapon" hidden$="[[!_or(item.weapon, item.weaponCategory)]]">
               <h4 class="section_heading">Weapon</h4>
               <dnd-select-add choices="100" class="full-width-field" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
 

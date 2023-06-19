@@ -4,7 +4,6 @@ import "../styles/my-styles.js";
 import "../dnd-tabs.js";
 import "../dnd-character-select";
 import "../dnd-spinner";
-import "../dnd-switch";
 import "../dnd-icon";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
