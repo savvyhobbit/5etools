@@ -1,718 +1,317 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[2,7],{167:function(e,t,i){"use strict";var a=i(3),s=i(32),n=i(1),o=(i(104),i(37));class r extends a.a{static get properties(){return{options:{type:Array},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},paren:{type:String},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.requestContentUpdate()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(n.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(o.b)(this.model));const e=this.$.select._overlayElement.shadowRoot.querySelector("#content");let t=0;e.addEventListener("scroll",i=>{t=e.scrollTop},{passive:!0}),this.$.select.renderer=(i,a)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",i=>{a.opened=!0;let s=null!==i.srcElement.getAttribute("selected");e.scroll(0,t),setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!s&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(n.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],i=document.createElement("vaadin-item"),a=t.name||Object(n.util_capitalizeAll)(t);i.innerHTML=`<span style='margin-left: 10px;'>${a}</span> ${t.name?`<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${t.source||""}</span>`:""}`,i.setAttribute("value",e),this.listBox.appendChild(i)}i.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(s.cb)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t,i){let a="";return e&&(a=e,t&&1!==t&&100!==t&&(a+=` (pick ${t})`),i&&(a+=` (${i})`)),a}static get template(){return a.b`
-      <style>
-        :host {
-          display: inline-block;
-        }
-        [slot="prefix"] {
-          width: calc(100% - 46px);
-          padding: 12px;
-          line-height: 1.4;
-        }
-        vaadin-select {
-          width: 100%;
-        }
-        .prefix {
-          white-space: normal;
-          color: var(--lumo-body-text-color);
-        }
-      </style>
-      <vaadin-select add theme="dark add" id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
-        <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
-          <span class="prefix">[[multiValue]]</span>
-        </div>
-      </vaadin-select>
-      
-    `}}customElements.define("dnd-select-add",r)},168:function(e,t,i){"use strict";i(125);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[2],{166:function(t,e,i){"use strict";i(91),i(42);var n=i(102),a=i(56),s=i(2);
 /**
  * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
+ * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
+const r=s.b`
+  :host {
+    width: 8em;
+  }
+
+  :host([step-buttons-visible]:not([theme~='align-right'])) ::slotted(input),
+  :host([has-controls]:not([theme~='align-right'])) ::slotted(input) {
+    text-align: center;
+  }
+
+  [part$='button'][disabled] {
+    opacity: 0.2;
+  }
+
+  :host([step-buttons-visible]) [part='input-field'],
+  :host([has-controls]) [part='input-field'] {
+    padding: 0;
+  }
+
+  [part\$='button'] {
+    cursor: pointer;
+    font-size: var(--lumo-icon-size-s);
+    width: 1.6em;
+    height: 1.6em;
+  }
+
+  [part\$='button']::before {
+    margin-top: 0.3em;
+  }
+
+  [part='decrease-button']::before {
+    content: var(--lumo-icons-minus);
+  }
+
+  [part='increase-button']::before {
+    content: var(--lumo-icons-plus);
+  }
+
+  /* RTL specific styles */
+  :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
+    --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
+  }
+`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(72);var l=i(3),o=i(31),d=i(32),u=i(57),p=i(101),h=i(55),c=i(74);
 /**
  * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
+ * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},171:function(e,t,i){"use strict";i.r(t);var a=i(3),s=i(32),n=i(72),o=i(128),r=i(0),l=i(1),d=(i(169),i(166),i(181),i(4));i(167),i(102);class c extends a.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},hasRenderedOutput:{type:Boolean,value:!1},hasAC:{type:Boolean,value:!1},armorAC:{type:Number,value:0},isArmor:{type:Boolean,value:!1},isMartial:{type:Boolean,value:!1},weaponMagicModifier:{type:Number,value:0},itemRarity:{type:String},itemName:{type:String},itemWeight:{type:Number,value:0},weaponProperties:{type:Array},itemResist:{type:String},itemQuantity:{type:Number,value:0},item:{type:Object},storedItem:{type:Object},itemType:{type:String,value:""}}}static get observers(){return["_itemChanged(item)"]}constructor(){super(),this.itemTypes=["Currency","Armor (Light)","Armor (Medium)","Armor (Heavy)","Melee Weapon","Ranged Weapon","Shield","Adventuring Gear","Ammunition","Artisan Tool","Explosive","Gaming Set","Instrument","Mount","Potion","Rod","Ring","Scroll","Spellcasting Focus","Tool","Tack and Harness","Trade Good","Vehicle","Wand"],this.rarityTypes=r.z,this.damageTypes=r.k,this.resistTypes=["None",...r.k],this.weaponPropertyOptions=[{name:"Two-Handed",value:"2H"},{name:"Ammunition",value:"A"},{name:"Finesse",value:"F"},{name:"Heavy",value:"H"},{name:"Light",value:"L"},{name:"Loading",value:"LD"},{name:"Reach",value:"R"},{name:"Reload",value:"RLD"},{name:"Special",value:"S"},{name:"Thrown",value:"T"},{name:"Versatile",value:"V"}],this.weaponPropertyValues=["Two-Handed","Ammunition","Finesse","Heavy","Light","Loading","Reach","Reload","Special","Thrown","Versatile"]}connectedCallback(){super.connectedCallback(),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler)}_itemChanged(){if(this.item){if(console.error("itemDetail:",this.item),Object(o.renderSelection)(this.item,this.$.renderedOutput),this.itemType=this._getItemType(),this.hasAC="S"===this.item.type||!!this.item.armor,this.armorAC=this.item.ac,this.acLabel="Armor (Light)"===this.itemType?"AC (+DEX)":"Armor (Medium)"===this.itemType?"AC (+DEX max 2)":"AC",this.isArmor=!!this.item.armor,this.isMartial="Martial"===this.item.weaponCategory,this.weaponProperties=[],this.weaponMagicModifier=0,(this.item.weapon||this.item.weaponCategory)&&(this.weaponMagicModifier=parseInt(this.item.bonusWeapon,10),this.item.property)){const e=this.item.property.map(e=>{const t=this.weaponPropertyOptions.find(t=>t.value===e.trim());if(t)return t.name}).filter(e=>!!e);this.weaponProperties=e,this.item.damages||(this.item.dmg1?this.item.storedItem.damages=[{roll:this.item.dmg1,type:Object(l.util_capitalizeAll)(d.a.dmgTypeToFull(this.item.dmgType))}]:this.item.storedItem.damages=[])}this.itemRarity=this.item.rarity,this.itemName=this.item.name||"",this.itemWeight=this.item.weight||null,this.canHaveResist=this.item.armor||"P"===this.item.type||"RG"===this.item.type,this.itemResist=this.item.resist,this.canHaveQuantity=!0,this.itemQuantity=this.item.quantity||1,this.canHaveSpell="SC"===this.item.type,this.canHaveSpellMod=!0,this.spellAttack=this.item.bonusSpellAttack,this.spellDC=this.item.bonusSpellSaveDc,this.item.storedItem&&(this.storedItem=this.item.storedItem)}}_getItemType(){return this.item?d.a.ITEM_TYPE_JSON_TO_ABV[this.item.type]:""}_selectItemType(){const e=this.root.querySelector("#typeSelect").value;switch(this.storedItem.armor=!1,this.storedItem.weapon=!1,this.storedItem.type="",this.storedItem.isEquipped=!1,this.storedItem.isAttuned=!1,e){case"Armor (Light)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="LA";break;case"Armor (Medium)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="MA";break;case"Armor (Heavy)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="HA";break;case"Ranged Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="R",this.storedItem.resist=null;break;case"Melee Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="M",this.storedItem.resist=null;break;case"Shield":this.storedItem.type="S",this.storedItem.weaponCategory=null,this.storedItem.ac=2,this.storedItem.resist=null;break;case"Adventuring Gear":this.storedItem.weaponCategory=null,this.storedItem.type="G",this.storedItem.resist=null;break;case"Currency":this.storedItem.weaponCategory=null,this.storedItem.type="$",this.storedItem.resist=null,this.storedItem.quantity=1,this.storedItem.hasQuantity=!0;break;default:const t=Object.entries(d.a.ITEM_TYPE_JSON_TO_ABV).find(([t,i])=>i===e);t&&(this.storedItem.type=t[0]),"P"===e&&"RG"===e||(this.storedItem.resist=null)}"P"!==this.storedItem.type&&"A"!==this.storedItem.type&&"EXP"!==this.storedItem.type&&"$"!==this.storedItem.type&&(this.storedItem.hasQuantity=!1),Object(s.yb)(this.item)}_updateItem(){Object(s.yb)(this.item)}_addDamage(){this.storedItem.damages||(this.storedItem.damages=[]),this.storedItem.damages.push({roll:"",type:""}),Object(s.yb)(this.item)}_removeDamage(e){const t=Object(l.findInPath)(".roll__damage",e).getAttribute("index"),i=parseInt(t,10);this.storedItem.damages.splice(i,1),Object(s.yb)(this.item)}_changeWeaponType(){this.item.weapon&&(this.isMartial?this.storedItem.weaponCategory="Martial":this.storedItem.weaponCategory="Simple",Object(s.yb)(this.item))}_weaponMagicModifierChange(){let e=parseInt(this.weaponMagicModifier,10);isNaN(e)&&(e=0),this.storedItem.bonusWeapon=e>0?"+"+e:e,Object(s.yb)(this.item)}_itemRarityChange(){this.itemRarity&&(this.storedItem.rarity=this.itemRarity,Object(s.yb)(this.item))}_itemNameChange(){this.itemName&&(this.storedItem.name=this.itemName,Object(s.yb)(this.item))}_addWeaponProperty(){return(e=>{if(e&&e.length){const t=e.map(e=>{const t=this.weaponPropertyOptions.find(t=>t.name===e.trim());if(t)return t.value}).filter(e=>!!e);this.storedItem.property=t,Object(s.yb)(this.item)}}).bind(this)}_armorACChange(){let e=parseInt(this.armorAC,10);isNaN(e)&&(e=0),this.storedItem.ac=e,Object(s.yb)(this.item)}_itemWeightChange(){let e=parseFloat(this.itemWeight,10);isNaN(e)&&(e=0),this.storedItem.weight=e,Object(s.yb)(this.item)}_itemResistChange(){this.itemResist&&(this.storedItem.resist="None"===this.itemResist?null:this.itemResist,Object(s.yb)(this.item))}_itemQuantityChange(){let e=parseInt(this.itemQuantity,10);isNaN(e)&&(e=0),this.storedItem.quantity=e,this.storedItem.hasQuantity=!0,Object(s.yb)(this.item)}_itemSpellAttackChange(){let e=parseInt(this.spellAttack,10);isNaN(e)&&(e=0),this.storedItem.bonusSpellAttack=e,Object(s.yb)(this.item)}_itemSpellDCChange(){let e=parseInt(this.spellDC,10);isNaN(e)&&(e=0),this.storedItem.bonusSpellSaveDc=e,Object(s.yb)(this.item)}_or(...e){for(let t of e)if(t)return!0;return!1}_sourceFull(e){return e&&d.a.sourceJsonToFull(e)}static get template(){return a.b`
-      <style include="material-styles my-styles"></style>
+Object(s.c)("vaadin-number-field",c.a,{moduleId:"vaadin-number-field-styles"});class m extends(Object(p.a)(Object(s.a)(Object(o.a)(l.a)))){static get is(){return"vaadin-number-field"}static get template(){return l.b`
       <style>
-        :host {}
-        [hidden] {
-          display: none !important;
+        :host([readonly]) [part$='button'] {
+          pointer-events: none;
         }
 
-        .edit__wrap {
-          margin-right: -10px;
-        }
-        .edit__name {
-          width: calc(65% - 10px);
-          padding-top: 0;
-        }
-        .edit__notes {
-          width: calc(100% - 10px);
-          min-height: 200px;
-        }
-        .edit__checkboxes {
-          display: flex;
-          flex-direction: column;
-          margin: 10px 10px 0 0;
+        [part='decrease-button']::before {
+          content: '−';
         }
 
-        .section_heading {
-          margin: 16px 0 0px;
-          font-size: 17px;
-          color: var(--mdc-theme-secondary);
+        [part='increase-button']::before {
+          content: '+';
         }
 
-        .roll__damages {
-          display: flex;
-          flex-direction: column;
-        }
-        .roll__damage {
-          display: flex;
-          margin-right: 10px;
-        }
-        .roll__damage vaadin-text-field,
-        .roll__damage vaadin-select {
-          max-width: 100%;
-        }
-        .roll__damage-roll--edit,
-        .roll__damage-type--edit {
-          width: calc(50% - 40px);
-        }
-        .roll__damage-roll--edit {
-          margin: 0 16px;
-        }
-        .roll__damage-remove {
-          margin: auto -5px 4px;
+        [part='decrease-button'],
+        [part='increase-button'] {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
         }
 
-        dnd-switch {
-          margin: 10px auto 0;
-          display: block;
-        }
-
-        vaadin-checkbox {
-          width: fit-content;
-        }
-
-        vaadin-select {
-          max-width: calc(50% - 14px);
-        }
-        vaadin-number-field,
-        vaadin-integer-field {
-          width: calc(33% - 12px);
-        }
-        vaadin-text-field,
-        vaadin-text-area,
-        vaadin-integer-field,
-        vaadin-number-field,
-        vaadin-select {
-          margin-right: 10px;
-        }
-        dnd-select-add {
-          width: calc(66% - 22px);
-          margin-right: 10px;
-          margin-left: 10px;
-        }
-
-        .ac-field {
-          width: calc(50% - 14px);
-        }
-        .ac-suffix {
-          font-size: 12px;
-        }
-        .full-width-field {
-          width: calc(100% - 20px);
-        }
-
-        h2 {
-          margin-top: 0;
-          font-size: 24px;
-          margin-bottom: 2px;
-          line-height: 1.2;
-        }
-        .notes-container {
-          margin-top: 16px;
-          line-height: 1.4;
-        }
-        .notes-container__label {
-          font-weight: bold;
-        }
-
-        .stats-wrapper {
-          font-size: 14px;
-          line-height: 1.4;
-          margin-top: 16px;
-        }
-        .stats-wrapper > .statsBlockHead:first-child > .stat-name {
-          margin-top: 0;
-        }
-        .stats-wrapper .statsBlockHead .stat-name {
-          font-size: 22px;
-          margin-bottom: 2px;
-        }
-        .stats-wrapper .statsBlockSubHead .stat-name {
-          font-size: 18px;
-        }
-        .stats-wrapper .text {
-          margin-top: 16px;
-        }
-        .stats-wrapper p {
-          margin-bottom: 8px;
-        }
-        .stats-wrapper .statsInlineHead:last-child {
-          margin-bottom: 0;
-        }
-        .stats-wrapper .statsInlineHead .stat-name {
-          font-size: inherit;
-        }
-        .margin-bottom_large,
-        .stats-wrapper .margin-bottom_med {
-          margin-bottom: 0 !important;
-        }
-        .source {
-          display: block !important;
-          color: var(--lumo-contrast-70pct);
-          font-size: 13px;
-          margin-top: 0px;
-          margin-bottom: 12px;
+        :host([dir='rtl']) [part='input-field'] {
+          direction: ltr;
         }
       </style>
 
-      <div hidden$="[[!item]]">
-        <div hidden$="[[isEditMode]]">
-          <h2>[[item.name]]</h2>
-          <div hidden="[[!item.source]]" class="source">[[_sourceFull(item.source)]]</div>
-          <div hidden="[[!item.notes]]" class="notes-container">
-            <span class="notes-container__label">Notes.</span>
-            [[item.notes]]
-          </div>
-          <div id="renderedOutput"></div>
+      <div class="vaadin-field-container">
+        <div part="label">
+          <slot name="label"></slot>
+          <span part="required-indicator" aria-hidden="true" on-click="focus"></span>
         </div>
 
-        <template is="dom-if" if="[[isEditMode]]">
-          <div class="edit__wrap">
-            <vaadin-text-field class="edit__name" theme="label--secondary" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
-            <vaadin-number-field theme="label--secondary" has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
+        <vaadin-input-container
+          part="input-field"
+          readonly="[[readonly]]"
+          disabled="[[disabled]]"
+          invalid="[[invalid]]"
+          theme$="[[_theme]]"
+        >
+          <div
+            disabled$="[[!_allowed(-1, value, min, max, step)]]"
+            part="decrease-button"
+            on-click="_decreaseValue"
+            on-touchend="_decreaseButtonTouchend"
+            hidden$="[[!_isStepButtonVisible(hasControls, stepButtonsVisible)]]"
+            aria-hidden="true"
+            slot="prefix"
+          ></div>
+          <slot name="prefix" slot="prefix"></slot>
+          <slot name="input"></slot>
+          <slot name="suffix" slot="suffix"></slot>
+          <div id="clearButton" part="clear-button" slot="suffix" aria-hidden="true"></div>
+          <div
+            disabled$="[[!_allowed(1, value, min, max, step)]]"
+            part="increase-button"
+            on-click="_increaseValue"
+            on-touchend="_increaseButtonTouchend"
+            hidden$="[[!_isStepButtonVisible(hasControls, stepButtonsVisible)]]"
+            aria-hidden="true"
+            slot="suffix"
+          ></div>
+        </vaadin-input-container>
 
-            <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
-              <template>
-                <vaadin-list-box>
-                  <template is="dom-repeat" items="[[itemTypes]]">
-                    <vaadin-item>[[item]]</vaadin-item>
-                  </template>
-                </vaadin-list-box>
-              </template>
-            </vaadin-select>
+        <div part="helper-text">
+          <slot name="helper"></slot>
+        </div>
 
-            <vaadin-select id="raritySelect" value="{{itemRarity}}" on-change="_itemRarityChange" label="Rarity" >
-              <template>
-                <vaadin-list-box>
-                  <template is="dom-repeat" items="[[rarityTypes]]">
-                    <vaadin-item>[[item]]</vaadin-item>
-                  </template>
-                </vaadin-list-box>
-              </template>
-            </vaadin-select>
-
-            <div class="edit__weapon" hidden$="[[!item.weapon]]">
-              <h4 class="section_heading">Weapon</h4>
-              <dnd-select-add choices="100" class="full-width-field" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
-
-              <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
-
-              <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
-                <div class="roll__damage" index$="[[index]]">
-                  <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
-                  <div class="roll__damage-roll--edit">
-                    <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
-                  </div>
-                  <div class="roll__damage-type--edit">
-                    <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
-                      <template>
-                        <vaadin-list-box>
-                          <template is="dom-repeat" items="[[damageTypes]]">
-                            <vaadin-item>[[item]]</vaadin-item>
-                          </template>
-                        </vaadin-list-box>
-                      </template>
-                    </vaadin-select>
-                  </div>
-                </div>
-              </template>
-              <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
-            </div>
-
-            <vaadin-integer-field class="ac-field" theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="[[acLabel]]" on-change="_armorACChange"></vaadin-integer-field>
-
-            <vaadin-integer-field theme="label--secondary" hidden$="[[!item.weapon]]" min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Weapon Mod" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
-
-            <vaadin-integer-field theme="label--secondary" hidden$="[[!canHaveSpellMod]]" min="0" max="5" has-controls value="{{spellAttack}}" label="Spell Attack" on-change="_itemSpellAttackChange"></vaadin-integer-field>
-
-            <vaadin-integer-field theme="label--secondary" hidden$="[[!canHaveSpellMod]]" min="0" max="5" has-controls value="{{spellDC}}" label="Spell DC" on-change="_itemSpellDCChange"></vaadin-integer-field>
-
-            <vaadin-integer-field theme="label--secondary" hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
-
-            <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
-              <template>
-                <vaadin-list-box>
-                  <template is="dom-repeat" items="[[resistTypes]]">
-                    <vaadin-item>[[item]]</vaadin-item>
-                  </template>
-                </vaadin-list-box>
-              </template>
-            </vaadin-select>
-
-            <div class="edit__checkboxes">
-              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem" label="Has Quantity"></vaadin-checkbox>
-              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem" label="Disadvantage on Stealth"></vaadin-checkbox>
-              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem" label="Requires Attunement"></vaadin-checkbox>
-              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem" label="Wondrous"></vaadin-checkbox>
-            </div>
-
-            <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-blur="_updateItem"></vaadin-text-area>
-          </div>
-        </template>
+        <div part="error-message">
+          <slot name="error-message"></slot>
+        </div>
       </div>
-    `}}customElements.define("dnd-character-builder-equipment-item-detail",c)},172:function(e,t,i){"use strict";i(29),i(36),i(20);var a=i(2);Object(a.c)("vaadin-grid-tree-toggle",a.b`
-    :host {
-      --vaadin-grid-tree-toggle-level-offset: 2em;
-      align-items: center;
-      vertical-align: middle;
-      transform: translateX(calc(var(--lumo-space-s) * -1));
-      -webkit-tap-highlight-color: transparent;
-    }
 
-    :host(:not([leaf])) {
-      cursor: default;
-    }
-
-    [part='toggle'] {
-      display: inline-block;
-      font-size: 1.5em;
-      line-height: 1;
-      width: 1em;
-      height: 1em;
-      text-align: center;
-      color: var(--lumo-contrast-50pct);
-      cursor: var(--lumo-clickable-cursor);
-      /* Increase touch target area */
-      padding: calc(1em / 3);
-      margin: calc(1em / -3);
-    }
-
-    :host(:not([dir='rtl'])) [part='toggle'] {
-      margin-right: 0;
-    }
-
-    @media (hover: hover) {
-      :host(:hover) [part='toggle'] {
-        color: var(--lumo-contrast-80pct);
-      }
-    }
-
-    [part='toggle']::before {
-      font-family: 'lumo-icons';
-      display: inline-block;
-      height: 100%;
-    }
-
-    :host(:not([expanded])) [part='toggle']::before {
-      content: var(--lumo-icons-angle-right);
-    }
-
-    :host([expanded]) [part='toggle']::before {
-      content: var(--lumo-icons-angle-right);
-      transform: rotate(90deg);
-    }
-
-    /* Experimental support for hierarchy connectors, using an unsupported selector */
-    :host([theme~='connectors']) #level-spacer {
-      position: relative;
-      z-index: -1;
-      font-size: 1em;
-      height: 1.5em;
-    }
-
-    :host([theme~='connectors']) #level-spacer::before {
-      display: block;
-      content: '';
-      margin-top: calc(var(--lumo-space-m) * -1);
-      height: calc(var(--lumo-space-m) + 3em);
-      background-image: linear-gradient(
-        to right,
-        transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px),
-        var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px)
-      );
-      background-size: var(--vaadin-grid-tree-toggle-level-offset) var(--vaadin-grid-tree-toggle-level-offset);
-      background-position: calc(var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px) 0;
-    }
-
-    /* RTL specific styles */
-
-    :host([dir='rtl']) {
-      margin-left: 0;
-      margin-right: calc(var(--lumo-space-s) * -1);
-    }
-
-    :host([dir='rtl']) [part='toggle'] {
-      margin-left: 0;
-    }
-
-    :host([dir='rtl'][expanded]) [part='toggle']::before {
-      transform: rotate(-90deg);
-    }
-
-    :host([dir='rtl'][theme~='connectors']) #level-spacer::before {
-      background-image: linear-gradient(
-        to left,
-        transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px),
-        var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px)
-      );
-      background-position: calc(100% - (var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px)) 0;
-    }
-
-    :host([dir='rtl']:not([expanded])) [part='toggle']::before,
-    :host([dir='rtl'][expanded]) [part='toggle']::before {
-      content: var(--lumo-icons-angle-left);
-    }
-  `,{moduleId:"lumo-grid-tree-toggle"});var s=i(3),n=i(25),o=i(108);
+      <slot name="tooltip"></slot>
+    `}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},stepButtonsVisible:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number},max:{type:Number},step:{type:Number}}}static get observers(){return["_stepChanged(step, inputElement)"]}static get delegateProps(){return[...super.delegateProps,"min","max"]}static get constraints(){return[...super.constraints,"min","max","step"]}constructor(){super(),this._setType("number")}get slotStyles(){const t=this.localName;return[...super.slotStyles,`\n        ${t} input[type="number"]::-webkit-outer-spin-button,\n        ${t} input[type="number"]::-webkit-inner-spin-button {\n          -webkit-appearance: none;\n          margin: 0;\n        }\n\n        ${t} input[type="number"] {\n          -moz-appearance: textfield;\n        }\n\n        ${t}[dir='rtl'] input[type="number"]::placeholder {\n          direction: rtl;\n        }\n\n        ${t}[dir='rtl']:not([step-buttons-visible]):not([has-controls]) input[type="number"]::placeholder {\n          text-align: left;\n        }\n      `]}get clearElement(){return this.$.clearButton}ready(){super.ready(),this.addController(new u.a(this,t=>{this._setInputElement(t),this._setFocusElement(t),this.stateTarget=t,this.ariaTarget=t})),this.addController(new h.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this.addController(this._tooltipController),this._tooltipController.setPosition("top")}checkValidity(){return this.inputElement?this.inputElement.checkValidity():!this.invalid}_decreaseButtonTouchend(t){t.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(t){t.preventDefault(),this._increaseValue()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(t){if(this.disabled||this.readonly)return;const e=this.step||1;let i=parseFloat(this.value);this.value?i<this.min?(t=0,i=this.min):i>this.max&&(t=0,i=this.max):0===this.min&&t<0||0===this.max&&t>0||0===this.max&&0===this.min?(t=0,i=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?i=0:this.min>0?(i=this.min,this.max<0&&t<0&&(i=this.max),t=0):this.max<0&&(i=this.max,t<0?t=0:this._getIncrement(1,i-e)>this.max?i-=2*e:i-=e);const n=this._getIncrement(t,i);this.value&&0!==t&&!this._incrementIsInsideTheLimits(t,i)||this._setValue(n)}_setValue(t){this.value=this.inputElement.value=String(parseFloat(t)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(t,e){let i=this.step||1,n=this.min||0;const a=Math.max(this._getMultiplier(e),this._getMultiplier(i),this._getMultiplier(n));i*=a,n*=a;const s=((e=Math.round(e*a))-n)%i;return t>0?(e-s+i)/a:t<0?(e-(s||i))/a:e/a}_getDecimalCount(t){const e=String(t),i=e.indexOf(".");return-1===i?1:e.length-i-1}_getMultiplier(t){if(!isNaN(t))return 10**this._getDecimalCount(t)}_incrementIsInsideTheLimits(t,e){return t<0?null==this.min||this._getIncrement(t,e)>=this.min:t>0?null==this.max||this._getIncrement(t,e)<=this.max:this._getIncrement(t,e)<=this.max&&this._getIncrement(t,e)>=this.min}_allowed(t){const e=t*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(e,i)}_stepChanged(t,e){e&&(e.step=t||"any")}_valueChanged(t,e){t&&isNaN(parseFloat(t))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,e)}_onKeyDown(t){"ArrowUp"===t.key?(t.preventDefault(),this._increaseValue()):"ArrowDown"===t.key&&(t.preventDefault(),this._decreaseValue()),super._onKeyDown(t)}_isStepButtonVisible(t,e){return t||e}_setHasInputValue(t){const e=t.composedPath()[0];this._hasInputValue=e.value.length>0||e.validity.badInput}}customElements.define(m.is,m);
 /**
  * @license
- * Copyright (c) 2016 - 2022 Vaadin Ltd.
+ * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-const r=document.createElement("template");r.innerHTML="\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n",document.head.appendChild(r.content);class l extends(Object(a.a)(Object(n.a)(s.a))){static get template(){return s.b`
+/**
+ * @license
+ * Copyright (c) 2021 - 2022 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
+class v extends m{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(null!=t&&!this.__hasOnlyDigits(t))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${t}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d+$/.test(String(t))}}customElements.define(v.is,v);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},170:function(t,e,i){"use strict";i(126);
+/**
+ * @license
+ * Copyright (c) 2017 - 2022 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
+/**
+ * @license
+ * Copyright (c) 2017 - 2022 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
+i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},188:function(t,e,i){"use strict";i(91),i(29),i(42),i(45);var n=i(56),a=i(2);
+/**
+ * @license
+ * Copyright (c) 2017 - 2022 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
+const s=a.b`
+  [part='input-field'],
+  [part='input-field'] ::slotted(textarea) {
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  [part='input-field'] {
+    /* Equal to the implicit padding in vaadin-text-field */
+    padding-top: calc((var(--lumo-text-field-size) - 1em * var(--lumo-line-height-s)) / 2);
+    padding-bottom: calc((var(--lumo-text-field-size) - 1em * var(--lumo-line-height-s)) / 2);
+    transition: background-color 0.1s;
+    line-height: var(--lumo-line-height-s);
+  }
+
+  :host(:not([readonly])) [part='input-field']::after {
+    display: none;
+  }
+
+  :host([readonly]) [part='input-field'] {
+    border: 1px dashed var(--lumo-contrast-30pct);
+  }
+
+  :host([readonly]) [part='input-field']::after {
+    border: none;
+  }
+
+  :host(:hover:not([readonly]):not([focused]):not([invalid])) [part='input-field'] {
+    background-color: var(--lumo-contrast-20pct);
+  }
+
+  @media (pointer: coarse) {
+    :host(:hover:not([readonly]):not([focused]):not([invalid])) [part='input-field'] {
+      background-color: var(--lumo-contrast-10pct);
+    }
+
+    :host(:active:not([readonly]):not([focused])) [part='input-field'] {
+      background-color: var(--lumo-contrast-20pct);
+    }
+  }
+
+  [part='input-field'] ::slotted(textarea) {
+    line-height: inherit;
+    --_lumo-text-field-overflow-mask-image: none;
+  }
+
+  /* Vertically align icon prefix/suffix with the first line of text */
+  [part='input-field'] ::slotted(iron-icon),
+  [part='input-field'] ::slotted(vaadin-icon) {
+    margin-top: calc((var(--lumo-icon-size-m) - 1em * var(--lumo-line-height-s)) / -2);
+  }
+`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(72);var r=i(3),l=i(31),o=i(109),d=i(32),u=i(101),p=i(55),h=i(78),c=i(74),m=i(34);
+/**
+ * @license
+ * Copyright (c) 2021 - 2022 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
+class v extends m.a{constructor(t,e){super(t,"textarea",()=>document.createElement("textarea"),(t,i)=>{const n=t.getAttribute("value");n&&(i.value=n);const a=t.getAttribute("name");a&&i.setAttribute("name",a),i.id=this.defaultId,"function"==typeof e&&e(i)},!0)}}
+/**
+ * @license
+ * Copyright (c) 2021 - 2022 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */Object(a.c)("vaadin-text-area",c.a,{moduleId:"vaadin-text-area-styles"});class g extends(Object(o.a)(Object(h.a)(Object(u.a)(Object(a.a)(Object(l.a)(r.a)))))){static get is(){return"vaadin-text-area"}static get template(){return r.b`
       <style>
         :host {
-          display: inline-flex;
-          align-items: baseline;
-          max-width: 100%;
-
-          /* CSS API for :host */
-          --vaadin-grid-tree-toggle-level-offset: 1em;
-          --_collapsed-icon: '\\e7be\\00a0';
+          animation: 1ms vaadin-text-area-appear;
         }
 
-        :host([dir='rtl']) {
-          --_collapsed-icon: '\\e7bd\\00a0';
+        .vaadin-text-area-container {
+          flex: auto;
         }
 
-        :host([hidden]) {
-          display: none !important;
-        }
-
-        :host(:not([leaf])) {
-          cursor: pointer;
-        }
-
-        #level-spacer,
-        [part='toggle'] {
+        /* The label, helper text and the error message should neither grow nor shrink. */
+        [part='label'],
+        [part='helper-text'],
+        [part='error-message'] {
           flex: none;
         }
 
-        #level-spacer {
-          display: inline-block;
-          width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
+        [part='input-field'] {
+          flex: auto;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
         }
 
-        [part='toggle']::before {
-          font-family: 'vaadin-grid-tree-icons';
-          line-height: 1em; /* make icon font metrics not affect baseline */
-        }
-
-        :host(:not([expanded])) [part='toggle']::before {
-          content: var(--_collapsed-icon);
-        }
-
-        :host([expanded]) [part='toggle']::before {
-          content: '\\e7bc\\00a0'; /* icon glyph + single non-breaking space */
-        }
-
-        :host([leaf]) [part='toggle'] {
-          visibility: hidden;
-        }
-
-        slot {
-          display: block;
+        ::slotted(textarea) {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          flex: auto;
           overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      </style>
-
-      <span id="level-spacer"></span>
-      <span part="toggle"></span>
-      <slot></slot>
-    `}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||Object(o.b)(e.target)||e.target instanceof HTMLLabelElement||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style.setProperty("---level",t)}}customElements.define(l.is,l)},178:function(e,t,i){"use strict";i.r(t);var a=i(3),s=i(32),n=(i(173),i(72)),o=(i(130),i(168),i(129),i(172),i(137),i(166),i(171),i(9));class r extends a.a{static get properties(){return{inventory:{type:Array},isEditMode:{type:Boolean,value:!1},character:{type:Object},expandedItems:{type:Array},expandedIds:{type:Array},activeItem:{type:Object,value:null,observer:"_activeItemChange"}}}static get observers(){return["_expandedItemsChange(expandedItems.*)"]}_activeItemChange(e,t){if(t&&this.isMobile()||!e)!e&&t&&this.previousScrollPosition&&this.isMobile()&&setTimeout(()=>{window.scrollTo(0,this.previousScrollPosition),this.previousScrollPosition=0},0);else if(this.previousScrollPosition=window.scrollY,this.getBoundingClientRect().y<0){const e=window.scrollY+this.getBoundingClientRect().y-57;setTimeout(()=>{window.scrollTo(0,e)},0)}}isMobile(){return window.innerWidth<=768}_expandedItemsChange(){this.expandedItems&&this.expandedItems.length&&(this.expandedIds=this.expandedItems.filter(e=>!!e).map(e=>e.uniqueId))}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(s.S)()),Object(s.q)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.grid&&setTimeout(()=>{this.$.grid.notifyResize()},0)},Object(n.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(n.c)(),this.routeSubSelectionChangeHandler=(e=>{const t=e.detail.subSelection;this.inventory&&(this.activeItem=Object(s.M)(this.inventory,parseInt(t)))}).bind(this),Object(o.h)().addEventListener("sub-selection-change",this.routeSubSelectionChangeHandler),this.routeSubSelectionDeselectedHandler=(()=>{this.activeItem=void 0}).bind(this),Object(o.h)().addEventListener("sub-selection-deselected",this.routeSubSelectionDeselectedHandler)}disconnectedCallback(){super.disconnectedCallback(),Object(s.q)().removeEventListener("character-selected",this.characterChangeHandler),Object(n.b)().removeEventListener("editModeChange",this.editModeHandler),Object(o.h)().removeEventListener("selection-change",this.routeSubSelectionDeselectedHandler),Object(o.h)().removeEventListener("sub-selection-change",this.routeSubSelectionChangeHandler)}ready(){super.ready(),setTimeout(()=>{const e=this.$.grid;let t;e.addEventListener("grid-dragstart",(function(i){t=i.detail.draggedItems[0],e.dropMode="on-top-or-between"})),e.addEventListener("grid-dragend",(function(i){t=e.dropMode=null})),e.addEventListener("grid-drop",e=>{const i=e.detail.dropTargetItem;if(t&&t!==i){const a=Object(s.ab)(t,i.uniqueId);if((t.containerCapacity||t.packContents)&&a)return;const n=t.storedItem.uniqueId;if(t.storedItem.uniqueId=this.character.itemCounter++,"on-top"===e.detail.dropLocation&&(i.containerCapacity||i.packContents))return void(i.storedItem&&i.storedItem.children&&(i.storedItem.children.push(t.storedItem),Object(s.yb)(i,void 0,!0),Object(s.hb)(n)));if(this.inventory){const a=""+i.id;let o=parseInt(a.substring(a.lastIndexOf("_")),10);"below"===e.detail.dropLocation&&o++,i.parentItemREF?(i.parentItemREF.storedItem.children.splice(o,0,t.storedItem),Object(s.yb)(i.parentItemREF,void 0,!0)):Object(s.Cb)(o,t.storedItem),Object(s.hb)(n)}}}),e.dataProvider=((e,t)=>{const i=e.page*e.pageSize;let a=e.parentItem?e.parentItem.children:this.inventory;if(a&&a.length){t(a.slice(i,i+e.pageSize),a.length)}}).bind(this)},0)}async updateFromCharacter(e){if(e){if(this.character=e,this.inventory=await Object(s.N)(e),console.error("inventory:",this.inventory),this.$.grid.clearCache(),this.expandedIds){const e=this.expandedIds.map(e=>Object(s.M)(this.inventory,e));this.expandedItems=e}Object(o.f)()&&(this.activeItem=Object(s.M)(this.inventory,parseInt(Object(o.f)()))),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_expandDetails(e){let t=e.model.__data.item.uniqueId;Object(o.f)()===t?Object(o.b)():Object(o.j)(t)}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item&&void 0!==e.model.__data.item.uniqueId?e.model.__data.item.uniqueId:void 0;Object(s.hb)(t)}async _setItemEquipped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isEquipped)Object(s.Ob)(i);else if(await Object(s.h)(t))Object(s.Ob)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isAttuned)Object(s.Nb)(i);else if(await Object(s.g)(t))Object(s.Nb)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_quantityChange(e){const t=this.$.grid.getEventContext(e).item;let i=parseInt(t.quantity,10);isNaN(i)&&(i=0),t.storedItem.quantity=i,Object(s.yb)(t)}_addItem(){const e=Object(s.e)({name:""},!1);Object(n.a)(!0),setTimeout(()=>{Object(o.j)(e)},0)}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}_noRarity(e){return!e||"None"===e}_toggleTheme(e){return e.children&&0===e.children.length?"no-children":""}_linkClick(){this.dispatchEvent(new CustomEvent("open-drawer",{bubbles:!0,composed:!0,detail:{viewId:"items"}}))}_isActive(e,t){return e===t}_hasActive(e){return!!e}_clearSelection(){window.history.back()}_isLeaf(e){return!e.containerCapacity&&!e.packContents}static get template(){return a.b`
-      <style include="material-styles fa-styles"></style>
-      <style>
-        :host {
-          display: block;
-          padding: 14px;
-        }
-        [hidden] {
-          display: none !important;
-        }
-        a {
-          color: var(--mdc-theme-secondary);
-        }
-
-        vaadin-grid {
-          margin-bottom: var(--tab-bottom-margin);
-        }
-
-        .heading {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          border-bottom: 1px solid var(--lumo-contrast-10pct);
-        }
-        .reference-link {
-          margin-right: auto;
-        }
-        .mdc-icon-button:hover {
-          color: var(--mdc-theme-primary);
-        }
-
-        .col-wrap {
-          display: flex; 
-          justify-content: space-between;
-          flex-wrap: wrap;
-        }
-
-        .row-wrap {
           width: 100%;
-        }
-
-        .row-wrap > *:not(h2):not(:last-child) {
-          margin-bottom: 10px;
-        }
-
-        .no-content {
-          font-size: 14px;
-          font-style: italic;
-        }
-
-        .item-wrap {
-          display: flex;
-          flex-wrap: nowrap;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 6px;
-          min-height: 28px;
-          border-bottom: 1px solid var(--_lumo-grid-secondary-border-color);
-        }
-        .item-wrap__name-wrap {
-          flex-basis: 100%;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          cursor: pointer;
-          min-height: 28px;
-        }
-        .item-wrap__name-wrap:hover {
-          color: var(--mdc-theme-primary);
-        }
-        .item-wrap__name {
-          font-weight: bold;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          position: relative;
-        }
-        .item-wrap__edited,
-        .item-wrap__from {
-          background-color: var(--mdc-theme-text-disabled-on-background);
-          color: var(--mdc-theme-on-secondary);
-          border: none;
-          border-radius: 4px;
-          outline: none;
-          display: inline-block;
-          justify-content: center;
-          white-space: normal;
-          font-size: 10px;
-          padding: 1px 4px;
-          margin-right: 4px;
-          font-style: italic;
-        }
-        .item-wrap__edited {
-          top: -1px;
-          position: relative;
-          font-weight: normal;
-        }
-        .item-wrap__type {
-          font-style: italic;
-          font-size: 12px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          position: relative;
-        }
-        .item-wrap__type--fromBackground {
-          padding-right: 38px;
-        }
-        .item-wrap__type--fromClass {
-          padding-right: 50px;
-        }
-        .item-wrap__close {
-          font-size: 14px;
-          cursor: pointer;
-          background: none;
-          border: none;
           height: 100%;
-          padding: 11px;
-          margin-left: 5px;
-          color: var(--mdc-theme-on-surface);
-        }
-        .item-wrap__checkboxes {
-          display: flex;
-          flex-direction: column;
-          width: 80px;
-          flex-grow: 0;
-          flex-shrink: 0;
-          margin-left: auto;
-        }
-        .item-wrap__checkboxes > span {
-          cursor: pointer;
-        }
-        .item-wrap__quantity {
-          display: flex;
-          flex-direction: column;
-          width: 80px;
-          flex-grow: 0;
-          flex-shrink: 0;
-          margin-left: auto;
-        }
-        vaadin-integer-field {
-          margin: -13px 0 5px;
-        }
-        vaadin-checkbox {
-          pointer-events: none;
-          font-size: 13px;
-        }
-        vaadin-checkbox.flash-error {
-          color: var(--mdc-theme-error);
-          transition: color 0.2s ease-out;
-          --lumo-contrast-20pct: var(--mdc-theme-error);
-        }
-        vaadin-checkbox.transition-bg {
-          transition: color 0.2s ease-in;
+          outline: none;
+          resize: none;
+          margin: 0;
+          padding: 0 0.25em;
+          border: 0;
+          border-radius: 0;
+          min-width: 0;
+          font: inherit;
+          font-size: 1em;
+          line-height: normal;
+          color: inherit;
+          background-color: transparent;
+          /* Disable default invalid style in Firefox */
+          box-shadow: none;
         }
 
-        .details {
-          font-size: 14px;
-          width: calc(100% - 30px);
-          margin: 0 auto 13px !important;
-          background: var(--lumo-contrast-10pct);
-          border-radius: 4px;
-          padding: 14px;
-        }
-        
-        .details-row {
-          padding-top: 14px;
-          position: relative;
-          padding-bottom: 220px;
+        /* Override styles from <vaadin-input-container> */
+        [part='input-field'] ::slotted(textarea) {
+          align-self: stretch;
+          white-space: pre-wrap;
         }
 
-        .details-wrap {
-          font-size: 14px;
-          background: var(--lumo-contrast-10pct);
-          border-radius: 4px;
-          line-height: 1.5;
-          padding: 14px;
+        [part='input-field'] ::slotted(:not(textarea)) {
+          align-self: flex-start;
         }
 
-        .close-item {
-          margin-left: auto;
-          font-size: 32px;
+        /* Workaround https://bugzilla.mozilla.org/show_bug.cgi?id=1739079 */
+        :host([disabled]) ::slotted(textarea) {
+          user-select: none;
         }
 
-        @media(min-width: 420px) {
-          .heading {
-            justify-content: flex-start;
-          }
-          .reference-link {
-            margin-left: 8px;
-          }
-        }
-
-        @media(min-width: 921px) {
-          .reference-link,
-          .add-item {
-            display: block !important;
-          }
-          .item-wrap[active] {
-            background: var(--lumo-primary-color-10pct);
-          }
-          .row-wrap {
-            width: calc(50% - 10px);
-          }
-          .row-wrap:first-child {
-            margin-bottom: 0;
-          }
-          .details {
-            display: none;
-          }
-          .item-list-row[hidden]{
-            display: block !important;
-          }
-          .details-wrap {
-            display: block;
-          }
-          .close-item {
-            display: none;
+        @keyframes vaadin-text-area-appear {
+          to {
+            opacity: 1;
           }
         }
       </style>
 
-      <div class="heading">
-        <h2>Inventory</h2>
-        <button class="mdc-icon-button reference-link material-icons" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">logout</button>
-        <button class="mdc-icon-button add-item" hidden$="[[_hasActive(activeItem)]]" on-click="_addItem"><dnd-icon icon="plus"></dnd-icon></button>
-        <button class="mdc-icon-button close-item material-icons" hidden$="[[!_hasActive(activeItem)]]" on-click="_clearSelection">close</button>
-      </div>
-      <div class="col-wrap">
-        <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
-          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
-            <vaadin-grid-column>
-              <template>
-                <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
-                  <vaadin-grid-tree-toggle level$=[[level]] leaf="[[_isLeaf(item)]]" expanded="{{expanded}}" theme$=[[_toggleTheme(item)]]></vaadin-grid-tree-toggle>
-                  <div class="item-wrap__name-wrap" on-click="_expandDetails">
-                    <span class="item-wrap__name">[[item.name]]
-                      <span hidden$="[[!item.isEdited]]" class="item-wrap__edited">Edited</span>
-                    </span>
-                    <span class="item-wrap__type">
-                      <span class="item-wrap__from" hidden$="[[!item.fromBackground]]">BG</span>
-                      <span class="item-wrap__from" hidden$="[[!item.fromClass]]">Class</span>
-                      <span>[[item.typeText]]<span hidden$="[[_noRarity(item.rarity, item)]]">, [[item.rarity]]</span></span>
-                    </span>
-                  </div>
-                  <div hidden$="[[item.hasQuantity]]" class="item-wrap__checkboxes">
-                    <span on-click="_setItemEquipped">
-                      <vaadin-checkbox checked="[[item.isEquipped]]" hidden$="[[!item.canEquip]]" label="Equip"></vaadin-checkbox>
-                    </span>
-                    <span on-click="_setItemAttuned">
-                      <vaadin-checkbox checked="[[item.isAttuned]]" hidden$="[[!item.reqAttune]]" label="Attune"></vaadin-checkbox>
-                    </span>
-                  </div>
-                  <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
-                    <vaadin-integer-field value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
-                  </div>
-                  <button class="item-wrap__close" hidden$="[[!isEditMode]]" on-click="_deleteItem"><i class="fas fa-trash"></i></button>
-                </div>
-              </template>
-            </vaadin-grid-column>
-          </vaadin-grid>
+      <div class="vaadin-text-area-container">
+        <div part="label">
+          <slot name="label"></slot>
+          <span part="required-indicator" aria-hidden="true"></span>
         </div>
 
-        <div class="row-wrap details-row" hidden$="[[!_hasActive(activeItem)]]">
-          <div class="details-wrap">          
-            <dnd-character-builder-equipment-item-detail item="{{activeItem}}"></dnd-character-builder-equipment-item-detail>
-          </div>
+        <vaadin-input-container
+          part="input-field"
+          readonly="[[readonly]]"
+          disabled="[[disabled]]"
+          invalid="[[invalid]]"
+          theme$="[[_theme]]"
+          on-scroll="__scrollPositionUpdated"
+        >
+          <slot name="prefix" slot="prefix"></slot>
+          <slot name="textarea"></slot>
+          <slot name="suffix" slot="suffix"></slot>
+          <div id="clearButton" part="clear-button" slot="suffix" aria-hidden="true"></div>
+        </vaadin-input-container>
+
+        <div part="helper-text">
+          <slot name="helper"></slot>
+        </div>
+
+        <div part="error-message">
+          <slot name="error-message"></slot>
         </div>
       </div>
-    `}}customElements.define("dnd-character-builder-equipment",r)}}]);
+
+      <slot name="tooltip"></slot>
+    `}static get properties(){return{maxlength:{type:Number},minlength:{type:Number}}}static get delegateAttrs(){return[...super.delegateAttrs,"maxlength","minlength"]}static get constraints(){return[...super.constraints,"maxlength","minlength"]}get clearElement(){return this.$.clearButton}_onResize(){this.__scrollPositionUpdated()}ready(){super.ready(),this.addController(new v(this,t=>{this._setInputElement(t),this._setFocusElement(t),this.stateTarget=t,this.ariaTarget=t})),this.addController(new p.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this._tooltipController.setPosition("top"),this.addController(this._tooltipController),this.addEventListener("animationend",this._onAnimationEnd),this._inputField=this.shadowRoot.querySelector("[part=input-field]"),this._inputField.addEventListener("wheel",t=>{const e=this._inputField.scrollTop;this._inputField.scrollTop+=t.deltaY,e!==this._inputField.scrollTop&&(t.preventDefault(),this.__scrollPositionUpdated())}),this._updateHeight(),this.__scrollPositionUpdated()}__scrollPositionUpdated(){this._inputField.style.setProperty("--_text-area-vertical-scroll-position","0px"),this._inputField.style.setProperty("--_text-area-vertical-scroll-position",this._inputField.scrollTop+"px")}_onAnimationEnd(t){0===t.animationName.indexOf("vaadin-text-area-appear")&&this._updateHeight()}_valueChanged(t,e){super._valueChanged(t,e),this._updateHeight()}_updateHeight(){const t=this.inputElement,e=this._inputField;if(!t||!e)return;const i=e.scrollTop,n=this.value?this.value.length:0;if(this._oldValueLength>=n){const i=getComputedStyle(e).height,n=getComputedStyle(t).width;e.style.display="block",e.style.height=i,t.style.maxWidth=n,t.style.height="auto"}this._oldValueLength=n;const a=t.scrollHeight;a>t.clientHeight&&(t.style.height=a+"px"),t.style.removeProperty("max-width"),e.style.removeProperty("display"),e.style.removeProperty("height"),e.scrollTop=i}checkValidity(){if(!super.checkValidity())return!1;if(!this.pattern||!this.inputElement.value)return!0;try{const t=this.inputElement.value.match(this.pattern);return!!t&&t[0]===t.input}catch(t){return!0}}}customElements.define(g.is,g);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-area" instead.')}}]);
 //# sourceMappingURL=2.bundle.js.map

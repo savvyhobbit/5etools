@@ -1,10 +1,10 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{166:function(e,t,n){"use strict";n(91),n(42);var i=n(103),a=n(56),r=n(2);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{166:function(e,t,i){"use strict";i(91),i(42);var s=i(102),n=i(56),a=i(2);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-const s=r.b`
+const l=a.b`
   :host {
     width: 8em;
   }
@@ -46,13 +46,13 @@ const s=r.b`
   :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
     --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
   }
-`;Object(r.c)("vaadin-number-field",[a.a,i.a,s],{moduleId:"lumo-number-field"});n(73);var o=n(3),l=n(31),d=n(33),A=n(57),c=n(101),u=n(55),h=n(74);
+`;Object(a.c)("vaadin-number-field",[n.a,s.a,l],{moduleId:"lumo-number-field"});i(72);var r=i(3),o=i(31),d=i(32),c=i(57),u=i(101),h=i(55),p=i(74);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-Object(r.c)("vaadin-number-field",h.a,{moduleId:"vaadin-number-field-styles"});class p extends(Object(c.a)(Object(r.a)(Object(l.a)(o.a)))){static get is(){return"vaadin-number-field"}static get template(){return o.b`
+Object(a.c)("vaadin-number-field",p.a,{moduleId:"vaadin-number-field-styles"});class m extends(Object(u.a)(Object(a.a)(Object(o.a)(r.a)))){static get is(){return"vaadin-number-field"}static get template(){return r.b`
       <style>
         :host([readonly]) [part$='button'] {
           pointer-events: none;
@@ -125,7 +125,7 @@ Object(r.c)("vaadin-number-field",h.a,{moduleId:"vaadin-number-field-styles"});c
       </div>
 
       <slot name="tooltip"></slot>
-    `}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},stepButtonsVisible:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number},max:{type:Number},step:{type:Number}}}static get observers(){return["_stepChanged(step, inputElement)"]}static get delegateProps(){return[...super.delegateProps,"min","max"]}static get constraints(){return[...super.constraints,"min","max","step"]}constructor(){super(),this._setType("number")}get slotStyles(){const e=this.localName;return[...super.slotStyles,`\n        ${e} input[type="number"]::-webkit-outer-spin-button,\n        ${e} input[type="number"]::-webkit-inner-spin-button {\n          -webkit-appearance: none;\n          margin: 0;\n        }\n\n        ${e} input[type="number"] {\n          -moz-appearance: textfield;\n        }\n\n        ${e}[dir='rtl'] input[type="number"]::placeholder {\n          direction: rtl;\n        }\n\n        ${e}[dir='rtl']:not([step-buttons-visible]):not([has-controls]) input[type="number"]::placeholder {\n          text-align: left;\n        }\n      `]}get clearElement(){return this.$.clearButton}ready(){super.ready(),this.addController(new A.a(this,e=>{this._setInputElement(e),this._setFocusElement(e),this.stateTarget=e,this.ariaTarget=e})),this.addController(new u.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this.addController(this._tooltipController),this._tooltipController.setPosition("top")}checkValidity(){return this.inputElement?this.inputElement.checkValidity():!this.invalid}_decreaseButtonTouchend(e){e.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(e){e.preventDefault(),this._increaseValue()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(e){if(this.disabled||this.readonly)return;const t=this.step||1;let n=parseFloat(this.value);this.value?n<this.min?(e=0,n=this.min):n>this.max&&(e=0,n=this.max):0===this.min&&e<0||0===this.max&&e>0||0===this.max&&0===this.min?(e=0,n=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?n=0:this.min>0?(n=this.min,this.max<0&&e<0&&(n=this.max),e=0):this.max<0&&(n=this.max,e<0?e=0:this._getIncrement(1,n-t)>this.max?n-=2*t:n-=t);const i=this._getIncrement(e,n);this.value&&0!==e&&!this._incrementIsInsideTheLimits(e,n)||this._setValue(i)}_setValue(e){this.value=this.inputElement.value=String(parseFloat(e)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(e,t){let n=this.step||1,i=this.min||0;const a=Math.max(this._getMultiplier(t),this._getMultiplier(n),this._getMultiplier(i));n*=a,i*=a;const r=((t=Math.round(t*a))-i)%n;return e>0?(t-r+n)/a:e<0?(t-(r||n))/a:t/a}_getDecimalCount(e){const t=String(e),n=t.indexOf(".");return-1===n?1:t.length-n-1}_getMultiplier(e){if(!isNaN(e))return 10**this._getDecimalCount(e)}_incrementIsInsideTheLimits(e,t){return e<0?null==this.min||this._getIncrement(e,t)>=this.min:e>0?null==this.max||this._getIncrement(e,t)<=this.max:this._getIncrement(e,t)<=this.max&&this._getIncrement(e,t)>=this.min}_allowed(e){const t=e*(this.step||1),n=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(t,n)}_stepChanged(e,t){t&&(t.step=e||"any")}_valueChanged(e,t){e&&isNaN(parseFloat(e))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,t)}_onKeyDown(e){"ArrowUp"===e.key?(e.preventDefault(),this._increaseValue()):"ArrowDown"===e.key&&(e.preventDefault(),this._decreaseValue()),super._onKeyDown(e)}_isStepButtonVisible(e,t){return e||t}_setHasInputValue(e){const t=e.composedPath()[0];this._hasInputValue=t.value.length>0||t.validity.badInput}}customElements.define(p.is,p);
+    `}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},stepButtonsVisible:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number},max:{type:Number},step:{type:Number}}}static get observers(){return["_stepChanged(step, inputElement)"]}static get delegateProps(){return[...super.delegateProps,"min","max"]}static get constraints(){return[...super.constraints,"min","max","step"]}constructor(){super(),this._setType("number")}get slotStyles(){const e=this.localName;return[...super.slotStyles,`\n        ${e} input[type="number"]::-webkit-outer-spin-button,\n        ${e} input[type="number"]::-webkit-inner-spin-button {\n          -webkit-appearance: none;\n          margin: 0;\n        }\n\n        ${e} input[type="number"] {\n          -moz-appearance: textfield;\n        }\n\n        ${e}[dir='rtl'] input[type="number"]::placeholder {\n          direction: rtl;\n        }\n\n        ${e}[dir='rtl']:not([step-buttons-visible]):not([has-controls]) input[type="number"]::placeholder {\n          text-align: left;\n        }\n      `]}get clearElement(){return this.$.clearButton}ready(){super.ready(),this.addController(new c.a(this,e=>{this._setInputElement(e),this._setFocusElement(e),this.stateTarget=e,this.ariaTarget=e})),this.addController(new h.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this.addController(this._tooltipController),this._tooltipController.setPosition("top")}checkValidity(){return this.inputElement?this.inputElement.checkValidity():!this.invalid}_decreaseButtonTouchend(e){e.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(e){e.preventDefault(),this._increaseValue()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(e){if(this.disabled||this.readonly)return;const t=this.step||1;let i=parseFloat(this.value);this.value?i<this.min?(e=0,i=this.min):i>this.max&&(e=0,i=this.max):0===this.min&&e<0||0===this.max&&e>0||0===this.max&&0===this.min?(e=0,i=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?i=0:this.min>0?(i=this.min,this.max<0&&e<0&&(i=this.max),e=0):this.max<0&&(i=this.max,e<0?e=0:this._getIncrement(1,i-t)>this.max?i-=2*t:i-=t);const s=this._getIncrement(e,i);this.value&&0!==e&&!this._incrementIsInsideTheLimits(e,i)||this._setValue(s)}_setValue(e){this.value=this.inputElement.value=String(parseFloat(e)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(e,t){let i=this.step||1,s=this.min||0;const n=Math.max(this._getMultiplier(t),this._getMultiplier(i),this._getMultiplier(s));i*=n,s*=n;const a=((t=Math.round(t*n))-s)%i;return e>0?(t-a+i)/n:e<0?(t-(a||i))/n:t/n}_getDecimalCount(e){const t=String(e),i=t.indexOf(".");return-1===i?1:t.length-i-1}_getMultiplier(e){if(!isNaN(e))return 10**this._getDecimalCount(e)}_incrementIsInsideTheLimits(e,t){return e<0?null==this.min||this._getIncrement(e,t)>=this.min:e>0?null==this.max||this._getIncrement(e,t)<=this.max:this._getIncrement(e,t)<=this.max&&this._getIncrement(e,t)>=this.min}_allowed(e){const t=e*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(t,i)}_stepChanged(e,t){t&&(t.step=e||"any")}_valueChanged(e,t){e&&isNaN(parseFloat(e))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,t)}_onKeyDown(e){"ArrowUp"===e.key?(e.preventDefault(),this._increaseValue()):"ArrowDown"===e.key&&(e.preventDefault(),this._decreaseValue()),super._onKeyDown(e)}_isStepButtonVisible(e,t){return e||t}_setHasInputValue(e){const t=e.composedPath()[0];this._hasInputValue=t.value.length>0||t.validity.badInput}}customElements.define(m.is,m);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
@@ -136,7 +136,7 @@ Object(r.c)("vaadin-number-field",h.a,{moduleId:"vaadin-number-field-styles"});c
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-class g extends p{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(null!=e&&!this.__hasOnlyDigits(e))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${e}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d+$/.test(String(e))}}customElements.define(g.is,g);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},168:function(e,t,n){"use strict";n(125);
+class b extends m{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(null!=e&&!this.__hasOnlyDigits(e))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${e}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d+$/.test(String(e))}}customElements.define(b.is,b);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},167:function(e,t,i){"use strict";i(125);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -147,7 +147,7 @@ class g extends p{static get is(){return"vaadin-integer-field"}constructor(){sup
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-n(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},169:function(e,t,n){"use strict";n(126);
+i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},170:function(e,t,i){"use strict";i(126);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -158,174 +158,200 @@ n(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is 
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-n(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},172:function(e,t,n){"use strict";n(29),n(36),n(20);var i=n(2);Object(i.c)("vaadin-grid-tree-toggle",i.b`
-    :host {
-      --vaadin-grid-tree-toggle-level-offset: 2em;
-      align-items: center;
-      vertical-align: middle;
-      transform: translateX(calc(var(--lumo-space-s) * -1));
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    :host(:not([leaf])) {
-      cursor: default;
-    }
-
-    [part='toggle'] {
-      display: inline-block;
-      font-size: 1.5em;
-      line-height: 1;
-      width: 1em;
-      height: 1em;
-      text-align: center;
-      color: var(--lumo-contrast-50pct);
-      cursor: var(--lumo-clickable-cursor);
-      /* Increase touch target area */
-      padding: calc(1em / 3);
-      margin: calc(1em / -3);
-    }
-
-    :host(:not([dir='rtl'])) [part='toggle'] {
-      margin-right: 0;
-    }
-
-    @media (hover: hover) {
-      :host(:hover) [part='toggle'] {
-        color: var(--lumo-contrast-80pct);
-      }
-    }
-
-    [part='toggle']::before {
-      font-family: 'lumo-icons';
-      display: inline-block;
-      height: 100%;
-    }
-
-    :host(:not([expanded])) [part='toggle']::before {
-      content: var(--lumo-icons-angle-right);
-    }
-
-    :host([expanded]) [part='toggle']::before {
-      content: var(--lumo-icons-angle-right);
-      transform: rotate(90deg);
-    }
-
-    /* Experimental support for hierarchy connectors, using an unsupported selector */
-    :host([theme~='connectors']) #level-spacer {
-      position: relative;
-      z-index: -1;
-      font-size: 1em;
-      height: 1.5em;
-    }
-
-    :host([theme~='connectors']) #level-spacer::before {
-      display: block;
-      content: '';
-      margin-top: calc(var(--lumo-space-m) * -1);
-      height: calc(var(--lumo-space-m) + 3em);
-      background-image: linear-gradient(
-        to right,
-        transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px),
-        var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px)
-      );
-      background-size: var(--vaadin-grid-tree-toggle-level-offset) var(--vaadin-grid-tree-toggle-level-offset);
-      background-position: calc(var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px) 0;
-    }
-
-    /* RTL specific styles */
-
-    :host([dir='rtl']) {
-      margin-left: 0;
-      margin-right: calc(var(--lumo-space-s) * -1);
-    }
-
-    :host([dir='rtl']) [part='toggle'] {
-      margin-left: 0;
-    }
-
-    :host([dir='rtl'][expanded]) [part='toggle']::before {
-      transform: rotate(-90deg);
-    }
-
-    :host([dir='rtl'][theme~='connectors']) #level-spacer::before {
-      background-image: linear-gradient(
-        to left,
-        transparent calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px),
-        var(--lumo-contrast-10pct) calc(var(--vaadin-grid-tree-toggle-level-offset) - 1px)
-      );
-      background-position: calc(100% - (var(--vaadin-grid-tree-toggle-level-offset) / 2 - 2px)) 0;
-    }
-
-    :host([dir='rtl']:not([expanded])) [part='toggle']::before,
-    :host([dir='rtl'][expanded]) [part='toggle']::before {
-      content: var(--lumo-icons-angle-left);
-    }
-  `,{moduleId:"lumo-grid-tree-toggle"});var a=n(3),r=n(25),s=n(108);
-/**
- * @license
- * Copyright (c) 2016 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-const o=document.createElement("template");o.innerHTML="\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n",document.head.appendChild(o.content);class l extends(Object(i.a)(Object(r.a)(a.a))){static get template(){return a.b`
-      <style>
+i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},175:function(e,t,i){"use strict";i.r(t);var s=i(3),n=(i(167),i(170),i(166),i(104),i(103),i(33)),a=i(73),l=i(1);class r extends s.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},abilities:{type:Array}}}constructor(){super(),this.resetOptions=["","Short Rest","Long Rest"]}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(n.T)()),Object(n.q)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(a.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(a.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.q)().removeEventListener("character-selected",this.characterChangeHandler),Object(a.b)().removeEventListener("editModeChange",this.editModeHandler)}updateFromCharacter(e){e&&e.customAbilities?this.set("abilities",Object(l.cloneDeep)(e.customAbilities)):this.set("abilities",[]),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}_addAbility(){Object(n.ob)({name:"",currentSlots:0,slots:1},this.abilities.length),this.isEditMode||Object(a.a)(!0),setTimeout(()=>{const e=this.shadowRoot.querySelectorAll(".ability");e[e.length-1].scrollIntoView()},1)}_deleteAbility(e){const t=e.model.index;Object(n.gb)(t)}_updateAbility(e){const t=e.model.index;Object(n.ob)(e.model.item,t)}_toggleSlot(e){e.preventDefault(),e.stopPropagation();const t=Object(l.findInPath)(".checkbox-wrap",e),i=e.model.item,s=i.slots,a=e.model.index;if("number"!=typeof i.currentSlots&&(i.currentSlots=parseInt(i.currentSlots,10),isNaN(i.currentSlots)&&(i.currentSlots=0)),t){!t.children[0].checked&&i.currentSlots<s?i.currentSlots=i.currentSlots+1:i.currentSlots>0&&(i.currentSlots=i.currentSlots-1)}else i.currentSlots<s?i.currentSlots=i.currentSlots+1:i.currentSlots>0&&(i.currentSlots=i.currentSlots-1);this._setSlotsChecked(i.currentSlots,Object(l.findInPath)(".ability__slots-label-wrap",e)),Object(n.ob)(i,a)}_setSlotsChecked(e,t){const i=t.querySelectorAll("vaadin-checkbox");for(let t=0;t<i.length;t++)i[t].checked=t<e}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}_countToArray(e){const t=[];for(var i=0;i<e;i++)t.push(null);return t}_shortRest(){this.abilities&&this.abilities.forEach((e,t)=>{"Short Rest"===e.reset&&(e.currentSlots=0,Object(n.ob)(e,t))})}_longRest(){this.abilities&&this.abilities.forEach((e,t)=>{"Long Rest"===e.reset&&(e.currentSlots=0,Object(n.ob)(e,t))})}_isSlotChecked(e,t){return t<e}static get template(){return s.b`
+      <style include="material-styles">
         :host {
-          display: inline-flex;
-          align-items: baseline;
-          max-width: 100%;
-
-          /* CSS API for :host */
-          --vaadin-grid-tree-toggle-level-offset: 1em;
-          --_collapsed-icon: '\\e7be\\00a0';
+          display: block;
+          padding: 14px;
         }
-
-        :host([dir='rtl']) {
-          --_collapsed-icon: '\\e7bd\\00a0';
-        }
-
-        :host([hidden]) {
+        [hidden] {
           display: none !important;
         }
 
-        :host(:not([leaf])) {
-          cursor: pointer;
-        }
-
-        #level-spacer,
-        [part='toggle'] {
-          flex: none;
-        }
-
-        #level-spacer {
-          display: inline-block;
-          width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
-        }
-
-        [part='toggle']::before {
-          font-family: 'vaadin-grid-tree-icons';
-          line-height: 1em; /* make icon font metrics not affect baseline */
-        }
-
-        :host(:not([expanded])) [part='toggle']::before {
-          content: var(--_collapsed-icon);
-        }
-
-        :host([expanded]) [part='toggle']::before {
-          content: '\\e7bc\\00a0'; /* icon glyph + single non-breaking space */
-        }
-
-        :host([leaf]) [part='toggle'] {
-          visibility: hidden;
-        }
-
-        slot {
+        h2 {
           display: block;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          font-size: 1.5em;
+          margin-block-start: 0.83em;
+          margin-block-end: 0.83em;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
+          font-weight: bold;
+        }
+
+        h3 {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+
+        .col-wrap {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+
+        .heading {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid var(--lumo-contrast-10pct);
+        }
+        
+        .rest-buttons {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .short-rest { 
+          margin-left: 10px;
+        }
+
+        .abilities {
+          width: 100%;
+          margin-bottom: var(--tab-bottom-margin);
+        }
+
+        .ability {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
+          padding: 8px 0;
+          position: relative;
+          flex-wrap: wrap;
+        }
+
+        [edit-mode] .ability__name {
+          width: 100%;
+        }
+
+        .ability__slots-label-wrap {
+          display: flex;
+          align-items: center;
+        }
+
+        .ability__slots-label-wrap vaadin-integer-field {
+          width: 90px;
+        }
+
+        .col-wrap:not([edit-mode]) .ability__slots-wrap {
+          margin-left: auto;
+        }
+
+        .ability__slots {
+          cursor: pointer;
+          display: flex;
+          padding: 4px;
+          max-width: 120px;
+          flex-wrap: wrap;
+        }
+
+        .ability__slots span {
+          -youbkit-touch-callout: none;
+          -youbkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+
+        .ability__slots-label {
+          padding-left: 8px;
+          width: 64px;
+          text-align: center;
+          font-size: 12px;
+          line-height: 1.4;
+          user-select: none;
+        }
+
+        .ability__slots-label-suffix {
+          user-select: none;
+          font-size: 16px;
+          padding-left: 6px;
+        }
+
+        .ability__delete {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+
+        .add-ability {
+          display: inline-flex;
+        }
+
+        vaadin-checkbox {
+          pointer-events: none;
+        }
+        vaadin-select {
+          margin-right: 10px;
+        }
+
+        @media (min-width: 420px) {
+        }
+
+        @media (min-width: 921px) {
         }
       </style>
 
-      <span id="level-spacer"></span>
-      <span part="toggle"></span>
-      <slot></slot>
-    `}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||Object(s.b)(e.target)||e.target instanceof HTMLLabelElement||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style.setProperty("---level",t)}}customElements.define(l.is,l)}}]);
+      <div class="col-wrap" edit-mode$=[[isEditMode]]>
+        <div class="heading">
+          <h2>Abilities</h2>
+          <div class='rest-buttons'>
+            <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
+            <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
+            <dnd-button class="add-ability" link edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add an Ability" icon="edit"  on-click="_addAbility"></dnd-button>
+          </div>
+        </div>
+
+        <div class="abilities">
+          <template is="dom-repeat" items="[[abilities]]">
+            <div class="ability">
+              <div class="ability__name">
+                <span hidden$="[[isEditMode]]">[[item.name]]<span hidden$="[[_exists(item.name)]]">&lt;No Name&gt;</span></span>
+                <vaadin-text-field theme="label--secondary" hidden$="[[!isEditMode]]" label="Name" value="{{item.name}}" on-change="_updateAbility"></vaadin-text-field>
+              </div>
+
+              <vaadin-select hidden$="[[!isEditMode]]" value="{{item.reset}}" on-change="_updateAbility" label="Reset" >
+                <template>
+                  <vaadin-list-box>
+                    <template is="dom-repeat" items="[[resetOptions]]">
+                      <vaadin-item>[[item]]</vaadin-item>
+                    </template>
+                  </vaadin-list-box>
+                </template>
+              </vaadin-select>
+
+              <div hidden$="[[!isEditMode]]" class="ability__usage">
+                <vaadin-integer-field min="1" value="{{item.slots}}" on-change="_updateAbility" has-controls label="Usages"></vaadin-integer-field>
+              </div>
+              
+              <div class="ability__slots-wrap" hidden$="[[isEditMode]]">
+                <div hidden$="[[item.useNumberField]]" on-click="_toggleSlot" class="ability__slots-label-wrap">
+                  <div class="ability__slots">
+                    <template is='dom-repeat' items='[[_countToArray(item.slots)]]' as="thing">
+                      <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSlotChecked(item.currentSlots, index)]]"></vaadin-checkbox></span>
+                    </template>
+                  </div>
+                  <span class="ability__slots-label">Uses <span hidden$="[[!item.reset]]"> per </span>[[item.reset]]</span>
+                </div>
+
+                <div hidden$="[[!item.useNumberField]]" class="ability__slots-label-wrap">
+                  <div>
+                    <vaadin-integer-field min="0" max="[[item.slots]]" value="{{item.currentSlots}}" on-change="_updateAbility" has-controls></vaadin-integer-field>
+                    <span class="ability__slots-label-suffix"> / [[item.slots]]</span>
+                  </div>
+                  <span class="ability__slots-label">Uses <span hidden$="[[!item.reset]]"> per </span>[[item.reset]]</span>
+                </div>
+              </div>
+              
+              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete" link icon="delete" on-click="_deleteAbility"></dnd-button>
+
+            </div>
+          </template>
+        </div>
+      </div>
+    `}}customElements.define("dnd-character-builder-abilities",r)}}]);
 //# sourceMappingURL=4.bundle.js.map

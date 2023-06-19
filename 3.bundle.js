@@ -1,10 +1,10 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{166:function(e,t,i){"use strict";i(91),i(42);var s=i(103),n=i(56),a=i(2);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{166:function(e,t,i){"use strict";i(91),i(42);var a=i(102),l=i(56),n=i(2);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-const l=a.b`
+const s=n.b`
   :host {
     width: 8em;
   }
@@ -46,13 +46,13 @@ const l=a.b`
   :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
     --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
   }
-`;Object(a.c)("vaadin-number-field",[n.a,s.a,l],{moduleId:"lumo-number-field"});i(73);var r=i(3),o=i(31),d=i(33),c=i(57),u=i(101),h=i(55),p=i(74);
+`;Object(n.c)("vaadin-number-field",[l.a,a.a,s],{moduleId:"lumo-number-field"});i(72);var o=i(3),r=i(31),d=i(32),c=i(57),h=i(101),m=i(55),p=i(74);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-Object(a.c)("vaadin-number-field",p.a,{moduleId:"vaadin-number-field-styles"});class m extends(Object(u.a)(Object(a.a)(Object(o.a)(r.a)))){static get is(){return"vaadin-number-field"}static get template(){return r.b`
+Object(n.c)("vaadin-number-field",p.a,{moduleId:"vaadin-number-field-styles"});class u extends(Object(h.a)(Object(n.a)(Object(r.a)(o.a)))){static get is(){return"vaadin-number-field"}static get template(){return o.b`
       <style>
         :host([readonly]) [part$='button'] {
           pointer-events: none;
@@ -125,7 +125,7 @@ Object(a.c)("vaadin-number-field",p.a,{moduleId:"vaadin-number-field-styles"});c
       </div>
 
       <slot name="tooltip"></slot>
-    `}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},stepButtonsVisible:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number},max:{type:Number},step:{type:Number}}}static get observers(){return["_stepChanged(step, inputElement)"]}static get delegateProps(){return[...super.delegateProps,"min","max"]}static get constraints(){return[...super.constraints,"min","max","step"]}constructor(){super(),this._setType("number")}get slotStyles(){const e=this.localName;return[...super.slotStyles,`\n        ${e} input[type="number"]::-webkit-outer-spin-button,\n        ${e} input[type="number"]::-webkit-inner-spin-button {\n          -webkit-appearance: none;\n          margin: 0;\n        }\n\n        ${e} input[type="number"] {\n          -moz-appearance: textfield;\n        }\n\n        ${e}[dir='rtl'] input[type="number"]::placeholder {\n          direction: rtl;\n        }\n\n        ${e}[dir='rtl']:not([step-buttons-visible]):not([has-controls]) input[type="number"]::placeholder {\n          text-align: left;\n        }\n      `]}get clearElement(){return this.$.clearButton}ready(){super.ready(),this.addController(new c.a(this,e=>{this._setInputElement(e),this._setFocusElement(e),this.stateTarget=e,this.ariaTarget=e})),this.addController(new h.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this.addController(this._tooltipController),this._tooltipController.setPosition("top")}checkValidity(){return this.inputElement?this.inputElement.checkValidity():!this.invalid}_decreaseButtonTouchend(e){e.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(e){e.preventDefault(),this._increaseValue()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(e){if(this.disabled||this.readonly)return;const t=this.step||1;let i=parseFloat(this.value);this.value?i<this.min?(e=0,i=this.min):i>this.max&&(e=0,i=this.max):0===this.min&&e<0||0===this.max&&e>0||0===this.max&&0===this.min?(e=0,i=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?i=0:this.min>0?(i=this.min,this.max<0&&e<0&&(i=this.max),e=0):this.max<0&&(i=this.max,e<0?e=0:this._getIncrement(1,i-t)>this.max?i-=2*t:i-=t);const s=this._getIncrement(e,i);this.value&&0!==e&&!this._incrementIsInsideTheLimits(e,i)||this._setValue(s)}_setValue(e){this.value=this.inputElement.value=String(parseFloat(e)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(e,t){let i=this.step||1,s=this.min||0;const n=Math.max(this._getMultiplier(t),this._getMultiplier(i),this._getMultiplier(s));i*=n,s*=n;const a=((t=Math.round(t*n))-s)%i;return e>0?(t-a+i)/n:e<0?(t-(a||i))/n:t/n}_getDecimalCount(e){const t=String(e),i=t.indexOf(".");return-1===i?1:t.length-i-1}_getMultiplier(e){if(!isNaN(e))return 10**this._getDecimalCount(e)}_incrementIsInsideTheLimits(e,t){return e<0?null==this.min||this._getIncrement(e,t)>=this.min:e>0?null==this.max||this._getIncrement(e,t)<=this.max:this._getIncrement(e,t)<=this.max&&this._getIncrement(e,t)>=this.min}_allowed(e){const t=e*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(t,i)}_stepChanged(e,t){t&&(t.step=e||"any")}_valueChanged(e,t){e&&isNaN(parseFloat(e))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,t)}_onKeyDown(e){"ArrowUp"===e.key?(e.preventDefault(),this._increaseValue()):"ArrowDown"===e.key&&(e.preventDefault(),this._decreaseValue()),super._onKeyDown(e)}_isStepButtonVisible(e,t){return e||t}_setHasInputValue(e){const t=e.composedPath()[0];this._hasInputValue=t.value.length>0||t.validity.badInput}}customElements.define(m.is,m);
+    `}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},stepButtonsVisible:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number},max:{type:Number},step:{type:Number}}}static get observers(){return["_stepChanged(step, inputElement)"]}static get delegateProps(){return[...super.delegateProps,"min","max"]}static get constraints(){return[...super.constraints,"min","max","step"]}constructor(){super(),this._setType("number")}get slotStyles(){const e=this.localName;return[...super.slotStyles,`\n        ${e} input[type="number"]::-webkit-outer-spin-button,\n        ${e} input[type="number"]::-webkit-inner-spin-button {\n          -webkit-appearance: none;\n          margin: 0;\n        }\n\n        ${e} input[type="number"] {\n          -moz-appearance: textfield;\n        }\n\n        ${e}[dir='rtl'] input[type="number"]::placeholder {\n          direction: rtl;\n        }\n\n        ${e}[dir='rtl']:not([step-buttons-visible]):not([has-controls]) input[type="number"]::placeholder {\n          text-align: left;\n        }\n      `]}get clearElement(){return this.$.clearButton}ready(){super.ready(),this.addController(new c.a(this,e=>{this._setInputElement(e),this._setFocusElement(e),this.stateTarget=e,this.ariaTarget=e})),this.addController(new m.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this.addController(this._tooltipController),this._tooltipController.setPosition("top")}checkValidity(){return this.inputElement?this.inputElement.checkValidity():!this.invalid}_decreaseButtonTouchend(e){e.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(e){e.preventDefault(),this._increaseValue()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(e){if(this.disabled||this.readonly)return;const t=this.step||1;let i=parseFloat(this.value);this.value?i<this.min?(e=0,i=this.min):i>this.max&&(e=0,i=this.max):0===this.min&&e<0||0===this.max&&e>0||0===this.max&&0===this.min?(e=0,i=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?i=0:this.min>0?(i=this.min,this.max<0&&e<0&&(i=this.max),e=0):this.max<0&&(i=this.max,e<0?e=0:this._getIncrement(1,i-t)>this.max?i-=2*t:i-=t);const a=this._getIncrement(e,i);this.value&&0!==e&&!this._incrementIsInsideTheLimits(e,i)||this._setValue(a)}_setValue(e){this.value=this.inputElement.value=String(parseFloat(e)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(e,t){let i=this.step||1,a=this.min||0;const l=Math.max(this._getMultiplier(t),this._getMultiplier(i),this._getMultiplier(a));i*=l,a*=l;const n=((t=Math.round(t*l))-a)%i;return e>0?(t-n+i)/l:e<0?(t-(n||i))/l:t/l}_getDecimalCount(e){const t=String(e),i=t.indexOf(".");return-1===i?1:t.length-i-1}_getMultiplier(e){if(!isNaN(e))return 10**this._getDecimalCount(e)}_incrementIsInsideTheLimits(e,t){return e<0?null==this.min||this._getIncrement(e,t)>=this.min:e>0?null==this.max||this._getIncrement(e,t)<=this.max:this._getIncrement(e,t)<=this.max&&this._getIncrement(e,t)>=this.min}_allowed(e){const t=e*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(t,i)}_stepChanged(e,t){t&&(t.step=e||"any")}_valueChanged(e,t){e&&isNaN(parseFloat(e))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,t)}_onKeyDown(e){"ArrowUp"===e.key?(e.preventDefault(),this._increaseValue()):"ArrowDown"===e.key&&(e.preventDefault(),this._decreaseValue()),super._onKeyDown(e)}_isStepButtonVisible(e,t){return e||t}_setHasInputValue(e){const t=e.composedPath()[0];this._hasInputValue=t.value.length>0||t.validity.badInput}}customElements.define(u.is,u);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
@@ -136,7 +136,7 @@ Object(a.c)("vaadin-number-field",p.a,{moduleId:"vaadin-number-field-styles"});c
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-class b extends m{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(null!=e&&!this.__hasOnlyDigits(e))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${e}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d+$/.test(String(e))}}customElements.define(b.is,b);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},168:function(e,t,i){"use strict";i(125);
+class g extends u{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(e,t){if(""!==e&&!this.__isInteger(e))return console.warn(`Trying to set non-integer value "${e}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(e,t)}_stepChanged(e,t){if(null!=e&&!this.__hasOnlyDigits(e))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${e}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(e,t)}__isInteger(e){return/^(-\d)?\d*$/.test(String(e))}__hasOnlyDigits(e){return/^\d+$/.test(String(e))}}customElements.define(g.is,g);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},167:function(e,t,i){"use strict";i(125);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -147,211 +147,351 @@ class b extends m{static get is(){return"vaadin-integer-field"}constructor(){sup
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},169:function(e,t,i){"use strict";i(126);
-/**
- * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-/**
- * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},174:function(e,t,i){"use strict";i.r(t);var s=i(3),n=(i(168),i(169),i(166),i(104),i(102),i(32)),a=i(72),l=i(1);class r extends s.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},abilities:{type:Array}}}constructor(){super(),this.resetOptions=["","Short Rest","Long Rest"]}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(n.S)()),Object(n.q)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(a.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(a.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.q)().removeEventListener("character-selected",this.characterChangeHandler),Object(a.b)().removeEventListener("editModeChange",this.editModeHandler)}updateFromCharacter(e){e&&e.customAbilities?this.set("abilities",Object(l.cloneDeep)(e.customAbilities)):this.set("abilities",[]),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}_addAbility(){Object(n.mb)({name:"",currentSlots:0,slots:1},this.abilities.length),this.isEditMode||Object(a.a)(!0),setTimeout(()=>{const e=this.shadowRoot.querySelectorAll(".ability");e[e.length-1].scrollIntoView()},1)}_deleteAbility(e){const t=e.model.index;Object(n.eb)(t)}_updateAbility(e){const t=e.model.index;Object(n.mb)(e.model.item,t)}_toggleSlot(e){e.preventDefault(),e.stopPropagation();const t=Object(l.findInPath)(".checkbox-wrap",e),i=e.model.item,s=i.slots,a=e.model.index;if("number"!=typeof i.currentSlots&&(i.currentSlots=parseInt(i.currentSlots,10),isNaN(i.currentSlots)&&(i.currentSlots=0)),t){!t.children[0].checked&&i.currentSlots<s?i.currentSlots=i.currentSlots+1:i.currentSlots>0&&(i.currentSlots=i.currentSlots-1)}else i.currentSlots<s?i.currentSlots=i.currentSlots+1:i.currentSlots>0&&(i.currentSlots=i.currentSlots-1);this._setSlotsChecked(i.currentSlots,Object(l.findInPath)(".ability__slots-label-wrap",e)),Object(n.mb)(i,a)}_setSlotsChecked(e,t){const i=t.querySelectorAll("vaadin-checkbox");for(let t=0;t<i.length;t++)i[t].checked=t<e}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}_countToArray(e){const t=[];for(var i=0;i<e;i++)t.push(null);return t}_shortRest(){this.abilities&&this.abilities.forEach((e,t)=>{"Short Rest"===e.reset&&(e.currentSlots=0,Object(n.mb)(e,t))})}_longRest(){this.abilities&&this.abilities.forEach((e,t)=>{"Long Rest"===e.reset&&(e.currentSlots=0,Object(n.mb)(e,t))})}_isSlotChecked(e,t){return t<e}static get template(){return s.b`
+i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},169:function(e,t,i){"use strict";var a=i(3),l=i(165);class n extends a.a{static get properties(){return{initialValue:{type:Boolean,value:!1,observer:"initValueChange"},checked:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0},label:{type:String,value:""},secondaryLabel:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}initValueChange(){this.switchEl&&(this.switchEl.checked=this.initialValue,this.checked=this.initialValue)}ready(){super.ready(),setTimeout(()=>{this.switchEl=new l.a(this.shadowRoot.querySelector(".mdc-switch")),this.switchEl.checked=this.initialValue,this.checked=this.initialValue},10)}connectedCallback(){super.connectedCallback(),this.switchEventHandler=()=>{this.checked=this.switchEl.checked,this.dispatchEvent(new CustomEvent("switch-change",{detail:{checked:this.switchEl.checked},bubbles:!0,composed:!0}))},this.shadowRoot.querySelector(".mdc-switch__native-control").addEventListener("change",this.switchEventHandler)}disconnectedCallback(){super.disconnectedCallback(),this.shadowRoot.querySelector(".mdc-switch__native-control").removeEventListener("change",this.switchEventHandler)}_switchClasses(e){return e?"mdc-switch mdc-list-item__meta mdc-switch--disabled":"mdc-switch mdc-list-item__meta"}static get template(){return a.b`
       <style include="material-styles">
         :host {
-          display: block;
-          padding: 14px;
-        }
-        [hidden] {
-          display: none !important;
-        }
-
-        h2 {
-          display: block;
-          font-size: 1.5em;
-          margin-block-start: 0.83em;
-          margin-block-end: 0.83em;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-          font-weight: bold;
-        }
-
-        h3 {
-          font-size: 24px;
-          font-weight: bold;
-          margin-bottom: 8px;
-        }
-
-        .col-wrap {
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
-        }
-
-        .heading {
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          border-bottom: 1px solid var(--lumo-contrast-10pct);
-        }
-        
-        .rest-buttons {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
-
-        .short-rest { 
-          margin-left: 10px;
-        }
-
-        .abilities {
-          width: 100%;
-          margin-bottom: var(--tab-bottom-margin);
-        }
-
-        .ability {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
-          padding: 8px 0;
-          position: relative;
-          flex-wrap: wrap;
-        }
-
-        [edit-mode] .ability__name {
-          width: 100%;
-        }
-
-        .ability__slots-label-wrap {
-          display: flex;
-          align-items: center;
-        }
-
-        .ability__slots-label-wrap vaadin-integer-field {
-          width: 90px;
-        }
-
-        .col-wrap:not([edit-mode]) .ability__slots-wrap {
-          margin-left: auto;
-        }
-
-        .ability__slots {
-          cursor: pointer;
-          display: flex;
-          padding: 4px;
-          max-width: 120px;
-          flex-wrap: wrap;
-        }
-
-        .ability__slots span {
-          -youbkit-touch-callout: none;
-          -youbkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-
-        .ability__slots-label {
-          padding-left: 8px;
-          width: 64px;
-          text-align: center;
-          font-size: 12px;
-          line-height: 1.4;
-          user-select: none;
-        }
-
-        .ability__slots-label-suffix {
-          user-select: none;
-          font-size: 16px;
-          padding-left: 6px;
-        }
-
-        .ability__delete {
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
-
-        .add-ability {
           display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
         }
-
-        vaadin-checkbox {
-          pointer-events: none;
+        :host([checked]) label.secondary {
+          color: var(--mdc-theme-primary);
         }
-        vaadin-select {
-          margin-right: 10px;
+        :host([checked]) label:not(.secondary) {
+          color: var(--lumo-secondary-text-color);
         }
-
-        @media (min-width: 420px) {
+        label {
+          color: var(--mdc-theme-primary);
+          font-weight: 500;
+          font-size: var(--lumo-font-size-s);
+          margin-right: 16px;
+          transition: color 0.2s;
         }
-
-        @media (min-width: 921px) {
+        label.secondary {
+          color: var(--lumo-secondary-text-color);
+          margin-right: 0;
+          margin-left: 16px;
+        }
+        :host([extra-padding]) label.secondary {
+          margin-left: 50px;
         }
       </style>
+      
+      <label for="switch">[[label]]</label>
+      <div class$="[[_switchClasses(disabled)]]">
+        <div class="mdc-switch__track"></div>
+        <div class="mdc-switch__thumb-underlay">
+          <div class="mdc-switch__thumb">
+            <input type="checkbox" id="switch" class="mdc-switch__native-control" role="switch" disabled$="[[disabled]]" />
+          </div>
+        </div>
+      </div>
+      <label class="secondary">[[secondaryLabel]]</label>
+    `}}customElements.define("dnd-switch",n)},180:function(e,t,i){"use strict";i.r(t);var a=i(3),l=(i(123),i(167),i(166),i(103),i(1)),n=i(33),s=i(0),o=i(73),r=i(105);i(169);class d extends a.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},customRolls:{type:Array},rolls:{type:Array}}}connectedCallback(){super.connectedCallback(),this.damageTypes=s.k,this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(n.T)()),Object(n.q)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(o.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(o.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(n.q)().removeEventListener("character-selected",this.characterChangeHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler)}async updateFromCharacter(e){const t=await Object(n.ab)(e),i=Object(n.I)(e);this.customRolls=i,this.rolls=t.concat(i),console.error("rolls",this.rolls),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}__exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}__abs(e){return e>=0?"+"+e:e}_makeRoll(e){if(!this.isEditMode){let t=e.model.__data.item;t.noHitRoll||Object(r.d)(t.name+" (to hit)",t.toHit,this.$.advMod.checked,this.$.disadvMod.checked),t.damages.forEach((e,i)=>{Object(r.b)(`${t.name} (${e.type} damage)`,e.roll),setTimeout(()=>{},500*(i+1))})}}_rollChangeHandler(e){const t=Object(l.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10);Object(n.vb)(this.customRolls[i],i)}_addRoll(){Object(n.vb)({name:"",toHit:0,noHitRoll:!1,damages:[{roll:"",type:""}]},this.customRolls.length),this.isEditMode||Object(o.a)(!0),setTimeout(()=>{const e=this.shadowRoot.querySelectorAll(".roll");e[e.length-1].scrollIntoView()},1)}_removeRoll(e){const t=Object(l.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10);Object(n.hb)(i)}_addDamage(e){const t=Object(l.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10),a=this.customRolls[i];a.damages.push({roll:"",type:""}),Object(n.vb)(a,i)}_removeDamage(e){const t=Object(l.findInPath)(".roll",e).getAttribute("index"),i=parseInt(t,10),a=Object(l.findInPath)(".roll__damage",e).getAttribute("index"),s=parseInt(a,10);Object(n.ib)(i,s)}_or(e,t){return e||t}_orNot(e,t){return e||!t}_isTruthy(e){return!!e}_modChange(e){"advMod"===e.currentTarget.id?this.$.disadvMod.checked=!1:this.$.advMod.checked=!1}_hideEditRoll(e,t){return!t||"custom"!==e.type}_hideWarning(e){return"weapon"!==e.type||e.isEquipped&&e.isProficient}_equal(e,t){return e===t}_exists(){for(let e of arguments)if(e&&(e.constructor!==Object||Object.entries(e).length>0)&&(!Array.isArray(e)||e.length>0))return!0;return!1}static get template(){return a.b`
+    <style include="material-styles">
+      body {}
+      :host {
+        display: block;
+        padding: 14px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      
+      .col-wrap {
+        display: flex; 
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: var(--tab-bottom-margin);
+      }
+      .row-wrap {
+        width: 100%;
+      }
 
-      <div class="col-wrap" edit-mode$=[[isEditMode]]>
+      .heading {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--lumo-contrast-10pct);
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        margin-bottom: 24px;
+      }
+      h3 {
+        margin: 2px 0 4px 0;
+        font-size: 20px;
+        font-weight: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--mdc-theme-primary);
+      }
+
+      .rolls__add-button {
+        margin-left: 16px;
+      }
+      .rolls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .roll {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 4px 8px;
+        margin-bottom: 16px;
+        background: var(--lumo-contrast-10pct);
+        height: min-content;
+        width: calc(100% - 16px);
+        position: relative;
+      }
+
+      [edit-mode] .roll {
+        padding: 16px;
+      }
+
+      .roll-header {
+        display: flex;
+        justify-content: space-between;
+      }
+      .roll-header dnd-button {
+        margin-top: 25px;
+      }
+      .roll-header vaadin-text-field {
+        padding-top: 0;
+        margin-top: 4px;
+        flex-grow: 1;
+        margin-right: 16px;
+      }
+      .roll__label {
+        font-size: 12px;
+        background: var(--lumo-contrast-10pct);
+        line-height: 1;
+        border-radius: 4px;
+        position: relative;
+        top: -4px;
+        right: -8px;
+        height: 20px;
+        padding: 0 6px;
+        display: flex;
+        align-items: center;
+        text-transform: capitalize;
+      }
+      .roll__warning {
+        font-size: 12px;
+        line-height: 1.2;
+        border-radius: 4px;
+        position: relative;
+        bottom: -4px;
+        right: -8px;
+        padding: 3px 6px;
+        display: flex;
+        align-items: center;
+        text-transform: capitalize;
+        flex-direction: column;
+        color: var(--lumo-error-text-color);
+        background: var(--lumo-error-color-10pct);
+        height: fit-content;
+        margin-top: auto;
+        white-space: nowrap;
+        margin-left: auto;
+      }
+      .roll__to-hit {
+        display: flex;
+      }
+      .roll__to-hit dnd-switch {
+        margin: 0 auto;
+        padding: 26px 20px 20px;
+      }
+      .roll__to-hit vaadin-integer-field {
+        width: auto;
+        min-width: 6rem;
+        max-width: 8rem;
+      }
+
+      .roll-footer {
+        display: flex;
+        flex-direction: column;
+        font-size: 15px;
+        line-height: 1.4;
+        margin-top: auto;
+      }
+      [not-edit-mode] .roll-footer {
+        flex-direction: row;
+      }
+      .roll__damages {
+        display: flex;
+        flex-direction: column;
+      }
+      .roll__damage {
+        display: flex;
+      }
+      [not-edit-mode] .roll__damage {
+        flex-wrap: wrap;
+      }
+      .roll__damage vaadin-text-field,
+      .roll__damage vaadin-select {
+        max-width: 100%;
+      }
+      .roll__damage-type {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .roll-footer__wrap {
+        overflow: hidden;
+      }
+      .roll__damage-roll--edit,
+      .roll__damage-type--edit {
+        width: calc(50% - 40px);
+      }
+      .roll__damage-roll--edit {
+        margin: 0 16px;
+      }
+      .roll__damage-remove {
+        margin: auto -5px 4px;
+      }
+      .roll__damage-damage {
+        display: none;
+      }
+      .rolls__toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .rolls__toolbar h4 {
+        width: 100%;
+        margin: 0;
+      }
+      .rolls__toolbar-reset-mods {
+        display: inline-flex;
+      }
+      .roll__add-damage {
+        width: min-content;
+        margin: 8px auto 0;
+      }
+
+      @media(min-width: 420px) {
+        [not-edit-mode] .roll {
+          width: calc(50% - 24px);
+          height: auto;
+        }
+      }
+
+      @media(min-width: 700px) {
+        [not-edit-mode] .roll {
+          width: calc(33% - 24px);
+        }
+        [edit-mode] .roll {
+          width: calc(50% - 39px);
+        }
+      }
+
+      @media(min-width: 921px) {
+        .roll__damage-damage {
+          display: inline;
+        }
+      }
+
+      @media(min-width: 1321px) {
+        [not-edit-mode] .roll {
+          width: calc(33.3% - 25px);
+        }
+      }
+    </style>
+    
+    <div class="col-wrap" edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" >
+      <div class="row-wrap">
         <div class="heading">
-          <h2>Abilities</h2>
-          <div class='rest-buttons'>
-            <!-- <dnd-button class="long-rest" label="Long Rest" on-click="_longRest"></dnd-button>
-            <dnd-button class="short-rest" label="Short Rest" on-click="_shortRest"></dnd-button> -->
-            <dnd-button class="add-ability" link edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add an Ability" icon="edit"  on-click="_addAbility"></dnd-button>
+          <h2>Rolls</h2>
+          <dnd-button class="rolls__add-button" link edit-mode$="[[isEditMode]]" not-edit-mode$="[[!isEditMode]]" label="Add a Roll" icon="edit"  on-click="_addRoll"></dnd-button>
+        </div>
+
+        <div hidden$="[[isEditMode]]" class="rolls__toolbar">
+          <h4>Roll Modifiers:</h4>
+          <div>
+            <vaadin-checkbox id='advMod' on-change="_modChange">Advantage</vaadin-checkbox>
+            <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
           </div>
         </div>
 
-        <div class="abilities">
-          <template is="dom-repeat" items="[[abilities]]">
-            <div class="ability">
-              <div class="ability__name">
-                <span hidden$="[[isEditMode]]">[[item.name]]<span hidden$="[[_exists(item.name)]]">&lt;No Name&gt;</span></span>
-                <vaadin-text-field theme="label--secondary" hidden$="[[!isEditMode]]" label="Name" value="{{item.name}}" on-change="_updateAbility"></vaadin-text-field>
+        <div class="rolls rolls--custom">
+          <template is="dom-repeat" items="[[rolls]]">
+            <div hidden$="[[isEditMode]]" class="roll" on-click="_makeRoll" index$="[[index]]">
+              <div class="roll-header">
+                <h3>[[item.name]]<span hidden$="[[_isTruthy(item.name)]]">&lt;No Name&gt;</span></h3>
+                <span class="roll__label">[[item.type]]</span>
               </div>
 
-              <vaadin-select hidden$="[[!isEditMode]]" value="{{item.reset}}" on-change="_updateAbility" label="Reset" >
-                <template>
-                  <vaadin-list-box>
-                    <template is="dom-repeat" items="[[resetOptions]]">
-                      <vaadin-item>[[item]]</vaadin-item>
-                    </template>
-                  </vaadin-list-box>
-                </template>
-              </vaadin-select>
+              <div class="roll-footer">
+                <div class="roll-footer__wrap">
+                  <div class="roll__to-hit">
+                    <span hidden$="[[_or(item.noHitRoll, isEditMode)]]"><span>[[__abs(item.toHit)]]</span> to hit</span>
+                  </div>
 
-              <div hidden$="[[!isEditMode]]" class="ability__usage">
-                <vaadin-integer-field min="1" value="{{item.slots}}" on-change="_updateAbility" has-controls label="Usages"></vaadin-integer-field>
-              </div>
-              
-              <div class="ability__slots-wrap" hidden$="[[isEditMode]]">
-                <div hidden$="[[item.useNumberField]]" on-click="_toggleSlot" class="ability__slots-label-wrap">
-                  <div class="ability__slots">
-                    <template is='dom-repeat' items='[[_countToArray(item.slots)]]' as="thing">
-                      <span class="checkbox-wrap"><vaadin-checkbox checked="[[_isSlotChecked(item.currentSlots, index)]]"></vaadin-checkbox></span>
+                  <div class="roll__damages">
+                    <template is="dom-repeat" items="[[item.damages]]" as="damage">
+                      <div class="roll__damage" index$="[[index]]">
+                        <span class="roll__damage-roll">[[damage.roll]]</span>
+                        <span class="roll__damage-type">&nbsp;[[damage.type]]<span class="roll__damage-damage"> damage</span></span>
+                      </div>
                     </template>
                   </div>
-                  <span class="ability__slots-label">Uses <span hidden$="[[!item.reset]]"> per </span>[[item.reset]]</span>
                 </div>
 
-                <div hidden$="[[!item.useNumberField]]" class="ability__slots-label-wrap">
-                  <div>
-                    <vaadin-integer-field min="0" max="[[item.slots]]" value="{{item.currentSlots}}" on-change="_updateAbility" has-controls></vaadin-integer-field>
-                    <span class="ability__slots-label-suffix"> / [[item.slots]]</span>
-                  </div>
-                  <span class="ability__slots-label">Uses <span hidden$="[[!item.reset]]"> per </span>[[item.reset]]</span>
+                <div class="roll__warning" hidden$="[[_hideWarning(item)]]">
+                  <div class="roll__not-equipped" hidden$="[[item.isEquipped]]">Not Equipped</div>
+                  <div class="roll__not-proficient" hidden$="[[item.isProficient]]">Not Proficient</div>
                 </div>
               </div>
-              
-              <dnd-button hidden$="[[!isEditMode]]" class="ability__delete" link icon="delete" on-click="_deleteAbility"></dnd-button>
+            </div>
 
+            <div class="roll" on-click="_makeRoll" index$="[[item.customIndex]]" hidden$="[[_hideEditRoll(item, isEditMode)]]">
+              <div class="roll-header">
+                <vaadin-text-field theme="label--secondary" value="{{item.name}}" on-change="_rollChangeHandler" label="Name"></vaadin-text-field>
+                <dnd-button icon="delete" class="icon-only" on-click="_removeRoll"></dnd-button>
+              </div>
+
+              <div class="roll-footer">
+                <div class="roll__to-hit">
+                  <vaadin-integer-field theme="label--secondary" hidden$="[[_orNot(item.noHitRoll, isEditMode)]]" value="{{item.toHit}}" on-change="_rollChangeHandler" min="-20" max="20" has-controls label="To Hit"></vaadin-integer-field>
+                  <dnd-switch label='Attack Roll' secondary-label='Damage Only' initial-value="[[item.noHitRoll]]" checked={{item.noHitRoll}} on-switch-change="_rollChangeHandler" ></dnd-switch>
+                </div>
+
+                <div class="roll__damages">
+                  <template is="dom-repeat" items="[[item.damages]]" as="damage">
+                    <div class="roll__damage" index$="[[index]]">
+                      <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove'></dnd-button>
+                      <div class="roll__damage-roll--edit">
+                        <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_rollChangeHandler" label="Damage Roll"></vaadin-text-field>
+                      </div>
+                      <div class="roll__damage-type--edit">
+                        <vaadin-select theme="label--secondary" value="{{damage.type}}" on-change="_rollChangeHandler" label="Damage Type" >
+                          <template>
+                            <vaadin-list-box>
+                              <template is="dom-repeat" items="[[damageTypes]]">
+                                <vaadin-item>[[item]]</vaadin-item>
+                              </template>
+                            </vaadin-list-box>
+                          </template>
+                        </vaadin-select>
+                      </div>
+                    </div>
+                  </template>
+                  <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+                </div>
+              </div>
             </div>
           </template>
         </div>
+
       </div>
-    `}}customElements.define("dnd-character-builder-abilities",r)}}]);
+    </div>
+    `}}customElements.define("dnd-character-builder-rolls",d)}}]);
 //# sourceMappingURL=3.bundle.js.map

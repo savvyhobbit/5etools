@@ -1,317 +1,309 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{166:function(t,e,i){"use strict";i(91),i(42);var n=i(103),a=i(56),s=i(2);
-/**
- * @license
- * Copyright (c) 2021 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-const r=s.b`
-  :host {
-    width: 8em;
-  }
-
-  :host([step-buttons-visible]:not([theme~='align-right'])) ::slotted(input),
-  :host([has-controls]:not([theme~='align-right'])) ::slotted(input) {
-    text-align: center;
-  }
-
-  [part$='button'][disabled] {
-    opacity: 0.2;
-  }
-
-  :host([step-buttons-visible]) [part='input-field'],
-  :host([has-controls]) [part='input-field'] {
-    padding: 0;
-  }
-
-  [part\$='button'] {
-    cursor: pointer;
-    font-size: var(--lumo-icon-size-s);
-    width: 1.6em;
-    height: 1.6em;
-  }
-
-  [part\$='button']::before {
-    margin-top: 0.3em;
-  }
-
-  [part='decrease-button']::before {
-    content: var(--lumo-icons-minus);
-  }
-
-  [part='increase-button']::before {
-    content: var(--lumo-icons-plus);
-  }
-
-  /* RTL specific styles */
-  :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
-    --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
-  }
-`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(73);var l=i(3),o=i(31),d=i(33),u=i(57),p=i(101),h=i(55),c=i(74);
-/**
- * @license
- * Copyright (c) 2021 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-Object(s.c)("vaadin-number-field",c.a,{moduleId:"vaadin-number-field-styles"});class m extends(Object(p.a)(Object(s.a)(Object(o.a)(l.a)))){static get is(){return"vaadin-number-field"}static get template(){return l.b`
-      <style>
-        :host([readonly]) [part$='button'] {
-          pointer-events: none;
-        }
-
-        [part='decrease-button']::before {
-          content: '−';
-        }
-
-        [part='increase-button']::before {
-          content: '+';
-        }
-
-        [part='decrease-button'],
-        [part='increase-button'] {
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          user-select: none;
-        }
-
-        :host([dir='rtl']) [part='input-field'] {
-          direction: ltr;
-        }
-      </style>
-
-      <div class="vaadin-field-container">
-        <div part="label">
-          <slot name="label"></slot>
-          <span part="required-indicator" aria-hidden="true" on-click="focus"></span>
-        </div>
-
-        <vaadin-input-container
-          part="input-field"
-          readonly="[[readonly]]"
-          disabled="[[disabled]]"
-          invalid="[[invalid]]"
-          theme$="[[_theme]]"
-        >
-          <div
-            disabled$="[[!_allowed(-1, value, min, max, step)]]"
-            part="decrease-button"
-            on-click="_decreaseValue"
-            on-touchend="_decreaseButtonTouchend"
-            hidden$="[[!_isStepButtonVisible(hasControls, stepButtonsVisible)]]"
-            aria-hidden="true"
-            slot="prefix"
-          ></div>
-          <slot name="prefix" slot="prefix"></slot>
-          <slot name="input"></slot>
-          <slot name="suffix" slot="suffix"></slot>
-          <div id="clearButton" part="clear-button" slot="suffix" aria-hidden="true"></div>
-          <div
-            disabled$="[[!_allowed(1, value, min, max, step)]]"
-            part="increase-button"
-            on-click="_increaseValue"
-            on-touchend="_increaseButtonTouchend"
-            hidden$="[[!_isStepButtonVisible(hasControls, stepButtonsVisible)]]"
-            aria-hidden="true"
-            slot="suffix"
-          ></div>
-        </vaadin-input-container>
-
-        <div part="helper-text">
-          <slot name="helper"></slot>
-        </div>
-
-        <div part="error-message">
-          <slot name="error-message"></slot>
-        </div>
-      </div>
-
-      <slot name="tooltip"></slot>
-    `}static get properties(){return{hasControls:{type:Boolean,value:!1,reflectToAttribute:!0},stepButtonsVisible:{type:Boolean,value:!1,reflectToAttribute:!0},min:{type:Number},max:{type:Number},step:{type:Number}}}static get observers(){return["_stepChanged(step, inputElement)"]}static get delegateProps(){return[...super.delegateProps,"min","max"]}static get constraints(){return[...super.constraints,"min","max","step"]}constructor(){super(),this._setType("number")}get slotStyles(){const t=this.localName;return[...super.slotStyles,`\n        ${t} input[type="number"]::-webkit-outer-spin-button,\n        ${t} input[type="number"]::-webkit-inner-spin-button {\n          -webkit-appearance: none;\n          margin: 0;\n        }\n\n        ${t} input[type="number"] {\n          -moz-appearance: textfield;\n        }\n\n        ${t}[dir='rtl'] input[type="number"]::placeholder {\n          direction: rtl;\n        }\n\n        ${t}[dir='rtl']:not([step-buttons-visible]):not([has-controls]) input[type="number"]::placeholder {\n          text-align: left;\n        }\n      `]}get clearElement(){return this.$.clearButton}ready(){super.ready(),this.addController(new u.a(this,t=>{this._setInputElement(t),this._setFocusElement(t),this.stateTarget=t,this.ariaTarget=t})),this.addController(new h.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this.addController(this._tooltipController),this._tooltipController.setPosition("top")}checkValidity(){return this.inputElement?this.inputElement.checkValidity():!this.invalid}_decreaseButtonTouchend(t){t.preventDefault(),this._decreaseValue()}_increaseButtonTouchend(t){t.preventDefault(),this._increaseValue()}_decreaseValue(){this._incrementValue(-1)}_increaseValue(){this._incrementValue(1)}_incrementValue(t){if(this.disabled||this.readonly)return;const e=this.step||1;let i=parseFloat(this.value);this.value?i<this.min?(t=0,i=this.min):i>this.max&&(t=0,i=this.max):0===this.min&&t<0||0===this.max&&t>0||0===this.max&&0===this.min?(t=0,i=0):(null==this.max||this.max>=0)&&(null==this.min||this.min<=0)?i=0:this.min>0?(i=this.min,this.max<0&&t<0&&(i=this.max),t=0):this.max<0&&(i=this.max,t<0?t=0:this._getIncrement(1,i-e)>this.max?i-=2*e:i-=e);const n=this._getIncrement(t,i);this.value&&0!==t&&!this._incrementIsInsideTheLimits(t,i)||this._setValue(n)}_setValue(t){this.value=this.inputElement.value=String(parseFloat(t)),this.dispatchEvent(new CustomEvent("change",{bubbles:!0}))}_getIncrement(t,e){let i=this.step||1,n=this.min||0;const a=Math.max(this._getMultiplier(e),this._getMultiplier(i),this._getMultiplier(n));i*=a,n*=a;const s=((e=Math.round(e*a))-n)%i;return t>0?(e-s+i)/a:t<0?(e-(s||i))/a:e/a}_getDecimalCount(t){const e=String(t),i=e.indexOf(".");return-1===i?1:e.length-i-1}_getMultiplier(t){if(!isNaN(t))return 10**this._getDecimalCount(t)}_incrementIsInsideTheLimits(t,e){return t<0?null==this.min||this._getIncrement(t,e)>=this.min:t>0?null==this.max||this._getIncrement(t,e)<=this.max:this._getIncrement(t,e)<=this.max&&this._getIncrement(t,e)>=this.min}_allowed(t){const e=t*(this.step||1),i=parseFloat(this.value);return!this.value||!this.disabled&&this._incrementIsInsideTheLimits(e,i)}_stepChanged(t,e){e&&(e.step=t||"any")}_valueChanged(t,e){t&&isNaN(parseFloat(t))?this.value="":"string"!=typeof this.value&&(this.value=String(this.value)),super._valueChanged(this.value,e)}_onKeyDown(t){"ArrowUp"===t.key?(t.preventDefault(),this._increaseValue()):"ArrowDown"===t.key&&(t.preventDefault(),this._decreaseValue()),super._onKeyDown(t)}_isStepButtonVisible(t,e){return t||e}_setHasInputValue(t){const e=t.composedPath()[0];this._hasInputValue=e.value.length>0||e.validity.badInput}}customElements.define(m.is,m);
-/**
- * @license
- * Copyright (c) 2021 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-/**
- * @license
- * Copyright (c) 2021 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-class v extends m{static get is(){return"vaadin-integer-field"}constructor(){super(),this.allowedCharPattern="[-+\\d]"}_valueChanged(t,e){if(""!==t&&!this.__isInteger(t))return console.warn(`Trying to set non-integer value "${t}" to <vaadin-integer-field>. Clearing the value.`),void(this.value="");super._valueChanged(t,e)}_stepChanged(t,e){if(null!=t&&!this.__hasOnlyDigits(t))return console.warn(`<vaadin-integer-field> The \`step\` property must be a positive integer but \`${t}\` was provided, so the property was reset to \`null\`.`),void(this.step=null);super._stepChanged(t,e)}__isInteger(t){return/^(-\d)?\d*$/.test(String(t))}__hasOnlyDigits(t){return/^\d+$/.test(String(t))}}customElements.define(v.is,v);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/integer-field" instead.')},169:function(t,e,i){"use strict";i(126);
-/**
- * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-/**
- * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-i(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},181:function(t,e,i){"use strict";i(91),i(29),i(42),i(45);var n=i(56),a=i(2);
-/**
- * @license
- * Copyright (c) 2017 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-const s=a.b`
-  [part='input-field'],
-  [part='input-field'] ::slotted(textarea) {
-    height: auto;
-    box-sizing: border-box;
-  }
-
-  [part='input-field'] {
-    /* Equal to the implicit padding in vaadin-text-field */
-    padding-top: calc((var(--lumo-text-field-size) - 1em * var(--lumo-line-height-s)) / 2);
-    padding-bottom: calc((var(--lumo-text-field-size) - 1em * var(--lumo-line-height-s)) / 2);
-    transition: background-color 0.1s;
-    line-height: var(--lumo-line-height-s);
-  }
-
-  :host(:not([readonly])) [part='input-field']::after {
-    display: none;
-  }
-
-  :host([readonly]) [part='input-field'] {
-    border: 1px dashed var(--lumo-contrast-30pct);
-  }
-
-  :host([readonly]) [part='input-field']::after {
-    border: none;
-  }
-
-  :host(:hover:not([readonly]):not([focused]):not([invalid])) [part='input-field'] {
-    background-color: var(--lumo-contrast-20pct);
-  }
-
-  @media (pointer: coarse) {
-    :host(:hover:not([readonly]):not([focused]):not([invalid])) [part='input-field'] {
-      background-color: var(--lumo-contrast-10pct);
-    }
-
-    :host(:active:not([readonly]):not([focused])) [part='input-field'] {
-      background-color: var(--lumo-contrast-20pct);
-    }
-  }
-
-  [part='input-field'] ::slotted(textarea) {
-    line-height: inherit;
-    --_lumo-text-field-overflow-mask-image: none;
-  }
-
-  /* Vertically align icon prefix/suffix with the first line of text */
-  [part='input-field'] ::slotted(iron-icon),
-  [part='input-field'] ::slotted(vaadin-icon) {
-    margin-top: calc((var(--lumo-icon-size-m) - 1em * var(--lumo-line-height-s)) / -2);
-  }
-`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(73);var r=i(3),l=i(31),o=i(109),d=i(33),u=i(101),p=i(55),h=i(78),c=i(74),m=i(34);
-/**
- * @license
- * Copyright (c) 2021 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */
-class v extends m.a{constructor(t,e){super(t,"textarea",()=>document.createElement("textarea"),(t,i)=>{const n=t.getAttribute("value");n&&(i.value=n);const a=t.getAttribute("name");a&&i.setAttribute("name",a),i.id=this.defaultId,"function"==typeof e&&e(i)},!0)}}
-/**
- * @license
- * Copyright (c) 2021 - 2022 Vaadin Ltd.
- * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
- */Object(a.c)("vaadin-text-area",c.a,{moduleId:"vaadin-text-area-styles"});class g extends(Object(o.a)(Object(h.a)(Object(u.a)(Object(a.a)(Object(l.a)(r.a)))))){static get is(){return"vaadin-text-area"}static get template(){return r.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{168:function(e,t,i){"use strict";var a=i(3),s=i(33),l=i(1),n=(i(104),i(37));class o extends a.a{static get properties(){return{options:{type:Array},model:{type:String},addCallback:{type:Function},value:{type:String,value:"",observer:"valueUpdated"},choices:{type:Number,observer:"choicesUpdated"},paren:{type:String},label:{type:String},placeholder:{type:String},multiValue:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}choicesUpdated(){this.listBox&&(this.listBox.remove(),delete this.listBox),this.$.select.requestContentUpdate()}valueUpdated(){if(this.choices)if(Array.isArray(this.value)&&this.options){const e=this.value.map(e=>-1!==this.options.indexOf(e)?this.options.indexOf(e):this.options.findIndex(t=>t.name===e.name&&t.source===e.source)).filter(e=>-1!==e);this.listBox&&(this.listBox.selectedValues=e),this.multiValue=e.map(e=>{let t=this.options[e];return t.name?t.name:Object(l.util_capitalizeAll)(t)}).join(", ")}else this.listBox&&(this.listBox.selectedValues=[]),this.multiValue="";else this.value&&this.options?this.value.source?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name&&e.source===this.value.source||e===this.value.name)+"":this.value.name?this.$.select.value=this.options.findIndex(e=>e.name===this.value.name||e===this.value.name)+"":this.$.select.value=this.options.findIndex(e=>e.name===this.value||e===this.value)+"":this.$.select.value=""}ready(){super.ready(),setTimeout(async()=>{this.model&&(this.options=await Object(n.b)(this.model));const e=this.$.select._overlayElement.shadowRoot.querySelector("#content");let t=0;e.addEventListener("scroll",i=>{t=e.scrollTop},{passive:!0}),this.$.select.renderer=(i,a)=>{if(!this.listBox){if(this.listBox=document.createElement("vaadin-list-box"),this.choices&&(this.listBox.setAttribute("multiple",!0),this.listBox.addEventListener("click",i=>{a.opened=!0;let s=null!==i.srcElement.getAttribute("selected");e.scroll(0,t),setTimeout(()=>{this.listBox.selectedValues.length>this.choices&&!s&&this.listBox.selectedValues.splice(this.listBox.selectedValues.length-2,1);let e=this.listBox.selectedValues.map(e=>this.options[e]);this.multiValue=e.map(e=>e.name?e.name:Object(l.util_capitalizeAll)(e)).join(", "),this.addCallback&&this.addCallback(e)},0)})),this.options&&this.options.length)for(let e=0;e<this.options.length;e++){const t=this.options[e],i=document.createElement("vaadin-item"),a=t.name||Object(l.util_capitalizeAll)(t);i.innerHTML=`<span style='margin-left: 10px;'>${a}</span> ${t.name?`<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${t.source||""}</span>`:""}`,i.setAttribute("value",e),this.listBox.appendChild(i)}i.appendChild(this.listBox),this.$.select._assignMenuElement(),this.valueUpdated()}}},0)}connectedCallback(){super.connectedCallback(),this.selectChangeHandler=()=>{const e=this.$.select.value;if(e&&!this.choices){const t=this.options[e];this.addCallback?this.addCallback(t,this.model):Object(s.eb)(void 0,t,this.model),this.value||(this.$.select.value="")}},this.$.select.addEventListener("change",this.selectChangeHandler)}disconnectedCallback(){super.disconnectedCallback(),this.$.select.removeEventListener("change",this.selectChangeHandler)}_exists(e){return!!e}_label(e,t,i){let a="";return e&&(a=e,t&&1!==t&&100!==t&&(a+=` (pick ${t})`),i&&(a+=` (${i})`)),a}static get template(){return a.b`
       <style>
         :host {
-          animation: 1ms vaadin-text-area-appear;
+          display: inline-block;
         }
-
-        .vaadin-text-area-container {
-          flex: auto;
+        [slot="prefix"] {
+          width: calc(100% - 46px);
+          padding: 12px;
+          line-height: 1.4;
         }
-
-        /* The label, helper text and the error message should neither grow nor shrink. */
-        [part='label'],
-        [part='helper-text'],
-        [part='error-message'] {
-          flex: none;
-        }
-
-        [part='input-field'] {
-          flex: auto;
-          overflow: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-
-        ::slotted(textarea) {
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          flex: auto;
-          overflow: hidden;
+        vaadin-select {
           width: 100%;
-          height: 100%;
-          outline: none;
-          resize: none;
-          margin: 0;
-          padding: 0 0.25em;
-          border: 0;
-          border-radius: 0;
-          min-width: 0;
-          font: inherit;
-          font-size: 1em;
-          line-height: normal;
-          color: inherit;
-          background-color: transparent;
-          /* Disable default invalid style in Firefox */
-          box-shadow: none;
+        }
+        .prefix {
+          white-space: normal;
+          color: var(--lumo-body-text-color);
+        }
+      </style>
+      <vaadin-select add theme="dark add" id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+        <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
+          <span class="prefix">[[multiValue]]</span>
+        </div>
+      </vaadin-select>
+      
+    `}}customElements.define("dnd-select-add",o)},169:function(e,t,i){"use strict";var a=i(3),s=i(165);class l extends a.a{static get properties(){return{initialValue:{type:Boolean,value:!1,observer:"initValueChange"},checked:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0},label:{type:String,value:""},secondaryLabel:{type:String,value:""},disabled:{type:Boolean,value:!1,reflectToAttribute:!0}}}initValueChange(){this.switchEl&&(this.switchEl.checked=this.initialValue,this.checked=this.initialValue)}ready(){super.ready(),setTimeout(()=>{this.switchEl=new s.a(this.shadowRoot.querySelector(".mdc-switch")),this.switchEl.checked=this.initialValue,this.checked=this.initialValue},10)}connectedCallback(){super.connectedCallback(),this.switchEventHandler=()=>{this.checked=this.switchEl.checked,this.dispatchEvent(new CustomEvent("switch-change",{detail:{checked:this.switchEl.checked},bubbles:!0,composed:!0}))},this.shadowRoot.querySelector(".mdc-switch__native-control").addEventListener("change",this.switchEventHandler)}disconnectedCallback(){super.disconnectedCallback(),this.shadowRoot.querySelector(".mdc-switch__native-control").removeEventListener("change",this.switchEventHandler)}_switchClasses(e){return e?"mdc-switch mdc-list-item__meta mdc-switch--disabled":"mdc-switch mdc-list-item__meta"}static get template(){return a.b`
+      <style include="material-styles">
+        :host {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+        }
+        :host([checked]) label.secondary {
+          color: var(--mdc-theme-primary);
+        }
+        :host([checked]) label:not(.secondary) {
+          color: var(--lumo-secondary-text-color);
+        }
+        label {
+          color: var(--mdc-theme-primary);
+          font-weight: 500;
+          font-size: var(--lumo-font-size-s);
+          margin-right: 16px;
+          transition: color 0.2s;
+        }
+        label.secondary {
+          color: var(--lumo-secondary-text-color);
+          margin-right: 0;
+          margin-left: 16px;
+        }
+        :host([extra-padding]) label.secondary {
+          margin-left: 50px;
+        }
+      </style>
+      
+      <label for="switch">[[label]]</label>
+      <div class$="[[_switchClasses(disabled)]]">
+        <div class="mdc-switch__track"></div>
+        <div class="mdc-switch__thumb-underlay">
+          <div class="mdc-switch__thumb">
+            <input type="checkbox" id="switch" class="mdc-switch__native-control" role="switch" disabled$="[[disabled]]" />
+          </div>
+        </div>
+      </div>
+      <label class="secondary">[[secondaryLabel]]</label>
+    `}}customElements.define("dnd-switch",l)},172:function(e,t,i){"use strict";i.r(t);var a=i(3),s=i(33),l=i(73),n=i(133),o=i(0),d=i(1),r=(i(170),i(166),i(188),i(4));i(168),i(103),i(169);class c extends a.a{static get properties(){return{isEditMode:{type:Boolean,value:!1},hasRenderedOutput:{type:Boolean,value:!1},hasAC:{type:Boolean,value:!1},armorAC:{type:Number,value:0},isArmor:{type:Boolean,value:!1},isMartial:{type:Boolean,value:!1},weaponMagicModifier:{type:Number,value:0},itemRarity:{type:String},itemName:{type:String},itemWeight:{type:Number,value:0},weaponProperties:{type:Array},itemResist:{type:String},itemQuantity:{type:Number,value:0},item:{type:Object},storedItem:{type:Object},itemType:{type:String,value:""}}}static get observers(){return["_itemChanged(item)"]}constructor(){super(),this.itemTypes=["Currency","Armor (Light)","Armor (Medium)","Armor (Heavy)","Melee Weapon","Ranged Weapon","Shield","Adventuring Gear","Ammunition","Artisan Tool","Explosive","Gaming Set","Instrument","Mount","Potion","Rod","Ring","Scroll","Spellcasting Focus","Tool","Tack and Harness","Trade Good","Vehicle","Wand"],this.rarityTypes=o.z,this.damageTypes=o.k,this.resistTypes=["None",...o.k],this.weaponPropertyOptions=[{name:"Two-Handed",value:"2H"},{name:"Ammunition",value:"A"},{name:"Finesse",value:"F"},{name:"Heavy",value:"H"},{name:"Light",value:"L"},{name:"Loading",value:"LD"},{name:"Reach",value:"R"},{name:"Reload",value:"RLD"},{name:"Special",value:"S"},{name:"Thrown",value:"T"},{name:"Versatile",value:"V"}],this.weaponPropertyValues=["Two-Handed","Ammunition","Finesse","Heavy","Light","Loading","Reach","Reload","Special","Thrown","Versatile"]}connectedCallback(){super.connectedCallback(),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode},Object(l.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(l.c)()}disconnectedCallback(){super.disconnectedCallback(),Object(l.b)().removeEventListener("editModeChange",this.editModeHandler)}_itemChanged(){if(this.item){if(console.error("itemDetail:",this.item),Object(n.renderSelection)(this.item,this.$.renderedOutput),this.itemType=this._getItemType(),this.hasAC="S"===this.item.type||!!this.item.armor,this.armorAC=this.item.ac,this.acLabel="Armor (Light)"===this.itemType?"AC (+DEX)":"Armor (Medium)"===this.itemType?"AC (+DEX max 2)":"AC",this.isArmor=!!this.item.armor,this.isMartial="Martial"===this.item.weaponCategory,this.weaponProperties=[],this.weaponMagicModifier=0,(this.item.weapon||this.item.weaponCategory)&&(this.weaponMagicModifier=parseInt(this.item.bonusWeapon,10),this.item.property)){const e=this.item.property.map(e=>{const t=this.weaponPropertyOptions.find(t=>t.value===e.trim());if(t)return t.name}).filter(e=>!!e);this.weaponProperties=e}this.itemRarity=this.item.rarity,this.itemName=this.item.name||"",this.itemWeight=this.item.weight||null,this.canHaveResist=this.item.armor||"P"===this.item.type||"RG"===this.item.type,this.itemResist=this.item.resist,this.canHaveQuantity=!0,this.itemQuantity=this.item.quantity||1,this.canHaveSpell="SC"===this.item.type,this.canHaveSpellMod=!0,this.spellAttack=this.item.bonusSpellAttack,this.spellDC=this.item.bonusSpellSaveDc,this.item.storedItem&&(this.storedItem=this.item.storedItem)}}_getItemType(){return this.item?r.a.ITEM_TYPE_JSON_TO_ABV[this.item.type]:""}_selectItemType(){const e=this.root.querySelector("#typeSelect").value;switch(this.storedItem.armor=!1,this.storedItem.weapon=!1,this.storedItem.type="",this.storedItem.isEquipped=!1,this.storedItem.isAttuned=!1,e){case"Armor (Light)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="LA";break;case"Armor (Medium)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="MA";break;case"Armor (Heavy)":this.storedItem.armor=!0,this.storedItem.weaponCategory=null,this.storedItem.type="HA";break;case"Ranged Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="R",this.storedItem.resist=null;break;case"Melee Weapon":this.storedItem.weapon=!0,this.storedItem.weaponCategory="Simple",this.storedItem.type="M",this.storedItem.resist=null;break;case"Shield":this.storedItem.type="S",this.storedItem.weaponCategory=null,this.storedItem.ac=2,this.storedItem.resist=null;break;case"Adventuring Gear":this.storedItem.weaponCategory=null,this.storedItem.type="G",this.storedItem.resist=null;break;case"Currency":this.storedItem.weaponCategory=null,this.storedItem.type="$",this.storedItem.resist=null,this.storedItem.quantity=1,this.storedItem.hasQuantity=!0;break;default:const t=Object.entries(r.a.ITEM_TYPE_JSON_TO_ABV).find(([t,i])=>i===e);t&&(this.storedItem.type=t[0]),"P"===e&&"RG"===e||(this.storedItem.resist=null)}"P"!==this.storedItem.type&&"A"!==this.storedItem.type&&"EXP"!==this.storedItem.type&&"$"!==this.storedItem.type&&(this.storedItem.hasQuantity=!1),Object(s.Ab)(this.item)}_updateItem(){Object(s.Ab)(this.item)}_addDamage(){this.storedItem.damages||(this.storedItem.damages=[]),this.storedItem.damages.push({roll:"",type:""}),Object(s.Ab)(this.item)}_removeDamage(e){const t=Object(d.findInPath)(".roll__damage",e).getAttribute("index"),i=parseInt(t,10);this.storedItem.damages.splice(i,1),Object(s.Ab)(this.item)}_changeWeaponType(){this.item.weapon&&(this.isMartial?this.storedItem.weaponCategory="Martial":this.storedItem.weaponCategory="Simple",Object(s.Ab)(this.item))}_weaponMagicModifierChange(){let e=parseInt(this.weaponMagicModifier,10);isNaN(e)&&(e=0),this.storedItem.bonusWeapon=e>0?"+"+e:e,Object(s.Ab)(this.item)}_itemRarityChange(){this.itemRarity&&(this.storedItem.rarity=this.itemRarity,Object(s.Ab)(this.item))}_itemNameChange(){this.itemName&&(this.storedItem.name=this.itemName,Object(s.Ab)(this.item))}_addWeaponProperty(){return(e=>{if(e&&e.length){const t=e.map(e=>{const t=this.weaponPropertyOptions.find(t=>t.name===e.trim());if(t)return t.value}).filter(e=>!!e);this.storedItem.property=t,Object(s.Ab)(this.item)}}).bind(this)}_armorACChange(){let e=parseInt(this.armorAC,10);isNaN(e)&&(e=0),this.storedItem.ac=e,Object(s.Ab)(this.item)}_itemWeightChange(){let e=parseFloat(this.itemWeight,10);isNaN(e)&&(e=0),this.storedItem.weight=e,Object(s.Ab)(this.item)}_itemResistChange(){this.itemResist&&(this.storedItem.resist="None"===this.itemResist?null:this.itemResist,Object(s.Ab)(this.item))}_itemQuantityChange(){let e=parseInt(this.itemQuantity,10);isNaN(e)&&(e=0),this.storedItem.quantity=e,this.storedItem.hasQuantity=!0,Object(s.Ab)(this.item)}_itemSpellAttackChange(){let e=parseInt(this.spellAttack,10);isNaN(e)&&(e=0),this.storedItem.bonusSpellAttack=e,Object(s.Ab)(this.item)}_itemSpellDCChange(){let e=parseInt(this.spellDC,10);isNaN(e)&&(e=0),this.storedItem.bonusSpellSaveDc=e,Object(s.Ab)(this.item)}_or(...e){for(let t of e)if(t)return!0;return!1}_sourceFull(e){return e&&r.a.sourceJsonToFull(e)}static get template(){return a.b`
+      <style include="material-styles my-styles"></style>
+      <style>
+        :host {}
+        [hidden] {
+          display: none !important;
         }
 
-        /* Override styles from <vaadin-input-container> */
-        [part='input-field'] ::slotted(textarea) {
-          align-self: stretch;
-          white-space: pre-wrap;
+        .edit__wrap {
+          margin-right: -10px;
+        }
+        .edit__name {
+          width: calc(65% - 10px);
+          padding-top: 0;
+        }
+        .edit__notes {
+          width: calc(100% - 10px);
+          min-height: 200px;
+        }
+        .edit__checkboxes {
+          display: flex;
+          flex-direction: column;
+          margin: 10px 10px 0 0;
         }
 
-        [part='input-field'] ::slotted(:not(textarea)) {
-          align-self: flex-start;
+        .section_heading {
+          margin: 16px 0 0px;
+          font-size: 17px;
+          color: var(--mdc-theme-secondary);
         }
 
-        /* Workaround https://bugzilla.mozilla.org/show_bug.cgi?id=1739079 */
-        :host([disabled]) ::slotted(textarea) {
-          user-select: none;
+        .roll__damages {
+          display: flex;
+          flex-direction: column;
+        }
+        .roll__damage {
+          display: flex;
+          margin-right: 10px;
+        }
+        .roll__damage vaadin-text-field,
+        .roll__damage vaadin-select {
+          max-width: 100%;
+        }
+        .roll__damage-roll--edit,
+        .roll__damage-type--edit {
+          width: calc(50% - 40px);
+        }
+        .roll__damage-roll--edit {
+          margin: 0 16px;
+        }
+        .roll__damage-remove {
+          margin: auto -5px 4px;
         }
 
-        @keyframes vaadin-text-area-appear {
-          to {
-            opacity: 1;
-          }
+        dnd-switch {
+          margin: 10px auto 0;
+          display: block;
+        }
+
+        vaadin-checkbox {
+          width: fit-content;
+        }
+
+        vaadin-select {
+          max-width: calc(50% - 14px);
+        }
+        vaadin-number-field,
+        vaadin-integer-field {
+          width: calc(33% - 12px);
+        }
+        vaadin-text-field,
+        vaadin-text-area,
+        vaadin-integer-field,
+        vaadin-number-field,
+        vaadin-select {
+          margin-right: 10px;
+        }
+        dnd-select-add {
+          width: calc(66% - 22px);
+          margin-right: 10px;
+          margin-left: 10px;
+        }
+
+        .ac-field {
+          width: calc(50% - 14px);
+        }
+        .ac-suffix {
+          font-size: 12px;
+        }
+        .full-width-field {
+          width: calc(100% - 20px);
+        }
+
+        h2 {
+          margin-top: 0;
+          font-size: 24px;
+          margin-bottom: 2px;
+          line-height: 1.2;
+        }
+        .notes-container {
+          margin-top: 16px;
+          line-height: 1.4;
+        }
+        .notes-container__label {
+          font-weight: bold;
+        }
+
+        .stats-wrapper {
+          font-size: 14px;
+          line-height: 1.4;
+          margin-top: 16px;
+        }
+        .stats-wrapper > .statsBlockHead:first-child > .stat-name {
+          margin-top: 0;
+        }
+        .stats-wrapper .statsBlockHead .stat-name {
+          font-size: 22px;
+          margin-bottom: 2px;
+        }
+        .stats-wrapper .statsBlockSubHead .stat-name {
+          font-size: 18px;
+        }
+        .stats-wrapper .text {
+          margin-top: 16px;
+        }
+        .stats-wrapper p {
+          margin-bottom: 8px;
+        }
+        .stats-wrapper .statsInlineHead:last-child {
+          margin-bottom: 0;
+        }
+        .stats-wrapper .statsInlineHead .stat-name {
+          font-size: inherit;
+        }
+        .margin-bottom_large,
+        .stats-wrapper .margin-bottom_med {
+          margin-bottom: 0 !important;
+        }
+        .source {
+          display: block !important;
+          color: var(--lumo-contrast-70pct);
+          font-size: 13px;
+          margin-top: 0px;
+          margin-bottom: 12px;
         }
       </style>
 
-      <div class="vaadin-text-area-container">
-        <div part="label">
-          <slot name="label"></slot>
-          <span part="required-indicator" aria-hidden="true"></span>
+      <div hidden$="[[!item]]">
+        <div hidden$="[[isEditMode]]">
+          <h2>[[item.name]]</h2>
+          <div hidden="[[!item.source]]" class="source">[[_sourceFull(item.source)]]</div>
+          <div hidden="[[!item.notes]]" class="notes-container">
+            <span class="notes-container__label">Notes.</span>
+            [[item.notes]]
+          </div>
+          <div id="renderedOutput"></div>
         </div>
 
-        <vaadin-input-container
-          part="input-field"
-          readonly="[[readonly]]"
-          disabled="[[disabled]]"
-          invalid="[[invalid]]"
-          theme$="[[_theme]]"
-          on-scroll="__scrollPositionUpdated"
-        >
-          <slot name="prefix" slot="prefix"></slot>
-          <slot name="textarea"></slot>
-          <slot name="suffix" slot="suffix"></slot>
-          <div id="clearButton" part="clear-button" slot="suffix" aria-hidden="true"></div>
-        </vaadin-input-container>
+        <template is="dom-if" if="[[isEditMode]]">
+          <div class="edit__wrap">
+            <vaadin-text-field class="edit__name" theme="label--secondary" value="{{itemName}}" label="Name" on-change="_itemNameChange"></vaadin-text-field>
+            <vaadin-number-field theme="label--secondary" has-controls value="{{itemWeight}}" label="Weight" min="0" on-change="_itemWeightChange"></vaadin-number-field>
 
-        <div part="helper-text">
-          <slot name="helper"></slot>
-        </div>
+            <vaadin-select id="typeSelect" value="[[itemType]]" on-change="_selectItemType" label="Type" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[itemTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
 
-        <div part="error-message">
-          <slot name="error-message"></slot>
-        </div>
+            <vaadin-select id="raritySelect" value="{{itemRarity}}" on-change="_itemRarityChange" label="Rarity" >
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[rarityTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
+
+            <div class="edit__weapon" hidden$="[[!_or(item.weapon, item.weaponCategory)]]">
+              <h4 class="section_heading">Weapon</h4>
+              <dnd-select-add choices="100" class="full-width-field" label="Weapon Properties" options="[[weaponPropertyValues]]" value="[[weaponProperties]]" add-callback="[[_addWeaponProperty()]]"></dnd-select-add>
+
+              <dnd-switch label='Simple Weapon' secondary-label='Martial Weapon' initial-value="[[isMartial]]" checked={{isMartial}} on-switch-change="_changeWeaponType" ></dnd-switch>
+
+              <template is="dom-repeat" items="[[storedItem.damages]]" as="damage">
+                <div class="roll__damage" index$="[[index]]">
+                  <dnd-button on-click="_removeDamage" icon="remove" class='roll__damage-remove icon-only'></dnd-button>
+                  <div class="roll__damage-roll--edit">
+                    <vaadin-text-field theme="label--secondary" value="{{damage.roll}}" on-change="_updateItem" label="Damage Roll"></vaadin-text-field>
+                  </div>
+                  <div class="roll__damage-type--edit">
+                    <vaadin-select value="{{damage.type}}" on-change="_updateItem" label="Damage Type" >
+                      <template>
+                        <vaadin-list-box>
+                          <template is="dom-repeat" items="[[damageTypes]]">
+                            <vaadin-item>[[item]]</vaadin-item>
+                          </template>
+                        </vaadin-list-box>
+                      </template>
+                    </vaadin-select>
+                  </div>
+                </div>
+              </template>
+              <dnd-button on-click="_addDamage" label="Add Damage" icon="add" class="roll__add-damage"></dnd-button>
+            </div>
+
+            <vaadin-integer-field class="ac-field" theme="label--secondary"  hidden$="[[!hasAC]]" min="0" max="30" has-controls value="{{armorAC}}" label="[[acLabel]]" on-change="_armorACChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!item.weapon]]" min="0" max="5" has-controls value="{{weaponMagicModifier}}" label="Weapon Mod" on-change="_weaponMagicModifierChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!canHaveSpellMod]]" min="0" max="5" has-controls value="{{spellAttack}}" label="Spell Attack" on-change="_itemSpellAttackChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!canHaveSpellMod]]" min="0" max="5" has-controls value="{{spellDC}}" label="Spell DC" on-change="_itemSpellDCChange"></vaadin-integer-field>
+
+            <vaadin-integer-field theme="label--secondary" hidden$="[[!item.hasQuantity]]" min="0" has-controls value="{{itemQuantity}}" label="Quantity" on-change="_itemQuantityChange"></vaadin-integer-field>
+
+            <vaadin-select hidden$="[[!canHaveResist]]" value="{{itemResist}}" on-change="_itemResistChange" label="Resistance">
+              <template>
+                <vaadin-list-box>
+                  <template is="dom-repeat" items="[[resistTypes]]">
+                    <vaadin-item>[[item]]</vaadin-item>
+                  </template>
+                </vaadin-list-box>
+              </template>
+            </vaadin-select>
+
+            <div class="edit__checkboxes">
+              <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem" label="Has Quantity"></vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem" label="Disadvantage on Stealth"></vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem" label="Requires Attunement"></vaadin-checkbox>
+              <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem" label="Wondrous"></vaadin-checkbox>
+            </div>
+
+            <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-blur="_updateItem"></vaadin-text-area>
+          </div>
+        </template>
       </div>
-
-      <slot name="tooltip"></slot>
-    `}static get properties(){return{maxlength:{type:Number},minlength:{type:Number}}}static get delegateAttrs(){return[...super.delegateAttrs,"maxlength","minlength"]}static get constraints(){return[...super.constraints,"maxlength","minlength"]}get clearElement(){return this.$.clearButton}_onResize(){this.__scrollPositionUpdated()}ready(){super.ready(),this.addController(new v(this,t=>{this._setInputElement(t),this._setFocusElement(t),this.stateTarget=t,this.ariaTarget=t})),this.addController(new p.a(this.inputElement,this._labelController)),this._tooltipController=new d.a(this),this._tooltipController.setPosition("top"),this.addController(this._tooltipController),this.addEventListener("animationend",this._onAnimationEnd),this._inputField=this.shadowRoot.querySelector("[part=input-field]"),this._inputField.addEventListener("wheel",t=>{const e=this._inputField.scrollTop;this._inputField.scrollTop+=t.deltaY,e!==this._inputField.scrollTop&&(t.preventDefault(),this.__scrollPositionUpdated())}),this._updateHeight(),this.__scrollPositionUpdated()}__scrollPositionUpdated(){this._inputField.style.setProperty("--_text-area-vertical-scroll-position","0px"),this._inputField.style.setProperty("--_text-area-vertical-scroll-position",this._inputField.scrollTop+"px")}_onAnimationEnd(t){0===t.animationName.indexOf("vaadin-text-area-appear")&&this._updateHeight()}_valueChanged(t,e){super._valueChanged(t,e),this._updateHeight()}_updateHeight(){const t=this.inputElement,e=this._inputField;if(!t||!e)return;const i=e.scrollTop,n=this.value?this.value.length:0;if(this._oldValueLength>=n){const i=getComputedStyle(e).height,n=getComputedStyle(t).width;e.style.display="block",e.style.height=i,t.style.maxWidth=n,t.style.height="auto"}this._oldValueLength=n;const a=t.scrollHeight;a>t.clientHeight&&(t.style.height=a+"px"),t.style.removeProperty("max-width"),e.style.removeProperty("display"),e.style.removeProperty("height"),e.scrollTop=i}checkValidity(){if(!super.checkValidity())return!1;if(!this.pattern||!this.inputElement.value)return!0;try{const t=this.inputElement.value.match(this.pattern);return!!t&&t[0]===t.input}catch(t){return!0}}}customElements.define(g.is,g);console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-area" instead.')}}]);
+    `}}customElements.define("dnd-character-builder-equipment-item-detail",c)}}]);
 //# sourceMappingURL=1.bundle.js.map
