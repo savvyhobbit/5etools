@@ -297,6 +297,7 @@
             <div class="edit__checkboxes">
               <vaadin-checkbox hidden$="[[!canHaveQuantity]]" checked="{{storedItem.hasQuantity}}" on-change="_updateItem" label="Has Quantity"></vaadin-checkbox>
               <vaadin-checkbox hidden$="[[!isArmor]]" checked="{{storedItem.stealth}}" on-change="_updateItem" label="Disadvantage on Stealth"></vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!_or(item.weapon, item.weaponCategory)]]" checked="{{storedItem.forceProficient}}" on-change="_updateItem" label="Force Proficiency"></vaadin-checkbox>
               <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem" label="Requires Attunement"></vaadin-checkbox>
               <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem" label="Wondrous"></vaadin-checkbox>
             </div>
