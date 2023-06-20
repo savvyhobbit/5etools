@@ -5,6 +5,7 @@ import "../dnd-tabs.js";
 import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-icon";
+import "../dnd-roll-results";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
 import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter } from '../../util/charBuilder.js';
@@ -172,19 +173,6 @@ class DndCharacterBuilderView extends PolymerElement {
       }, null, ".table");
     }
 
-    this.rollHandler = (e) => {
-      // Display Rolls
-      const {name, roll, result} = e.detail;
-      const newRollEl = document.createElement('div');
-      newRollEl.classList.add('roll-result');
-      newRollEl.innerHTML = `${name}: ${result}`;
-      this.$.rollContainer.appendChild(newRollEl);
-      setTimeout(() => {
-        newRollEl.remove();
-      }, 3900);
-    }
-    rollEventChannel().addEventListener('roll', this.rollHandler);
-
     this._selectionChangeHandler = (e) => {
       if (e && e.detail && e.detail.selection) {
         this.routeSelection = e.detail.selection;
@@ -203,7 +191,6 @@ class DndCharacterBuilderView extends PolymerElement {
     getCharacterChannel().removeEventListener("character-selected", this.characterChangeHandler);
     this.$.name.removeEventListener("focus", this.nameFieldFocusHandler);
     getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
-    rollEventChannel().removeEventListener('roll', this.rollHandler);
   }
 
   updateView(el) {
@@ -420,7 +407,7 @@ class DndCharacterBuilderView extends PolymerElement {
       <style>
         :host {
           display: block;
-          --tab-bottom-margin: 250px;
+          --tab-bottom-margin: 425px;
         }
         .head-wrap {
           display: flex;
@@ -502,12 +489,19 @@ class DndCharacterBuilderView extends PolymerElement {
           display: flex;
           flex-direction: column-reverse;
           margin-right: auto;
+          align-items: center;
         }
         .thumb-menu__btn {
           border-radius: 50%;
+          z-index: 2;
+        }
+        .edit-button {
+          width: 70px;
+          height: 70px;
+          font-size: 30px;
         }
         .drawer-btn {
-          margin-bottom: 20px;
+          margin-bottom: 12px;
         }
 
         .tab-wrap {
@@ -597,7 +591,6 @@ class DndCharacterBuilderView extends PolymerElement {
             height: 80px;
             width: 80px;
             font-size: 36px;
-            right: 36px;
           }
         }
       </style>
@@ -616,9 +609,9 @@ class DndCharacterBuilderView extends PolymerElement {
         </div>
 
         <div class="thumb-menu">
-          <div class="roll-container" id="rollContainer"></div>
           <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
           <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="openDrawer">logout</button>
+          <dnd-roll-results></dnd-roll-results>
         </div>
 
         <vaadin-menu-bar theme="end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>

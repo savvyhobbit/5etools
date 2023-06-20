@@ -3,7 +3,7 @@ import "@polymer/polymer/lib/elements/dom-repeat.js";
 import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "../../dnd-button";
-import { cloneDeep, findInPath } from "../../../js/utils";
+import { cloneDeep, findInPath, util_capitalize } from "../../../js/utils";
 import {
   getCharacterChannel,
   getSelectedCharacter,
@@ -89,13 +89,13 @@ class DndCharacterBuilderRolls extends PolymerElement {
     if (!this.isEditMode) {
       let rollModel = e.model.__data.item;
       if (!rollModel.noHitRoll) {
-        rollHit(`${rollModel.name} (to hit)`, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked);
+        rollHit(rollModel.name, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked);
       }
       rollModel.damages.forEach((damage, index) => {
-        rollDice(`${rollModel.name} (${damage.type} damage)`, damage.roll);
-
-        setTimeout(() =>{
-        }, (index + 1) * 500);
+        if (damage.roll) {
+          const damageType = `${damage.type ? util_capitalize(damage.type) + ' ' : ''}Damage`;
+          rollDice(rollModel.name, damage.roll, damageType);
+        }
       });
     }
   }

@@ -13,6 +13,7 @@ export function togglePrimarySecondary(isPrimary, el) {
         styleProp.setProperty("--pulse-shadow-0", "var(--pulse-shadow-secondary-0)");
         styleProp.setProperty("--pulse-shadow-70", "var(--pulse-shadow-secondary-70)");
         styleProp.setProperty("--pulse-shadow-100", "var(--pulse-shadow-secondary-100)");
+        document.body.style.setProperty("--mdc-theme-header", "var(--mdc-theme-header-secondary)")
     } else {
         styleProp.removeProperty("--mdc-theme-primary");
         styleProp.removeProperty("--mdc-theme-primary-darker");
@@ -24,6 +25,7 @@ export function togglePrimarySecondary(isPrimary, el) {
         styleProp.removeProperty("--pulse-shadow-0");
         styleProp.removeProperty("--pulse-shadow-70");
         styleProp.removeProperty("--pulse-shadow-100");
+        document.body.style.removeProperty("--mdc-theme-header");
     }
 }
 
@@ -39,6 +41,7 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-background", "#121212");
         root.style.setProperty("--mdc-theme-surface", "#1f1f1f");
         root.style.setProperty("--mdc-theme-header", "var(--mdc-theme-surface)");
+        root.style.setProperty("--mdc-theme-header-secondary", "var(--mdc-theme-surface)");
         root.style.setProperty("--mdc-theme-error", "#cf6679");
         root.style.setProperty("--mdc-theme-on-primary", "#000");
         root.style.setProperty("--mdc-theme-on-secondary", "#000");
@@ -113,6 +116,8 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--lumo-contrast-90pct", "var(--lumo-tint-90pct)");
         root.style.setProperty("--lumo-contrast", "var(--lumo-tint)");
 
+        root.style.setProperty("--mdc-theme-surface-surface", "#33373b");
+        root.style.setProperty("--mdc-theme-on-surface-surface", "var(--lumo-tint-50pct)");
         root.style.setProperty("--lumo-header-text-color", "var(--lumo-contrast)");
         root.style.setProperty("--lumo-body-text-color", "var(--lumo-contrast-90pct)");
         root.style.setProperty("--lumo-secondary-text-color", "var(--lumo-contrast-70pct)");
@@ -144,6 +149,7 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-background", "#fff");
         root.style.setProperty("--mdc-theme-surface", "#fff");
         root.style.setProperty("--mdc-theme-header", "var(--mdc-theme-primary)");
+        root.style.setProperty("--mdc-theme-header-secondary", "var(--mdc-theme-secondary)");
         root.style.setProperty("--mdc-theme-error", "#b00020");
         root.style.setProperty("--mdc-theme-on-primary", "#fff");
         root.style.setProperty("--mdc-theme-on-secondary", "#fff");
@@ -219,6 +225,8 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--lumo-contrast-90pct", "var(--lumo-shade-90pct)");
         root.style.setProperty("--lumo-contrast", "var(--lumo-shade)");
 
+        root.style.setProperty("--mdc-theme-surface-surface", "#e7ebee");
+        root.style.setProperty("--mdc-theme-on-surface-surface", "var(--lumo-shade-50pct)");
         root.style.setProperty("--lumo-header-text-color", "var(--lumo-contrast)");
         root.style.setProperty("--lumo-body-text-color", "var(--lumo-contrast-90pct)");
         root.style.setProperty("--lumo-secondary-text-color", "var(--lumo-contrast-70pct)");

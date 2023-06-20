@@ -449,23 +449,26 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       const attrEl = findInPath('.stat-box', e);
       const initEl = findInPath('.initiative', e);
       const spellAttackEl = findInPath('.spellAttack', e);
-      let mod, isProficient, name, isExpertise;
+      let mod, isProficient, name, isExpertise, type;
 
       if (profEl) {
         isProficient = profEl.hasAttribute('enabled');
         isExpertise = profEl.hasAttribute('expertise');
         mod = parseInt(profEl.closest('.attribute-wrap').querySelector('.stat-box__mod').innerText, 10);
         name = profEl.innerText;
+        type = 'Check';
 
       } else if (attrEl) {
         isProficient = attrEl.querySelector('.stat-box__save').hasAttribute('enabled');
         mod = parseInt(attrEl.querySelector('.stat-box__mod').innerText, 10);
-        name = attrEl.querySelector('vaadin-integer-field').label + ' Save';
+        name = attrEl.querySelector('vaadin-integer-field').label;
+        type = 'Save'
 
       } else if (initEl) {
         isProficient = false;
         mod = this.customInitiative ? this.customInitiativeVal : parseInt(this.initiative, 10);
         name = "Initiative";
+        type = 'Check'
 
       } else if (spellAttackEl) {
         isProficient = false;
@@ -499,7 +502,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         } else if (mod < 0) {
           rollForm += mod;
         }
-        rollDice(name, rollForm);
+        rollDice(name, rollForm, type);
       }
     } else if (profEl) {
       toggleCustomSkill(profEl.innerText.toLowerCase());
@@ -752,6 +755,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           flex-direction: column;
           min-width: 0;
           flex-shrink: 0;
+          margin-bottom: var(--tab-bottom-margin);
         }
 
         /* Other profs */
@@ -1298,6 +1302,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         @media(min-width: 555px) {
           .other {
             max-width: 250px;
+          }
+        }
+        @media(min-width: 760px) {
+          .stats {
+            margin-bottom: 0;
           }
         }
         @media(min-width: 920px) {

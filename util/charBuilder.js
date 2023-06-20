@@ -1945,6 +1945,9 @@ function isProficientWithWeapon(weapon, character = selectedCharacter) {
   if (!character) {
     return;
   }
+  if (weapon.forceProficient) {
+    return true;
+  }
   const weaponProfs = getChoiceWeaponProfs(character);
   console.error('isProficientWithWeapon', weaponProfs, weapon);
   if (weapon.weaponCategory) {
@@ -1960,6 +1963,9 @@ function isProficientWithWeapon(weapon, character = selectedCharacter) {
     if (weaponProfs.includes(baseItemName)) {
       return true;
     }
+  }
+  if (weaponProfs.includes(weapon.name.toLowerCase())) {
+    return true;
   }
   return false;
 }
