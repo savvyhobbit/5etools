@@ -407,7 +407,7 @@ class DndCharacterBuilderView extends PolymerElement {
       <style>
         :host {
           display: block;
-          --tab-bottom-margin: 425px;
+          --tab-bottom-margin: 210px;
         }
         .head-wrap {
           display: flex;

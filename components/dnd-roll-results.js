@@ -2,6 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer';
 import "./styles/material-styles.js";
 import "./styles/my-styles.js";
 import { rollEventChannel } from '../util/roll.js';
+import { getEditModeChannel } from '../util/editMode.js';
 
 class DndRollResults extends PolymerElement {
   
@@ -34,7 +35,7 @@ class DndRollResults extends PolymerElement {
 
       setTimeout(() => {
         this.$.rollResults.scrollTo({top: this.$.rollResults.scrollHeight, behavior: 'smooth'});
-      }, 0);
+      }, 500);
     };
     rollEventChannel().addEventListener('new-roll', this.rollHandler);
 
@@ -43,16 +44,40 @@ class DndRollResults extends PolymerElement {
         this.isOpen = false;
       }
     });
+
+    this.editModeHandler = (e) => {
+      if (e.detail.isEditMode) {
+        this.isOpen = false;
+      }
+    };
+    getEditModeChannel().addEventListener('editModeChange', this.editModeHandler);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     rollEventChannel().removeEventListener('new-roll', this.rollHandler);
+    getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
   }
 
   _setFocusRoll(e) {
     const index = parseInt(e.target.closest('.roll-result').getAttribute('index'));
     this.focusRoll = index;
+  }
+
+  _deleteRoll(e) {
+    const index = parseInt(e.target.closest('.roll-result').getAttribute('index'));
+    this.splice('rollResults', index, 1);
+    setTimeout(() => {
+      if (this.focusRoll > this.rollResults.length - 1) {
+        this.focusRoll = this.rollResults.length - 1;
+      }
+      setTimeout(() => {
+        this.$.rollResults.scrollTo({top: this.$.rollResults.scrollHeight, behavior: 'smooth'});
+      }, 500);
+    }, 0);
+    if (this.rollResults.length === 0) {
+      this.isOpen = false;
+    }
   }
 
   _toggleOpen() {
@@ -97,28 +122,34 @@ class DndRollResults extends PolymerElement {
           z-index: 1;
         }
 
+        .roll-results__mask {
+          position: fixed;
+          right: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 800px;
+          max-height: 236px;
+        }
+        .roll-results__background {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(0deg, black, transparent);
+        }
+
         .roll-results {
           position: absolute;
           bottom: 0;
           right: calc(100% - 20px);
           flex-direction: column;
           align-items: flex-end;
-          background: linear-gradient(0deg, black, transparent);
           width: 110vw;
           padding: 0 0 50px 0;
           margin-bottom: -30px;
           margin-right: -92px;
-          /* pointer-events: none; */
-          max-height: 314px;
+          max-height: 186px;
           overflow-y: scroll;
           display: none;
-        }
-        .roll-results:before {
-          display: block;
-          content: '';
-          mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
-          width: 225px;
-          height: 50px;
+          scroll-snap-type: y mandatory;
         }
         .roll-results[open] {
           display: flex;
@@ -134,10 +165,11 @@ class DndRollResults extends PolymerElement {
           padding: 12px;
           position: relative;
           right: 130px;
-          pointer-events: all;
           height: 82px;
           transition: height 0.3s, width 0.3s;
           outline: none;
+          scroll-snap-align: start;
+          z-index: 2;
         }
         .roll-results__clear {
           background: var(--mdc-theme-surface-surface);
@@ -241,10 +273,27 @@ class DndRollResults extends PolymerElement {
           transition: height 0.3s;
           overflow: hidden;
         }
+        .roll-result__close {
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          right: 0px;
+          top: 0px;
+          border: 0;
+          margin: 0;
+          background: none;
+          padding: 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: var(--mdc-theme-on-surface);
+        }
 
         .roll-result[little] {
           width: 175px;
           height: 24px;
+          cursor: zoom-in;
         }
         .roll-result[little] .roll-result__dice-wrap {
           height: 0;
@@ -264,15 +313,31 @@ class DndRollResults extends PolymerElement {
         .roll-result[little] .roll-result__title {
           margin: 0;
         }
+        .roll-result[little] .roll-result__close {
+          display: none;
+        }
 
         @media(min-width: 420px) {
           .roll-results__clear,
           .roll-result {
             right: 140px;
           }
+          .roll-results__mask {
+            -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+            mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+          }
         }
 
         @media(min-width: 921px) {
+          .roll-results {
+            max-height: 314px;
+          }
+          .roll-results__mask {
+            max-height: 364px;
+          }
+          .roll-result {
+            width: min-content !important;
+          }
           .thumb-menu__btn {
             margin-left: auto;
             position: relative;
@@ -298,8 +363,12 @@ class DndRollResults extends PolymerElement {
               <div class="roll-result__roll">[[item.roll]]</div>
             </div>
             <div class="roll-result__total">[[item.total]]</div>
+            <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
           </div>
         </template>
+        <div class="roll-results__mask">
+          <div class="roll-results__background"></div>
+        </div>
         <!-- <div class="roll-results__clear" on-click="_clearRolls">Clear</div> -->
       </div>
     `;
