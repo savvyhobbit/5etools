@@ -46,7 +46,7 @@ const r=s.b`
   :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
     --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
   }
-`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(72);var l=i(3),o=i(31),d=i(32),u=i(57),p=i(101),h=i(55),c=i(74);
+`;Object(s.c)("vaadin-number-field",[a.a,n.a,r],{moduleId:"lumo-number-field"});i(73);var l=i(3),o=i(31),d=i(32),u=i(57),p=i(101),h=i(55),c=i(74);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
@@ -204,7 +204,7 @@ const s=a.b`
   [part='input-field'] ::slotted(vaadin-icon) {
     margin-top: calc((var(--lumo-icon-size-m) - 1em * var(--lumo-line-height-s)) / -2);
   }
-`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(72);var r=i(3),l=i(31),o=i(109),d=i(32),u=i(101),p=i(55),h=i(78),c=i(74),m=i(34);
+`;Object(a.c)("vaadin-text-area",[n.a,s],{moduleId:"lumo-text-area"});i(73);var r=i(3),l=i(31),o=i(109),d=i(32),u=i(101),p=i(55),h=i(78),c=i(74),m=i(34);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.
