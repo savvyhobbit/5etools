@@ -34,16 +34,16 @@ class DndRollResults extends PolymerElement {
       this.isOpen = true;
 
       setTimeout(() => {
-        this.$.rollResults.scrollTo({top: this.$.rollResults.scrollHeight, behavior: 'smooth'});
+        this.$.scrollContainer.scrollTo({top: this.$.scrollContainer.scrollHeight, behavior: 'smooth'});
       }, 500);
     };
     rollEventChannel().addEventListener('new-roll', this.rollHandler);
 
-    this.$.rollResults.addEventListener('click', (e) => {
-      if (!e.target.closest('.roll-result')) {
-        this.isOpen = false;
-      }
-    });
+    // this.$.scrollContainer.addEventListener('click', (e) => {
+    //   if (!e.target.closest('.roll-result')) {
+    //     this.isOpen = false;
+    //   }
+    // });
 
     this.editModeHandler = (e) => {
       if (e.detail.isEditMode) {
@@ -72,7 +72,7 @@ class DndRollResults extends PolymerElement {
         this.focusRoll = this.rollResults.length - 1;
       }
       setTimeout(() => {
-        this.$.rollResults.scrollTo({top: this.$.rollResults.scrollHeight, behavior: 'smooth'});
+        this.$.scrollContainer.scrollTo({top: this.$.scrollContainer.scrollHeight, behavior: 'smooth'});
       }, 500);
     }, 0);
     if (this.rollResults.length === 0) {
@@ -101,6 +101,7 @@ class DndRollResults extends PolymerElement {
   }
 
   _equals(a, b) {
+    console.error('_equals', a, b);
     return a === b;
   }
 
@@ -116,70 +117,99 @@ class DndRollResults extends PolymerElement {
           display: none !important;
         }
 
-        .thumb-menu__btn {
-          border-radius: 50%;
-          margin-bottom: 12px;
-          z-index: 1;
+        .roll-results__toggle-btn {
+          position: absolute;
+          right: 90px;
+          bottom: 4px;
+          height: 20px;
+          border-radius: 20px;
+          width: 60px;
+          z-index: 3;
+        }
+        .roll-results__toggle-btn[open] {
+          transform: rotate(180deg);
+        }
+        .roll-results__toggle-btn[disabled] {
+          display: none;
+        }
+        .roll-results__clear-btn {
+          background: var(--mdc-theme-primary);
+          color: var(--mdc-theme-on-primary);
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          position: absolute;
+          bottom: 4px;
+          height: 24px;
+          border-radius: 20px;
+          width: 60px;
+          z-index: 3;
+          right: 168px;
         }
 
+        .roll-results {
+          position: absolute;
+          bottom: -350px;
+          right: calc(100% - 20px);
+          flex-direction: column;
+          align-items: flex-end;
+          width: 110vw;
+          margin-bottom: -20px;
+          margin-right: -92px;
+          pointer-events: none;
+          transition: bottom 0.2s;
+        }
+        .roll-results[open] {
+          bottom: -4px;
+        }
         .roll-results__mask {
           position: fixed;
           right: 0;
+          bottom: 63px;
           width: 100%;
           height: 100%;
           max-width: 800px;
-          max-height: 236px;
+          max-height: 255px;
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+        .roll-results[open] .roll-results__mask {
+          opacity: 1;
         }
         .roll-results__background {
           width: 100%;
           height: 100%;
           background: linear-gradient(0deg, black, transparent);
         }
-
-        .roll-results {
-          position: absolute;
-          bottom: 0;
-          right: calc(100% - 20px);
-          flex-direction: column;
-          align-items: flex-end;
-          width: 110vw;
-          padding: 0 0 50px 0;
-          margin-bottom: -30px;
-          margin-right: -92px;
+        .roll-results__scroll-container {
           max-height: 186px;
           overflow-y: scroll;
-          display: none;
           scroll-snap-type: y mandatory;
-        }
-        .roll-results[open] {
           display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          pointer-events: all;
+          position: relative;
+          right: 113px;
+          z-index: 2;
+          padding: 0 20px 50px 0;
         }
 
         .roll-result {
           background: var(--mdc-theme-surface-surface);
           color: var(--mdc-theme-on-surface);
           border-radius: 6px;
-          margin-top: 16px;
+          margin-bottom: 16px;
           display: flex;
           width: 225px;
           padding: 12px;
-          position: relative;
-          right: 130px;
           height: 82px;
           transition: height 0.3s, width 0.3s;
           outline: none;
           scroll-snap-align: start;
-          z-index: 2;
-        }
-        .roll-results__clear {
-          background: var(--mdc-theme-surface-surface);
-          color: var(--mdc-theme-on-surface);
-          border-radius: 6px;
-          margin-top: 16px;
           position: relative;
-          right: 130px;
-          padding: 4px 12px;
-          cursor: pointer;
         }
         .roll-result__summary {
           display: flex;
@@ -318,58 +348,58 @@ class DndRollResults extends PolymerElement {
         }
 
         @media(min-width: 420px) {
-          .roll-results__clear,
-          .roll-result {
-            right: 140px;
-          }
           .roll-results__mask {
+            bottom: 0;
             -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
             mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
           }
         }
 
         @media(min-width: 921px) {
-          .roll-results {
+          .roll-results__clear-btn {
+            right: 178px;
+          }
+          .roll-results__scroll-container {
             max-height: 314px;
           }
           .roll-results__mask {
-            max-height: 364px;
+            max-height: 400px;
           }
           .roll-result {
             width: min-content !important;
           }
-          .thumb-menu__btn {
-            margin-left: auto;
-            position: relative;
-            top: -10px;
+          .roll-results__toggle-btn {
+            right: 100px;
           }
         }
       </style>
-      <button class="thumb-menu__btn mdc-icon-button mdc-button--raised" on-click="_toggleOpen">
-        <i class="fas fa-dice-d20"></i>
+      <div class="roll-results__clear-btn" on-click="_clearRolls" hidden$=[[!isOpen]]>Clear</div>
+      <button class="roll-results__toggle-btn mdc-icon-button mdc-button--raised" on-click="_toggleOpen" disabled$="[[_equals(rollResults.length, 0)]]" open$=[[isOpen]]>
+        <i class="fas fa-angle-up"></i>
       </button>
-      <div id="rollResults" class="roll-results" open$="[[isOpen]]">
-        <template is="dom-repeat" items="[[rollResults]]">
-          <div class="roll-result" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
-            <div class="roll-result__summary">
-              <div class="roll-result__title">
-                <span class="roll-result__name">[[item.name]]</span>
-                <span class="roll-result__type">[[item.type]]</span>
+      <div class="roll-results" open$="[[isOpen]]">
+        <div class="roll-results__scroll-container" id="scrollContainer" >
+          <template is="dom-repeat" items="[[rollResults]]">
+            <div class="roll-result" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
+              <div class="roll-result__summary">
+                <div class="roll-result__title">
+                  <span class="roll-result__name">[[item.name]]</span>
+                  <span class="roll-result__type">[[item.type]]</span>
+                </div>
+                <div class="roll-result__dice-wrap">
+                  <i class$="[[_diceIconClass(item.roll)]]"></i>
+                  <div class="roll-result__dice-results" inner-h-t-m-l="[[item.result]]"></div>
+                </div>
+                <div class="roll-result__roll">[[item.roll]]</div>
               </div>
-              <div class="roll-result__dice-wrap">
-                <i class$="[[_diceIconClass(item.roll)]]"></i>
-                <div class="roll-result__dice-results" inner-h-t-m-l="[[item.result]]"></div>
-              </div>
-              <div class="roll-result__roll">[[item.roll]]</div>
+              <div class="roll-result__total">[[item.total]]</div>
+              <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
             </div>
-            <div class="roll-result__total">[[item.total]]</div>
-            <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
-          </div>
-        </template>
+          </template>
+        </div>
         <div class="roll-results__mask">
           <div class="roll-results__background"></div>
         </div>
-        <!-- <div class="roll-results__clear" on-click="_clearRolls">Clear</div> -->
       </div>
     `;
   }

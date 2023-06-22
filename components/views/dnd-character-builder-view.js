@@ -407,7 +407,7 @@ class DndCharacterBuilderView extends PolymerElement {
       <style>
         :host {
           display: block;
-          --tab-bottom-margin: 210px;
+          --tab-bottom-margin: 270px;
         }
         .head-wrap {
           display: flex;
@@ -484,7 +484,7 @@ class DndCharacterBuilderView extends PolymerElement {
         .thumb-menu {
           position: fixed;
           bottom: 24px;
-          right: 24px;
+          right: 10px;
           z-index: 2;
           display: flex;
           flex-direction: column-reverse;
@@ -544,7 +544,7 @@ class DndCharacterBuilderView extends PolymerElement {
 
         @media(max-width: 419px) {
           .thumb-menu {
-            bottom: 90px;
+            bottom: 75px;
           }
           #tabs.fixed {
             position: fixed;
