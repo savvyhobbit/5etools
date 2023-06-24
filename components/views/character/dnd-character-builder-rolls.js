@@ -88,13 +88,15 @@ class DndCharacterBuilderRolls extends PolymerElement {
   _makeRoll(e) {
     if (!this.isEditMode) {
       let rollModel = e.model.__data.item;
+      const critOn = 20;
+      let isCrit;
       if (!rollModel.noHitRoll) {
-        rollHit(rollModel.name, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked);
+        isCrit = rollHit(rollModel.name, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked, this.$.doubleAdvMod.checked, critOn);
       }
-      rollModel.damages.forEach((damage, index) => {
+      rollModel.damages.forEach((damage) => {
         if (damage.roll) {
           const damageType = `${damage.type ? util_capitalize(damage.type) + ' ' : ''}Damage`;
-          rollDice(rollModel.name, damage.roll, damageType);
+          rollDice(rollModel.name, damage.roll, damageType, isCrit);
         }
       });
     }
@@ -158,10 +160,11 @@ class DndCharacterBuilderRolls extends PolymerElement {
   }
 
   _modChange(e) {
-    if (e.currentTarget.id === 'advMod') {
-      this.$.disadvMod.checked = false;
-    } else {
+    if (e.currentTarget.id === 'disadvMod') {
       this.$.advMod.checked = false;
+      this.$.doubleAdvMod.checked = false;
+    } else {
+      this.$.disadvMod.checked = false;
     }
   }
 
@@ -228,6 +231,10 @@ class DndCharacterBuilderRolls extends PolymerElement {
         overflow: hidden;
         text-overflow: ellipsis;
         color: var(--mdc-theme-primary);
+      }
+
+      #disadvMod {
+        width: 100%;
       }
 
       .rolls__add-button {
@@ -413,9 +420,9 @@ class DndCharacterBuilderRolls extends PolymerElement {
         </div>
 
         <div hidden$="[[isEditMode]]" class="rolls__toolbar">
-          <h4>Roll Modifiers:</h4>
           <div>
-            <vaadin-checkbox id='advMod' on-change="_modChange">Advantage</vaadin-checkbox>
+            <vaadin-checkbox id='advMod' checked="{{advMod}}" on-change="_modChange">Advantage</vaadin-checkbox>
+            <vaadin-checkbox id='doubleAdvMod' hidden$="[[!advMod]]" on-change="_modChange">Double Advantage</vaadin-checkbox>
             <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
           </div>
         </div>

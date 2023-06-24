@@ -101,12 +101,15 @@ class DndRollResults extends PolymerElement {
   }
 
   _equals(a, b) {
-    console.error('_equals', a, b);
     return a === b;
   }
 
   _isLast(index, array) {
     return array.length && array.length - 1 === index;
+  }
+
+  _and(a, b) {
+    return a && b;
   }
 
   static get template() {
@@ -136,6 +139,7 @@ class DndRollResults extends PolymerElement {
           background: var(--mdc-theme-primary);
           color: var(--mdc-theme-on-primary);
           font-size: 14px;
+          font-weight: bold;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -151,7 +155,7 @@ class DndRollResults extends PolymerElement {
 
         .roll-results {
           position: absolute;
-          bottom: -350px;
+          bottom: -250px;
           right: calc(100% - 20px);
           flex-direction: column;
           align-items: flex-end;
@@ -184,17 +188,24 @@ class DndRollResults extends PolymerElement {
           background: linear-gradient(0deg, black, transparent);
         }
         .roll-results__scroll-container {
-          max-height: 186px;
+          max-height: 202px;
           overflow-y: scroll;
           scroll-snap-type: y mandatory;
           display: flex;
           flex-direction: column;
           align-items: flex-end;
           pointer-events: all;
+          padding: 0 17px 50px 0;
+          box-sizing: content-box;
+          width: 100%;
+        }
+        .roll-results__scroll-wrap {
           position: relative;
-          right: 113px;
+          right: 133px;
           z-index: 2;
-          padding: 0 20px 50px 0;
+          overflow: hidden;
+          width: fit-content;
+          margin-left: auto;
         }
 
         .roll-result {
@@ -210,6 +221,24 @@ class DndRollResults extends PolymerElement {
           outline: none;
           scroll-snap-align: start;
           position: relative;
+        }
+        .roll-result[crit]:before {
+          content: 'CRITICAL!!!';
+          color: var(--lumo-error-color);
+          position: absolute;
+          left: -15px;
+          top: -4px;
+          font-weight: bold;
+          transform: rotate(-12deg);
+          background: var(--mdc-theme-surface-surface);
+          padding: 0 8px;
+          border: 2px solid var(--lumo-error-color);
+          transition: left 0.3s, top 0.3s, transform 0.3s;
+        }
+        .roll-result[crit][little]:before {
+          left: 13px;
+          top: 10px;
+          transform: rotate(0deg);
         }
         .roll-result__summary {
           display: flex;
@@ -246,8 +275,8 @@ class DndRollResults extends PolymerElement {
         .roll-result__type {
           color: var(--mdc-theme-primary);
         }
-        .roll-result__name:after {
-          content: ':';
+        .roll-result__type-separator {
+          margin-left: -4px;
         }
         .roll-result__total {
           font-size: 32px;
@@ -303,6 +332,13 @@ class DndRollResults extends PolymerElement {
           transition: height 0.3s;
           overflow: hidden;
         }
+        .roll-result__roll span {
+          font-size: 10px;
+          line-height: 1;
+          width: min-content;
+          margin-right: 4px;
+          display: inline-flex;
+        }
         .roll-result__close {
           position: absolute;
           height: 20px;
@@ -356,20 +392,23 @@ class DndRollResults extends PolymerElement {
         }
 
         @media(min-width: 921px) {
-          .roll-results__clear-btn {
-            right: 178px;
+          .roll-results {
+            bottom: -380px;
           }
           .roll-results__scroll-container {
-            max-height: 314px;
+            max-height: 330px;
           }
           .roll-results__mask {
             max-height: 400px;
           }
-          .roll-result {
-            width: min-content !important;
-          }
           .roll-results__toggle-btn {
             right: 100px;
+          }
+          .roll-results__clear-btn {
+            right: 178px;
+          }
+          .roll-result {
+            width: min-content !important;
           }
         }
       </style>
@@ -378,24 +417,27 @@ class DndRollResults extends PolymerElement {
         <i class="fas fa-angle-up"></i>
       </button>
       <div class="roll-results" open$="[[isOpen]]">
-        <div class="roll-results__scroll-container" id="scrollContainer" >
-          <template is="dom-repeat" items="[[rollResults]]">
-            <div class="roll-result" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
-              <div class="roll-result__summary">
-                <div class="roll-result__title">
-                  <span class="roll-result__name">[[item.name]]</span>
-                  <span class="roll-result__type">[[item.type]]</span>
+        <div class="roll-results__scroll-wrap">
+          <div class="roll-results__scroll-container" id="scrollContainer">
+            <template is="dom-repeat" items="[[rollResults]]">
+              <div class="roll-result" crit$="[[item.isCrit]]" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
+                <div class="roll-result__summary">
+                  <div class="roll-result__title">
+                    <span class="roll-result__name">[[item.name]]</span>
+                    <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                    <span class="roll-result__type">[[item.type]]</span>
+                  </div>
+                  <div class="roll-result__dice-wrap">
+                    <i class$="[[_diceIconClass(item.roll)]]"></i>
+                    <div class="roll-result__dice-results" inner-h-t-m-l="[[item.result]]"></div>
+                  </div>
+                  <div class="roll-result__roll" inner-h-t-m-l="[[item.roll]]"></div>
                 </div>
-                <div class="roll-result__dice-wrap">
-                  <i class$="[[_diceIconClass(item.roll)]]"></i>
-                  <div class="roll-result__dice-results" inner-h-t-m-l="[[item.result]]"></div>
-                </div>
-                <div class="roll-result__roll">[[item.roll]]</div>
+                <div class="roll-result__total">[[item.total]]</div>
+                <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
               </div>
-              <div class="roll-result__total">[[item.total]]</div>
-              <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
-            </div>
-          </template>
+            </template>
+          </div>
         </div>
         <div class="roll-results__mask">
           <div class="roll-results__background"></div>

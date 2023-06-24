@@ -6,7 +6,7 @@ function rollEventChannel() {
     return rollChannel;
 }
 
-function emitRoll(name, roll, result, total, type) {
+function emitRoll(name, roll, result, total, type, isCrit) {
     const rollEvent = new CustomEvent("new-roll", {
         bubbles: true,
         composed: true,
@@ -16,6 +16,7 @@ function emitRoll(name, roll, result, total, type) {
             result,
             total,
             type,
+            isCrit,
         }
     });
     rollChannel.dispatchEvent(rollEvent);
@@ -27,37 +28,48 @@ function cleanRoll(roll) {
     return adjustedRoll;
 }
 
-function rollDice(name, rollText, type) {
+function rollDice(name, rollText, type, doubleForCrit) {
     const roll = droll.roll(cleanRoll(rollText));
-    let rollResult = roll.rolls.join('+');
+    let rollResult = doubleForCrit ? `2(${roll.rolls.join('+')})`: roll.rolls.join('+');
     if (roll.modifier) {
         rollResult += roll.modifier >= 0 ? `+${roll.modifier}` : `${roll.modifier}`;
     }
-    emitRoll(name, rollText, rollResult, roll.total, type);
+    const total = doubleForCrit ? roll.rolls.reduce((total, roll) => total + (2 * roll), 0) + roll.modifier : roll.total;
+    emitRoll(name, rollText, rollResult, total, type, doubleForCrit);
 }
 
-function rollHit(name, toHit, adv, disadv) {
-    let rollResult, total;
+function rollHit(name, toHit, adv, disadv, doubleAdv, critOn = 20) {
+    let rollResult, total, isCrit;
     const toHitNumber = parseInt(toHit, 10);
     const toHitString = (toHitNumber >= 0 ? '+' + toHitNumber : toHitNumber + '');
 
     if (adv || disadv) {
-        const roll1 = droll.roll('1d20');
-        const roll2 = droll.roll('1d20');
-        const roll = adv ? Math.max(roll1.total, roll2.total) : Math.min(roll1.total, roll2.total);
-        const notRoll = roll === roll1.total ? roll2.total : roll1.total;
+        const roll1 = droll.roll('1d20').total;
+        let roll2 = droll.roll('1d20').total;
+        let roll3, notRoll2
+        if (adv && doubleAdv) {
+            roll3 = droll.roll('1d20').total;
+            roll2 = Math.max(roll2, roll3);
+            notRoll2 = Math.min(roll2, roll3);
+        }
+        const roll = adv ? Math.max(roll1, roll2) : Math.min(roll1, roll2);
+        const notRoll = roll === roll1 ? roll2 : roll1;
 
-        rollResult = `<span>${notRoll}</span>${roll}${toHitString}`; 
+        rollResult = `<span>${notRoll}</span>${doubleAdv ? `<span>${notRoll2}</span>` : ''}${roll}${toHitString}`; 
         total = roll + toHitNumber;
+        isCrit = roll === critOn;
     } else {
         const roll = droll.roll('1d20' + toHitString);
         total = roll.total;
         rollResult = roll.rolls[0] + toHitString;
+        isCrit = roll.rolls[0] === critOn;
     }
 
-    const rollText = `${adv ? ` (Adv.)` : ''}${disadv ? ` (Disadv.)` : ''} 1d20${toHitString}`;
+    const rollText = `${doubleAdv ? '<span>Double Advantage</span>' : ''}${adv && !doubleAdv ? ` <span>Advantage</span>` : ''}${disadv ? `<span>Disadvantage</span>` : ''} 1d20${toHitString}`;
 
-    emitRoll(name, rollText, rollResult, total, "To Hit");
+    emitRoll(name, rollText, rollResult, total, "To Hit", isCrit);
+
+    return isCrit
 }
 
 export {
