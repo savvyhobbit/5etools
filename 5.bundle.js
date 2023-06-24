@@ -158,7 +158,7 @@ n(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is 
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-n(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},173:function(e,t,n){"use strict";n(29),n(36),n(19);var i=n(2);Object(i.c)("vaadin-grid-tree-toggle",i.b`
+n(100).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" is deprecated. Use "@vaadin/text-field" instead.')},173:function(e,t,n){"use strict";n(29),n(36),n(20);var i=n(2);Object(i.c)("vaadin-grid-tree-toggle",i.b`
     :host {
       --vaadin-grid-tree-toggle-level-offset: 2em;
       align-items: center;

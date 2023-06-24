@@ -9,7 +9,7 @@
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},173:function(e,t,i){"use strict";i(29),i(36),i(19);var a=i(2);Object(a.c)("vaadin-grid-tree-toggle",a.b`
+i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},173:function(e,t,i){"use strict";i(29),i(36),i(20);var a=i(2);Object(a.c)("vaadin-grid-tree-toggle",a.b`
     :host {
       --vaadin-grid-tree-toggle-level-offset: 2em;
       align-items: center;
