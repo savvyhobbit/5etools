@@ -6,6 +6,7 @@ import "../dnd-character-select";
 import "../dnd-spinner";
 import "../dnd-icon";
 import "../dnd-roll-results";
+import "../dnd-roller";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
 import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter } from '../../util/charBuilder.js';
@@ -612,6 +613,7 @@ class DndCharacterBuilderView extends PolymerElement {
           <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
           <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="openDrawer">logout</button>
           <dnd-roll-results></dnd-roll-results>
+          <dnd-roller></dnd-roller>
         </div>
 
         <vaadin-menu-bar theme="end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>

@@ -14,13 +14,26 @@ class DndRollResults extends PolymerElement {
       },
       focusRoll: {
         type: Number,
-        value: 0
+        value: 0,
+        observer: "focusRollChange"
       },
       isOpen: {
         type: Boolean,
         value: false
       }
     };
+  }
+
+  focusRollChange(focusRoll) {
+    setTimeout(() => {
+      const focusElement = this.shadowRoot.querySelector(`[index="${focusRoll}"]`);
+      if (focusElement) {
+        const focusDiceWrap = focusElement.querySelector('.roll-result__dice-results');
+        focusDiceWrap.toggleAttribute('tooltip', focusDiceWrap.offsetWidth < focusDiceWrap.scrollWidth);
+        const focusRollWrap = focusElement.querySelector('.roll-result__roll');
+        focusRollWrap.toggleAttribute('tooltip', focusRollWrap.offsetWidth < focusRollWrap.scrollWidth);
+      }
+    }, 250);
   }
 
   
@@ -93,7 +106,7 @@ class DndRollResults extends PolymerElement {
     let rollValue = '20';
     if (roll) {
       const rollSplit = roll.match(/(?:d)(\d+)/);
-      if (rollSplit.length > 1) {
+      if (rollSplit && rollSplit.length > 1) {
         rollValue = rollSplit[1];
       }
     }
@@ -311,16 +324,16 @@ class DndRollResults extends PolymerElement {
           position: relative;
           font-size: 17px;
           bottom: 7px;
-          margin-right: 4px;
+          margin: 0 2px;
         }
         .roll-result__dice-results span:after {
           display: block;
           content: '';
           position: absolute;
-          left: -1px;
-          bottom: 8px;
+          left: -3px;
+          bottom: 9px;
           border-bottom: 1px solid var(--mdc-theme-on-surface-surface);
-          width: 100%;
+          width: 150%;
           transform: rotate(-25deg);
         } 
         .roll-result__roll {
@@ -328,15 +341,15 @@ class DndRollResults extends PolymerElement {
           font-weight: bold;
           height: 28px;
           display: flex;
-          align-items: flex-end;
           transition: height 0.3s;
           overflow: hidden;
+          align-items: center;
         }
         .roll-result__roll span {
           font-size: 10px;
           line-height: 1;
           width: min-content;
-          margin-right: 4px;
+          margin-right: auto;
           display: inline-flex;
         }
         .roll-result__close {
@@ -380,6 +393,46 @@ class DndRollResults extends PolymerElement {
           margin: 0;
         }
         .roll-result[little] .roll-result__close {
+          display: none;
+        }
+
+        .tooltip-wrap:focus .tooltip,
+        .tooltip-wrap:hover .tooltip {
+          display: block;
+        }
+        .tooltip-wrap:focus {
+          outline: none;
+        }
+        .tooltip-wrap:not([tooltip]) .tooltip {
+          display: none !important;
+        }
+        .tooltip {
+          position: absolute;
+          background: lightgray;
+          color: black;
+          font-size: 14px;
+          padding: 2px 10px;
+          border-radius: 6px;
+          left: 0;
+          top: 0;
+          display: none;
+          word-wrap: break-word;
+          width: calc(100% - 18px);
+          z-index: 2;
+          pointer-events: none;
+        }
+        .tooltip::after {
+          content: '';
+          height: 0;
+          width: 0;
+          position: absolute;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 5px solid lightgray;
+          bottom: -4px;
+          left: 2px;
+        }
+        .tooltip span {
           display: none;
         }
 
@@ -429,9 +482,9 @@ class DndRollResults extends PolymerElement {
                   </div>
                   <div class="roll-result__dice-wrap">
                     <i class$="[[_diceIconClass(item.roll)]]"></i>
-                    <div class="roll-result__dice-results" inner-h-t-m-l="[[item.result]]"></div>
+                    <div class="roll-result__dice-results tooltip-wrap" tabindex="0" inner-h-t-m-l="[[item.result]]"></div>
                   </div>
-                  <div class="roll-result__roll" inner-h-t-m-l="[[item.roll]]"></div>
+                  <div class="roll-result__roll tooltip-wrap" tabindex="0" inner-h-t-m-l="[[item.roll]]"></div>
                 </div>
                 <div class="roll-result__total">[[item.total]]</div>
                 <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>

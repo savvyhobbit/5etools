@@ -51,11 +51,11 @@ module.exports = {
         },
         {
           from: path.resolve(__dirname, "node_modules/@webcomponents/webcomponentsjs/bundles/webcomponents-sd.js"),
-          to: "node_modules/@webcomponents/webcomponentsjs/bundles/webcomponents-sd.js"
+          to: "webcomponents-sd.js"
         },
         {
           from: path.resolve(__dirname, "node_modules/@webcomponents/webcomponentsjs/bundles/webcomponents-sd.js.map"),
-          to: "node_modules/@webcomponents/webcomponentsjs/bundles/webcomponents-sd.js.map"
+          to: "webcomponents-sd.js.map"
         }
       ]
     })

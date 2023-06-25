@@ -12,8 +12,8 @@ function emitRoll(name, roll, result, total, type, isCrit) {
         composed: true,
         detail: {
             name,
-            roll,
-            result,
+            roll: `${roll}<div class="tooltip">${roll}</div>`,
+            result: `${result}<div class="tooltip">${result}</div>`,
             total,
             type,
             isCrit,
@@ -26,6 +26,17 @@ function cleanRoll(roll) {
     let adjustedRoll = roll.replace(/\s/g, "");
     adjustedRoll = adjustedRoll.split("+-").join("-").split("-+").join("-");
     return adjustedRoll;
+}
+
+function rollMultipleDice(name, rolls) {
+    let total = 0,
+        allRolls = [];
+    for (let roll of rolls) {
+        const result = droll.roll(cleanRoll(roll));
+        total += result.total;
+        allRolls = allRolls.concat(result.rolls);
+    }
+    emitRoll(name, rolls.join('+'), allRolls.join('+'), total);
 }
 
 function rollDice(name, rollText, type, doubleForCrit) {
@@ -75,6 +86,7 @@ function rollHit(name, toHit, adv, disadv, doubleAdv, critOn = 20) {
 export {
     rollEventChannel,
     rollDice,
+    rollMultipleDice,
     rollHit,
     emitRoll
 };
