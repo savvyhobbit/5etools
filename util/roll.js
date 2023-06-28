@@ -6,7 +6,7 @@ function rollEventChannel() {
     return rollChannel;
 }
 
-function emitRoll(name, roll, result, total, type, isCrit) {
+function emitRoll(name, roll, result, total, type, isCrit, adv, disadv, doubleAdv) {
     const rollEvent = new CustomEvent("new-roll", {
         bubbles: true,
         composed: true,
@@ -17,6 +17,9 @@ function emitRoll(name, roll, result, total, type, isCrit) {
             total,
             type,
             isCrit,
+            adv,
+            disadv,
+            doubleAdv
         }
     });
     rollChannel.dispatchEvent(rollEvent);
@@ -68,17 +71,17 @@ function rollHit(name, toHit, adv, disadv, doubleAdv, critOn = 20) {
 
         rollResult = `<span>${notRoll}</span>${doubleAdv ? `<span>${notRoll2}</span>` : ''}${roll}${toHitString}`; 
         total = roll + toHitNumber;
-        isCrit = roll === critOn;
+        isCrit = roll >= critOn;
     } else {
         const roll = droll.roll('1d20' + toHitString);
         total = roll.total;
         rollResult = roll.rolls[0] + toHitString;
-        isCrit = roll.rolls[0] === critOn;
+        isCrit = roll.rolls[0] >= critOn;
     }
 
     const rollText = `${doubleAdv ? '<span>Double Advantage</span>' : ''}${adv && !doubleAdv ? ` <span>Advantage</span>` : ''}${disadv ? `<span>Disadvantage</span>` : ''} 1d20${toHitString}`;
 
-    emitRoll(name, rollText, rollResult, total, "To Hit", isCrit);
+    emitRoll(name, rollText, rollResult, total, "To Hit", isCrit, adv, disadv, doubleAdv);
 
     return isCrit
 }

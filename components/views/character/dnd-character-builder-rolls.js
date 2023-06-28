@@ -88,14 +88,14 @@ class DndCharacterBuilderRolls extends PolymerElement {
   _makeRoll(e) {
     if (!this.isEditMode) {
       let rollModel = e.model.__data.item;
-      const critOn = 20;
+      const critOn = parseInt(this.$.critOn.value);
       let isCrit;
       if (!rollModel.noHitRoll) {
         isCrit = rollHit(rollModel.name, rollModel.toHit, this.$.advMod.checked, this.$.disadvMod.checked, this.$.doubleAdvMod.checked, critOn);
       }
       rollModel.damages.forEach((damage) => {
         if (damage.roll) {
-          const damageType = `${damage.type ? util_capitalize(damage.type) + ' ' : ''}Damage`;
+          const damageType = `${damage.type ? util_capitalize(damage.type) : 'Damage'}`;
           rollDice(rollModel.name, damage.roll, damageType, isCrit);
         }
       });
@@ -231,10 +231,6 @@ class DndCharacterBuilderRolls extends PolymerElement {
         overflow: hidden;
         text-overflow: ellipsis;
         color: var(--mdc-theme-primary);
-      }
-
-      #disadvMod {
-        width: 100%;
       }
 
       .rolls__add-button {
@@ -375,8 +371,16 @@ class DndCharacterBuilderRolls extends PolymerElement {
         width: 100%;
         margin: 0;
       }
-      .rolls__toolbar-reset-mods {
-        display: inline-flex;
+      .rolls__toolbar-adv {
+        display: flex;
+        flex-direction: column;
+      }
+      #disadvMod {
+        width: 100%;
+      }
+      #critOn {
+        margin-left: auto;
+        width: 95px;
       }
       .roll__add-damage {
         width: min-content;
@@ -420,11 +424,12 @@ class DndCharacterBuilderRolls extends PolymerElement {
         </div>
 
         <div hidden$="[[isEditMode]]" class="rolls__toolbar">
-          <div>
+          <div class="rolls__toolbar-adv">
             <vaadin-checkbox id='advMod' checked="{{advMod}}" on-change="_modChange">Advantage</vaadin-checkbox>
             <vaadin-checkbox id='doubleAdvMod' hidden$="[[!advMod]]" on-change="_modChange">Double Advantage</vaadin-checkbox>
-            <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
           </div>
+          <vaadin-integer-field id='critOn' no-transparent has-controls value='20' min='15' max='20' label='Crit on'></vaadin-integer-field>
+          <vaadin-checkbox id='disadvMod' on-change="_modChange">Disadvantage</vaadin-checkbox>
         </div>
 
         <div class="rolls rolls--custom">

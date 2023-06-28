@@ -51,7 +51,7 @@ import {
 } from "../../../util/charBuilder";
 import { getEditModeChannel, isEditMode } from "../../../util/editMode";
 import { util_capitalizeAll, absInt, findInPath, cloneDeep } from "../../../js/utils";
-import { rollDice } from "../../../util/roll";
+import { rollDice, rollHit } from "../../../util/roll";
 
 class DndCharacterBuilderAttributes extends PolymerElement {
   
@@ -449,7 +449,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       const attrEl = findInPath('.stat-box', e);
       const initEl = findInPath('.initiative', e);
       const spellAttackEl = findInPath('.spellAttack', e);
-      let mod, isProficient, name, isExpertise, type;
+      let mod, isProficient, name, isExpertise, type, isHit;
 
       if (profEl) {
         isProficient = profEl.hasAttribute('enabled');
@@ -472,6 +472,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
 
       } else if (spellAttackEl) {
         isProficient = false;
+        isHit = true;
 
         if (this.customSpellAttackBonus) {
           mod = this.customSpellAttackBonusVal;
@@ -502,7 +503,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         } else if (mod < 0) {
           rollForm += mod;
         }
-        rollDice(name, rollForm, type);
+        if (isHit) {
+          rollHit(name, mod);
+        } else {
+          rollDice(name, rollForm, type);
+        }
       }
     } else if (profEl) {
       toggleCustomSkill(profEl.innerText.toLowerCase());

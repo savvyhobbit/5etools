@@ -218,6 +218,9 @@ registerStyles('vaadin-integer-field', css`
       min-width: 18px;
       -webkit-mask-image: none;
     }
+    :host([no-transparent]) ::slotted(input) {
+      -webkit-mask-image: none;
+    }
     :host([theme="mini"]) ::slotted(label) {
       padding-top: 0px;
       padding-bottom: 1px;

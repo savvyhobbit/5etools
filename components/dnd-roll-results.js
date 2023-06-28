@@ -32,8 +32,10 @@ class DndRollResults extends PolymerElement {
         focusDiceWrap.toggleAttribute('tooltip', focusDiceWrap.offsetWidth < focusDiceWrap.scrollWidth);
         const focusRollWrap = focusElement.querySelector('.roll-result__roll');
         focusRollWrap.toggleAttribute('tooltip', focusRollWrap.offsetWidth < focusRollWrap.scrollWidth);
+        const focusTitle = focusElement.querySelector('.roll-result__title');
+        focusTitle.toggleAttribute('tooltip', focusTitle.offsetWidth < focusTitle.scrollWidth || this.rollResults[focusRoll] && this.rollResults[focusRoll].isCrit);
       }
-    }, 250);
+    }, 500);
   }
 
   
@@ -46,17 +48,13 @@ class DndRollResults extends PolymerElement {
       this.focusRoll = this.rollResults.length - 1;
       this.isOpen = true;
 
+      const scrollAtBottom = Math.abs(this.$.scrollContainer.scrollHeight - this.$.scrollContainer.clientHeight - this.$.scrollContainer.scrollTop) < 1
+
       setTimeout(() => {
-        this.$.scrollContainer.scrollTo({top: this.$.scrollContainer.scrollHeight, behavior: 'smooth'});
-      }, 500);
+        this.$.scrollContainer.scrollTo({top: this.$.scrollContainer.scrollHeight, behavior: scrollAtBottom ? 'instant' : 'smooth'});
+      }, 0);
     };
     rollEventChannel().addEventListener('new-roll', this.rollHandler);
-
-    // this.$.scrollContainer.addEventListener('click', (e) => {
-    //   if (!e.target.closest('.roll-result')) {
-    //     this.isOpen = false;
-    //   }
-    // });
 
     this.editModeHandler = (e) => {
       if (e.detail.isEditMode) {
@@ -74,6 +72,13 @@ class DndRollResults extends PolymerElement {
 
   _setFocusRoll(e) {
     const index = parseInt(e.target.closest('.roll-result').getAttribute('index'));
+    if (this.focusRoll !== index) {
+      document.activeElement.blur();
+      this.animate = true;
+      setTimeout(() => {
+        this.animate = false;
+      }, 500);
+    }
     this.focusRoll = index;
   }
 
@@ -84,9 +89,6 @@ class DndRollResults extends PolymerElement {
       if (this.focusRoll > this.rollResults.length - 1) {
         this.focusRoll = this.rollResults.length - 1;
       }
-      setTimeout(() => {
-        this.$.scrollContainer.scrollTo({top: this.$.scrollContainer.scrollHeight, behavior: 'smooth'});
-      }, 500);
     }, 0);
     if (this.rollResults.length === 0) {
       this.isOpen = false;
@@ -123,6 +125,15 @@ class DndRollResults extends PolymerElement {
 
   _and(a, b) {
     return a && b;
+  }
+
+  _or(...bools) {
+    for (let bool of bools) {
+      if (bool) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static get template() {
@@ -230,10 +241,13 @@ class DndRollResults extends PolymerElement {
           width: 225px;
           padding: 12px;
           height: 82px;
-          transition: height 0.3s, width 0.3s;
           outline: none;
           scroll-snap-align: start;
           position: relative;
+          user-select: none;
+        }
+        .roll-result[animate] {
+          transition: height 0.3s, width 0.3s;
         }
         .roll-result[crit]:before {
           content: 'CRITICAL!!!';
@@ -246,6 +260,9 @@ class DndRollResults extends PolymerElement {
           background: var(--mdc-theme-surface-surface);
           padding: 0 8px;
           border: 2px solid var(--lumo-error-color);
+          pointer-events: none;
+        }
+        .roll-result[animate][crit]:before {
           transition: left 0.3s, top 0.3s, transform 0.3s;
         }
         .roll-result[crit][little]:before {
@@ -273,8 +290,11 @@ class DndRollResults extends PolymerElement {
           line-height: 1;
           top: 34px;
           opacity: 1;
+        }
+        .roll-result[animate]:after {
           transition: opacity 0.3s, top 0.3s, right 0.3s;
         }
+        
         .roll-result__title {
           margin-top: -4px;
           margin-bottom: 4px;
@@ -299,14 +319,18 @@ class DndRollResults extends PolymerElement {
           align-items: center;
           width: 64px;
           flex-shrink: 0;
+        }
+        .roll-result[animate] .roll-result__total {
           transition: width 0.3s, font-size 0.3s;
         }
         .roll-result__dice-wrap {
           display: flex;
           align-items: center;
           height: 30px;
-          transition: height 0.3s;
           overflow: hidden;
+        }
+        .roll-result[animate] .roll-result__dice-wrap {
+          transition: height 0.3s;
         }
         .roll-result__dice {
           font-size: 30px;
@@ -318,6 +342,11 @@ class DndRollResults extends PolymerElement {
           font-weight: bold;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+        .roll-result__dice-results .tooltip {
+          font-size: 16px;
+          bottom: 30px;
+          top: unset;
         }
         .roll-result__dice-results span {
           color: var(--mdc-theme-on-surface-surface);
@@ -335,15 +364,24 @@ class DndRollResults extends PolymerElement {
           border-bottom: 1px solid var(--mdc-theme-on-surface-surface);
           width: 150%;
           transform: rotate(-25deg);
-        } 
+        }
         .roll-result__roll {
           color: var(--mdc-theme-on-surface-surface);
           font-weight: bold;
           height: 28px;
-          display: flex;
-          transition: height 0.3s;
           overflow: hidden;
-          align-items: center;
+          align-items: flex-end;
+          line-height: 1;
+          text-overflow: ellipsis;
+        }
+        .roll-result[animate] .roll-result__roll {
+          transition: height 0.3s;
+        }
+        .roll-result__roll[flex] {
+          display: flex;
+        }
+        .roll-result__roll:not([flex]) {
+          line-height: 36px;
         }
         .roll-result__roll span {
           font-size: 10px;
@@ -351,6 +389,12 @@ class DndRollResults extends PolymerElement {
           width: min-content;
           margin-right: auto;
           display: inline-flex;
+        }
+        .roll-result__roll .tooltip {
+          font-size: 16px;
+          color: var(--mdc-theme-on-surface-surface);
+          bottom: 0;
+          top: unset;
         }
         .roll-result__close {
           position: absolute;
@@ -396,8 +440,13 @@ class DndRollResults extends PolymerElement {
           display: none;
         }
 
-        .tooltip-wrap:focus .tooltip,
-        .tooltip-wrap:hover .tooltip {
+        @media(max-width: 420px) {
+          .roll-result:not([little]) .tooltip-wrap:focus .tooltip {
+            display: block;
+          }
+        }
+
+        .roll-result:not([little]) .tooltip-wrap:hover .tooltip {
           display: block;
         }
         .tooltip-wrap:focus {
@@ -408,32 +457,28 @@ class DndRollResults extends PolymerElement {
         }
         .tooltip {
           position: absolute;
-          background: lightgray;
-          color: black;
+          background: var(--mdc-theme-surface-surface);
+          color: var(--mdc-theme-on-surface);
           font-size: 14px;
-          padding: 2px 10px;
+          font-weight: bold;
+          padding: 9.5px 12px;
           border-radius: 6px;
           left: 0;
           top: 0;
           display: none;
           word-wrap: break-word;
-          width: calc(100% - 18px);
+          width: calc(100% - 55px);
           z-index: 2;
           pointer-events: none;
+          line-height: 1.5;
+          white-space: normal;
+          box-shadow:
+            0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+            0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+            0px 1px 18px 0px rgba(0, 0, 0, .12);
         }
-        .tooltip::after {
-          content: '';
-          height: 0;
-          width: 0;
-          position: absolute;
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-top: 5px solid lightgray;
-          bottom: -4px;
-          left: 2px;
-        }
-        .tooltip span {
-          display: none;
+        .tooltip .roll-result__name {
+          white-space: normal;
         }
 
         @media(min-width: 420px) {
@@ -473,18 +518,23 @@ class DndRollResults extends PolymerElement {
         <div class="roll-results__scroll-wrap">
           <div class="roll-results__scroll-container" id="scrollContainer">
             <template is="dom-repeat" items="[[rollResults]]">
-              <div class="roll-result" crit$="[[item.isCrit]]" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
+              <div class="roll-result" animate$="[[animate]]" crit$="[[item.isCrit]]" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
                 <div class="roll-result__summary">
-                  <div class="roll-result__title">
-                    <span class="roll-result__name">[[item.name]]</span>
-                    <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                  <div class="roll-result__title tooltip-wrap" tabindex="0">
                     <span class="roll-result__type">[[item.type]]</span>
+                    <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                    <span class="roll-result__name">[[item.name]]</span>
+                    <div class="tooltip">
+                      <span class="roll-result__type">[[item.type]]</span>
+                      <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                      <span class="roll-result__name">[[item.name]]</span>
+                    </div>
                   </div>
                   <div class="roll-result__dice-wrap">
                     <i class$="[[_diceIconClass(item.roll)]]"></i>
                     <div class="roll-result__dice-results tooltip-wrap" tabindex="0" inner-h-t-m-l="[[item.result]]"></div>
                   </div>
-                  <div class="roll-result__roll tooltip-wrap" tabindex="0" inner-h-t-m-l="[[item.roll]]"></div>
+                  <div class="roll-result__roll tooltip-wrap" flex$="[[_or(item.adv, item.disadv, item.doubleAdv)]]" tabindex="0" inner-h-t-m-l="[[item.roll]]"></div>
                 </div>
                 <div class="roll-result__total">[[item.total]]</div>
                 <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>

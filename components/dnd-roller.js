@@ -132,7 +132,7 @@ class DndRoller extends PolymerElement {
           z-index: 2;
           position: absolute;
           bottom: 0;
-          right: 0px;
+          right: -24px;
           background: transparent;
           padding: 0;
           transition: width 0.3s, right 0.3s;
@@ -140,7 +140,7 @@ class DndRoller extends PolymerElement {
         [open] .roller__expand-btn {
           width: 100px;
           background: var(--mdc-theme-surface-surface);
-          right: -24px;
+          right: -44px;
         }
         .roller__open-btn {
           margin-top: 0;
@@ -171,12 +171,13 @@ class DndRoller extends PolymerElement {
           display: flex;
           flex-direction: column-reverse;
           align-items: center;
-          position: relative;
-          right: -75px;
+          position: absolute;
+          right: -100px;
+          bottom: 60px;
           transition: right 0.3s;
         }
         [open] .roller__additional {
-          right: 0;
+          right: -24px;
         }
         .d100 i {
           font-size: 16px;
@@ -196,7 +197,7 @@ class DndRoller extends PolymerElement {
         <div class="roller__expand-btn mdc-button--raised ">
           <button class="roller__open-btn roller__btn mdc-icon-button material-icons" on-click="_toggleOpen">
             <i class="fa fa-dice-d20" hidden$="[[isOpen]]"></i>
-            <i class="fa fa-times" hidden$="[[!isOpen]]"></i>
+            <i class="fal fa-times" hidden$="[[!isOpen]]"></i>
           </button>
           <button class="roller__roll-btn" on-click="_rollIt">Roll!</button>
         </div>
