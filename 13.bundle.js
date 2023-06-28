@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{157:function(e,t,a){"use strict";a.r(t);var i=a(3),l=(a(23),a(28),a(190));a(123),a(92);class s extends i.a{static get properties(){return{tabs:{type:Array,observer:"tabsChanged"},initialSelectedIndex:{type:Number,value:0,observer:"selectedIndexChange"}}}tabsChanged(){this.tabs.length&&(this.tabBar&&this.$.tabs.removeEventListener("MDCTabBar:activated",this.handleTabChange),setTimeout(()=>{this.tabBar=new l.a(this.$.tabs),this.$.tabs.addEventListener("MDCTabBar:activated",this.handleTabChange),this.tabBar.activateTab(this.initialSelectedIndex)},10))}selectedIndexChange(){this.tabBar&&this.initialSelectedIndex&&this.tabBar.activateTab(this.initialSelectedIndex)}handleTabChange(e){const t=e.detail.index;this.dispatchEvent(new CustomEvent("tabChange",{bubbles:!0,composed:!0,detail:{index:t}}))}_iconClass(e){return"mdc-tab__icon fas fa-"+e}static get template(){return i.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{157:function(e,t,l){"use strict";l.r(t);var a=l(3),i=(l(23),l(28),l(190));l(123),l(92);class s extends a.a{static get properties(){return{tabs:{type:Array,observer:"tabsChanged"},initialSelectedIndex:{type:Number,value:0,observer:"selectedIndexChange"}}}tabsChanged(){this.tabs.length&&(this.tabBar&&this.$.tabs.removeEventListener("MDCTabBar:activated",this.handleTabChange),setTimeout(()=>{this.tabBar=new i.a(this.$.tabs),this.$.tabs.addEventListener("MDCTabBar:activated",this.handleTabChange),this.tabBar.activateTab(this.initialSelectedIndex)},10))}selectedIndexChange(){this.tabBar&&this.initialSelectedIndex&&this.tabBar.activateTab(this.initialSelectedIndex)}handleTabChange(e){const t=e.detail.index;this.dispatchEvent(new CustomEvent("tabChange",{bubbles:!0,composed:!0,detail:{index:t}}))}_iconClass(e){return"mdc-tab__icon fas fa-"+e}static get template(){return a.b`
       <style include="material-styles fa-styles">
         .mdc-tab-bar {
           max-width: 100vw;
@@ -64,7 +64,7 @@
           </div>
         </div>
       </div>
-    `}}customElements.define("dnd-tabs",s);a(130),a(93),a(174);var r=a(104),o=a(72);class n extends i.a{static get properties(){return{rollResults:{type:Array,value:[]},focusRoll:{type:Number,value:0,observer:"focusRollChange"},isOpen:{type:Boolean,value:!1}}}focusRollChange(e){setTimeout(()=>{const t=this.shadowRoot.querySelector(`[index="${e}"]`);if(t){const e=t.querySelector(".roll-result__dice-results");e.toggleAttribute("tooltip",e.offsetWidth<e.scrollWidth);const a=t.querySelector(".roll-result__roll");a.toggleAttribute("tooltip",a.offsetWidth<a.scrollWidth)}},250)}connectedCallback(){super.connectedCallback(),this.rollHandler=e=>{console.error("new-roll",e.detail),this.push("rollResults",e.detail),this.focusRoll=this.rollResults.length-1,this.isOpen=!0,setTimeout(()=>{this.$.scrollContainer.scrollTo({top:this.$.scrollContainer.scrollHeight,behavior:"smooth"})},500)},Object(r.c)().addEventListener("new-roll",this.rollHandler),this.editModeHandler=e=>{e.detail.isEditMode&&(this.isOpen=!1)},Object(o.b)().addEventListener("editModeChange",this.editModeHandler)}disconnectedCallback(){super.disconnectedCallback(),Object(r.c)().removeEventListener("new-roll",this.rollHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler)}_setFocusRoll(e){const t=parseInt(e.target.closest(".roll-result").getAttribute("index"));this.focusRoll=t}_deleteRoll(e){const t=parseInt(e.target.closest(".roll-result").getAttribute("index"));this.splice("rollResults",t,1),setTimeout(()=>{this.focusRoll>this.rollResults.length-1&&(this.focusRoll=this.rollResults.length-1),setTimeout(()=>{this.$.scrollContainer.scrollTo({top:this.$.scrollContainer.scrollHeight,behavior:"smooth"})},500)},0),0===this.rollResults.length&&(this.isOpen=!1)}_toggleOpen(){this.isOpen=!this.isOpen}_clearRolls(){this.rollResults=[],this.isOpen=!1}_diceIconClass(e){let t="20";if(e){const a=e.match(/(?:d)(\d+)/);a&&a.length>1&&(t=a[1])}return"roll-result__dice fal fa-dice-d"+t}_equals(e,t){return e===t}_isLast(e,t){return t.length&&t.length-1===e}_and(e,t){return e&&t}static get template(){return i.b`
+    `}}customElements.define("dnd-tabs",s);l(130),l(93),l(174);var r=l(104),o=l(72);class n extends a.a{static get properties(){return{rollResults:{type:Array,value:[]},focusRoll:{type:Number,value:0,observer:"focusRollChange"},isOpen:{type:Boolean,value:!1}}}focusRollChange(e){setTimeout(()=>{const t=this.shadowRoot.querySelector(`[index="${e}"]`);if(t){const l=t.querySelector(".roll-result__dice-results");l.toggleAttribute("tooltip",l.offsetWidth<l.scrollWidth);const a=t.querySelector(".roll-result__roll");a.toggleAttribute("tooltip",a.offsetWidth<a.scrollWidth);const i=t.querySelector(".roll-result__title");i.toggleAttribute("tooltip",i.offsetWidth<i.scrollWidth||this.rollResults[e]&&this.rollResults[e].isCrit)}},500)}connectedCallback(){super.connectedCallback(),this.rollHandler=e=>{console.error("new-roll",e.detail),this.push("rollResults",e.detail),this.focusRoll=this.rollResults.length-1,this.isOpen=!0;const t=Math.abs(this.$.scrollContainer.scrollHeight-this.$.scrollContainer.clientHeight-this.$.scrollContainer.scrollTop)<1;setTimeout(()=>{this.$.scrollContainer.scrollTo({top:this.$.scrollContainer.scrollHeight,behavior:t?"instant":"smooth"})},0)},Object(r.c)().addEventListener("new-roll",this.rollHandler),this.editModeHandler=e=>{e.detail.isEditMode&&(this.isOpen=!1)},Object(o.b)().addEventListener("editModeChange",this.editModeHandler)}disconnectedCallback(){super.disconnectedCallback(),Object(r.c)().removeEventListener("new-roll",this.rollHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler)}_setFocusRoll(e){const t=parseInt(e.target.closest(".roll-result").getAttribute("index"));this.focusRoll!==t&&(document.activeElement.blur(),this.animate=!0,setTimeout(()=>{this.animate=!1},500)),this.focusRoll=t}_deleteRoll(e){const t=parseInt(e.target.closest(".roll-result").getAttribute("index"));this.splice("rollResults",t,1),setTimeout(()=>{this.focusRoll>this.rollResults.length-1&&(this.focusRoll=this.rollResults.length-1)},0),0===this.rollResults.length&&(this.isOpen=!1)}_toggleOpen(){this.isOpen=!this.isOpen}_clearRolls(){this.rollResults=[],this.isOpen=!1}_diceIconClass(e){let t="20";if(e){const l=e.match(/(?:d)(\d+)/);l&&l.length>1&&(t=l[1])}return"roll-result__dice fal fa-dice-d"+t}_equals(e,t){return e===t}_isLast(e,t){return t.length&&t.length-1===e}_and(e,t){return e&&t}_or(...e){for(let t of e)if(t)return!0;return!1}static get template(){return a.b`
       <style include="material-styles fa-styles">
 
         [hidden] {
@@ -168,10 +168,13 @@
           width: 225px;
           padding: 12px;
           height: 82px;
-          transition: height 0.3s, width 0.3s;
           outline: none;
           scroll-snap-align: start;
           position: relative;
+          user-select: none;
+        }
+        .roll-result[animate] {
+          transition: height 0.3s, width 0.3s;
         }
         .roll-result[crit]:before {
           content: 'CRITICAL!!!';
@@ -184,6 +187,9 @@
           background: var(--mdc-theme-surface-surface);
           padding: 0 8px;
           border: 2px solid var(--lumo-error-color);
+          pointer-events: none;
+        }
+        .roll-result[animate][crit]:before {
           transition: left 0.3s, top 0.3s, transform 0.3s;
         }
         .roll-result[crit][little]:before {
@@ -211,8 +217,11 @@
           line-height: 1;
           top: 34px;
           opacity: 1;
+        }
+        .roll-result[animate]:after {
           transition: opacity 0.3s, top 0.3s, right 0.3s;
         }
+        
         .roll-result__title {
           margin-top: -4px;
           margin-bottom: 4px;
@@ -237,14 +246,18 @@
           align-items: center;
           width: 64px;
           flex-shrink: 0;
+        }
+        .roll-result[animate] .roll-result__total {
           transition: width 0.3s, font-size 0.3s;
         }
         .roll-result__dice-wrap {
           display: flex;
           align-items: center;
           height: 30px;
-          transition: height 0.3s;
           overflow: hidden;
+        }
+        .roll-result[animate] .roll-result__dice-wrap {
+          transition: height 0.3s;
         }
         .roll-result__dice {
           font-size: 30px;
@@ -256,6 +269,11 @@
           font-weight: bold;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+        .roll-result__dice-results .tooltip {
+          font-size: 16px;
+          bottom: 30px;
+          top: unset;
         }
         .roll-result__dice-results span {
           color: var(--mdc-theme-on-surface-surface);
@@ -273,15 +291,24 @@
           border-bottom: 1px solid var(--mdc-theme-on-surface-surface);
           width: 150%;
           transform: rotate(-25deg);
-        } 
+        }
         .roll-result__roll {
           color: var(--mdc-theme-on-surface-surface);
           font-weight: bold;
           height: 28px;
-          display: flex;
-          transition: height 0.3s;
           overflow: hidden;
-          align-items: center;
+          align-items: flex-end;
+          line-height: 1;
+          text-overflow: ellipsis;
+        }
+        .roll-result[animate] .roll-result__roll {
+          transition: height 0.3s;
+        }
+        .roll-result__roll[flex] {
+          display: flex;
+        }
+        .roll-result__roll:not([flex]) {
+          line-height: 36px;
         }
         .roll-result__roll span {
           font-size: 10px;
@@ -289,6 +316,12 @@
           width: min-content;
           margin-right: auto;
           display: inline-flex;
+        }
+        .roll-result__roll .tooltip {
+          font-size: 16px;
+          color: var(--mdc-theme-on-surface-surface);
+          bottom: 0;
+          top: unset;
         }
         .roll-result__close {
           position: absolute;
@@ -334,8 +367,13 @@
           display: none;
         }
 
-        .tooltip-wrap:focus .tooltip,
-        .tooltip-wrap:hover .tooltip {
+        @media(max-width: 420px) {
+          .roll-result:not([little]) .tooltip-wrap:focus .tooltip {
+            display: block;
+          }
+        }
+
+        .roll-result:not([little]) .tooltip-wrap:hover .tooltip {
           display: block;
         }
         .tooltip-wrap:focus {
@@ -346,32 +384,28 @@
         }
         .tooltip {
           position: absolute;
-          background: lightgray;
-          color: black;
+          background: var(--mdc-theme-surface-surface);
+          color: var(--mdc-theme-on-surface);
           font-size: 14px;
-          padding: 2px 10px;
+          font-weight: bold;
+          padding: 9.5px 12px;
           border-radius: 6px;
           left: 0;
           top: 0;
           display: none;
           word-wrap: break-word;
-          width: calc(100% - 18px);
+          width: calc(100% - 55px);
           z-index: 2;
           pointer-events: none;
+          line-height: 1.5;
+          white-space: normal;
+          box-shadow:
+            0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+            0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+            0px 1px 18px 0px rgba(0, 0, 0, .12);
         }
-        .tooltip::after {
-          content: '';
-          height: 0;
-          width: 0;
-          position: absolute;
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-top: 5px solid lightgray;
-          bottom: -4px;
-          left: 2px;
-        }
-        .tooltip span {
-          display: none;
+        .tooltip .roll-result__name {
+          white-space: normal;
         }
 
         @media(min-width: 420px) {
@@ -411,18 +445,23 @@
         <div class="roll-results__scroll-wrap">
           <div class="roll-results__scroll-container" id="scrollContainer">
             <template is="dom-repeat" items="[[rollResults]]">
-              <div class="roll-result" crit$="[[item.isCrit]]" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
+              <div class="roll-result" animate$="[[animate]]" crit$="[[item.isCrit]]" little$="[[!_equals(index, focusRoll)]]" on-click="_setFocusRoll" index$="[[index]]">
                 <div class="roll-result__summary">
-                  <div class="roll-result__title">
-                    <span class="roll-result__name">[[item.name]]</span>
-                    <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                  <div class="roll-result__title tooltip-wrap" tabindex="0">
                     <span class="roll-result__type">[[item.type]]</span>
+                    <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                    <span class="roll-result__name">[[item.name]]</span>
+                    <div class="tooltip">
+                      <span class="roll-result__type">[[item.type]]</span>
+                      <span class="roll-result__type-separator" hidden$="[[!_and(item.name, item.type)]]">:</span>
+                      <span class="roll-result__name">[[item.name]]</span>
+                    </div>
                   </div>
                   <div class="roll-result__dice-wrap">
                     <i class$="[[_diceIconClass(item.roll)]]"></i>
                     <div class="roll-result__dice-results tooltip-wrap" tabindex="0" inner-h-t-m-l="[[item.result]]"></div>
                   </div>
-                  <div class="roll-result__roll tooltip-wrap" tabindex="0" inner-h-t-m-l="[[item.roll]]"></div>
+                  <div class="roll-result__roll tooltip-wrap" flex$="[[_or(item.adv, item.disadv, item.doubleAdv)]]" tabindex="0" inner-h-t-m-l="[[item.roll]]"></div>
                 </div>
                 <div class="roll-result__total">[[item.total]]</div>
                 <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
@@ -434,7 +473,7 @@
           <div class="roll-results__background"></div>
         </div>
       </div>
-    `}}customElements.define("dnd-roll-results",n);class d extends i.a{static get properties(){return{isOpen:{type:Boolean,value:!1},d4:{type:Number,value:0},d6:{type:Number,value:0},d8:{type:Number,value:0},d10:{type:Number,value:0},d12:{type:Number,value:0},d20:{type:Number,value:0},d100:{type:Number,value:0}}}_increaseRoll(e){this[e.target.closest(".roller__btn").getAttribute("roll")]++}_toggleOpen(){this.isOpen=!this.isOpen,this.isOpen||(this.d4=0,this.d6=0,this.d8=0,this.d10=0,this.d12=0,this.d20=0,this.d100=0)}_rollIt(){const e=[];this.d20&&e.push(this.d20+"d20"),this.d12&&e.push(this.d12+"d12"),this.d10&&e.push(this.d10+"d10"),this.d8&&e.push(this.d8+"d8"),this.d6&&e.push(this.d6+"d6"),this.d4&&e.push(this.d4+"d4"),this.d100&&e.push(this.d100+"d100"),e.length&&Object(r.e)("Custom",e),this._toggleOpen()}_equals(e,t){return e===t}static get template(){return i.b`
+    `}}customElements.define("dnd-roll-results",n);class d extends a.a{static get properties(){return{isOpen:{type:Boolean,value:!1},d4:{type:Number,value:0},d6:{type:Number,value:0},d8:{type:Number,value:0},d10:{type:Number,value:0},d12:{type:Number,value:0},d20:{type:Number,value:0},d100:{type:Number,value:0}}}_increaseRoll(e){this[e.target.closest(".roller__btn").getAttribute("roll")]++}_toggleOpen(){this.isOpen=!this.isOpen,this.isOpen||(this.d4=0,this.d6=0,this.d8=0,this.d10=0,this.d12=0,this.d20=0,this.d100=0)}_rollIt(){const e=[];this.d20&&e.push(this.d20+"d20"),this.d12&&e.push(this.d12+"d12"),this.d10&&e.push(this.d10+"d10"),this.d8&&e.push(this.d8+"d8"),this.d6&&e.push(this.d6+"d6"),this.d4&&e.push(this.d4+"d4"),this.d100&&e.push(this.d100+"d100"),e.length&&Object(r.e)("Custom",e),this._toggleOpen()}_equals(e,t){return e===t}static get template(){return a.b`
       <style include="fa-styles material-styles my-styles">
         :host {
           display: block;
@@ -472,7 +511,7 @@
           z-index: 2;
           position: absolute;
           bottom: 0;
-          right: 0px;
+          right: -24px;
           background: transparent;
           padding: 0;
           transition: width 0.3s, right 0.3s;
@@ -480,7 +519,7 @@
         [open] .roller__expand-btn {
           width: 100px;
           background: var(--mdc-theme-surface-surface);
-          right: -24px;
+          right: -44px;
         }
         .roller__open-btn {
           margin-top: 0;
@@ -511,12 +550,13 @@
           display: flex;
           flex-direction: column-reverse;
           align-items: center;
-          position: relative;
-          right: -75px;
+          position: absolute;
+          right: -100px;
+          bottom: 60px;
           transition: right 0.3s;
         }
         [open] .roller__additional {
-          right: 0;
+          right: -24px;
         }
         .d100 i {
           font-size: 16px;
@@ -536,7 +576,7 @@
         <div class="roller__expand-btn mdc-button--raised ">
           <button class="roller__open-btn roller__btn mdc-icon-button material-icons" on-click="_toggleOpen">
             <i class="fa fa-dice-d20" hidden$="[[isOpen]]"></i>
-            <i class="fa fa-times" hidden$="[[!isOpen]]"></i>
+            <i class="fal fa-times" hidden$="[[!isOpen]]"></i>
           </button>
           <button class="roller__roll-btn" on-click="_rollIt">Roll!</button>
         </div>
@@ -573,7 +613,7 @@
           </button>
         </div>
       </div>
-    `}}customElements.define("dnd-roller",d);var c=a(1),p=a(183),h=a(33),u=a(98),b=a(9),m=a(99);a(187),a(186);class g extends i.a{static get properties(){return{loading:{type:Boolean,value:!0},characterName:{type:String,value:""},initialSelectedTab:{type:Number,value:0},indexForTabs:{type:Number,value:0},isEditMode:{type:Boolean,value:!1},routeSelection:{type:String,observer:"routeSelectionChange"},deleteModalOpen:{type:Boolean,value:!1},pulse:{type:Boolean,value:!0}}}static get observers(){return["_setName(characterName)"]}_setName(e){e&&Object(h.Tb)(e)}constructor(){super(),this.tabs=this.defaultTabs(),this.menuItems=this.defaultMenu()}connectedCallback(){super.connectedCallback(),this.tabChangeHandler=e=>{let t=e.detail.index,i=this.tabs[t].viewId;Object(b.i)(i),this.indexForTabs=t,void 0!==i&&(this.loading=!0,a(185)("./dnd-character-builder-"+i).then(()=>{this.updateView(document.createElement("dnd-character-builder-"+i))}))},this.addEventListener("tabChange",this.tabChangeHandler),this.loadingHandler=()=>{setTimeout(()=>{this.loading=!1},0)},this.addEventListener("loadingChange",this.loadingHandler),this.setStateFromCharacter(Object(h.T)()),this.characterChangeHandler=e=>{console.error("character_change_handler",e.detail.character),this.setStateFromCharacter(e.detail.character)},Object(h.q)().addEventListener("character-selected",this.characterChangeHandler),this.fixedTabsScrollHandler=()=>{if(this.$.tabs.matches(".fixed--bottom"))return;this.$.tabWrap.getBoundingClientRect().top<=104?this.$.tabs.classList.add("fixed"):this.$.tabs.classList.remove("fixed")},window.addEventListener("scroll",this.fixedTabsScrollHandler),this.$.tabs.classList.remove("fixed"),this.nameFieldFocusHandler=e=>{"New Character"===this.$.name.value&&this.$.name.inputElement.select()},this.$.name.addEventListener("focus",this.nameFieldFocusHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.pulse=!1,Object(m.b)(this.isEditMode,this)},Object(o.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(o.c)(),this.isLoaded||(this.isLoaded=!0,Object(u.a)(this.$.tabTarget,"right",()=>{if(this.indexForTabs>0){const e=this.indexForTabs-1;if(this.tabs[e].hidden){if(this.indexForTabs>1){const e=this.indexForTabs-2;this.$.tabs.tabBar.activateTab(e)}}else this.$.tabs.tabBar.activateTab(e)}},null,".table"),Object(u.a)(this.$.tabTarget,"left",()=>{if(this.indexForTabs<this.tabs.length-1){const e=this.indexForTabs+1;if(this.tabs[e].hidden){if(this.indexForTabs<this.tabs.length-2){const e=this.indexForTabs+2;this.$.tabs.tabBar.activateTab(e)}}else this.$.tabs.tabBar.activateTab(e)}},null,".table")),this._selectionChangeHandler=e=>{e&&e.detail&&e.detail.selection&&(this.routeSelection=e.detail.selection)},Object(b.h)().addEventListener("selection-change",this._selectionChangeHandler),this.routeSelection=Object(b.e)()}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("tabChange",this.tabChangeHandler),this.removeEventListener("loadingChange",this.loadingHandler),window.removeEventListener("scroll",this.fixedTabsScrollHandler),Object(h.q)().removeEventListener("character-selected",this.characterChangeHandler),this.$.name.removeEventListener("focus",this.nameFieldFocusHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler)}updateView(e){window.requestAnimationFrame(()=>{const t=window.scrollY;Object(c.jqEmpty)(this.$.tabTarget),this.$.tabTarget.appendChild(e),this.$.tabs.classList.remove("fixed"),window.scrollTo(0,t)})}routeSelectionChange(){if(this.tabs&&this.routeSelection){const e=this.tabs.findIndex(e=>e.viewId===this.routeSelection);this.initialSelectedTab=e>-1?e:0}}async setStateFromCharacter(e){this.characterName=e.name,this.classLevel=Object(h.G)(e),this.background=Object(h.J)("backgrounds",e,!0),this.race=Object(h.J)("races",e,!0);let t=!0;if(e)if(e.choices&&Object.values(e.choices).find(e=>e.additionalSpells))t=!1;else{const a=await Object(h.F)(e),i=Object(h.E)(e);for(const[l,s]of Object.entries(i)){const i=a[l];if(i.casterProgression&&(t=!1),e.subclasses&&e.subclasses[l]&&i.subclasses&&i.subclasses.length){const a=i.subclasses.find(t=>e.subclasses[l].name===t.name);a&&a.casterProgression&&(t=!1)}}}this.wasNonCaster!==t&&(this.wasNonCaster=t,this.tabs=t?this.nonCasterTabs():this.defaultTabs())}defaultTabs(){return[{label:"",icon:"heart",viewId:"attributes"},{label:"",icon:"book-medical",viewId:"class"},{label:"",icon:"book-user",viewId:"background-race"},{label:"",icon:"book-spells",viewId:"spells"},{label:"",icon:"sack",viewId:"equipment"},{label:"",icon:"list",viewId:"abilities"},{label:"",icon:"dice",viewId:"rolls"}]}nonCasterTabs(){return[{label:"",icon:"heart",viewId:"attributes"},{label:"",icon:"book-medical",viewId:"class"},{label:"",icon:"book-user",viewId:"background-race"},{label:"",icon:"book-spells",viewId:"spells",hidden:!0},{label:"",icon:"sack",viewId:"equipment"},{label:"",icon:"list",viewId:"abilities"},{label:"",icon:"dice",viewId:"rolls"}]}defaultMenu(){return[{component:this.createMenuItem("user-plus"),key:"add",tooltip:"Create New Character"},{component:this.createMenuItem("user-slash"),key:"delete",tooltip:"Delete Character"},{component:this.createMenuItem("clone"),key:"clone",tooltip:"Clone Character"},{component:this.createMenuItem("download"),tooltip:"Download Character Data",children:[{text:"Download",key:"download"},{text:"Download All",key:"download-all"}]},{component:this.createMenuItem("upload"),tooltip:"Upload Character Data",key:"upload"}]}_menuItemSelected(e){switch(e.detail.value.key){case"add":Object(h.b)();break;case"delete":this.openDeleteModal();break;case"download":this.downloadCharacter();break;case"download-all":this.downloadCharacters();break;case"upload":this.$.fileSelector.click();break;case"clone":Object(h.i)()}}createMenuItem(e,t,a=!1){const i=document.createElement("vaadin-context-menu-item"),l=document.createElement("dnd-icon");return a&&(l.style.width="var(--lumo-icon-size-s)",l.style.height="var(--lumo-icon-size-s)",l.style.marginRight="var(--lumo-space-s)"),l.setAttribute("icon",e),i.appendChild(l),t&&i.appendChild(document.createTextNode(t)),i}removeCharacter(){Object(h.kb)(),this.deleteModalOpen=!1}openDeleteModal(){this.deleteModalOpen=!0}closeDeleteModal(){this.deleteModalOpen=!1}downloadCharacter(e){const t=Object(h.T)();Object(p.saveAs)(new Blob([JSON.stringify(t,null,2)],{type:"application/json;charset=utf-8"}),`${t.name} - ${(new Date).toLocaleString()}`)}downloadCharacters(){const e=Object(h.u)();Object(p.saveAs)(new Blob([JSON.stringify(e,null,2)],{type:"application/json;charset=utf-8"}),"Character Export - "+(new Date).toLocaleString())}processUpload(e){const t=e.target.files;console.log("upload",t);const a=(new Date).toLocaleString();for(let e of t)if(e&&"application/json"===e.type){const t=new FileReader;t.addEventListener("load",e=>{const t=JSON.parse(e.target.result),i=Array.isArray(t)?t:[t];for(let e of i)e.name+=" "+a,Object(h.Ub)(e)}),t.readAsText(e)}}toggleEditMode(){Object(o.a)(!this.isEditMode)}openDrawer(){this.dispatchEvent(new CustomEvent("open-drawer",{bubbles:!0}))}_editIcon(e){return e?"check":"edit"}_editModeClass(e){return e?"edit-mode":"not-edit-mode"}static get template(){return i.b`
+    `}}customElements.define("dnd-roller",d);var c=l(1),p=l(183),h=l(33),u=l(98),b=l(9),m=l(99);l(187),l(186);class x extends a.a{static get properties(){return{loading:{type:Boolean,value:!0},characterName:{type:String,value:""},initialSelectedTab:{type:Number,value:0},indexForTabs:{type:Number,value:0},isEditMode:{type:Boolean,value:!1},routeSelection:{type:String,observer:"routeSelectionChange"},deleteModalOpen:{type:Boolean,value:!1},pulse:{type:Boolean,value:!0}}}static get observers(){return["_setName(characterName)"]}_setName(e){e&&Object(h.Tb)(e)}constructor(){super(),this.tabs=this.defaultTabs(),this.menuItems=this.defaultMenu()}connectedCallback(){super.connectedCallback(),this.tabChangeHandler=e=>{let t=e.detail.index,a=this.tabs[t].viewId;Object(b.i)(a),this.indexForTabs=t,void 0!==a&&(this.loading=!0,l(185)("./dnd-character-builder-"+a).then(()=>{this.updateView(document.createElement("dnd-character-builder-"+a))}))},this.addEventListener("tabChange",this.tabChangeHandler),this.loadingHandler=()=>{setTimeout(()=>{this.loading=!1},0)},this.addEventListener("loadingChange",this.loadingHandler),this.setStateFromCharacter(Object(h.T)()),this.characterChangeHandler=e=>{console.error("character_change_handler",e.detail.character),this.setStateFromCharacter(e.detail.character)},Object(h.q)().addEventListener("character-selected",this.characterChangeHandler),this.fixedTabsScrollHandler=()=>{if(this.$.tabs.matches(".fixed--bottom"))return;this.$.tabWrap.getBoundingClientRect().top<=104?this.$.tabs.classList.add("fixed"):this.$.tabs.classList.remove("fixed")},window.addEventListener("scroll",this.fixedTabsScrollHandler),this.$.tabs.classList.remove("fixed"),this.nameFieldFocusHandler=e=>{"New Character"===this.$.name.value&&this.$.name.inputElement.select()},this.$.name.addEventListener("focus",this.nameFieldFocusHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.pulse=!1,Object(m.b)(this.isEditMode,this)},Object(o.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(o.c)(),this.isLoaded||(this.isLoaded=!0,Object(u.a)(this.$.tabTarget,"right",()=>{if(this.indexForTabs>0){const e=this.indexForTabs-1;if(this.tabs[e].hidden){if(this.indexForTabs>1){const e=this.indexForTabs-2;this.$.tabs.tabBar.activateTab(e)}}else this.$.tabs.tabBar.activateTab(e)}},null,".table"),Object(u.a)(this.$.tabTarget,"left",()=>{if(this.indexForTabs<this.tabs.length-1){const e=this.indexForTabs+1;if(this.tabs[e].hidden){if(this.indexForTabs<this.tabs.length-2){const e=this.indexForTabs+2;this.$.tabs.tabBar.activateTab(e)}}else this.$.tabs.tabBar.activateTab(e)}},null,".table")),this._selectionChangeHandler=e=>{e&&e.detail&&e.detail.selection&&(this.routeSelection=e.detail.selection)},Object(b.h)().addEventListener("selection-change",this._selectionChangeHandler),this.routeSelection=Object(b.e)()}disconnectedCallback(){super.disconnectedCallback(),this.removeEventListener("tabChange",this.tabChangeHandler),this.removeEventListener("loadingChange",this.loadingHandler),window.removeEventListener("scroll",this.fixedTabsScrollHandler),Object(h.q)().removeEventListener("character-selected",this.characterChangeHandler),this.$.name.removeEventListener("focus",this.nameFieldFocusHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler)}updateView(e){window.requestAnimationFrame(()=>{const t=window.scrollY;Object(c.jqEmpty)(this.$.tabTarget),this.$.tabTarget.appendChild(e),this.$.tabs.classList.remove("fixed"),window.scrollTo(0,t)})}routeSelectionChange(){if(this.tabs&&this.routeSelection){const e=this.tabs.findIndex(e=>e.viewId===this.routeSelection);this.initialSelectedTab=e>-1?e:0}}async setStateFromCharacter(e){this.characterName=e.name,this.classLevel=Object(h.G)(e),this.background=Object(h.J)("backgrounds",e,!0),this.race=Object(h.J)("races",e,!0);let t=!0;if(e)if(e.choices&&Object.values(e.choices).find(e=>e.additionalSpells))t=!1;else{const l=await Object(h.F)(e),a=Object(h.E)(e);for(const[i,s]of Object.entries(a)){const a=l[i];if(a.casterProgression&&(t=!1),e.subclasses&&e.subclasses[i]&&a.subclasses&&a.subclasses.length){const l=a.subclasses.find(t=>e.subclasses[i].name===t.name);l&&l.casterProgression&&(t=!1)}}}this.wasNonCaster!==t&&(this.wasNonCaster=t,this.tabs=t?this.nonCasterTabs():this.defaultTabs())}defaultTabs(){return[{label:"",icon:"heart",viewId:"attributes"},{label:"",icon:"book-medical",viewId:"class"},{label:"",icon:"book-user",viewId:"background-race"},{label:"",icon:"book-spells",viewId:"spells"},{label:"",icon:"sack",viewId:"equipment"},{label:"",icon:"list",viewId:"abilities"},{label:"",icon:"dice",viewId:"rolls"}]}nonCasterTabs(){return[{label:"",icon:"heart",viewId:"attributes"},{label:"",icon:"book-medical",viewId:"class"},{label:"",icon:"book-user",viewId:"background-race"},{label:"",icon:"book-spells",viewId:"spells",hidden:!0},{label:"",icon:"sack",viewId:"equipment"},{label:"",icon:"list",viewId:"abilities"},{label:"",icon:"dice",viewId:"rolls"}]}defaultMenu(){return[{component:this.createMenuItem("user-plus"),key:"add",tooltip:"Create New Character"},{component:this.createMenuItem("user-slash"),key:"delete",tooltip:"Delete Character"},{component:this.createMenuItem("clone"),key:"clone",tooltip:"Clone Character"},{component:this.createMenuItem("download"),tooltip:"Download Character Data",children:[{text:"Download",key:"download"},{text:"Download All",key:"download-all"}]},{component:this.createMenuItem("upload"),tooltip:"Upload Character Data",key:"upload"}]}_menuItemSelected(e){switch(e.detail.value.key){case"add":Object(h.b)();break;case"delete":this.openDeleteModal();break;case"download":this.downloadCharacter();break;case"download-all":this.downloadCharacters();break;case"upload":this.$.fileSelector.click();break;case"clone":Object(h.i)()}}createMenuItem(e,t,l=!1){const a=document.createElement("vaadin-context-menu-item"),i=document.createElement("dnd-icon");return l&&(i.style.width="var(--lumo-icon-size-s)",i.style.height="var(--lumo-icon-size-s)",i.style.marginRight="var(--lumo-space-s)"),i.setAttribute("icon",e),a.appendChild(i),t&&a.appendChild(document.createTextNode(t)),a}removeCharacter(){Object(h.kb)(),this.deleteModalOpen=!1}openDeleteModal(){this.deleteModalOpen=!0}closeDeleteModal(){this.deleteModalOpen=!1}downloadCharacter(e){const t=Object(h.T)();Object(p.saveAs)(new Blob([JSON.stringify(t,null,2)],{type:"application/json;charset=utf-8"}),`${t.name} - ${(new Date).toLocaleString()}`)}downloadCharacters(){const e=Object(h.u)();Object(p.saveAs)(new Blob([JSON.stringify(e,null,2)],{type:"application/json;charset=utf-8"}),"Character Export - "+(new Date).toLocaleString())}processUpload(e){const t=e.target.files;console.log("upload",t);const l=(new Date).toLocaleString();for(let e of t)if(e&&"application/json"===e.type){const t=new FileReader;t.addEventListener("load",e=>{const t=JSON.parse(e.target.result),a=Array.isArray(t)?t:[t];for(let e of a)e.name+=" "+l,Object(h.Ub)(e)}),t.readAsText(e)}}toggleEditMode(){Object(o.a)(!this.isEditMode)}openDrawer(){this.dispatchEvent(new CustomEvent("open-drawer",{bubbles:!0}))}_editIcon(e){return e?"check":"edit"}_editModeClass(e){return e?"edit-mode":"not-edit-mode"}static get template(){return a.b`
       <style include="material-styles"></style>
       <style>
         :host {
@@ -824,8 +864,8 @@
           </template>
         </vaadin-dialog>
       </div>
-    `}}customElements.define("dnd-character-builder-view",g)},174:function(e,t,a){"use strict";var i=a(3);class l extends i.a{static get properties(){return{icon:{type:String,value:""},faType:{type:String,value:""}}}_classString(e,t){return`${t||"fa"} fa-${e}`}static get template(){return i.b`
+    `}}customElements.define("dnd-character-builder-view",x)},174:function(e,t,l){"use strict";var a=l(3);class i extends a.a{static get properties(){return{icon:{type:String,value:""},faType:{type:String,value:""}}}_classString(e,t){return`${t||"fa"} fa-${e}`}static get template(){return a.b`
       <style include="fa-styles"></style>
       <i class$="[[_classString(icon, faType)]]"></i>
-    `}}customElements.define("dnd-icon",l)},185:function(e,t,a){var i={"./dnd-character-builder-abilities":[175,4],"./dnd-character-builder-abilities.js":[175,4],"./dnd-character-builder-attributes":[176,6],"./dnd-character-builder-attributes.js":[176,6],"./dnd-character-builder-background-race":[177,0,8],"./dnd-character-builder-background-race.js":[177,0,8],"./dnd-character-builder-class":[182,0,9],"./dnd-character-builder-class.js":[182,0,9],"./dnd-character-builder-equipment":[179,2,1,7],"./dnd-character-builder-equipment-item-detail":[172,2,1],"./dnd-character-builder-equipment-item-detail.js":[172,2,1],"./dnd-character-builder-equipment.js":[179,2,1,7],"./dnd-character-builder-rolls":[180,3],"./dnd-character-builder-rolls.js":[180,3],"./dnd-character-builder-spells":[181,5,10],"./dnd-character-builder-spells.js":[181,5,10],"./dnd-character-builder-suboptions":[171,0],"./dnd-character-builder-suboptions.js":[171,0]};function l(e){if(!a.o(i,e))return Promise.resolve().then((function(){var t=new Error("Cannot find module '"+e+"'");throw t.code="MODULE_NOT_FOUND",t}));var t=i[e],l=t[0];return Promise.all(t.slice(1).map(a.e)).then((function(){return a(l)}))}l.keys=function(){return Object.keys(i)},l.id=185,e.exports=l}}]);
+    `}}customElements.define("dnd-icon",i)},185:function(e,t,l){var a={"./dnd-character-builder-abilities":[175,4],"./dnd-character-builder-abilities.js":[175,4],"./dnd-character-builder-attributes":[176,6],"./dnd-character-builder-attributes.js":[176,6],"./dnd-character-builder-background-race":[177,0,8],"./dnd-character-builder-background-race.js":[177,0,8],"./dnd-character-builder-class":[182,0,9],"./dnd-character-builder-class.js":[182,0,9],"./dnd-character-builder-equipment":[179,2,1,7],"./dnd-character-builder-equipment-item-detail":[172,2,1],"./dnd-character-builder-equipment-item-detail.js":[172,2,1],"./dnd-character-builder-equipment.js":[179,2,1,7],"./dnd-character-builder-rolls":[180,3],"./dnd-character-builder-rolls.js":[180,3],"./dnd-character-builder-spells":[181,5,10],"./dnd-character-builder-spells.js":[181,5,10],"./dnd-character-builder-suboptions":[171,0],"./dnd-character-builder-suboptions.js":[171,0]};function i(e){if(!l.o(a,e))return Promise.resolve().then((function(){var t=new Error("Cannot find module '"+e+"'");throw t.code="MODULE_NOT_FOUND",t}));var t=a[e],i=t[0];return Promise.all(t.slice(1).map(l.e)).then((function(){return l(i)}))}i.keys=function(){return Object.keys(a)},i.id=185,e.exports=i}}]);
 //# sourceMappingURL=13.bundle.js.map
