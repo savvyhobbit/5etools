@@ -299,6 +299,8 @@ function EntryRenderer() {
 				}
 			} else if (entry.href.type === "external") {
 				href = entry.href.url;
+			} else if (entry.href.type === "code") {
+				href = entry.href.code;
 			}
 			textStack.push(`<a href='${href}'>${entry.text}</a>`);
 		}
@@ -383,7 +385,9 @@ function EntryRenderer() {
 							case "@damage":
 							case "@dice":
 								// todo
-								textStack.push(name);
+								fauxEntry.href.type = 'code';
+								fauxEntry.href.code = `javascript: (() => { window.rollDice("Link", "${name}"); })();`
+								self.recursiveEntryRender(fauxEntry, textStack, depth);
 								break;
 							case "@book":
 								//todo

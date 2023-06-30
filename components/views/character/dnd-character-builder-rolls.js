@@ -12,6 +12,7 @@ import {
   removeCustomRollDamage,
   getWeaponItemRolls,
   getCustomRolls,
+  getSpellRolls,
 } from "../../../util/charBuilder";
 import { DAMAGE_TYPES } from "../../../util/consts";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
@@ -65,8 +66,9 @@ class DndCharacterBuilderRolls extends PolymerElement {
   async updateFromCharacter(character) {
     const weaponRolls = await getWeaponItemRolls(character);
     const customRolls = getCustomRolls(character);
+    const spellRolls = await getSpellRolls(character);
     this.customRolls = customRolls;
-    this.rolls = weaponRolls.concat(customRolls);
+    this.rolls = weaponRolls.concat(spellRolls, customRolls);
 
     console.error("rolls", this.rolls);
     this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));

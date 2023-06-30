@@ -1,5 +1,7 @@
 import droll from "../lib/droll.js";
 
+window.rollDice = rollDice;
+
 const rollChannel = document.createElement('div');
 
 function rollEventChannel() {

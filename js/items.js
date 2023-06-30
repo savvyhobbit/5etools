@@ -54,11 +54,11 @@ function renderSelection(item, rootEl, data, makeSmall) {
 				const damage = item.damages[i];
 				const isLast = i === item.damages.length - 1;
 				if (damage.roll && damage.type) {
-					rootEl.querySelector(".stats-wrapper .damage").innerHTML += `<span>${utils_makeRoller(damage.roll)} ${Parser.dmgTypeToFull(damage.type)}</span>${isLast ? '': ' + '}`
+					rootEl.querySelector(".stats-wrapper .damage").innerHTML += `<span>${utils_makeRoller(damage.roll, item.name, "Damage")} ${Parser.dmgTypeToFull(damage.type)}</span>${isLast ? '': ' + '}`
 				}
 			}
 		} else {
-			if(item.dmg1) rootEl.querySelector(".stats-wrapper .damage").innerHTML = (utils_makeRoller(item.dmg1));
+			if(item.dmg1) rootEl.querySelector(".stats-wrapper .damage").innerHTML = (utils_makeRoller(item.dmg1, item.name, "Damage"));
 			if(item.dmgType) rootEl.querySelector(".stats-wrapper .damageType").innerHTML = (Parser.dmgTypeToFull(item.dmgType));
 		}
 	} else if (type === "LA" ||type === "MA"|| type === "HA") {
@@ -96,7 +96,7 @@ function renderSelection(item, rootEl, data, makeSmall) {
 	const entryList = {type: "entries", entries: item.entries};
 	const renderStack = [];
 	renderer.recursiveEntryRender(entryList, renderStack, 1);
-	let result = utils_makeRoller(renderStack.join(""));
+	let result = utils_makeRoller(renderStack.join(""), item.name);
 	if (item.name) {
 		result = result
 			.split(item.name.toLowerCase())

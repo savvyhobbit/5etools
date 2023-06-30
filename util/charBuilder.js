@@ -1010,13 +1010,18 @@ function getSpellSlots(level, character = selectedCharacter) {
   return 0;
 }
 
+function getOverallLevels(character = selectedCharacter) {
+  const classLevels = getClassLevelGroups(character);
+  return Object.entries(classLevels).reduce((total, [className, level]) => total + level, 0);
+}
+
 async function getSpellCastingStats(character = selectedCharacter) {
   if (character) {
     const classRefs = await getClassReferences(character),
       classLevels = getClassLevelGroups(character);
     // DCs and Spell Modifier
     const newSpellStats = [];
-    const overallLevel = Object.entries(classLevels).reduce((total, [className, level]) => total + level, 0);
+    const overallLevel = getOverallLevels();
     const profBonus = getProfBonus(overallLevel);
 
     for (const [className, level] of Object.entries(classLevels)) {
@@ -1871,31 +1876,159 @@ function removeCustomRollDamage(rollIndex, damageIndex, character = selectedChar
   }
 }
 
-async function getItemRolls(character = selectedCharacter) {
+function getCustomRolls(character = selectedCharacter) {
+  const rolls = character.customRolls ? cloneDeep(character.customRolls) : [];
 
+  return rolls.map((roll, index) => {
+    if (!roll.type) {
+      roll.type = 'custom';
+    }
+    roll.customIndex = index;
+    return roll;
+  });
 }
 
 async function getSpellRolls(character = selectedCharacter) {
-  const preparedCantrips = character.preparedCantrips || [];
-  const preparedSpells = character.preparedSpells || [];
+  const preparedSpellsObjectArray = [character.preparedCantrips || [], character.preparedSpells || []];
+  const spellMods = await getSpellCastingStats(character);
   const spellRolls = [];
+  const overallLevel = getOverallLevels();
 
-  for (const spell of [...preparedCantrips, ...preparedSpells]) {
-    const spellRef = await getSpellReference(spell.name + '_' + spell.source);
-    const renderStack = []
-    renderer.recursiveEntryRender({type: "entries", entries: spellRef.entries}, renderStack, 1);
-    const render = renderStack.join(' ');
+  for (const preparedSpellsObj of preparedSpellsObjectArray) {
+    for (const [preparedSpellClass, preparedSpellList] of Object.entries(preparedSpellsObj)) {
+      for (const [spellName, spell] of Object.entries(preparedSpellList)) {
+        const spellRef = await getSpellReference(spell.name + '_' + spell.source);
+        const classSpellMods = spellMods.find(mod => mod.classes.some(clas => clas.toLowerCase() === preparedSpellClass.toLowerCase()));
+        let toHit, damages = [];
 
-    render.split('@damage').forEach((str, index) => {
-      if (index === 0 ) {
-        return undefined;
+        if (spellRef.spellAttack) {
+          toHit = classSpellMods.spellAttackBonus;
+        }
+
+        if (spellRef.scalingLevelDice) {
+          const scalingLevelDice = Array.isArray(spellRef.scalingLevelDice) ? spellRef.scalingLevelDice : [spellRef.scalingLevelDice];
+          for (const scalingLevelDiceEntry of scalingLevelDice) {
+            let roll, rollLabel;
+            if (scalingLevelDiceEntry.scaling) {
+              Object.entries(scalingLevelDiceEntry.scaling).forEach(([level, levelRoll]) => {
+                if (overallLevel > parseInt(level)) {
+                  roll = levelRoll;
+                }
+              });
+            } else {
+              console.error(scalingLevelDiceEntry);
+            }
+            if (scalingLevelDiceEntry.label) {
+              const labelSplit = scalingLevelDiceEntry.label.split(" ");
+              if (labelSplit.length < 3) {
+                rollLabel = util_capitalizeAll(labelSplit[0]);
+              } else {
+                rollLabel = util_capitalizeAll(scalingLevelDiceEntry.label);
+              }
+            }
+            if (roll) {
+              roll = roll.replace("{{spellcasting_mod}}", classSpellMods.mod);
+              damages.push({ roll, type: rollLabel });
+            }
+          }
+        }
+  
+        if (damages.length) {
+          spellRolls.push({
+            name: spellName,
+            type: `spell: ${preparedSpellClass}`,
+            class: preparedSpellClass,
+            noHitRoll: !toHit,
+            toHit,
+            damages,
+          });
+        }
       }
-      const roll = str.substring(0, str.indexOf("}")).trim();
+    }
+  }
 
-      spellRolls.push({ roll });
+  return spellRolls;
+}
+
+async function getWeaponItemRolls(character = selectedCharacter) {
+  if (!character) {
+    return;
+  }
+  const weaponItems = await getWeaponItems(character);
+  
+  if (weaponItems.length) {
+    const dexMod = await getAttributeModifier('dex', character);
+    const strMod = await getAttributeModifier('str', character);
+    const proficiencyBonus = await getCharacterProficiencyBonus(character);
+
+    return weaponItems.map((weapon) => {
+      const rollObj = { damages: [] };
+      rollObj.name = weapon.name;
+      const magicBonus = weapon.bonusWeapon ? parseInt(weapon.bonusWeapon) : 0;
+      const isProficient = isProficientWithWeapon(weapon, character);
+      let statMod;
+      if (weapon.type === 'R') {
+        statMod = dexMod;
+      } else if (weapon.property && weapon.property.includes('F')) {
+        if (dexMod > strMod) {
+          statMod = dexMod;
+        } else {
+          statMod = strMod;
+        }
+      } else {
+        statMod = strMod;
+      }
+      rollObj.toHit = statMod + (isProficient ? proficiencyBonus : 0) + magicBonus;
+      rollObj.isEquipped = weapon.isEquipped;
+      rollObj.isProficient = isProficient;
+      rollObj.type = 'weapon';
+  
+      if (weapon.damages) {
+        rollObj.damages = weapon.damages.map((weaponDmg, i) => {
+          let roll = weaponDmg.roll; // todo: versatility roll
+          if (i === 0 && roll.indexOf('+') === -1 && roll.indexOf('-') === -1) {
+            const totalDmgMod = statMod + magicBonus;
+            roll += totalDmgMod > 0 ? `+${totalDmgMod}`: totalDmgMod === 0 ? '' : `${totalDmgMod}`;
+            roll = roll.split('+').join(' + ');
+            roll = roll.split('-').join(' - ');
+          }
+          return {
+            roll,
+            type: weaponDmg.type
+          }
+        });
+      }
+      return rollObj;
     });
   }
-  return spellRolls;
+}
+
+function isProficientWithWeapon(weapon, character = selectedCharacter) {
+  if (!character) {
+    return;
+  }
+  if (weapon.forceProficient) {
+    return true;
+  }
+  const weaponProfs = getChoiceWeaponProfs(character);
+  if (weapon.weaponCategory) {
+    if (weapon.weaponCategory === 'simple' && weaponProfs.includes('simple')) {
+      return true;
+    }
+    if (weapon.weaponCategory === 'martial' && weaponProfs.includes('martial')) {
+      return true;
+    }
+  }
+  if (weapon.baseItem) {
+    const baseItemName = weapon.baseItem.split('|')[0];
+    if (weaponProfs.includes(baseItemName)) {
+      return true;
+    }
+  }
+  if (weaponProfs.includes(weapon.name.toLowerCase())) {
+    return true;
+  }
+  return false;
 }
 
 function setAbilityUsage(ability, index, character = selectedCharacter) {
@@ -1938,101 +2071,6 @@ function removeAbilityUsage(index, character = selectedCharacter) {
       character.customAbilities.splice(index, 1);
     }
     saveCharacter(character);
-  }
-}
-
-function isProficientWithWeapon(weapon, character = selectedCharacter) {
-  if (!character) {
-    return;
-  }
-  if (weapon.forceProficient) {
-    return true;
-  }
-  const weaponProfs = getChoiceWeaponProfs(character);
-  console.error('isProficientWithWeapon', weaponProfs, weapon);
-  if (weapon.weaponCategory) {
-    if (weapon.weaponCategory === 'simple' && weaponProfs.includes('simple')) {
-      return true;
-    }
-    if (weapon.weaponCategory === 'martial' && weaponProfs.includes('martial')) {
-      return true;
-    }
-  }
-  if (weapon.baseItem) {
-    const baseItemName = weapon.baseItem.split('|')[0];
-    if (weaponProfs.includes(baseItemName)) {
-      return true;
-    }
-  }
-  if (weaponProfs.includes(weapon.name.toLowerCase())) {
-    return true;
-  }
-  return false;
-}
-
-function getCustomRolls(character = selectedCharacter) {
-  const rolls = character.customRolls ? cloneDeep(character.customRolls) : [];
-
-  return rolls.map((roll, index) => {
-    if (!roll.type) {
-      roll.type = 'custom';
-    }
-    roll.customIndex = index;
-    return roll;
-  });
-}
-
-async function getWeaponItemRolls(character = selectedCharacter) {
-  if (!character) {
-    return;
-  }
-  const weaponItems = await getWeaponItems(character);
-  
-  if (weaponItems.length) {
-    const dexMod = await getAttributeModifier('dex', character);
-    const strMod = await getAttributeModifier('str', character);
-    const proficiencyBonus = await getCharacterProficiencyBonus(character);
-
-    return weaponItems.map((weapon) => {
-      const rollObj = { damages: [] };
-      rollObj.name = weapon.name;
-      const magicBonus = weapon.bonusWeapon ? parseInt(weapon.bonusWeapon) : 0;
-      const isProficient = isProficientWithWeapon(weapon, character);
-      console.error('isProficient', isProficient);
-      let statMod;
-      if (weapon.type === 'R') {
-        statMod = dexMod;
-      } else if (weapon.property && weapon.property.includes('F')) {
-        if (dexMod > strMod) {
-          statMod = dexMod;
-        } else {
-          statMod = strMod;
-        }
-      } else {
-        statMod = strMod;
-      }
-      rollObj.toHit = statMod + (isProficient ? proficiencyBonus : 0) + magicBonus;
-      rollObj.isEquipped = weapon.isEquipped;
-      rollObj.isProficient = isProficient;
-      rollObj.type = 'weapon';
-  
-      if (weapon.damages) {
-        rollObj.damages = weapon.damages.map((weaponDmg, i) => {
-          let roll = weaponDmg.roll; // todo: versatility roll
-          if (i === 0 && roll.indexOf('+') === -1 && roll.indexOf('-') === -1) {
-            const totalDmgMod = statMod + magicBonus;
-            roll += totalDmgMod > 0 ? `+${totalDmgMod}`: totalDmgMod === 0 ? '' : `${totalDmgMod}`;
-            roll = roll.split('+').join(' + ');
-            roll = roll.split('-').join(' - ');
-          }
-          return {
-            roll,
-            type: weaponDmg.type
-          }
-        });
-      }
-      return rollObj;
-    });
   }
 }
 
@@ -2131,7 +2169,6 @@ export {
   removeCustomRoll,
   removeCustomRollDamage,
   getSpellRolls,
-  getItemRolls,
   setAbilityUsage,
   removeAbilityUsage,
   toggleCustomSkill,

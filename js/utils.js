@@ -271,13 +271,16 @@ function utils_makeAttChoose(attList) {
 	}
 }
 
-function utils_makeRoller(text) {
+function utils_makeRoller(text, label, type) {
 	if (text) {
 		const DICE_REGEX = /([1-9]\d*)?d([1-9]\d*)(\s?[+-]\s?\d+)?/g;
-		return text.replace(DICE_REGEX, "<span class='roller' data-roll='$&'>$&</span>")
-			.replace(/(-|\+)?\d+(?= to hit)/g, "<span class='roller' data-roll='1d20$&'>$&</span>")
-			.replace(/(-|\+)?\d+(?= bonus to)/g, "<span class='roller' data-roll='1d20$&'>$&</span>")
-			.replace(/(bonus of )(=?-|\+\d+)/g, "$1<span class='roller' data-roll='1d20$2'>$2</span>");
+		const typeStr = type ? `, \"${type}\"` : "";
+		const labelStr = label.split('"').join('').split("'").join("");
+		return text
+			// .replace(DICE_REGEX, `<a href='javascript:(()=>{ window.rollDice(\"${labelStr}\", \"$&\"${typeStr}); })();' class='roller' data-roll='$&'>$&</a>`)
+			.replace(/(-|\+)?\d+(?= to hit)/g, `<a href='javascript:(()=>{ window.rollDice(\"${labelStr}\", \"1d20$&\", "To Hit"); })();' class='roller' data-roll='1d20$&'>$&</a>`)
+			.replace(/(-|\+)?\d+(?= bonus to)/g, `<a href='javascript:(()=>{ window.rollDice(\"${labelStr}\", \"1d20$&\"${typeStr}); })();' class='roller' data-roll='1d20$&'>$&</a>`)
+			.replace(/(bonus of )(=?-|\+\d+)/g, `$1<a href='javascript:(()=>{ window.rollDice(\"${labelStr}\", \"1d20$2\"${typeStr}); })();' class='roller' data-roll='1d20$2'>$2</a>`);
 	}
 }
 

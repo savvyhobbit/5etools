@@ -2,6 +2,7 @@ import { parseHTML, utils_makeRoller, jqAfter, jqPrepend} from "../js/utils.js";
 import EntryRenderer from "../util/entryrender.js";
 import Parser from "../util/Parser.js"
 import droll from "../lib/droll.js"
+import { rollDice } from "../util/roll.js";
 
 const MAX_ROLLS = 5
 
@@ -85,7 +86,6 @@ const stats_wrapper = `
 				<span>Regional Effects</span>
 			</div>
 		</div>
-		<div id="output"></div>
 	</div>`;
 
 function objToTitleCaseStringWithCommas(obj) {
@@ -415,7 +415,7 @@ function renderSelection(mon, rootEl) {
 		entryList = {type: "entries", entries: sectionEntries};
 		renderStack = [];
 		renderer.recursiveEntryRender(entryList, renderStack);
-		const newThing = parseHTML(`<div class='${sectionClass}'><div class='legendary'>${utils_makeRoller(renderStack.join(""))}</div></div>`)
+		const newThing = parseHTML(`<div class='${sectionClass}'><div class='legendary'>${utils_makeRoller(renderStack.join(""), mon.name)}</div></div>`)
 		jqAfter(rootEl.querySelector(`#${sectionClass}s`), newThing);
 	}
 
@@ -554,6 +554,7 @@ function renderSelection(mon, rootEl) {
 			const $this = statsRollerEl;
 			let roll;
 			let rollResult;
+			let title = $this.getAttribute("title") || "";
 			if ($this.getAttribute(ATB_PROF_MODE) === PROF_MODE_DICE) {
 				roll = $this.getAttribute("data-roll-alt").replace(/\s+/g, "");
 				// hacks because droll doesn't support e.g. "1d20+1d4+2" :joy: :ok_hand:
@@ -565,9 +566,8 @@ function renderSelection(mon, rootEl) {
 				rollResult.total += res2.total;
 			} else {
 				roll = $this.getAttribute("data-roll").replace(/\s+/g, "");
-				rollResult = droll.roll(roll);
+				rollDice(title, roll, window.monsterName);
 			}
-			outputRollResult($this, roll, rollResult);
 		});
 	}
 	
@@ -575,27 +575,12 @@ function renderSelection(mon, rootEl) {
 	for (let statsDCRollerEl of statsDCRollerEls) {
 		const $this = statsDCRollerEl;
     let roll;
-    let rollResult;
+		let title;
     if ($this.getAttribute(ATB_PROF_MODE) === PROF_MODE_DICE) {
       roll = $this.getAttribute("data-roll-alt").replace(/\s+/g, "");
-      rollResult = droll.roll(roll);
-      outputRollResult($this, roll, rollResult);
+			title = $this.getAttribute("title") || "";
+			rollDice(title, roll, window.monsterName);
     }
-	}
-
-	function outputRollResult($ele, roll, rollResult) {
-		const name = window.monsterName;
-		const newResult = parseHTML(
-      `<span>${name}: <em>${roll}</em> rolled ${
-        $ele.getAttribute("title") ? `${$ele.getAttribute("title")} ` : ""
-      }for <strong>${rollResult.total}</strong> (<em>${rollResult.rolls.join(", ")}</em>)<br></span>`
-		);
-		const outputEl = rootEl.querySelector("#output");
-		jqPrepend(outputEl, newResult);
-		outputEl.style.display = 'block';
-		if (outputEl.children.length === MAX_ROLLS + 1) {
-			outputEl.children[MAX_ROLLS].remove();
-		}
 	}
 }
 
