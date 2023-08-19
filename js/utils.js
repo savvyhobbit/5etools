@@ -275,7 +275,7 @@ function utils_makeRoller(text, label, type) {
 	if (text) {
 		const DICE_REGEX = /([1-9]\d*)?d([1-9]\d*)(\s?[+-]\s?\d+)?/g;
 		const typeStr = type ? `, \"${type}\"` : "";
-		const labelStr = label.split('"').join('').split("'").join("");
+		const labelStr = label ? label.split('"').join('').split("'").join("") : "";
 		return text
 			// .replace(DICE_REGEX, `<a href='javascript:(()=>{ window.rollDice(\"${labelStr}\", \"$&\"${typeStr}); })();' class='roller' data-roll='$&'>$&</a>`)
 			.replace(/(-|\+)?\d+(?= to hit)/g, `<a href='javascript:(()=>{ window.rollDice(\"${labelStr}\", \"1d20$&\", "To Hit"); })();' class='roller' data-roll='1d20$&'>$&</a>`)

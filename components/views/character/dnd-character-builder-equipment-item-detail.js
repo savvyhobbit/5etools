@@ -226,6 +226,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
     }
     console.error('itemDetail:', this.item);
     renderSelection(this.item, this.$.renderedOutput);
+    this.hasDescription = !!this.item.source;
     this.itemType = this._getItemType();
     this.hasAC = this.item.type === 'S' || !!this.item.armor;
     this.armorAC = this.item.ac;
@@ -720,6 +721,7 @@ class DndCharacterBuilderEquipmentItemDetail extends PolymerElement {
               <vaadin-checkbox hidden$="[[!_or(item.weapon, item.weaponCategory)]]" checked="{{storedItem.forceProficient}}" on-change="_updateItem" label="Force Proficiency"></vaadin-checkbox>
               <vaadin-checkbox checked="{{storedItem.reqAttune}}" on-change="_updateItem" label="Requires Attunement"></vaadin-checkbox>
               <vaadin-checkbox checked="{{storedItem.wondrous}}" on-change="_updateItem" label="Wondrous"></vaadin-checkbox>
+              <vaadin-checkbox hidden$="[[!hasDescription]]" checked="{{storedItem.hideDescription}}" on-change="_updateItem" label="Hide Description"></vaadin-checkbox>
             </div>
 
             <vaadin-text-area  theme="label--secondary" class="edit__notes" value="{{storedItem.notes}}" label="Notes" on-blur="_updateItem"></vaadin-text-area>

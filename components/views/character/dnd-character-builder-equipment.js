@@ -12,7 +12,8 @@ import {
   spliceItems,
   isChildItem,
   getItemAtId,
-  addItem
+  addItem,
+  saveCharacter
 } from "../../../util/charBuilder";
 import "../../dnd-icon";
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from "../../../util/editMode";
@@ -88,6 +89,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
   connectedCallback() {
     super.connectedCallback();
+
+    this.currencyTypes = ["Platinum", "Gold", "Silver", "Copper", "Dollars"];
 
     this.characterChangeHandler = (e) => {
       let character = e.detail.character;
@@ -215,6 +218,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
   async updateFromCharacter(character) {
     if (character) {
       this.character = character;
+      this.set('currency', null);
+      this.set('currency', character.currency);
       this.inventory = await getItems(character);
       console.error('inventory:', this.inventory);
       this.$.grid.clearCache();
@@ -344,6 +349,34 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         viewId: 'items'
       }
     }));
+  }
+
+  _addCurrency() {
+    if (!this.character.currency) {
+      this.character.currency = [];
+    }
+    this.character.currency.push({label: "", value: 0});
+    saveCharacter(this.character);
+  }
+
+  _removeCurrency(e) {
+    const index = e.target.closest('.currency-item').getAttribute('index');
+    this.character.currency.splice(index, 1);
+    saveCharacter(this.character);
+  }
+
+  _saveCurrency() {
+    saveCharacter(this.character);
+  }
+
+  _currencyLabel(label) {
+    switch (label) {
+      case "Dollars":
+        return "$";
+    
+      default:
+        return label;
+    }
   }
   
   _isActive(activeItem, item) {
@@ -548,6 +581,59 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           font-size: 32px;
         }
 
+        .currency {
+          margin: 10px 0;
+        }
+        .currency h3 {
+        }
+        .currency-item {
+          display: flex;
+          width: 100%;
+          margin-bottom: 10px;
+          margin-left: 50px;
+        }
+        .currency-item__non-edit {
+          margin-bottom: 10px;
+        }
+        .currency-item__non-edit .currency-item__label {
+          display: flex;
+          margin-left: 8px;
+        }
+        .currency-item__label {
+          font-weight: bold;
+          font-size: 20px;
+          margin-left: 8px;
+        }
+        .currency-item vaadin-integer-field {
+          font-size: 18px;
+        }
+        .currency-item vaadin-select {
+          width: 120px;
+          margin-left: 8px;
+          height: 40px;
+          margin-top: -10px;
+        }
+        .currency-item__remove {
+          height: 36px;
+          width: 50px;
+          margin-left: 8px;
+        }
+        .currency [currency="Dollars"] {
+          color: green;
+        }
+        .currency [currency="Platinum"] {
+          color: silver;
+        }
+        .currency [currency="Gold"] {
+          color: yellow;
+        }
+        .currency [currency="Silver"] {
+          color: silver;
+        }
+        .currency [currency="Copper"] {
+          color: orange;
+        }
+
         @media(min-width: 420px) {
           .heading {
             justify-content: flex-start;
@@ -594,6 +680,30 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       </div>
       <div class="col-wrap">
         <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
+          <div class="currency">
+            <h3>Currency</h3>
+            <template is="dom-repeat" items="[[currency]]">
+              <div class="currency-item currency-item__non-edit" hidden$="[[isEditMode]]">
+                <vaadin-integer-field has-controls min="0" value="{{item.value}}" on-change="_saveCurrency"></vaadin-integer-field>
+                <div class="currency-item__label" currency$="[[item.label]]">[[_currencyLabel(item.label)]]</div>
+              </div>
+              <div class="currency-item" hidden$="[[!isEditMode]]" index$="[[index]]">
+                <vaadin-select value="{{item.label}}" on-change="_saveCurrency">
+                  <template>
+                    <vaadin-list-box>
+                      <template is="dom-repeat" items="[[currencyTypes]]">
+                        <vaadin-item currency$=[[item]]>[[item]]</vaadin-item>
+                      </template>
+                    </vaadin-list-box>
+                  </template>
+                </vaadin-select>
+                <button class="mdc-icon-button currency-item__remove" on-click="_removeCurrency"><dnd-icon icon="minus"></dnd-icon></button>
+              </div>
+            </template>
+            <button hidden$="[[!isEditMode]]" class="mdc-icon-button" on-click="_addCurrency"><dnd-icon icon="plus"></dnd-icon></button>
+          </div>
+
+          <h3>Equipment</h3>
           <vaadin-grid id="grid" expanded-items="{{expandedItems}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>

@@ -355,7 +355,13 @@ Parser.spComponentsToFull = function(comp) {
   if (comp) {
     if (comp.v) out.push("V");
     if (comp.s) out.push("S");
-    if (comp.m) out.push("M" + (comp.m.length ? ` (${comp.m})` : ""));
+    if (comp.m) {
+      if (comp.m.length) {
+        out.push(`M (${comp.m})`);
+      } else if (comp.m.text) {
+        out.push(`M (${comp.m.text})`);
+      }
+    }
   }
   return out.join(", ");
 };
