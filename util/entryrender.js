@@ -236,7 +236,7 @@ function EntryRenderer() {
 			const styleString = getStyleString();
 			const dataString = getDataString();
 			const preReqText = getPreReqText();
-			const headerSpan = entry.name !== undefined ? `<span class="stat-name">${entry.name}${isNonstandardSource(entry.source) ? ' (UA)' : ''}${inlineTitle ? "." : ""}</span> ` : "";
+			const headerSpan = entry.name !== undefined ? `<span class="stat-name ${entry.subclassShortName ? 'is-subclass' : ''}">${entry.subclassShortName ? `${entry.subclassShortName}: ` : ''}${entry.name}${isNonstandardSource(entry.source) ? ' (UA)' : ''}${inlineTitle ? "." : ""}</span> ` : "";
 
 			if (entry.entries || entry.name) {
 				textStack.push(`<${self.wrapperTag} ${dataString} ${styleString}>${headerSpan}${preReqText}`);

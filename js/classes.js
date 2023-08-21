@@ -336,10 +336,6 @@ function onClassChange(curClass, rootEl) {
               const subFeature = subFeatureList[i];
               console.error('subFeature', subFeature);
 
-              if (subclassIndex !== 0 || i !== 0) {
-                subFeature.name = `${subFeature.subclassShortName}: ${subFeature.name}`;
-              }
-
               const styleClasses = [CLSS_SUBCLASS_FEATURE];
               const hideSource =
                 isNonstandardSource(subClass.source) || hasBeenReprinted(subClass.shortName, subClass.source);

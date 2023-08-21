@@ -229,6 +229,9 @@ registerStyles('vaadin-integer-field', css`
       display: flex;
       justify-content: center;
     }
+    :host([padded]) [part='input-field'] {
+      padding: 4px 0px;
+    }
 
 
     :host([theme="hp"]) {

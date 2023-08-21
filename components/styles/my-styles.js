@@ -110,7 +110,7 @@ styleElement.innerHTML = `
         text-decoration: none;
       }
       a {
-        color: var(--mdc-theme-secondary, #018786);
+        color: var(--mdc-theme-link, #018786);
       }
 
       .mdc-top-app-bar--fixed-adjust {
@@ -442,7 +442,7 @@ styleElement.innerHTML = `
         transition: color .2s;
       }
       .breadcrumbs__crumb a:hover {
-        color: var(--mdc-theme-secondary, #018786);
+        color: var(--mdc-theme-link, #018786);
       }
 
       .mdc-notched-outline__leading {
@@ -583,7 +583,7 @@ styleElement.innerHTML = `
         color: #fff;
         color: var(--mdc-theme-on-secondary, #fff) !important;
         background-color: #018786;
-        background-color: var(--mdc-theme-secondary, #018786) !important;
+        background-color: var(--mdc-theme-link, #018786) !important;
       }
       .filter-pill[state=ignore],
       .filter-pill[state=ignore]:hover {
@@ -828,7 +828,7 @@ styleElement.innerHTML = `
         height: 46px;
       }
       .collapse-toggle:hover {
-        color: var(--mdc-theme-secondary);
+        color: var(--mdc-theme-link);
       }
       .collapse .collapse-list {
         height: auto;
@@ -1060,7 +1060,7 @@ styleElement.innerHTML = `
         transform: color .2s;
       }
       .list-item:hover {
-        color: var(--mdc-theme-secondary);
+        color: var(--mdc-theme-link);
       }
       .list-item dnd-svg {
         display: block;
@@ -1189,7 +1189,7 @@ styleElement.innerHTML = `
       }
 
       .feature-link {
-        color: var(--mdc-theme-secondary, '#018786');
+        color: var(--mdc-theme-link, '#018786');
       }
       .stats-wrapper a.subclass-feature-link {
         color: var(--mdc-theme-primary, '#018786') !important;
@@ -1350,7 +1350,7 @@ styleElement.innerHTML = `
         position: absolute;
         top: 11px;
         background: none;
-        color: var(--mdc-theme-secondary);
+        color: var(--mdc-theme-link);
       }
       #subclasses #os-toggle.os-active.mdc-chip::before {
         opacity: .12;
@@ -1460,7 +1460,7 @@ styleElement.innerHTML = `
         font-size: 1.2rem;
       }
       .stats-wrapper a {
-        color: var(--mdc-theme-secondary, '#018786') !important;
+        color: var(--mdc-theme-link, '#018786') !important;
       }
       .stats-wrapper ul {
         padding-left: 24px;
@@ -1471,7 +1471,7 @@ styleElement.innerHTML = `
       }
       .roller {
         cursor: pointer;
-        color: var(--mdc-theme-secondary, '#018786') !important;
+        color: var(--mdc-theme-link, '#018786') !important;
       }
       /* Monster stats */
       .list.monsters .table-cell--border {

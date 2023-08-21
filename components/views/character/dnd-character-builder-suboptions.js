@@ -1146,7 +1146,7 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     white-space: initial;
                 }
                 .spell-link {
-                    color: var(--mdc-theme-secondary);
+                    color: var(--mdc-theme-link);
                     cursor: pointer;
                     text-decoration: underline;
                 }

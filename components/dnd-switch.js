@@ -106,9 +106,23 @@ class DndSwitch extends PolymerElement {
         :host([extra-padding]) label.secondary {
           margin-left: 50px;
         }
+        :host([no-color]) .mdc-switch.mdc-switch--checked .mdc-switch__track {
+          background-color: #000;
+          border-color: #000;
+        }
+        :host([no-color]) .mdc-switch.mdc-switch--checked .mdc-switch__thumb {
+          background-color: #fff;
+          border-color: #fff;
+        }
+        :host([no-color]) .mdc-switch.mdc-switch--checked .mdc-switch__thumb-underlay::before {
+          background-color: #9e9e9e;
+        }
+        :host([no-color]) .mdc-switch.mdc-switch--checked .mdc-switch__thumb-underlay::after {
+          background-color: #9e9e9e;
+        }
       </style>
       
-      <label for="switch">[[label]]</label>
+      <label for="switch">[[label]]<slot name="label"></slot></label>
       <div class$="[[_switchClasses(disabled)]]">
         <div class="mdc-switch__track"></div>
         <div class="mdc-switch__thumb-underlay">
@@ -117,7 +131,7 @@ class DndSwitch extends PolymerElement {
           </div>
         </div>
       </div>
-      <label class="secondary">[[secondaryLabel]]</label>
+      <label class="secondary">[[secondaryLabel]]<slot name="secondaryLabel"></slot></label>
     `;
   }
 }

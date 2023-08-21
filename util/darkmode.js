@@ -34,6 +34,7 @@ export function setDarkmode(isDark) {
     if (isDark) {
         root.style.setProperty("--mdc-theme-primary", "#bb86fc");
         root.style.setProperty("--mdc-theme-primary-darker", "#a359fc");
+        root.style.setProperty("--mdc-theme-link", "#4dabf5");
         root.style.setProperty("--mdc-theme-secondary", "#03dac6");
         root.style.setProperty("--mdc-theme-secondary-10pct", "#1C3432");
         root.style.setProperty("--mdc-theme-secondary-50pct", "#137269");
@@ -142,6 +143,7 @@ export function setDarkmode(isDark) {
     } else {
         root.style.setProperty("--mdc-theme-primary", "#6200ee");
         root.style.setProperty("--mdc-theme-primary-darker", "#5000c1");
+        root.style.setProperty("--mdc-theme-link", "#2196f3");
         root.style.setProperty("--mdc-theme-secondary", "#018786");
         root.style.setProperty("--mdc-theme-secondary-10pct", "#E3F2F2");
         root.style.setProperty("--mdc-theme-secondary-50pct", "#72BCBC");

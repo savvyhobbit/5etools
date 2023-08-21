@@ -51,6 +51,28 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         value: null,
         observer: '_activeItemChange'
       },
+      currencyModalOpen: {
+        type: Boolean,
+        value: false
+      },
+      newPP: {
+        type: Number,
+      },
+      newGP: {
+        type: Number,
+      },
+      newEP: {
+        type: Number,
+      },
+      newSP: {
+        type: Number,
+      },
+      newCP: {
+        type: Number,
+      },
+      new$: {
+        type: Number,
+      },
     };
   }
 
@@ -220,6 +242,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       this.character = character;
       this.set('currency', null);
       this.set('currency', character.currency);
+      this.currencyIsDollars = !!character.currencyIsDollars;
       this.inventory = await getItems(character);
       console.error('inventory:', this.inventory);
       this.$.grid.clearCache();
@@ -351,32 +374,72 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     }));
   }
 
+  _openCurrencyModal() {
+    this.currencyModalOpen = true;
+  }
+
+  _closeCurrencyModal() {
+    this.newPP = null;
+    this.newGP = null;
+    this.newEP = null;
+    this.newSP = null;
+    this.newCP = null;
+    this.new$ = null;
+    this.currencyModalOpen = false;
+  }
+
   _addCurrency() {
-    if (!this.character.currency) {
-      this.character.currency = [];
+    if (!this.character.currency || Array.isArray(this.character.currency)) {
+      this.character.currency = {};
     }
-    this.character.currency.push({label: "", value: 0});
-    saveCharacter(this.character);
-  }
-
-  _removeCurrency(e) {
-    const index = e.target.closest('.currency-item').getAttribute('index');
-    this.character.currency.splice(index, 1);
-    saveCharacter(this.character);
-  }
-
-  _saveCurrency() {
-    saveCharacter(this.character);
-  }
-
-  _currencyLabel(label) {
-    switch (label) {
-      case "Dollars":
-        return "$";
-    
-      default:
-        return label;
+    if (this.character.currencyIsDollars) {
+      this.character.currency.$  = parseInt(this.character.currency.$ || 0)  + parseInt(this.new$ || 0);
+    } else {
+      this.character.currency.pp = parseInt(this.character.currency.pp || 0) + parseInt(this.newPP || 0);
+      this.character.currency.gp = parseInt(this.character.currency.gp || 0) + parseInt(this.newGP || 0);
+      this.character.currency.ep = parseInt(this.character.currency.ep || 0) + parseInt(this.newEP || 0);
+      this.character.currency.sp = parseInt(this.character.currency.sp || 0) + parseInt(this.newSP || 0);
+      this.character.currency.cp = parseInt(this.character.currency.cp || 0) + parseInt(this.newCP || 0);
     }
+    saveCharacter(this.character);
+    this._closeCurrencyModal();
+  }
+
+  _removeCurrency() {
+    if (this.character.currencyIsDollars) {
+      if (parseInt(this.character.currency.$ || 0)  - parseInt(this.new$ || 0) < 0) {
+        return false;
+      }
+      this.character.currency.$  = parseInt(this.character.currency.$ || 0)  - parseInt(this.new$ || 0);
+    } else {
+      if (parseInt(this.character.currency.pp || 0) - parseInt(this.newPP || 0) < 0 ||
+          parseInt(this.character.currency.gp || 0) - parseInt(this.newGP || 0) < 0 ||
+          parseInt(this.character.currency.ep || 0) - parseInt(this.newEP || 0) < 0 ||
+          parseInt(this.character.currency.sp || 0) - parseInt(this.newSP || 0) < 0 || 
+          parseInt(this.character.currency.cp || 0) - parseInt(this.newCP || 0) < 0) {
+        return false;
+      }
+      this.character.currency.pp = parseInt(this.character.currency.pp || 0) - parseInt(this.newPP || 0);
+      this.character.currency.gp = parseInt(this.character.currency.gp || 0) - parseInt(this.newGP || 0);
+      this.character.currency.ep = parseInt(this.character.currency.ep || 0) - parseInt(this.newEP || 0);
+      this.character.currency.sp = parseInt(this.character.currency.sp || 0) - parseInt(this.newSP || 0);
+      this.character.currency.cp = parseInt(this.character.currency.cp || 0) - parseInt(this.newCP || 0);
+    }
+    saveCharacter(this.character);
+    this._closeCurrencyModal();
+  }
+
+  _getCurrencyValue(key, currency) {
+    return currency && currency[key] ? currency[key].toLocaleString() : 0;
+  }
+
+  _setCurrencyType(val) {
+    this.character.currencyIsDollars = val.detail.checked;
+    saveCharacter(this.character);
+  }
+  
+  _currencyColor(currencyIsDollars) {
+    return currencyIsDollars ? "Dollars" : "Gold";
   }
   
   _isActive(activeItem, item) {
@@ -585,53 +648,97 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           margin: 10px 0;
         }
         .currency h3 {
+          display: flex;
+          align-items: center;
+        }
+        .currency-change {
+          margin-left: auto;
+        }
+        .currency-wrap {
+          padding-left: 30px;
+          display: flex;
+          justify-content: flex-end;
+          flex-wrap: wrap;
         }
         .currency-item {
           display: flex;
-          width: 100%;
           margin-bottom: 10px;
-          margin-left: 50px;
+          margin-left: 14px;
+          position: relative;
+          align-items: baseline;
         }
-        .currency-item__non-edit {
-          margin-bottom: 10px;
-        }
-        .currency-item__non-edit .currency-item__label {
-          display: flex;
-          margin-left: 8px;
+        .currency-item__value {
+          font-weight: bold;
+          font-size: 24px;
+          margin-right: 4px;
         }
         .currency-item__label {
-          font-weight: bold;
-          font-size: 20px;
-          margin-left: 8px;
+          color: grey;
+          font-size: 16px;
+          font-weight: normal;
         }
-        .currency-item vaadin-integer-field {
+        .currency-item__icon {
+          margin-right: 4px;
           font-size: 18px;
+          position: relative;
+          top: -2px;
         }
-        .currency-item vaadin-select {
-          width: 120px;
-          margin-left: 8px;
-          height: 40px;
-          margin-top: -10px;
+        .currency-item--dollars .currency-item__value {
+          font-size: 32px;
+          font-weight: normal;
         }
-        .currency-item__remove {
-          height: 36px;
-          width: 50px;
-          margin-left: 8px;
+        .currency-item--dollars .currency-item__icon {
+          font-size: 32px;
+          font-weight: normal;
+          top: 0;
         }
-        .currency [currency="Dollars"] {
+        [currency="Dollars"] {
           color: green;
         }
-        .currency [currency="Platinum"] {
-          color: silver;
+        [currency="Electrum"] {
+          color: #8898A4;
         }
-        .currency [currency="Gold"] {
-          color: yellow;
+        [currency="Platinum"] {
+          color: #B2B2B2;
         }
-        .currency [currency="Silver"] {
-          color: silver;
+        [currency="Gold"] {
+          color: #ECA824;
         }
-        .currency [currency="Copper"] {
-          color: orange;
+        [currency="Silver"] {
+          color: #CEC6BF;
+        }
+        [currency="Copper"] {
+          color: #C2876F;
+        }
+        .currency-item:focus .tooltip,
+        .currency-item:hover .tooltip {
+          display: block;
+        }
+        .currency-item:focus {
+          outline: none;
+        }
+        .tooltip {
+          position: absolute;
+          background: lightgray;
+          color: black;
+          font-size: 14px;
+          padding: 2px 10px;
+          border-radius: 4px;
+          white-space: nowrap;
+          left: 5px;
+          top: -32px;
+          display: none;
+        }
+        .tooltip::after {
+          content: '';
+          height: 0;
+          width: 0;
+          position: absolute;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 5px solid lightgray;
+          bottom: -4px;
+          left: 2px;
         }
 
         @media(min-width: 420px) {
@@ -681,26 +788,134 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       <div class="col-wrap">
         <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
           <div class="currency">
-            <h3>Currency</h3>
-            <template is="dom-repeat" items="[[currency]]">
-              <div class="currency-item currency-item__non-edit" hidden$="[[isEditMode]]">
-                <vaadin-integer-field has-controls min="0" value="{{item.value}}" on-change="_saveCurrency"></vaadin-integer-field>
-                <div class="currency-item__label" currency$="[[item.label]]">[[_currencyLabel(item.label)]]</div>
+            <h3>
+              Currency
+              <button class="currency-change mdc-icon-button" on-click="_openCurrencyModal"><dnd-icon icon="hand-holding-usd"></dnd-icon></button>
+            </h3>
+            <div hidden$=[[currencyIsDollars]] class="currency-wrap">
+              <div hidden$='[[!_getCurrencyValue("pp", currency)]]' class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("pp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Platinum"></dnd-icon>
+                <div class="currency-item__label">pp</div>
+                <div class="tooltip">1pp = 10gp</div>
               </div>
-              <div class="currency-item" hidden$="[[!isEditMode]]" index$="[[index]]">
-                <vaadin-select value="{{item.label}}" on-change="_saveCurrency">
-                  <template>
-                    <vaadin-list-box>
-                      <template is="dom-repeat" items="[[currencyTypes]]">
-                        <vaadin-item currency$=[[item]]>[[item]]</vaadin-item>
-                      </template>
-                    </vaadin-list-box>
-                  </template>
-                </vaadin-select>
-                <button class="mdc-icon-button currency-item__remove" on-click="_removeCurrency"><dnd-icon icon="minus"></dnd-icon></button>
+              <div hidden$='[[!_getCurrencyValue("gp", currency)]]' class="currency-item">
+                <div class="currency-item__value">[[_getCurrencyValue("gp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Gold"></dnd-icon>
+                <div class="currency-item__label">gp</div>
               </div>
-            </template>
-            <button hidden$="[[!isEditMode]]" class="mdc-icon-button" on-click="_addCurrency"><dnd-icon icon="plus"></dnd-icon></button>
+              <div hidden$='[[!_getCurrencyValue("ep", currency)]]' class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("ep", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Electrum"></dnd-icon>
+                <div class="currency-item__label">ep</div>
+                <div class="tooltip">1gp = 2ep</div>
+              </div>
+              <div hidden$='[[!_getCurrencyValue("sp", currency)]]' class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("sp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Silver"></dnd-icon>
+                <div class="currency-item__label">sp</div>
+                <div class="tooltip">1gp = 10sp</div>
+              </div>
+              <div class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("cp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Copper"></dnd-icon>
+                <div class="currency-item__label">cp</div>
+                <div class="tooltip">1gp = 100cp</div>
+              </div>
+            </div>
+            <div hidden$=[[!currencyIsDollars]] class="currency-wrap">
+              <div class="currency-item currency-item--dollars">
+                <dnd-icon class="currency-item__icon" icon="dollar-sign" currency="Dollars"></dnd-icon>
+                <div class="currency-item__value">[[_getCurrencyValue("$", currency)]]</div>
+              </div>
+            </div>
+
+            <vaadin-dialog opened="{{currencyModalOpen}}">
+              <template>
+                <style>
+                  [hidden] {
+                    display: none !important;
+                  }
+                  h3 {
+                    margin-top: 0;
+                    margin-bottom: 30px;
+                    display: flex;
+                    min-width: 260px;
+                  }
+                  dnd-switch {
+                    margin-left: auto;
+                  }
+                  dnd-icon {
+                    font-size: 18px;
+                  }
+                  .modal-content {
+                    display: flex;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                  }
+                  .modal-footer {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 30px;
+                    flex-wrap: wrap;
+                  }
+                  .modal-footer dnd-button:last-child {
+                    /* margin: 12px auto 0; */
+                    --mdc-theme-primary: var(--mdc-theme-error);
+                  }
+                  .modal-footer dnd-button:not(:last-child) {
+                    margin-right: 12px;
+                  }
+                  [currency="Dollars"] {
+                    --mdc-theme-primary: green;
+                  }
+                  [currency="Electrum"] {
+                    --mdc-theme-primary: #8898A4;
+                  }
+                  [currency="Platinum"] {
+                    --mdc-theme-primary: #B2B2B2;
+                  }
+                  [currency="Gold"] {
+                    --mdc-theme-primary: #ECA824;
+                  }
+                  [currency="Silver"] {
+                    --mdc-theme-primary: #CEC6BF;
+                  }
+                  [currency="Copper"] {
+                    --mdc-theme-primary: #C2876F;
+                  }
+                  vaadin-integer-field {
+                    margin-top: 0;
+                    width: 90px;
+                  }
+                  .dollars {
+                    width: 160px;
+                  }
+                </style>
+                <h3>
+                  Adjust Currency
+                  <dnd-switch no-color initial-value={{currencyIsDollars}} on-switch-change="_setCurrencyType">
+                    <dnd-icon icon="coins" style="color: #ECA824;" slot="label"></dnd-icon>
+                    <dnd-icon icon="dollar-sign" style="color: green;" slot="secondaryLabel"></dnd-icon>
+                  </dnd-switch>
+                </h3>
+                <div class="modal-content" hidden$=[[currencyIsDollars]]>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="pp" value="{{newPP}}" currency="Platinum" label="Platinum (pp)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="gp" value="{{newGP}}" currency="Gold" label="Gold (gp)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="ep" value="{{newEP}}" currency="Electrum" label="Electrum (ep)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="sp" value="{{newSP}}" currency="Silver" label="Silver (sp)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="cp" value="{{newCP}}" currency="Copper" label="Copper (cp)"></vaadin-integer-field>
+                </div>
+                <div class="modal-content" hidden$=[[!currencyIsDollars]]>
+                  <vaadin-integer-field class="dollars" theme="mini" padded has-controls min="0" id="$" value="{{new$}}" currency="Dollars" label="Currency ($)"></vaadin-integer-field>
+                </div>
+                <div class="modal-footer">
+                  <dnd-button label="Add" currency$="[[_currencyColor(currencyIsDollars)]]" border on-click="_addCurrency"></dnd-button>
+                  <dnd-button label="Remove" border on-click="_removeCurrency"></dnd-button>
+                  <!-- <dnd-button label="Cancel" border on-click="_closeCurrencyModal"></dnd-button> -->
+                </div>
+              </template>
+            </vaadin-dialog>
           </div>
 
           <h3>Equipment</h3>
