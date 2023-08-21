@@ -241,8 +241,7 @@ class f extends h{static get is(){return"vaadin-integer-field"}constructor(){sup
           top: -1px;
         }
         .level-col__class {
-          font-size: 20px;
-          font-weight: bold;
+          font-size: 24px;
         }
 
         .features-col {
@@ -259,7 +258,7 @@ class f extends h{static get is(){return"vaadin-integer-field"}constructor(){sup
           text-decoration: underline;
         }
         .class-feature__text[subclass] {
-          color: var(--mdc-theme-secondary);
+          color: var(--mdc-theme-primary);
         }
         .class-feature:last-of-type .class-feature__separator {
           display: none;
@@ -428,6 +427,9 @@ class f extends h{static get is(){return"vaadin-integer-field"}constructor(){sup
         }
         .details > .statsBlockHead:first-child > .stat-name {
           margin-top: 0;
+        }
+        .details > .statsBlockHead:first-child > .stat-name.is-subclass {
+          color: var(--mdc-theme-primary);
         }
         .details.stats-wrapper .statsBlockHead .stat-name {
           font-size: 22px;

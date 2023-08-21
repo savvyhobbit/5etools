@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[7],{167:function(e,t,i){"use strict";i(125);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[7],{167:function(e,t,r){"use strict";r(125);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
@@ -9,7 +9,7 @@
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},173:function(e,t,i){"use strict";i(29),i(36),i(19);var a=i(2);Object(a.c)("vaadin-grid-tree-toggle",a.b`
+r(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is deprecated. Use "@vaadin/checkbox" instead.')},173:function(e,t,r){"use strict";r(29),r(36),r(19);var i=r(2);Object(i.c)("vaadin-grid-tree-toggle",i.b`
     :host {
       --vaadin-grid-tree-toggle-level-offset: 2em;
       align-items: center;
@@ -111,13 +111,13 @@ i(122).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-checkbox" is 
     :host([dir='rtl'][expanded]) [part='toggle']::before {
       content: var(--lumo-icons-angle-left);
     }
-  `,{moduleId:"lumo-grid-tree-toggle"});var n=i(3),o=i(25),r=i(108);
+  `,{moduleId:"lumo-grid-tree-toggle"});var n=r(3),a=r(25),c=r(108);
 /**
  * @license
  * Copyright (c) 2016 - 2022 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-const s=document.createElement("template");s.innerHTML="\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n",document.head.appendChild(s.content);class d extends(Object(a.a)(Object(o.a)(n.a))){static get template(){return n.b`
+const o=document.createElement("template");o.innerHTML="\n  <style>\n    @font-face {\n      font-family: \"vaadin-grid-tree-icons\";\n      src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAQkAA0AAAAABrwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAECAAAABoAAAAcgHwa6EdERUYAAAPsAAAAHAAAAB4AJwAOT1MvMgAAAZQAAAA/AAAAYA8TBIJjbWFwAAAB8AAAAFUAAAFeGJvXWmdhc3AAAAPkAAAACAAAAAgAAAAQZ2x5ZgAAAlwAAABLAAAAhIrPOhFoZWFkAAABMAAAACsAAAA2DsJI02hoZWEAAAFcAAAAHQAAACQHAgPHaG10eAAAAdQAAAAZAAAAHAxVAgBsb2NhAAACSAAAABIAAAASAIAAVG1heHAAAAF8AAAAGAAAACAACgAFbmFtZQAAAqgAAAECAAACTwflzbdwb3N0AAADrAAAADYAAABZQ7Ajh3icY2BkYGAA4twv3Vfi+W2+MnCzMIDANSOmbGSa2YEZRHEwMIEoAAoiB6sAeJxjYGRgYD7w/wADAwsDCDA7MDAyoAI2AFEEAtIAAAB4nGNgZGBg4GBgZgDRDAxMDGgAAAGbABB4nGNgZp7JOIGBlYGBaSbTGQYGhn4IzfiawZiRkwEVMAqgCTA4MDA+38d84P8BBgdmIAapQZJVYGAEAGc/C54AeJxjYYAAxlAIzQTELAwMBxgZGB0ACy0BYwAAAHicY2BgYGaAYBkGRgYQiADyGMF8FgYbIM3FwMHABISMDArP9/3/+/8/WJXC8z0Q9v8nEp5gHVwMMMAIMo+RDYiZoQJMQIKJARUA7WBhGN4AACFKDtoAAAAAAAAAAAgACAAQABgAJgA0AEIAAHichYvBEYBADAKBVHBjBT4swl9KS2k05o0XHd/yW1hAfBFwCv9sIlJu3nZaNS3PXAaXXHI8Lge7DlzF7C1RgXc7xkK6+gvcD2URmQB4nK2RQWoCMRiFX3RUqtCli65yADModOMBLLgQSqHddRFnQghIAnEUvEA3vUUP0LP0Fj1G+yb8R5iEhO9/ef/7FwFwj28o9EthiVp4hBlehcfUP4Ur8o/wBAv8CU+xVFvhOR7UB7tUdUdlVRJ6HnHWTnhM/V24In8JT5j/KzzFSi2E53hUz7jCcrcIiDDwyKSW1JEct2HdIPH1DFytbUM0PofWdNk5E5oUqb/Q6HHBiVGZpfOXkyUMEj5IyBuNmYZQjBobfsuassvnkKLe1OuBBj0VQ8cRni2xjLWsHaM0jrjx3peYA0/vrdmUYqe9iy7bzrX6eNP7Jh1SijX+AaUVbB8AAHicY2BiwA84GBgYmRiYGJkZmBlZGFkZ2djScyoLMgzZS/MyDQwMwLSruZMzlHaB0q4A76kLlwAAAAEAAf//AA94nGNgZGBg4AFiMSBmYmAEQnYgZgHzGAAD6wA2eJxjYGBgZACCKxJigiD6mhFTNowGACmcA/8AAA==) format('woff');\n      font-weight: normal;\n      font-style: normal;\n    }\n  </style>\n",document.head.appendChild(o.content);class s extends(Object(i.a)(Object(a.a)(n.a))){static get template(){return n.b`
       <style>
         :host {
           display: inline-flex;
@@ -178,7 +178,7 @@ const s=document.createElement("template");s.innerHTML="\n  <style>\n    @font-f
       <span id="level-spacer"></span>
       <span part="toggle"></span>
       <slot></slot>
-    `}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||Object(r.b)(e.target)||e.target instanceof HTMLLabelElement||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style.setProperty("---level",t)}}customElements.define(d.is,d)},179:function(e,t,i){"use strict";i.r(t);var a=i(3),n=i(33),o=(i(174),i(73)),r=(i(129),i(167),i(128),i(173),i(137),i(166),i(172),i(9));class s extends a.a{static get properties(){return{inventory:{type:Array},isEditMode:{type:Boolean,value:!1},character:{type:Object},expandedItems:{type:Array},expandedIds:{type:Array},activeItem:{type:Object,value:null,observer:"_activeItemChange"}}}static get observers(){return["_expandedItemsChange(expandedItems.*)"]}_activeItemChange(e,t){if(t&&this.isMobile()||!e)!e&&t&&this.previousScrollPosition&&this.isMobile()&&setTimeout(()=>{window.scrollTo(0,this.previousScrollPosition),this.previousScrollPosition=0},0);else if(this.previousScrollPosition=window.scrollY,this.getBoundingClientRect().y<0){const e=window.scrollY+this.getBoundingClientRect().y-57;setTimeout(()=>{window.scrollTo(0,e)},0)}}isMobile(){return window.innerWidth<=768}_expandedItemsChange(){this.expandedItems&&this.expandedItems.length&&(this.expandedIds=this.expandedItems.filter(e=>!!e).map(e=>e.uniqueId))}connectedCallback(){super.connectedCallback(),this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(n.T)()),Object(n.q)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.grid&&setTimeout(()=>{this.$.grid.notifyResize()},0)},Object(o.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(o.c)(),this.routeSubSelectionChangeHandler=(e=>{const t=e.detail.subSelection;this.inventory&&(this.activeItem=Object(n.N)(this.inventory,parseInt(t)))}).bind(this),Object(r.h)().addEventListener("sub-selection-change",this.routeSubSelectionChangeHandler),this.routeSubSelectionDeselectedHandler=(()=>{this.activeItem=void 0}).bind(this),Object(r.h)().addEventListener("sub-selection-deselected",this.routeSubSelectionDeselectedHandler)}disconnectedCallback(){super.disconnectedCallback(),Object(n.q)().removeEventListener("character-selected",this.characterChangeHandler),Object(o.b)().removeEventListener("editModeChange",this.editModeHandler),Object(r.h)().removeEventListener("selection-change",this.routeSubSelectionDeselectedHandler),Object(r.h)().removeEventListener("sub-selection-change",this.routeSubSelectionChangeHandler)}ready(){super.ready(),setTimeout(()=>{const e=this.$.grid;let t;e.addEventListener("grid-dragstart",(function(i){t=i.detail.draggedItems[0],e.dropMode="on-top-or-between"})),e.addEventListener("grid-dragend",(function(i){t=e.dropMode=null})),e.addEventListener("grid-drop",e=>{const i=e.detail.dropTargetItem;if(t&&t!==i){const a=Object(n.db)(t,i.uniqueId);if((t.containerCapacity||t.packContents)&&a)return;const o=t.storedItem.uniqueId;if(t.storedItem.uniqueId=this.character.itemCounter++,"on-top"===e.detail.dropLocation&&(i.containerCapacity||i.packContents))return void(i.storedItem&&i.storedItem.children&&(i.storedItem.children.push(t.storedItem),Object(n.Bb)(i,void 0,!0),Object(n.kb)(o)));if(this.inventory){const a=""+i.id;let r=parseInt(a.substring(a.lastIndexOf("_")),10);"below"===e.detail.dropLocation&&r++,i.parentItemREF?(i.parentItemREF.storedItem.children.splice(r,0,t.storedItem),Object(n.Bb)(i.parentItemREF,void 0,!0)):Object(n.Fb)(r,t.storedItem),Object(n.kb)(o)}}}),e.dataProvider=((e,t)=>{const i=e.page*e.pageSize;let a=e.parentItem?e.parentItem.children:this.inventory;if(a&&a.length){t(a.slice(i,i+e.pageSize),a.length)}}).bind(this)},0)}async updateFromCharacter(e){if(e){if(this.character=e,this.inventory=await Object(n.O)(e),console.error("inventory:",this.inventory),this.$.grid.clearCache(),this.expandedIds){const e=this.expandedIds.map(e=>Object(n.N)(this.inventory,e));this.expandedItems=e}Object(r.f)()&&(this.activeItem=Object(n.N)(this.inventory,parseInt(Object(r.f)()))),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_expandDetails(e){let t=e.model.__data.item.uniqueId;Object(r.f)()===t?Object(r.b)():Object(r.j)(t)}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item&&void 0!==e.model.__data.item.uniqueId?e.model.__data.item.uniqueId:void 0;Object(n.kb)(t)}async _setItemEquipped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isEquipped)Object(n.Rb)(i);else if(await Object(n.h)(t))Object(n.Rb)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,i=t?t.uniqueId:void 0;if(!!t&&t.isAttuned)Object(n.Qb)(i);else if(await Object(n.g)(t))Object(n.Qb)(i);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_quantityChange(e){const t=this.$.grid.getEventContext(e).item;let i=parseInt(t.quantity,10);isNaN(i)&&(i=0),t.storedItem.quantity=i,Object(n.Bb)(t)}_addItem(){const e=Object(n.e)({name:""},!1);Object(o.a)(!0),setTimeout(()=>{Object(r.j)(e)},0)}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}_noRarity(e){return!e||"None"===e}_toggleTheme(e){return e.children&&0===e.children.length?"no-children":""}_linkClick(){this.dispatchEvent(new CustomEvent("open-drawer",{bubbles:!0,composed:!0,detail:{viewId:"items"}}))}_isActive(e,t){return e===t}_hasActive(e){return!!e}_clearSelection(){window.history.back()}_isLeaf(e){return!e.containerCapacity&&!e.packContents}static get template(){return a.b`
+    `}static get is(){return"vaadin-grid-tree-toggle"}static get properties(){return{level:{type:Number,value:0,observer:"_levelChanged"},leaf:{type:Boolean,value:!1,reflectToAttribute:!0},expanded:{type:Boolean,value:!1,reflectToAttribute:!0,notify:!0}}}ready(){super.ready(),this.addEventListener("click",e=>this._onClick(e))}_onClick(e){this.leaf||Object(c.b)(e.target)||e.target instanceof HTMLLabelElement||(e.preventDefault(),this.expanded=!this.expanded)}_levelChanged(e){const t=Number(e).toString();this.style.setProperty("---level",t)}}customElements.define(s.is,s)},179:function(e,t,r){"use strict";r.r(t);var i=r(3),n=r(33),a=(r(174),r(73)),c=(r(129),r(167),r(128),r(173),r(137),r(166),r(172),r(9));class o extends i.a{static get properties(){return{inventory:{type:Array},isEditMode:{type:Boolean,value:!1},character:{type:Object},expandedItems:{type:Array},expandedIds:{type:Array},activeItem:{type:Object,value:null,observer:"_activeItemChange"},currencyModalOpen:{type:Boolean,value:!1},newPP:{type:Number},newGP:{type:Number},newEP:{type:Number},newSP:{type:Number},newCP:{type:Number},new$:{type:Number}}}static get observers(){return["_expandedItemsChange(expandedItems.*)"]}_activeItemChange(e,t){if(t&&this.isMobile()||!e)!e&&t&&this.previousScrollPosition&&this.isMobile()&&setTimeout(()=>{window.scrollTo(0,this.previousScrollPosition),this.previousScrollPosition=0},0);else if(this.previousScrollPosition=window.scrollY,this.getBoundingClientRect().y<0){const e=window.scrollY+this.getBoundingClientRect().y-57;setTimeout(()=>{window.scrollTo(0,e)},0)}}isMobile(){return window.innerWidth<=768}_expandedItemsChange(){this.expandedItems&&this.expandedItems.length&&(this.expandedIds=this.expandedItems.filter(e=>!!e).map(e=>e.uniqueId))}connectedCallback(){super.connectedCallback(),this.currencyTypes=["Platinum","Gold","Silver","Copper","Dollars"],this.characterChangeHandler=e=>{let t=e.detail.character;this.updateFromCharacter(t)},this.updateFromCharacter(Object(n.T)()),Object(n.q)().addEventListener("character-selected",this.characterChangeHandler),this.editModeHandler=e=>{this.isEditMode=e.detail.isEditMode,this.$.grid&&setTimeout(()=>{this.$.grid.notifyResize()},0)},Object(a.b)().addEventListener("editModeChange",this.editModeHandler),this.isEditMode=Object(a.c)(),this.routeSubSelectionChangeHandler=(e=>{const t=e.detail.subSelection;this.inventory&&(this.activeItem=Object(n.N)(this.inventory,parseInt(t)))}).bind(this),Object(c.h)().addEventListener("sub-selection-change",this.routeSubSelectionChangeHandler),this.routeSubSelectionDeselectedHandler=(()=>{this.activeItem=void 0}).bind(this),Object(c.h)().addEventListener("sub-selection-deselected",this.routeSubSelectionDeselectedHandler)}disconnectedCallback(){super.disconnectedCallback(),Object(n.q)().removeEventListener("character-selected",this.characterChangeHandler),Object(a.b)().removeEventListener("editModeChange",this.editModeHandler),Object(c.h)().removeEventListener("selection-change",this.routeSubSelectionDeselectedHandler),Object(c.h)().removeEventListener("sub-selection-change",this.routeSubSelectionChangeHandler)}ready(){super.ready(),setTimeout(()=>{const e=this.$.grid;let t;e.addEventListener("grid-dragstart",(function(r){t=r.detail.draggedItems[0],e.dropMode="on-top-or-between"})),e.addEventListener("grid-dragend",(function(r){t=e.dropMode=null})),e.addEventListener("grid-drop",e=>{const r=e.detail.dropTargetItem;if(t&&t!==r){const i=Object(n.db)(t,r.uniqueId);if((t.containerCapacity||t.packContents)&&i)return;const a=t.storedItem.uniqueId;if(t.storedItem.uniqueId=this.character.itemCounter++,"on-top"===e.detail.dropLocation&&(r.containerCapacity||r.packContents))return void(r.storedItem&&r.storedItem.children&&(r.storedItem.children.push(t.storedItem),Object(n.Bb)(r,void 0,!0),Object(n.kb)(a)));if(this.inventory){const i=""+r.id;let c=parseInt(i.substring(i.lastIndexOf("_")),10);"below"===e.detail.dropLocation&&c++,r.parentItemREF?(r.parentItemREF.storedItem.children.splice(c,0,t.storedItem),Object(n.Bb)(r.parentItemREF,void 0,!0)):Object(n.Fb)(c,t.storedItem),Object(n.kb)(a)}}}),e.dataProvider=((e,t)=>{const r=e.page*e.pageSize;let i=e.parentItem?e.parentItem.children:this.inventory;if(i&&i.length){t(i.slice(r,r+e.pageSize),i.length)}}).bind(this)},0)}async updateFromCharacter(e){if(e){if(this.character=e,this.set("currency",null),this.set("currency",e.currency),this.currencyIsDollars=!!e.currencyIsDollars,this.inventory=await Object(n.O)(e),console.error("inventory:",this.inventory),this.$.grid.clearCache(),this.expandedIds){const e=this.expandedIds.map(e=>Object(n.N)(this.inventory,e));this.expandedItems=e}Object(c.f)()&&(this.activeItem=Object(n.N)(this.inventory,parseInt(Object(c.f)()))),this.dispatchEvent(new CustomEvent("loadingChange",{bubbles:!0,composed:!0}))}}_expandDetails(e){let t=e.model.__data.item.uniqueId;Object(c.f)()===t?Object(c.b)():Object(c.j)(t)}_flashCheckbox(e){e&&(e.classList.add("transition-bg"),e.classList.add("flash-error"),setTimeout(()=>{e.classList.remove("flash-error"),setTimeout(()=>{e.classList.remove("transition-bg")},200)},200))}_deleteItem(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item&&void 0!==e.model.__data.item.uniqueId?e.model.__data.item.uniqueId:void 0;Object(n.kb)(t)}async _setItemEquipped(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,r=t?t.uniqueId:void 0;if(!!t&&t.isEquipped)Object(n.Rb)(r);else if(await Object(n.h)(t))Object(n.Rb)(r);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}async _setItemAttuned(e){e.preventDefault(),e.stopPropagation();let t=e.model.__data.item,r=t?t.uniqueId:void 0;if(!!t&&t.isAttuned)Object(n.Qb)(r);else if(await Object(n.g)(t))Object(n.Qb)(r);else{let t=e.target.querySelector("vaadin-checkbox");this._flashCheckbox(t)}}_quantityChange(e){const t=this.$.grid.getEventContext(e).item;let r=parseInt(t.quantity,10);isNaN(r)&&(r=0),t.storedItem.quantity=r,Object(n.Bb)(t)}_addItem(){const e=Object(n.e)({name:""},!1);Object(a.a)(!0),setTimeout(()=>{Object(c.j)(e)},0)}_preventDefault(e){e.preventDefault(),e.stopPropagation()}_or(...e){for(let t of e)if(t)return!0;return!1}_noRarity(e){return!e||"None"===e}_toggleTheme(e){return e.children&&0===e.children.length?"no-children":""}_linkClick(){this.dispatchEvent(new CustomEvent("open-drawer",{bubbles:!0,composed:!0,detail:{viewId:"items"}}))}_openCurrencyModal(){this.currencyModalOpen=!0}_closeCurrencyModal(){this.newPP=null,this.newGP=null,this.newEP=null,this.newSP=null,this.newCP=null,this.new$=null,this.currencyModalOpen=!1}_addCurrency(){this.character.currency&&!Array.isArray(this.character.currency)||(this.character.currency={}),this.character.currencyIsDollars?this.character.currency.$=parseInt(this.character.currency.$||0)+parseInt(this.new$||0):(this.character.currency.pp=parseInt(this.character.currency.pp||0)+parseInt(this.newPP||0),this.character.currency.gp=parseInt(this.character.currency.gp||0)+parseInt(this.newGP||0),this.character.currency.ep=parseInt(this.character.currency.ep||0)+parseInt(this.newEP||0),this.character.currency.sp=parseInt(this.character.currency.sp||0)+parseInt(this.newSP||0),this.character.currency.cp=parseInt(this.character.currency.cp||0)+parseInt(this.newCP||0)),Object(n.nb)(this.character),this._closeCurrencyModal()}_removeCurrency(){if(this.character.currencyIsDollars){if(parseInt(this.character.currency.$||0)-parseInt(this.new$||0)<0)return!1;this.character.currency.$=parseInt(this.character.currency.$||0)-parseInt(this.new$||0)}else{if(parseInt(this.character.currency.pp||0)-parseInt(this.newPP||0)<0||parseInt(this.character.currency.gp||0)-parseInt(this.newGP||0)<0||parseInt(this.character.currency.ep||0)-parseInt(this.newEP||0)<0||parseInt(this.character.currency.sp||0)-parseInt(this.newSP||0)<0||parseInt(this.character.currency.cp||0)-parseInt(this.newCP||0)<0)return!1;this.character.currency.pp=parseInt(this.character.currency.pp||0)-parseInt(this.newPP||0),this.character.currency.gp=parseInt(this.character.currency.gp||0)-parseInt(this.newGP||0),this.character.currency.ep=parseInt(this.character.currency.ep||0)-parseInt(this.newEP||0),this.character.currency.sp=parseInt(this.character.currency.sp||0)-parseInt(this.newSP||0),this.character.currency.cp=parseInt(this.character.currency.cp||0)-parseInt(this.newCP||0)}Object(n.nb)(this.character),this._closeCurrencyModal()}_getCurrencyValue(e,t){return t&&t[e]?t[e].toLocaleString():0}_setCurrencyType(e){this.character.currencyIsDollars=e.detail.checked,Object(n.nb)(this.character)}_currencyColor(e){return e?"Dollars":"Gold"}_isActive(e,t){return e===t}_hasActive(e){return!!e}_clearSelection(){window.history.back()}_isLeaf(e){return!e.containerCapacity&&!e.packContents}static get template(){return i.b`
       <style include="material-styles fa-styles"></style>
       <style>
         :host {
@@ -363,6 +363,103 @@ const s=document.createElement("template");s.innerHTML="\n  <style>\n    @font-f
           font-size: 32px;
         }
 
+        .currency {
+          margin: 10px 0;
+        }
+        .currency h3 {
+          display: flex;
+          align-items: center;
+        }
+        .currency-change {
+          margin-left: auto;
+        }
+        .currency-wrap {
+          padding-left: 30px;
+          display: flex;
+          justify-content: flex-end;
+          flex-wrap: wrap;
+        }
+        .currency-item {
+          display: flex;
+          margin-bottom: 10px;
+          margin-left: 14px;
+          position: relative;
+          align-items: baseline;
+        }
+        .currency-item__value {
+          font-weight: bold;
+          font-size: 24px;
+          margin-right: 4px;
+        }
+        .currency-item__label {
+          color: grey;
+          font-size: 16px;
+          font-weight: normal;
+        }
+        .currency-item__icon {
+          margin-right: 4px;
+          font-size: 18px;
+          position: relative;
+          top: -2px;
+        }
+        .currency-item--dollars .currency-item__value {
+          font-size: 32px;
+          font-weight: normal;
+        }
+        .currency-item--dollars .currency-item__icon {
+          font-size: 32px;
+          font-weight: normal;
+          top: 0;
+        }
+        [currency="Dollars"] {
+          color: green;
+        }
+        [currency="Electrum"] {
+          color: #8898A4;
+        }
+        [currency="Platinum"] {
+          color: #B2B2B2;
+        }
+        [currency="Gold"] {
+          color: #ECA824;
+        }
+        [currency="Silver"] {
+          color: #CEC6BF;
+        }
+        [currency="Copper"] {
+          color: #C2876F;
+        }
+        .currency-item:focus .tooltip,
+        .currency-item:hover .tooltip {
+          display: block;
+        }
+        .currency-item:focus {
+          outline: none;
+        }
+        .tooltip {
+          position: absolute;
+          background: lightgray;
+          color: black;
+          font-size: 14px;
+          padding: 2px 10px;
+          border-radius: 4px;
+          white-space: nowrap;
+          left: 5px;
+          top: -32px;
+          display: none;
+        }
+        .tooltip::after {
+          content: '';
+          height: 0;
+          width: 0;
+          position: absolute;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 5px solid lightgray;
+          bottom: -4px;
+          left: 2px;
+        }
+
         @media(min-width: 420px) {
           .heading {
             justify-content: flex-start;
@@ -409,6 +506,138 @@ const s=document.createElement("template");s.innerHTML="\n  <style>\n    @font-f
       </div>
       <div class="col-wrap">
         <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
+          <div class="currency">
+            <h3>
+              Currency
+              <button class="currency-change mdc-icon-button" on-click="_openCurrencyModal"><dnd-icon icon="hand-holding-usd"></dnd-icon></button>
+            </h3>
+            <div hidden$=[[currencyIsDollars]] class="currency-wrap">
+              <div hidden$='[[!_getCurrencyValue("pp", currency)]]' class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("pp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Platinum"></dnd-icon>
+                <div class="currency-item__label">pp</div>
+                <div class="tooltip">1pp = 10gp</div>
+              </div>
+              <div hidden$='[[!_getCurrencyValue("gp", currency)]]' class="currency-item">
+                <div class="currency-item__value">[[_getCurrencyValue("gp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Gold"></dnd-icon>
+                <div class="currency-item__label">gp</div>
+              </div>
+              <div hidden$='[[!_getCurrencyValue("ep", currency)]]' class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("ep", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Electrum"></dnd-icon>
+                <div class="currency-item__label">ep</div>
+                <div class="tooltip">1gp = 2ep</div>
+              </div>
+              <div hidden$='[[!_getCurrencyValue("sp", currency)]]' class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("sp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Silver"></dnd-icon>
+                <div class="currency-item__label">sp</div>
+                <div class="tooltip">1gp = 10sp</div>
+              </div>
+              <div class="currency-item" tabindex="0">
+                <div class="currency-item__value">[[_getCurrencyValue("cp", currency)]]</div>
+                <dnd-icon class="currency-item__icon" icon="coins" currency="Copper"></dnd-icon>
+                <div class="currency-item__label">cp</div>
+                <div class="tooltip">1gp = 100cp</div>
+              </div>
+            </div>
+            <div hidden$=[[!currencyIsDollars]] class="currency-wrap">
+              <div class="currency-item currency-item--dollars">
+                <dnd-icon class="currency-item__icon" icon="dollar-sign" currency="Dollars"></dnd-icon>
+                <div class="currency-item__value">[[_getCurrencyValue("$", currency)]]</div>
+              </div>
+            </div>
+
+            <vaadin-dialog opened="{{currencyModalOpen}}">
+              <template>
+                <style>
+                  [hidden] {
+                    display: none !important;
+                  }
+                  h3 {
+                    margin-top: 0;
+                    margin-bottom: 30px;
+                    display: flex;
+                    min-width: 260px;
+                  }
+                  dnd-switch {
+                    margin-left: auto;
+                  }
+                  dnd-icon {
+                    font-size: 18px;
+                  }
+                  .modal-content {
+                    display: flex;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                  }
+                  .modal-footer {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 30px;
+                    flex-wrap: wrap;
+                  }
+                  .modal-footer dnd-button:last-child {
+                    /* margin: 12px auto 0; */
+                    --mdc-theme-primary: var(--mdc-theme-error);
+                  }
+                  .modal-footer dnd-button:not(:last-child) {
+                    margin-right: 12px;
+                  }
+                  [currency="Dollars"] {
+                    --mdc-theme-primary: green;
+                  }
+                  [currency="Electrum"] {
+                    --mdc-theme-primary: #8898A4;
+                  }
+                  [currency="Platinum"] {
+                    --mdc-theme-primary: #B2B2B2;
+                  }
+                  [currency="Gold"] {
+                    --mdc-theme-primary: #ECA824;
+                  }
+                  [currency="Silver"] {
+                    --mdc-theme-primary: #CEC6BF;
+                  }
+                  [currency="Copper"] {
+                    --mdc-theme-primary: #C2876F;
+                  }
+                  vaadin-integer-field {
+                    margin-top: 0;
+                    width: 90px;
+                  }
+                  .dollars {
+                    width: 160px;
+                  }
+                </style>
+                <h3>
+                  Adjust Currency
+                  <dnd-switch no-color initial-value={{currencyIsDollars}} on-switch-change="_setCurrencyType">
+                    <dnd-icon icon="coins" style="color: #ECA824;" slot="label"></dnd-icon>
+                    <dnd-icon icon="dollar-sign" style="color: green;" slot="secondaryLabel"></dnd-icon>
+                  </dnd-switch>
+                </h3>
+                <div class="modal-content" hidden$=[[currencyIsDollars]]>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="pp" value="{{newPP}}" currency="Platinum" label="Platinum (pp)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="gp" value="{{newGP}}" currency="Gold" label="Gold (gp)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="ep" value="{{newEP}}" currency="Electrum" label="Electrum (ep)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="sp" value="{{newSP}}" currency="Silver" label="Silver (sp)"></vaadin-integer-field>
+                  <vaadin-integer-field theme="mini" padded has-controls min="0" id="cp" value="{{newCP}}" currency="Copper" label="Copper (cp)"></vaadin-integer-field>
+                </div>
+                <div class="modal-content" hidden$=[[!currencyIsDollars]]>
+                  <vaadin-integer-field class="dollars" theme="mini" padded has-controls min="0" id="$" value="{{new$}}" currency="Dollars" label="Currency ($)"></vaadin-integer-field>
+                </div>
+                <div class="modal-footer">
+                  <dnd-button label="Add" currency$="[[_currencyColor(currencyIsDollars)]]" border on-click="_addCurrency"></dnd-button>
+                  <dnd-button label="Remove" border on-click="_removeCurrency"></dnd-button>
+                  <!-- <dnd-button label="Cancel" border on-click="_closeCurrencyModal"></dnd-button> -->
+                </div>
+              </template>
+            </vaadin-dialog>
+          </div>
+
+          <h3>Equipment</h3>
           <vaadin-grid id="grid" expanded-items="{{expandedItems}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
             <vaadin-grid-column>
               <template>
@@ -448,5 +677,5 @@ const s=document.createElement("template");s.innerHTML="\n  <style>\n    @font-f
           </div>
         </div>
       </div>
-    `}}customElements.define("dnd-character-builder-equipment",s)}}]);
+    `}}customElements.define("dnd-character-builder-equipment",o)}}]);
 //# sourceMappingURL=7.bundle.js.map

@@ -6,7 +6,7 @@
       <div class="grid-container">
         <a class="grid-item" href="#/character-builder">
           <i class="fas fa-wrench mdc-theme--on-surface link-grid-item--image" aria-hidden="true"></i>
-          <span class="grid-item--text">Character Sheets</span>
+          <span class="grid-item--text">Character<br/>Sheets</span>
         </a>
         <a class="grid-item" href="#/dice">
           <i class="fas fa-dice mdc-theme--on-surface link-grid-item--image" aria-hidden="true"></i>
@@ -50,7 +50,7 @@
         </a>
         <a class="grid-item" href="#/features">
           <i class="fas fa-cogs mdc-theme--on-surface link-grid-item--image" aria-hidden="true"></i>
-          <span class="grid-item--text">Class Features</span>
+          <span class="grid-item--text">Class<br/>Features</span>
         </a>
         <a class="grid-item" href="#/conditions">
           <i class="fas fa-skull-crossbones mdc-theme--on-surface link-grid-item--image" aria-hidden="true"
