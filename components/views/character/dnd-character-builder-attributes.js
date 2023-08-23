@@ -301,7 +301,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
       this.armorProfs = getChoiceArmorProfs().map(util_capitalizeAll).join(', ');
       this.toolProfs = getChoiceToolProfs().map(util_capitalizeAll).join(', ');
       this.languages = getChoiceLanguages().map(util_capitalizeAll).join(', ');
-      this.feats = getChoiceFeats().map(util_capitalizeAll).join(', ');
+      this.feats = getChoiceFeats().map(util_capitalizeAll);
       this.darkvision = getChoiceDarkvision();
       this.resists = getChoiceResists().map(util_capitalizeAll).join(', ');
       this.conditionImmunes = getChoiceConditionImmunes().map(util_capitalizeAll).join(', ');
@@ -629,6 +629,18 @@ class DndCharacterBuilderAttributes extends PolymerElement {
     return Array.isArray(array) && array.length === 1;
   }
 
+  _featClick(e) {
+    const feat = e.model.__data.item.toLowerCase();
+    this.dispatchEvent(new CustomEvent("open-drawer", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        selectedItem: { name: feat },
+        viewId: 'feats'
+      }
+    }));
+  }
+
   static get template() {
     return html`
       <style include="material-styles fa-styles">
@@ -835,6 +847,10 @@ class DndCharacterBuilderAttributes extends PolymerElement {
         }
         .other__item div {
           margin-left: 12px;
+        }
+        .feat-link {
+          color: var(--mdc-theme-link);
+          text-decoration: underline;
         }
 
         @keyframes scaleIn {
@@ -1673,7 +1689,11 @@ class DndCharacterBuilderAttributes extends PolymerElement {
                   </div>
                   <div class="other__item" hidden$="[[!_exists(feats)]]">
                     <h4>Feats</h4>
-                    <div>[[feats]]</div>
+                    <div>
+                      <template is="dom-repeat" items="[[feats]]">
+                        <span class="feat-link" on-click="_featClick">[[item]]</span>
+                      </template>
+                    </div>
                   </div>
                   <div class="other__item" hidden$="[[!_exists(resists)]]">
                     <h4>Resistances</h4>

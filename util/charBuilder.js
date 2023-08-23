@@ -1952,7 +1952,7 @@ async function getSpellRolls(character = selectedCharacter) {
 
 async function getWeaponItemRolls(character = selectedCharacter) {
   if (!character) {
-    return;
+    return [];
   }
   const weaponItems = await getWeaponItems(character);
   
@@ -2001,6 +2001,7 @@ async function getWeaponItemRolls(character = selectedCharacter) {
       return rollObj;
     });
   }
+  return [];
 }
 
 function isProficientWithWeapon(weapon, character = selectedCharacter) {

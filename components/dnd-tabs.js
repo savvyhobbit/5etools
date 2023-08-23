@@ -78,6 +78,7 @@ class DndTabs extends PolymerElement {
 
     if (draggedTab) {
       this.dragInitTimer = setTimeout(() => {
+        window.navigator.vibrate(20);
         this.dragInitTimer = undefined;
         this._disableScrolling();
         this.draggedItem = {...e.model.__data.item, dragged: true};
