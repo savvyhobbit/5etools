@@ -46,7 +46,7 @@ const s=r.b`
   :host([dir='rtl']:not([theme~='align-right'])) ::slotted(input) {
     --_lumo-text-field-overflow-mask-image: linear-gradient(to left, transparent, #000 1.25em);
   }
-`;Object(r.c)("vaadin-number-field",[a.a,i.a,s],{moduleId:"lumo-number-field"});n(74);var o=n(3),l=n(31),d=n(32),A=n(57),c=n(102),u=n(55),h=n(75);
+`;Object(r.c)("vaadin-number-field",[a.a,i.a,s],{moduleId:"lumo-number-field"});n(74);var o=n(3),l=n(31),d=n(33),A=n(57),c=n(102),u=n(55),h=n(75);
 /**
  * @license
  * Copyright (c) 2021 - 2022 Vaadin Ltd.

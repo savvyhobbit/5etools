@@ -345,7 +345,7 @@
   :host([dir='rtl'][part='overflow-button']) {
     border-radius: var(--lumo-border-radius-m) 0 0 var(--lumo-border-radius-m);
   }
-`;Object(o.c)("vaadin-menu-bar-button",[i,r],{moduleId:"lumo-menu-bar-button"});var a=n(3),s=n(24),l=n(31),c=n(32),d=n(111);
+`;Object(o.c)("vaadin-menu-bar-button",[i,r],{moduleId:"lumo-menu-bar-button"});var a=n(3),s=n(24),l=n(31),c=n(33),d=n(111);
 /**
  * @license
  * Copyright (c) 2017 - 2022 Vaadin Ltd.
