@@ -160,6 +160,16 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
   _level(index) {
     return index + 1;
+    // switch(index) {
+    //   case 0:
+    //     return '1st';
+    //   case 1:
+    //     return '2nd';
+    //   case 2:
+    //     return '3rd';
+    //   default:
+    //     return `${index + 1}th`;
+    // }
   }
 
   _deleteLevel(e) {
@@ -626,6 +636,17 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     return isEditMode ? 'edit-mode' : 'not-edit-mode';
   }
 
+  _hpFieldKeyup(e) {
+    console.error("_hpFieldKeyup", e);
+    if (e.which === 13) {
+      e.target.blur();
+    }
+    if (e.which === 27) {
+      e.target.closest('vaadin-integer-field').value = parseInt(e.target.closest('.btn-field').dataset.original);
+      e.target.blur();
+    }
+  }
+
   _toggleHpField(e) {
     const element = e.target.closest('.btn-field');
     const isOpen = element.classList.contains('btn-field--open');
@@ -770,9 +791,8 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           padding: 6px 0;
         }
         .level-col__level {
-          margin-right: 10px;
-          font-size: 20px;
-          font-weight: bold;
+          margin-right: 8px;
+          font-size: 28px;
         }
         .level-col__image-wrap {
           width: 30px;
@@ -785,7 +805,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           height: 30px;
           display: block;
           position: absolute;
-          top: -1px;
+          top: -3px;
         }
         .level-col__class {
           font-size: 24px;
@@ -852,11 +872,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
         }
 
         .delete-col {
-          margin-right: 16px;
+          margin-left: 16px;
         }
         .delete-btn {
           height: 36px;
-          font-size: 18px;
+          width: 33px;
+          font-size: 14px;
           padding: 0;
           background: none !important;
         }
@@ -937,7 +958,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           display: block;
         }
         .hp-col .hp-col__non-edit .hp-roll-icon {
-          left: 33px;
+          left: 18px;
         }
         .edit-mode .hp-col__non-edit {
           display: none;
@@ -1037,7 +1058,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
 
           <div class="button-wrap">
             <template is="dom-repeat" items="[[_objArray(classes)]]">
-              <dnd-button icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
+              <dnd-button border icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
             </template>
           </div>
         </div>
@@ -1127,17 +1148,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                   </div>
 
                   <div class="hp-col">
-                    <div class="delete-col">
-                      <button class="delete-btn mdc-icon-button" on-click="_deleteLevel">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    </div>
                     <div class="hp-col__non-edit">
                       <i class$="[[_hpDiceIconClass(index, hitDiceMaxes)]]"></i>
                       <span class="material-icons hp-roll-icon" aria-hidden="true">favorite</span>
                       [[_levelHp(item.name, index)]]
                     </div>
-                    <div class="hp-col__edit btn-field" data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
+                    <div class="hp-col__edit btn-field" data-original$="[[_levelHp(item.name, index)]]"  data-max$="[[_levelHitDice(index, hitDiceMaxes)]]" data-level$="[[index]]" data-class-name$="[[item.name]]">
                       <dnd-button background="none" class="btn-field__btn" on-click="_toggleHpField">
                         <span class="btn-field__btn-label" slot="label">
                           <i class$="[[_hpDiceIconClass(index, hitDiceMaxes)]]"></i>
@@ -1145,7 +1161,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                           <span class="btn-field__btn-label-text">[[_levelHp(item.name, index)]]</span>
                         </span>
                       </dnd-button>
-                      <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]" on-blur="_toggleHpField"></vaadin-integer-field>
+                      <vaadin-integer-field class="btn-field__input" min="1" max="[[_levelHitDice(index, hitDiceMaxes)]]" on-blur="_toggleHpField" on-keyup="_hpFieldKeyup"></vaadin-integer-field>
+                    </div>
+                    <div class="delete-col">
+                      <button class="delete-btn mdc-icon-button" on-click="_deleteLevel">
+                        <i class="fas fa-trash"></i>
+                      </button>
                     </div>
                   </div>
                 </div>

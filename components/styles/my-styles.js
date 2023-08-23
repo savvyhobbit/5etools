@@ -35,6 +35,7 @@ styleElement.innerHTML = `
       }
       body {
         line-height: 1;
+        --mdc-theme-link: #2196f3;
       }
       ol, ul {
         list-style: none;

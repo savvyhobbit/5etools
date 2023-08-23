@@ -356,6 +356,7 @@ class DndLayout extends PolymerElement {
 
         #breadcrumbcontainer {
           transition: padding-left 150ms ease-out;
+          position: relative;
         }
 
         .mdc-theme--primary-bg[edit-mode] {

@@ -1207,6 +1207,7 @@ class DndCharacterBuilderAttributes extends PolymerElement {
           background: unset;
           cursor: pointer;
           font-weight: 300;
+          color: var(--mdc-theme-on-surface);
         }
         .speed-val--center {
           justify-content: center;

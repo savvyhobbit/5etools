@@ -282,11 +282,27 @@ class DndCharacterBuilderEquipment extends PolymerElement {
     }
   }
 
-  _deleteItem(e) {
+  _deleteItem() {
+    removeItem(this.deleteItemId);
+    this._closeDeleteModal();
+  }
+
+  _closeDeleteModal() {
+    this.deleteModalOpen = false;
+    setTimeout(() => {
+      this.deleteItemId = null;
+      this.deleteItemName = null;
+    }, 200);
+  }
+  
+  _openDeleteModal(e) {
     e.preventDefault();
     e.stopPropagation();
-    let uniqueId = e.model.__data.item && e.model.__data.item.uniqueId !== undefined ? e.model.__data.item.uniqueId : undefined;
-    removeItem(uniqueId);
+    if (e.model.__data.item) {
+      this.deleteItemId = e.model.__data.item.uniqueId;
+      this.deleteItemName = e.model.__data.item.name;
+    }
+    this.deleteModalOpen = true;
   }
 
   async _setItemEquipped(e) {
@@ -475,6 +491,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
         vaadin-grid {
           margin-bottom: var(--tab-bottom-margin);
+          border-top: 1px solid var(--_lumo-grid-secondary-border-color);
         }
 
         .heading {
@@ -489,6 +506,15 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         .mdc-icon-button:hover {
           color: var(--mdc-theme-primary);
         }
+        .add-item {
+          position: relative;
+        }
+        .add-item__tiny {
+          position: absolute;
+          font-size: 14px;
+          top: 2px;
+          right: 4px;
+        }
 
         .col-wrap {
           display: flex; 
@@ -498,10 +524,6 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
         .row-wrap {
           width: 100%;
-        }
-
-        .row-wrap > *:not(h2):not(:last-child) {
-          margin-bottom: 10px;
         }
 
         .no-content {
@@ -645,25 +667,25 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
 
         .currency {
-          margin: 10px 0;
-        }
-        .currency h3 {
+          margin: 20px 0;
           display: flex;
+          margin-left: auto;
           align-items: center;
+          width: fit-content;
         }
         .currency-change {
-          margin-left: auto;
+          margin-left: 12px;
         }
         .currency-wrap {
           padding-left: 30px;
           display: flex;
           justify-content: flex-end;
           flex-wrap: wrap;
+          align-items: baseline;
+          gap: 10px;
         }
         .currency-item {
           display: flex;
-          margin-bottom: 10px;
-          margin-left: 14px;
           position: relative;
           align-items: baseline;
         }
@@ -782,16 +804,15 @@ class DndCharacterBuilderEquipment extends PolymerElement {
       <div class="heading">
         <h2>Inventory</h2>
         <button class="mdc-icon-button reference-link material-icons" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">logout</button>
-        <button class="mdc-icon-button add-item" hidden$="[[_hasActive(activeItem)]]" on-click="_addItem"><dnd-icon icon="plus"></dnd-icon></button>
+        <button class="mdc-icon-button add-item" hidden$="[[_hasActive(activeItem)]]" on-click="_addItem">
+          <dnd-icon class="add-item__tiny" icon="plus"></dnd-icon>
+          <dnd-icon icon="sack"></dnd-icon>
+        </button>
         <button class="mdc-icon-button close-item material-icons mdc-theme--on-header" hidden$="[[!_hasActive(activeItem)]]" on-click="_clearSelection">close</button>
       </div>
       <div class="col-wrap">
         <div class="row-wrap item-list-row" hidden$="[[_hasActive(activeItem)]]">
           <div class="currency">
-            <h3>
-              Currency
-              <button class="currency-change mdc-icon-button" on-click="_openCurrencyModal"><dnd-icon icon="hand-holding-usd"></dnd-icon></button>
-            </h3>
             <div hidden$=[[currencyIsDollars]] class="currency-wrap">
               <div hidden$='[[!_getCurrencyValue("pp", currency)]]' class="currency-item" tabindex="0">
                 <div class="currency-item__value">[[_getCurrencyValue("pp", currency)]]</div>
@@ -829,6 +850,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                 <div class="currency-item__value">[[_getCurrencyValue("$", currency)]]</div>
               </div>
             </div>
+            <button class="currency-change mdc-icon-button" on-click="_openCurrencyModal"><dnd-icon icon="sack-dollar"></dnd-icon></button>
 
             <vaadin-dialog opened="{{currencyModalOpen}}">
               <template>
@@ -918,8 +940,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
             </vaadin-dialog>
           </div>
 
-          <h3>Equipment</h3>
-          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding" >
+          <vaadin-grid id="grid" expanded-items="{{expandedItems}}" all-rows-visible rows-draggable theme="no-border no-row-borders no-row-padding">
             <vaadin-grid-column>
               <template>
                 <div class="item-wrap" active$="[[_isActive(activeItem, item)]]">
@@ -945,12 +966,42 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                   <div hidden$="[[!item.hasQuantity]]" class="item-wrap__quantity">
                     <vaadin-integer-field value="{{item.quantity}}" theme="mini" has-controls on-change="_quantityChange"></vaadin-integer-field>
                   </div>
-                  <button class="item-wrap__close" hidden$="[[!isEditMode]]" on-click="_deleteItem"><i class="fas fa-trash"></i></button>
+                  <button class="mdc-icon-button item-wrap__close" hidden$="[[!isEditMode]]" on-click="_openDeleteModal"><i class="fas fa-trash"></i></button>
                 </div>
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
         </div>
+
+        <vaadin-dialog opened="{{deleteModalOpen}}">
+          <template>
+            <style>
+              .modal-content {
+                display: flex;
+                justify-content: center;
+              }
+              .modal-item {
+                font-weight: bold;
+                font-size: 16px;
+              }
+              .modal-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+              }
+              .modal-footer dnd-button:first-child {
+                margin-right: 40px;
+                --mdc-theme-primary: var(--mdc-theme-error);
+              }
+            </style>
+            <div class="modal-content">Remove the item?</div>
+            <div class="modal-content modal-item">[[deleteItemName]]</div>
+            <div class="modal-footer">
+              <dnd-button label="Delete" border on-click="_deleteItem"></dnd-button>
+              <dnd-button label="Cancel" border on-click="_closeDeleteModal"></dnd-button>
+            </div>
+          </template>
+        </vaadin-dialog>
 
         <div class="row-wrap details-row" hidden$="[[!_hasActive(activeItem)]]">
           <div class="details-wrap">          

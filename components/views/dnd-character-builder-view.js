@@ -9,7 +9,7 @@ import "../dnd-roll-results";
 import "../dnd-roller";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
-import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter } from '../../util/charBuilder.js';
+import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter, getTabOrder } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
 import { rollEventChannel } from '../../util/roll.js';
@@ -140,6 +140,26 @@ class DndCharacterBuilderView extends PolymerElement {
     }
     this.$.name.addEventListener("focus", this.nameFieldFocusHandler);
 
+    // this.fixedNameWrapScrollHandler = () => {
+    //   const clientRect = this.$.nameWrapWatch.getBoundingClientRect();
+    //   console.error(clientRect.top * -1 + 100);
+
+    //   if (clientRect.bottom <= 50) {
+    //     this.$.nameWrap.classList.add('fixed');
+    //     this.$.nameWrapWatch.classList.add('fixed');
+    //     window.document.body.children[0].shadowRoot.children[0]
+    //       .shadowRoot.getElementById("breadcrumbcontainer").style.top = '-46px';
+    //   } else {
+    //     const breadcrumbAdjustment = clientRect.top * -1 + 100;
+    //     window.document.body.children[0].shadowRoot.children[0]
+    //       .shadowRoot.getElementById("breadcrumbcontainer")
+    //       .style.top = breadcrumbAdjustment > 0 ? `-${breadcrumbAdjustment}px` : '0px';
+    //     this.$.nameWrap.classList.remove('fixed');
+    //     this.$.nameWrapWatch.classList.remove('fixed');
+    //   }
+    // };
+    // window.addEventListener('scroll', this.fixedNameWrapScrollHandler, {passive: true});
+
     this.editModeHandler = (e) => {
       this.isEditMode = e.detail.isEditMode;
       this.pulse = false;
@@ -191,6 +211,7 @@ class DndCharacterBuilderView extends PolymerElement {
     window.removeEventListener('scroll', this.fixedTabsScrollHandler);
     getCharacterChannel().removeEventListener("character-selected", this.characterChangeHandler);
     this.$.name.removeEventListener("focus", this.nameFieldFocusHandler);
+    // window.removeEventListener('scroll', this.fixedNameWrapScrollHandler);
     getEditModeChannel().removeEventListener('editModeChange', this.editModeHandler);
   }
 
@@ -259,27 +280,23 @@ class DndCharacterBuilderView extends PolymerElement {
   }
 
   defaultTabs() {
-    return [
-      { label: "", icon: "heart", viewId: "attributes" },
-      { label: "", icon: "book-medical", viewId: "class" },
-      { label: "", icon: "book-user", viewId: "background-race" },
-      { label: "", icon: "book-spells", viewId: "spells" },
-      { label: "", icon: "sack", viewId: "equipment" },
-      { label: "", icon: "list", viewId: "abilities" },
-      { label: "", icon: "dice", viewId: "rolls" },
-    ]
+    const tabOrder = getTabOrder();
+    tabOrder.forEach((tab) => {
+      if (tab.viewId === "spells") {
+        tab.hidden = false;
+      }
+    });
+    return tabOrder;
   }
 
   nonCasterTabs() {
-    return [
-      { label: "", icon: "heart", viewId: "attributes" },
-      { label: "", icon: "book-medical", viewId: "class" },
-      { label: "", icon: "book-user", viewId: "background-race" },
-      { label: "", icon: "book-spells", viewId: "spells", hidden: true},
-      { label: "", icon: "sack", viewId: "equipment" },
-      { label: "", icon: "list", viewId: "abilities" },
-      { label: "", icon: "dice", viewId: "rolls" },
-    ]
+    const tabOrder = getTabOrder();
+    tabOrder.forEach((tab) => {
+      if (tab.viewId === "spells") {
+        tab.hidden = true;
+      }
+    });
+    return tabOrder;
   }
   
   defaultMenu() {
@@ -424,12 +441,21 @@ class DndCharacterBuilderView extends PolymerElement {
         }
         .char-input-wrap {
           display: flex;
-          height: 58px;
+          height: 50px;
+          margin-top: -10px;
+          /* z-index: 4; */
+        }
+        /* #nameWrapWatch.fixed {
+          height: 44px;
+          margin-top: -10px;
         }
         .char-input-wrap.fixed {
           position: fixed;
           top: 0;
-        }
+          background-color: var(--mdc-theme-header, #fff);
+          margin-top: 5px;
+          margin-right: 16px;
+        } */
         .char-detail {
           font-size: 16px;
           line-height: 1.5;
@@ -437,11 +463,12 @@ class DndCharacterBuilderView extends PolymerElement {
           flex-direction: column;
         }
         .char-detail__class {
-          font-size: 20px;
+          font-size: 18px;
         }
         .char-detail__race-background {
-          font-size: 16px;
+          font-size: 14px;
           font-style: italic;
+          margin-bottom: 4px;
         }
 
         .roll-container {
@@ -598,11 +625,11 @@ class DndCharacterBuilderView extends PolymerElement {
 
       <div class$="[[_editModeClass(isEditMode)]]">
         <div class="head-wrap">
-          <div class="char-input-wrap">
+          <div id="nameWrap" class="char-input-wrap">
             <vaadin-text-field id="name" class="name" value="{{characterName}}" disabled$="[[!isEditMode]]"></vaadin-text-field>
             <dnd-character-select mini></dnd-character-select>
           </div>
-
+          <div id="nameWrapWatch"></div>
           <div class="char-detail">
             <span class="char-detail__class">[[classLevel]]</span>
             <span class="char-detail__race-background">[[race]], [[background]]</span>
