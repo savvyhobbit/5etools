@@ -2076,15 +2076,27 @@ function removeAbilityUsage(index, character = selectedCharacter) {
 }
 
 function getTabOrder() {
-  return JSON.parse(window.localStorage.getItem("tabOrder")) || [
-    { label: "", icon: "heart", viewId: "attributes" },
-    { label: "", icon: "book-medical", viewId: "class" },
-    { label: "", icon: "book-user", viewId: "background-race" },
-    { label: "", icon: "book-spells", viewId: "spells" },
-    { label: "", icon: "sack", viewId: "equipment" },
-    { label: "", icon: "list", viewId: "abilities" },
-    { label: "", icon: "dice", viewId: "rolls" },
-  ];
+  try {
+    return window.localStorage.getItem("tabOrder") ? JSON.parse(window.localStorage.getItem("tabOrder")) : [
+        { label: "", icon: "heart", viewId: "attributes" },
+        { label: "", icon: "book-medical", viewId: "class" },
+        { label: "", icon: "book-user", viewId: "background-race" },
+        { label: "", icon: "book-spells", viewId: "spells" },
+        { label: "", icon: "sack", viewId: "equipment" },
+        { label: "", icon: "list", viewId: "abilities" },
+        { label: "", icon: "dice", viewId: "rolls" },
+      ];
+  } catch {
+    return [
+      { label: "", icon: "heart", viewId: "attributes" },
+      { label: "", icon: "book-medical", viewId: "class" },
+      { label: "", icon: "book-user", viewId: "background-race" },
+      { label: "", icon: "book-spells", viewId: "spells" },
+      { label: "", icon: "sack", viewId: "equipment" },
+      { label: "", icon: "list", viewId: "abilities" },
+      { label: "", icon: "dice", viewId: "rolls" },
+    ];
+  }
 }
 
 function saveTabOrder(tabOrder) {
