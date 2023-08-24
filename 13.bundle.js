@@ -851,7 +851,7 @@
 
         <vaadin-menu-bar theme="end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>
 
-        <input type="file" id="fileSelector" accept=".json" on-change="processUpload" />
+        <input type="file" id="fileSelector" accept="application/JSON" on-change="processUpload" />
 
         <div class="character-builder--tabs-wrapper">
           <dnd-tabs id="tabs" class='fixed--bottom' theme="large" tabs="[[tabs]]" initial-selected-index="[[initialSelectedTab]]"></dnd-tabs>
