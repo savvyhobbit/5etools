@@ -1,15 +1,17 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[19],{156:function(e,t,l){"use strict";l.r(t);var s=l(3);l(23),l(28),l(43);class n extends s.a{static get properties(){return{nonGlobal:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get template(){return s.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[19],{161:function(e,s,l){"use strict";l.r(s);var t=l(3);l(23),l(28),l(43);class i extends t.a{static get properties(){return{nonGlobal:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get template(){return t.b`
       <style include="material-styles my-styles"></style>
 
       <dnd-selection-list
         enable-hash-routing
         non-global$="[[nonGlobal]]"
-        model-id="rewards"
+        model-id="psionics"
         columns='[
           {"id":"source","label":"Source"}, 
-          {"id":"reward-type","label":"Type","hideMobile":true}
+          {"id":"psy-type","label":"Type"},
+          {"id":"psy-order","label":"Order","hideMobile":true},
+          {"id":"psy-mode-list","label":"Mode List","cssClass":"hidden"}
         ]'
       >
       </dnd-selection-list>
-    `}}customElements.define("dnd-rewards-view",n)}}]);
+    `}}customElements.define("dnd-psionics-view",i)}}]);
 //# sourceMappingURL=19.bundle.js.map
