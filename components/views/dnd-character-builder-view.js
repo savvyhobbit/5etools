@@ -68,14 +68,6 @@ class DndCharacterBuilderView extends PolymerElement {
 
   constructor() {
     super();
-
-    // this.tabs = [
-    //   { label: "Attributes & Proficiencies", icon: "favorite", viewId: "attributes" },
-    //   { label: "Class Levels", icon: "class", viewId: "class" },
-    //   { label: "Race & Background", icon: "face", viewId: "background-race" },
-    //   { label: "Spells", icon: "flash_on", viewId: "spells" },
-    //   { label: "Equipment", icon: "local_grocery_store", viewId: "equipment" },
-    // ]
     
     this.tabs = this.defaultTabs();
     this.menuItems = this.defaultMenu();
@@ -645,7 +637,7 @@ class DndCharacterBuilderView extends PolymerElement {
 
         <vaadin-menu-bar theme="end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>
 
-        <input type="file" id="fileSelector" accept=".json" on-change="processUpload" />
+        <input type="file" id="fileSelector" accept="application/JSON" on-change="processUpload" />
 
         <div class="character-builder--tabs-wrapper">
           <dnd-tabs id="tabs" class='fixed--bottom' theme="large" tabs="[[tabs]]" initial-selected-index="[[initialSelectedTab]]"></dnd-tabs>

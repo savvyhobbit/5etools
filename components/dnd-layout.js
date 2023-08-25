@@ -354,6 +354,10 @@ class DndLayout extends PolymerElement {
           font-size: 20px;
         }
 
+        .mdc-top-app-bar__row {
+          align-items: center;
+        }
+
         #breadcrumbcontainer {
           transition: padding-left 150ms ease-out;
           position: relative;
@@ -383,6 +387,7 @@ class DndLayout extends PolymerElement {
               </div>
             </div>
           </div>
+          <a class="mdc-icon-button" href="#/debug"><span class="fa fa-cog"></span>
           <div class="nav-button">
             <button
               class="material-icons mdc-theme--on-header mdc-top-app-bar__navigation-icon hidden-desktop-up margin-left_small"
@@ -395,7 +400,7 @@ class DndLayout extends PolymerElement {
               ><span class="mdc-top-app-bar__title mdc-theme--on-header typography_mono hidden-tablet-down"
                 >5e Tools</span
               ></a
-            >
+            ></a>
           </div>
         </div>
       </header>
@@ -512,6 +517,11 @@ class DndLayout extends PolymerElement {
                 <span class="mdc-list-item__text">Cults</span>
               </a> -->
 
+              <hr class="mdc-list-divider" />
+              <a class="mdc-list-item mdc-theme--on-surface" href="#/debug">
+                <i class="fas fa-cog mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
+                <span class="mdc-list-item__text">Debug</span>
+              </a>
             </div>
             <template is="dom-if" if="[[hasPreview]]" restamp>
               <div class="preview-wrap" id="previewTarget">

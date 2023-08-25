@@ -35,6 +35,12 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-primary", "#bb86fc");
         root.style.setProperty("--mdc-theme-primary-darker", "#a359fc");
         root.style.setProperty("--mdc-theme-link", "#4dabf5");
+        root.style.setProperty("--mdc-theme-warn-bg", "#332B00");
+        root.style.setProperty("--mdc-theme-warn-border", "#665600");
+        root.style.setProperty("--mdc-theme-warn-text", "#eea826");
+        root.style.setProperty("--mdc-theme-error-bg", "#290000");
+        root.style.setProperty("--mdc-theme-error-border", "#5D0000");
+        root.style.setProperty("--mdc-theme-error-text", "#E56962");
         root.style.setProperty("--mdc-theme-secondary", "#03dac6");
         root.style.setProperty("--mdc-theme-secondary-10pct", "#1C3432");
         root.style.setProperty("--mdc-theme-secondary-50pct", "#137269");
@@ -62,6 +68,12 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-text-hint-on-light", "#fff");
         root.style.setProperty("--mdc-theme-text-disabled-on-light", "#fff");
         root.style.setProperty("--mdc-theme-text-icon-on-light", "#fff");
+
+        root.style.setProperty("--console-string-color", "#39C2B6");
+        root.style.setProperty("--console-number-color", "#8B71E1");
+        root.style.setProperty("--console-object-color", "#5DB0D7");
+        root.style.setProperty("--console-nullish-color", "#919191");
+        root.style.setProperty("--console-punc-color", "#fff");
 
         root.style.setProperty("--pulse-shadow", "0 0 0 0 rgb(187, 134, 252, 1)");
         root.style.setProperty("--pulse-shadow-0", "0 0 0 0 rgb(187, 134, 252, 0.7)");
@@ -144,6 +156,12 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-primary", "#6200ee");
         root.style.setProperty("--mdc-theme-primary-darker", "#5000c1");
         root.style.setProperty("--mdc-theme-link", "#2196f3");
+        root.style.setProperty("--mdc-theme-warn-bg", "#FEFBE6");
+        root.style.setProperty("--mdc-theme-warn-border", "#FFF5C1");
+        root.style.setProperty("--mdc-theme-warn-text", "inherit");
+        root.style.setProperty("--mdc-theme-error-bg", "#FEEFF0");
+        root.style.setProperty("--mdc-theme-error-border", "#FED6D6");
+        root.style.setProperty("--mdc-theme-error-text", "red");
         root.style.setProperty("--mdc-theme-secondary", "#018786");
         root.style.setProperty("--mdc-theme-secondary-10pct", "#E3F2F2");
         root.style.setProperty("--mdc-theme-secondary-50pct", "#72BCBC");
@@ -172,6 +190,12 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-text-hint-on-light", "rgba(0, 0, 0, 0.38)");
         root.style.setProperty("--mdc-theme-text-disabled-on-light", "rgba(0, 0, 0, 0.38)");
         root.style.setProperty("--mdc-theme-text-icon-on-light", "rgba(0, 0, 0, 0.38)");
+
+        root.style.setProperty("--console-string-color", "#C80200");
+        root.style.setProperty("--console-number-color", "#2221A7");
+        root.style.setProperty("--console-object-color", "#881180");
+        root.style.setProperty("--console-nullish-color", "#5F6367");
+        root.style.setProperty("--console-punc-color", "#202124");
 
         root.style.setProperty("--pulse-shadow", "0 0 0 0 rgb(98, 0, 238, 1)");
         root.style.setProperty("--pulse-shadow-0", "0 0 0 0 rgb(98, 0, 238, 0.7)");

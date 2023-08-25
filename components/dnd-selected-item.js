@@ -211,20 +211,30 @@ class DndSelectedItem extends PolymerElement {
         
         .close-item {
           position: fixed;
-          height: 64px;
-          width: 64px;
+          height: 60px;
+          width: 60px;
           font-size: 44px;
           display: none;
           right: 0;
           top: -4px;
           z-index: 12;
+          background: var(--mdc-theme-header);
         }
         .main.item-opened:not(.non-global) {
           margin-bottom: 120px;
         }
+        .main.item-opened.non-global .page-title {
+          height: 115px;
+          display: flex;
+          padding: 12px;
+          width: calc(94% + 24px);
+          margin-left: -13px;
+          border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
+          align-items: center;
+        }
         .non-global #scroll {
           overflow: scroll;
-          height: calc(100 * var(--vh) - 220px);
+          height: calc(100 * var(--vh) - 246px);
         }
         @media(min-width: 921px) {
           .main.item-opened {
