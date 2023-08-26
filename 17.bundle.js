@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[17],{166:function(d,i,e){"use strict";e.r(i);var l=e(3),s=(e(23),e(28),e(126),e(139));class t extends l.a{connectedCallback(){super.connectedCallback(),Object(s.onLoad)(this.shadowRoot)}static get template(){return l.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[17],{168:function(d,i,e){"use strict";e.r(i);var l=e(2),s=(e(19),e(20),e(126),e(141));class t extends l.a{connectedCallback(){super.connectedCallback(),Object(s.onLoad)(this.shadowRoot)}static get template(){return l.b`
       <style include="material-styles my-styles"></style>
 
       <div class="dice-wrapper">

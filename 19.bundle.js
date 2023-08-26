@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[19],{161:function(e,s,l){"use strict";l.r(s);var t=l(3);l(23),l(28),l(43);class i extends t.a{static get properties(){return{nonGlobal:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get template(){return t.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[19],{163:function(e,s,l){"use strict";l.r(s);var t=l(2);l(19),l(20),l(44);class i extends t.a{static get properties(){return{nonGlobal:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get template(){return t.b`
       <style include="material-styles my-styles"></style>
 
       <dnd-selection-list
