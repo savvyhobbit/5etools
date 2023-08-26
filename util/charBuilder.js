@@ -2075,19 +2075,18 @@ function removeAbilityUsage(index, character = selectedCharacter) {
   }
 }
 
-function getTabOrder() {
+function getSavedTabOrder() {
+  let tabOrder;
   try {
-    return window.localStorage.getItem("tabOrder") ? JSON.parse(window.localStorage.getItem("tabOrder")) : [
-        { label: "", icon: "heart", viewId: "attributes" },
-        { label: "", icon: "book-medical", viewId: "class" },
-        { label: "", icon: "book-user", viewId: "background-race" },
-        { label: "", icon: "book-spells", viewId: "spells" },
-        { label: "", icon: "sack", viewId: "equipment" },
-        { label: "", icon: "list", viewId: "abilities" },
-        { label: "", icon: "dice", viewId: "rolls" },
-      ];
-  } catch {
-    return [
+    if (window.localStorage.getItem("tabOrder")) {
+      tabOrder = JSON.parse(window.localStorage.getItem("tabOrder"));
+    }
+  } catch (err) {
+    console.error("saved tab order is corrupted");
+  }
+
+  if (!tabOrder || tabOrder.find((tab) => !tab || !tab.viewId)) {
+    tabOrder = [
       { label: "", icon: "heart", viewId: "attributes" },
       { label: "", icon: "book-medical", viewId: "class" },
       { label: "", icon: "book-user", viewId: "background-race" },
@@ -2097,6 +2096,7 @@ function getTabOrder() {
       { label: "", icon: "dice", viewId: "rolls" },
     ];
   }
+  return tabOrder;
 }
 
 function saveTabOrder(tabOrder) {
@@ -2214,6 +2214,6 @@ export {
   getChoiceFeats,
   getChoiceDarkvision,
   getSpellCastingStats,
-  getTabOrder,
+  getSavedTabOrder,
   saveTabOrder,
 };

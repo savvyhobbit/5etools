@@ -634,13 +634,14 @@ styleElement.innerHTML = `
       }
       .close-item {
         position: fixed;
-        height: 64px;
+        height: 60px;
         width: 64px;
         font-size: 44px;
         display: none;
         right: 0;
         top: -4px;
-        z-index: 12;
+        z-index: 4;
+        background: var(--mdc-theme-header);
       }
       .stats-wrapper p,
       .stats-wrapper ul {

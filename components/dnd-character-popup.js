@@ -141,6 +141,7 @@ class DndCharacterPopup extends PolymerElement {
         .feature-button {
           display: flex;
           align-items: center;
+          margin: 0 16px;
         }
         .class,
         .feature {
@@ -162,7 +163,7 @@ class DndCharacterPopup extends PolymerElement {
         }
         @media(min-width: 1321px) {
           :host {
-            width: calc(100% - 256px);
+            width: calc(100% - 250px);
           }
         }
       </style>

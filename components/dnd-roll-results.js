@@ -139,21 +139,24 @@ class DndRollResults extends PolymerElement {
   static get template() {
     return html`
       <style include="material-styles fa-styles">
-
+        :host {
+          position: relative;
+          display: block;
+        }
         [hidden] {
           display: none !important;
         }
 
         .roll-results__toggle-btn {
           position: absolute;
-          right: 90px;
-          bottom: 4px;
+          right: 51px;
+          bottom: 6px;
           height: 20px;
           border-radius: 20px;
           width: 60px;
           z-index: 3;
         }
-        .roll-results__toggle-btn[open] {
+        .roll-results__toggle-btn[open] i {
           transform: rotate(180deg);
         }
         .roll-results__toggle-btn[disabled] {
@@ -169,23 +172,23 @@ class DndRollResults extends PolymerElement {
           justify-content: center;
           cursor: pointer;
           position: absolute;
-          bottom: 4px;
+          bottom: 6px;
           height: 24px;
           border-radius: 20px;
           width: 60px;
           z-index: 3;
-          right: 168px;
+          right: 132px;
         }
 
         .roll-results {
           position: absolute;
-          bottom: -250px;
+          bottom: -340px;
           right: calc(100% - 20px);
           flex-direction: column;
           align-items: flex-end;
           width: 110vw;
           margin-bottom: -20px;
-          margin-right: -92px;
+          margin-right: -65px;
           pointer-events: none;
           transition: bottom 0.2s;
         }
@@ -193,9 +196,9 @@ class DndRollResults extends PolymerElement {
           bottom: -4px;
         }
         .roll-results__mask {
-          position: fixed;
-          right: 0;
-          bottom: 63px;
+          position: absolute;
+          right: 32px;
+          bottom: 0;
           width: 100%;
           height: 100%;
           max-width: 800px;
@@ -212,7 +215,7 @@ class DndRollResults extends PolymerElement {
           background: linear-gradient(0deg, black, transparent);
         }
         .roll-results__scroll-container {
-          max-height: 202px;
+          max-height: 198px;
           overflow-y: scroll;
           scroll-snap-type: y mandatory;
           display: flex;
@@ -240,7 +243,7 @@ class DndRollResults extends PolymerElement {
           display: flex;
           width: 225px;
           padding: 12px;
-          height: 82px;
+          height: 86px;
           outline: none;
           scroll-snap-align: start;
           position: relative;
@@ -483,7 +486,6 @@ class DndRollResults extends PolymerElement {
 
         @media(min-width: 420px) {
           .roll-results__mask {
-            bottom: 0;
             -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
             mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
           }
@@ -491,26 +493,21 @@ class DndRollResults extends PolymerElement {
 
         @media(min-width: 921px) {
           .roll-results {
-            bottom: -380px;
+            bottom: -450px;
           }
           .roll-results__scroll-container {
-            max-height: 330px;
+            max-height: 323px;
           }
           .roll-results__mask {
             max-height: 400px;
           }
-          .roll-results__toggle-btn {
-            right: 100px;
-          }
-          .roll-results__clear-btn {
-            right: 178px;
-          }
           .roll-result {
-            width: min-content !important;
+            min-width: 250px;
+            max-width: 500px;
           }
         }
       </style>
-      <div class="roll-results__clear-btn" on-click="_clearRolls" hidden$=[[!isOpen]]>Clear</div>
+      <button class="roll-results__clear-btn mdc-icon-button mdc-button--raised" on-click="_clearRolls" hidden$=[[!isOpen]]>Clear</button>
       <button class="roll-results__toggle-btn mdc-icon-button mdc-button--raised" on-click="_toggleOpen" disabled$="[[_equals(rollResults.length, 0)]]" open$=[[isOpen]]>
         <i class="fas fa-angle-up"></i>
       </button>

@@ -9,10 +9,9 @@ import "../dnd-roll-results";
 import "../dnd-roller";
 import { jqEmpty } from "../../js/utils.js";
 import { saveAs } from 'file-saver';
-import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter, getTabOrder } from '../../util/charBuilder.js';
+import { getCharacterChannel, getSelectedCharacter, updateName, getClassString, getFeatureString, addCharacter, removeSelectedCharacter, getClassReferences, getClassLevelGroups, uploadCharacter, getCharacters, cloneCharacter, getSavedTabOrder } from '../../util/charBuilder.js';
 import registerSwipe from '../../util/swipe.js';
 import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../../util/editMode.js';
-import { rollEventChannel } from '../../util/roll.js';
 import { readRouteSelection, routeEventChannel, setRouteSelection } from '../../util/routing.js';
 import { togglePrimarySecondary } from '../../util/darkmode.js';
 import '@vaadin/vaadin-dialog';
@@ -69,7 +68,7 @@ class DndCharacterBuilderView extends PolymerElement {
   constructor() {
     super();
     
-    this.tabs = this.defaultTabs();
+    this.tabs = this.casterTabs();
     this.menuItems = this.defaultMenu();
   }
 
@@ -266,13 +265,13 @@ class DndCharacterBuilderView extends PolymerElement {
       if (isNonCaster) {
         this.tabs = this.nonCasterTabs();
       } else {
-        this.tabs = this.defaultTabs();
+        this.tabs = this.casterTabs();
       }
     }
   }
 
-  defaultTabs() {
-    const tabOrder = getTabOrder();
+  casterTabs() {
+    const tabOrder = getSavedTabOrder();
     tabOrder.forEach((tab) => {
       if (tab.viewId === "spells") {
         tab.hidden = false;
@@ -282,7 +281,7 @@ class DndCharacterBuilderView extends PolymerElement {
   }
 
   nonCasterTabs() {
-    const tabOrder = getTabOrder();
+    const tabOrder = getSavedTabOrder();
     tabOrder.forEach((tab) => {
       if (tab.viewId === "spells") {
         tab.hidden = true;
@@ -395,18 +394,6 @@ class DndCharacterBuilderView extends PolymerElement {
     }
   }
 
-  toggleEditMode() {
-    dispatchEditModeChange(!this.isEditMode);
-  }
-
-  openDrawer() {
-    this.dispatchEvent(new CustomEvent("open-drawer", { bubbles: true }));
-  }
-
-  _editIcon(isEditMode) {
-    return isEditMode ? 'check' : 'edit';
-  }
-
   _editModeClass(isEditMode) {
     return isEditMode ? 'edit-mode' : 'not-edit-mode';
   }
@@ -463,67 +450,6 @@ class DndCharacterBuilderView extends PolymerElement {
           margin-bottom: 4px;
         }
 
-        .roll-container {
-          position: relative;
-        }
-        .roll-result {
-          animation-name: fadeOutUp;
-          animation-duration: 4s;
-          animation-timing-function: ease-in;
-          position: absolute;
-          top: -80px;
-          width: calc(100vw - 50px);
-          right: 0;
-          font-weight: bold;
-          font-size: 20px;
-          color: var(--mdc-theme-secondary);
-          z-index: 1000;
-        }
-
-        @media(min-width: 921px) {
-          .roll-result {
-            top: calc(var(--vh, 1vh) * 100 - 300px);
-            right: 50px;
-          }
-        }
-
-        @keyframes fadeOutUp {
-          0% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(calc(var(--vh, 1vh) * -20));
-          }
-        }
-
-        .thumb-menu {
-          position: fixed;
-          bottom: 24px;
-          right: 10px;
-          z-index: 2;
-          display: flex;
-          flex-direction: column-reverse;
-          margin-right: auto;
-          align-items: center;
-        }
-        .thumb-menu__btn {
-          border-radius: 50%;
-          z-index: 2;
-        }
-        .edit-button {
-          width: 70px;
-          height: 70px;
-          font-size: 30px;
-        }
-        .drawer-btn {
-          margin-bottom: 12px;
-        }
-
         .tab-wrap {
           background-color: var(--mdc-theme-surface);
           border: 1px solid var(--mdc-theme-text-divider-on-background);
@@ -541,31 +467,7 @@ class DndCharacterBuilderView extends PolymerElement {
           margin: 4px 0;
         }
 
-        [pulse] {
-          box-shadow: var(--pulse-shadow);
-          animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-          0% {
-            transform: scale(0.95);
-            box-shadow: var(--pulse-shadow-0);
-          }
-          
-          70% {
-            transform: scale(1);
-            box-shadow: var(--pulse-shadow-70);
-          }
-          
-          100% {
-            transform: scale(0.95);
-            box-shadow: var(--pulse-shadow-100);
-          }
-        }
-
         @media(max-width: 419px) {
-          .thumb-menu {
-            bottom: 75px;
-          }
           #tabs.fixed {
             position: fixed;
             top: 56px;
@@ -592,25 +494,17 @@ class DndCharacterBuilderView extends PolymerElement {
           .tab-wrap {
             min-height: calc(var(--vh, 1vh) * 100 - 250px);
           }
-
           vaadin-menu-bar {
             margin-right: -12px;
           }
         }
 
         @media(min-width: 921px) {
-          .thumb-menu__btn {
-            margin-left: auto;
-            position: relative;
-            top: -10px;
+          .char-detail__class {
+            font-size: 20px;
           }
-          .drawer-btn {
-            display: none;
-          }
-          .edit-button {
-            height: 80px;
-            width: 80px;
-            font-size: 36px;
+          .char-detail__race-background {
+            font-size: 16px;
           }
         }
       </style>
@@ -626,13 +520,6 @@ class DndCharacterBuilderView extends PolymerElement {
             <span class="char-detail__class">[[classLevel]]</span>
             <span class="char-detail__race-background">[[race]], [[background]]</span>
           </div>
-        </div>
-
-        <div class="thumb-menu">
-          <button class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
-          <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="openDrawer">logout</button>
-          <dnd-roll-results></dnd-roll-results>
-          <dnd-roller></dnd-roller>
         </div>
 
         <vaadin-menu-bar theme="end-aligned" items="[[menuItems]]" on-item-selected="_menuItemSelected"></vaadin-menu-bar>

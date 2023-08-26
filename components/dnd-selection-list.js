@@ -315,6 +315,7 @@ class DndSelectionList extends PolymerElement {
           bottom: 0;
           margin-left: -16px;
           overflow: hidden;
+          background-color: var(--mdc-theme-surface);
         }
         :host([non-global]) .footer-bar {
           border-top: 1px solid var(--mdc-theme-text-divider-on-background);
@@ -358,7 +359,7 @@ class DndSelectionList extends PolymerElement {
 
         <div class="list-wrap">
           <dnd-button icon="launch" on-click="_changeView"></dnd-button>
-          <dnd-list non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
+          <dnd-list model-id$="[[modelId]]" non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
         </div>
 
         <div class="footer-bar" hidden$="[[_toHideFooter(hideCharacterPopup, nonGlobal)]]" >

@@ -1,18 +1,20 @@
 const loggerChannelEl = document.createElement('div');
 const logData = [ ];
-
-window.onerror = (event, source, lineno, colno, error) => {
-  logError(error);
-};
-
 const oldConsoleError = console.error;
 const oldConsoleWarn = console.warn;
 const oldConsoleLog = console.log;
 const oldConsoleInfo = console.info;
-console.error = logError;
-console.warn = logWarn;
-console.info = logInfo;
-console.log = log;
+
+const storedDebugMode = window.localStorage.getItem("debugMode") === "true";
+if (storedDebugMode) {
+  window.onerror = (event, source, lineno, colno, error) => {
+    logError(error);
+  };
+  console.error = logError;
+  console.warn = logWarn;
+  console.info = logInfo;
+  console.log = log;
+}
 
 export function getLoggerChannel() {
   return loggerChannelEl;

@@ -13,7 +13,7 @@ import './styles/material-styles.js';
 import "./styles/my-styles.js";
 import "./dnd-spinner.js";
 import "./dnd-button.js";
-import { clearRouteSelection, setRouteSelection, readRouteSelection } from '../util/routing';
+import { clearRouteSelection, setRouteSelection, readRouteSelection, readRouteView } from '../util/routing';
 import { cloneDeep, encodeForHash, isFirstCharNum } from '../js/utils.js';
 import Parser from "../util/Parser.js";
 import { RARITY_TYPES } from '../util/consts.js';
@@ -62,8 +62,16 @@ class DndList extends PolymerElement {
       listTitle: {
         type: String,
         value: ''
+      },
+      modelId: {
+        type: String,
+        observer: "modelIdChange"
       }
     };
+  }
+
+  modelIdChange() {
+    this._clearFilters();
   }
 
   listItemsChange() {
@@ -132,11 +140,22 @@ class DndList extends PolymerElement {
     this.isMobile = window.innerWidth <= 768;
   }
 
+  _isPopupView() {
+    switch (readRouteView()) {
+      case "races":
+      case "backgrounds":
+      case "items":
+        return true;
+      default:
+        return false;
+    }
+  }
+
   _adjustHeight() {
     if (window.innerWidth < 921 || this.nonGlobal) {
       const top = this.$.grid.getBoundingClientRect().top;
       if (top) {
-        this.$.grid.style.height = `${window.innerHeight - top - 86}px`;
+        this.$.grid.style.height = `${window.innerHeight - top - (this._isPopupView() || this.nonGlobal ? 84 : 0)}px`;
       }
     } else {
       this.$.grid.style.height = `600px`;

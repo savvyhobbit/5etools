@@ -20,7 +20,9 @@ import './views/dnd-items-view';
 import './views/dnd-races-view';
 import './views/dnd-spells-view';
 import './views/dnd-variantrules-view';
-import { getEditModeChannel, isEditMode } from '../util/editMode.js';
+import "./dnd-roll-results";
+import "./dnd-roller";
+import { dispatchEditModeChange, getEditModeChannel, isEditMode } from '../util/editMode.js';
 
 class DndLayout extends PolymerElement {
   static get properties() {
@@ -40,9 +42,13 @@ class DndLayout extends PolymerElement {
         type: String,
         value: ""
       },
-      hideCharacterPopup: {
+      viewHasPopup: {
         type: Boolean,
-        value: true
+        value: false
+      },
+      previewHasPopup: {
+        type: Boolean,
+        value: false
       },
       hasPreview: {
         type: Boolean,
@@ -50,6 +56,14 @@ class DndLayout extends PolymerElement {
       },
       isDarkMode: {
         type: Boolean
+      },
+      pulse: {
+        type: Boolean,
+        value: true
+      },
+      isCharacterSheetView: {
+        type: Boolean,
+        value: false,
       }
     };
   }
@@ -68,10 +82,11 @@ class DndLayout extends PolymerElement {
     super.connectedCallback();
 
     this._initDarkmode();
+    this._initDebugmode();
     this._initSwipe();
     this._initNavDrawer();
-    this._resetActiveLink({detail: { view: readRouteView()}});
-    routeEventChannel().addEventListener("view-change", this._resetActiveLink.bind(this));
+    this._viewChangeHandler({detail: { view: readRouteView()}});
+    routeEventChannel().addEventListener("view-change", this._viewChangeHandler.bind(this));
 
     this.addEventListener("open-preview", this._openDrawerPreview.bind(this));
     this.addEventListener("close-preview", this._closeDrawerPreview.bind(this));
@@ -90,6 +105,7 @@ class DndLayout extends PolymerElement {
 
     this.editModeHandler = (e) => {
       this.isEditMode = e.detail.isEditMode;
+      this.pulse = false;
     };
     getEditModeChannel().addEventListener('editModeChange', this.editModeHandler.bind(this));
     this.isEditMode = isEditMode();
@@ -97,7 +113,7 @@ class DndLayout extends PolymerElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    routeEventChannel().removeEventListener("view-change", this._resetActiveLink.bind(this));
+    routeEventChannel().removeEventListener("view-change", this._viewChangeHandler.bind(this));
     this.removeEventListener("open-preview", this._openDrawerPreview.bind(this));
     this.removeEventListener("close-preview", this._closeDrawerPreview.bind(this));
     this.removeEventListener("open-drawer", this._openDrawer.bind(this));
@@ -114,17 +130,37 @@ class DndLayout extends PolymerElement {
     setDarkmode(storedDarkMode);
     this.isDarkMode = storedDarkMode;
 
-    const darkModeSwitch = new MDCSwitch(this.shadowRoot.querySelector(".mdc-switch"));
+    const darkModeSwitch = new MDCSwitch(this.shadowRoot.querySelector(".darkmode-switch"));
     darkModeSwitch.checked = storedDarkMode;
 
     this.shadowRoot.querySelector(".darkmode-label").addEventListener("click", () => {
       darkModeSwitch.checked = !darkModeSwitch.checked;
     });
 
-    this.shadowRoot.querySelector(".mdc-switch__native-control").addEventListener("change", () => {
+    this.shadowRoot.querySelector(".darkmode-control").addEventListener("change", () => {
       window.localStorage.setItem("darkMode", darkModeSwitch.checked);
       setDarkmode(darkModeSwitch.checked);
       this.isDarkMode = darkModeSwitch.checked;
+    });
+  }
+
+  _initDebugmode() {
+    const storedDebugMode = window.localStorage.getItem("debugMode") === "true";
+    this.isDebugMode = storedDebugMode;
+
+    const debugModeSwitch = new MDCSwitch(this.shadowRoot.querySelector(".debugmode-switch"));
+    debugModeSwitch.checked = storedDebugMode;
+
+    this.shadowRoot.querySelector(".debugmode-label").addEventListener("click", () => {
+      debugModeSwitch.checked = !debugModeSwitch.checked;
+    });
+
+    this.shadowRoot.querySelector(".debugmode-control").addEventListener("change", () => {
+      window.localStorage.setItem("debugMode", debugModeSwitch.checked);
+      this.isDebugMode = debugModeSwitch.checked;
+      if (this.isDebugMode) {
+        window.location.reload();
+      }
     });
   }
 
@@ -175,9 +211,21 @@ class DndLayout extends PolymerElement {
   /**
    * Finds and adds CSS class to the Active Link in the nav
    */
-  _resetActiveLink(e) {
+  _viewChangeHandler(e) {
+    const viewId = e.detail.view;
+    this.isCharacterSheetView = viewId === "character-builder";
     this.drawer.open = false;
-    
+
+    switch (viewId) {
+      case "races":
+      case "backgrounds":
+      case "items":
+        this.viewHasPopup = true;
+        break;
+      default:
+        this.viewHasPopup = false;
+    }
+  
     const activeLink = this.shadowRoot.querySelector("a.list-item--activated");
     if (activeLink) {
       activeLink.classList.remove("list-item--activated");
@@ -190,6 +238,14 @@ class DndLayout extends PolymerElement {
         link.classList.add("list-item--activated");
       }
     }
+  }
+
+  toggleEditMode() {
+    dispatchEditModeChange(!this.isEditMode);
+  }
+
+  _editIcon(isEditMode) {
+    return isEditMode ? 'check' : 'edit';
   }
   
   _openDrawer(e) {
@@ -211,11 +267,51 @@ class DndLayout extends PolymerElement {
     }
   }
 
+  _toggleDrawer() {
+    if (this.drawer.open) {
+      this._closeDrawer();
+    } else {
+      this._openDrawer();
+    }
+  }
+
   async _openDrawerPreviewEvent(e) {
     e.preventDefault();
     e.stopPropagation();
     let viewId = new URL(e.target.closest('a').href).hash.split('/')[1];
     this._openDrawerPreview(viewId);
+  }
+
+  async _openDrawerPreview(viewId, selectedItem, decodeName) {    
+    switch (viewId) {
+      case "races":
+      case "backgrounds":
+      case "items":
+        this.previewHasPopup = true;
+        break;
+      default:
+        this.previewHasPopup = false;
+    }
+
+    if (decodeName) {
+      selectedItem.name = decodeURIComponent(selectedItem.name);
+    }
+    this.previewSelectedItem = selectedItem || null;
+    this._adjustPreviewWidth();
+    console.error('_openDrawerPreview', { viewId, selectedItem });
+    await timeout(150);
+    this.previewViewId = viewId;
+    this.hasPreview = true;
+    notifyPreviewOpen(this.hasPreview, this.drawer.open);
+  }
+
+  _closeDrawerPreview() {
+    console.error('_closeDrawerPreview');
+    this.$.drawer.style.width = `250px`;
+    this.$.container.style['border-left'] = null;
+    this.$.breadcrumbcontainer.style['padding-left'] = null;
+    this.hasPreview = false;
+    notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
   _adjustPreviewWidth() {
@@ -246,28 +342,6 @@ class DndLayout extends PolymerElement {
     setTimeout(() => {
       this.$.drawer.scrollTop = 0;
     }, 200)
-  }
-
-  async _openDrawerPreview(viewId, selectedItem, decodeName) {
-    if (decodeName) {
-      selectedItem.name = decodeURIComponent(selectedItem.name);
-    }
-    this.previewSelectedItem = selectedItem || null;
-    this._adjustPreviewWidth();
-    console.error('_openDrawerPreview', { viewId, selectedItem });
-    await timeout(150);
-    this.previewViewId = viewId;
-    this.hasPreview = true;
-    notifyPreviewOpen(this.hasPreview, this.drawer.open);
-  }
-
-  _closeDrawerPreview() {
-    console.error('_closeDrawerPreview');
-    this.$.drawer.style.width = `250px`;
-    this.$.container.style['border-left'] = null;
-    this.$.breadcrumbcontainer.style['padding-left'] = null;
-    this.hasPreview = false;
-    notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
   /**
@@ -368,11 +442,97 @@ class DndLayout extends PolymerElement {
           color: var(--mdc-theme-on-secondary) !important;
         }
 
+        .debug-button {
+          position: absolute;
+          right: 8px;
+        }
+
+        .thumb-menu {
+          position: fixed;
+          bottom: 24px;
+          right: 0;
+          z-index: 6;
+          display: flex;
+          flex-direction: column-reverse;
+          margin-right: auto;
+          align-items: center;
+          width: 100px;
+        }
+        .thumb-menu[is-edit-mode] {
+          --mdc-theme-primary: var(--mdc-theme-secondary);
+        }
+        .thumb-menu[is-character-view] {
+          bottom: 88px;
+        }
+        .thumb-menu[higher] {
+          bottom: 108px;
+        }
+        .thumb-menu[higher-mobile] {
+          bottom: 108px;
+        }
+        .thumb-menu__btn {
+          border-radius: 50%;
+          z-index: 2;
+        }
+        .edit-button {
+          margin-top: 12px;
+          width: 70px;
+          height: 70px;
+          font-size: 30px;
+        }
+        .drawer-btn {
+          margin-top: 12px;
+        }
+        [pulse] {
+          box-shadow: var(--pulse-shadow);
+          animation: pulse 2s infinite;
+        }
+        dnd-roll-results[is-character-view] {
+          right: 24px;
+        }
+        @keyframes pulse {
+          0% {
+            transform: scale(0.95);
+            box-shadow: var(--pulse-shadow-0);
+          }
+          
+          70% {
+            transform: scale(1);
+            box-shadow: var(--pulse-shadow-70);
+          }
+          
+          100% {
+            transform: scale(0.95);
+            box-shadow: var(--pulse-shadow-100);
+          }
+        }
+        @media(min-width: 420px) {
+          .thumb-menu[is-character-view]:not([higher]) {
+            bottom: 24px;
+          }
+        }
+
+        @media(min-width: 768px) {
+          .thumb-menu[higher-mobile]:not([higher]) {
+            bottom: 24px;
+          }
+        }
+
         @media(min-width: 921px) {
           .page-title[hidden] {
             display: block !important;
           }
           [preview] + .mdc-drawer-scrim {
+            display: none;
+          }
+          .edit-button {
+            height: 80px;
+            width: 80px;
+            font-size: 36px;
+          }
+        }
+        @media(min-width: 1321px) {
+          .drawer-btn {
             display: none;
           }
         }
@@ -387,10 +547,11 @@ class DndLayout extends PolymerElement {
               </div>
             </div>
           </div>
-          <a class="mdc-icon-button" href="#/debug"><span class="fa fa-cog"></span>
+          <a hidden$=[[!isDebugMode]] class="debug-button mdc-icon-button" href="#/debug"><span class="fa fa-bug"></span></a>
           <div class="nav-button">
             <button
               class="material-icons mdc-theme--on-header mdc-top-app-bar__navigation-icon hidden-desktop-up margin-left_small"
+              on-click="_closeDrawerPreview"
             >
               menu
             </button>
@@ -423,17 +584,17 @@ class DndLayout extends PolymerElement {
                 >
               </div>
 
-              <a class="mdc-list-item mdc-theme--on-surface">
+              <div class="mdc-list-item mdc-theme--on-surface">
                 <label class="darkmode-label" for="dark-mode-switch">Dark Mode</label>
-                <div class="mdc-switch mdc-list-item__meta">
+                <div class="mdc-switch darkmode-switch mdc-list-item__meta">
                   <div class="mdc-switch__track"></div>
                   <div class="mdc-switch__thumb-underlay">
                     <div class="mdc-switch__thumb">
-                      <input type="checkbox" id="dark-mode-switch" class="mdc-switch__native-control" role="switch" />
+                      <input type="checkbox" id="dark-mode-switch" class="mdc-switch__native-control darkmode-control" role="switch" />
                     </div>
                   </div>
                 </div>
-              </a>
+              </div>
 
               <hr class="mdc-list-divider" />
               <a class="mdc-list-item mdc-theme--on-surface" href="#/rules" tabindex="0">
@@ -518,10 +679,17 @@ class DndLayout extends PolymerElement {
               </a> -->
 
               <hr class="mdc-list-divider" />
-              <a class="mdc-list-item mdc-theme--on-surface" href="#/debug">
-                <i class="fas fa-cog mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
-                <span class="mdc-list-item__text">Debug</span>
-              </a>
+              <div class="mdc-list-item mdc-theme--on-surface">
+                <label class="debugmode-label" for="debug-mode-switch">Debug Mode</label>
+                <div class="mdc-switch debugmode-switch mdc-list-item__meta">
+                  <div class="mdc-switch__track"></div>
+                  <div class="mdc-switch__thumb-underlay">
+                    <div class="mdc-switch__thumb">
+                      <input type="checkbox" id="debug-mode-switch" class="mdc-switch__native-control debugmode-control" role="switch" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <template is="dom-if" if="[[hasPreview]]" restamp>
               <div class="preview-wrap" id="previewTarget">
@@ -543,7 +711,12 @@ class DndLayout extends PolymerElement {
           <slot name="default"></slot>
         </div>
 
-        <dnd-character-popup hidden$=[[hideCharacterPopup]]></dnd-character-popup>
+        <div class="thumb-menu" is-edit-mode$="[[isEditMode]]" higher$="[[viewHasPopup]]" higher-mobile$="[[previewHasPopup]]" is-character-view$="[[isCharacterSheetView]]">
+          <dnd-roll-results></dnd-roll-results>
+          <button hidden$="[[!isCharacterSheetView]]" class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
+          <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="_toggleDrawer">logout</button>
+          <dnd-roller></dnd-roller>
+        </div>
       </div>
     `;
   }

@@ -10725,7 +10725,7 @@ styleElement.innerHTML = `
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
           font-size: 1rem;
-          line-height: 1.5rem;
+          line-height: 1.4rem;
           font-weight: 400;
           letter-spacing: .03125em;
           text-decoration: inherit;

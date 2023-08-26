@@ -98,7 +98,6 @@ class DndRoller extends PolymerElement {
       <style include="fa-styles material-styles my-styles">
         :host {
           display: block;
-          margin-bottom: 12px;
         }
         .roller__btn {
           border-radius: 50%;
@@ -126,13 +125,9 @@ class DndRoller extends PolymerElement {
           height: 48px;
           border-radius: 40px;
           overflow: hidden;
-          margin-top: 12px;
           display: flex;
           justify-content: space-between;
           z-index: 2;
-          position: absolute;
-          bottom: 0;
-          right: -24px;
           background: transparent;
           padding: 0;
           transition: width 0.3s, right 0.3s;
@@ -164,7 +159,6 @@ class DndRoller extends PolymerElement {
         .roller__container {
           display: flex;
           flex-direction: column-reverse;
-          padding-bottom: 60px;
           position: relative;
         }
         .roller__additional {
@@ -172,24 +166,18 @@ class DndRoller extends PolymerElement {
           flex-direction: column-reverse;
           align-items: center;
           position: absolute;
-          right: -100px;
+          right: -90px;
           bottom: 60px;
           transition: right 0.3s;
         }
         [open] .roller__additional {
-          right: -24px;
+          right: 26px;
         }
         .d100 i {
           font-size: 16px;
         }
         .d100 i:first-child {
           margin-right: 3px;
-        }
-
-        @media(min-width: 921px) {
-          :host {
-            margin-bottom: 30px;
-          }
         }
       </style>
 

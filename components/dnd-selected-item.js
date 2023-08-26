@@ -165,6 +165,8 @@ class DndSelectedItem extends PolymerElement {
           font-size: 17px;
           color: var(--lumo-contrast-70pct);
           height: 44px;
+          line-height: 1.3;
+          margin-top: 16px;
         }
         .non-global .page-title {
           margin: 12px 0 0;
@@ -217,7 +219,7 @@ class DndSelectedItem extends PolymerElement {
           display: none;
           right: 0;
           top: -4px;
-          z-index: 12;
+          z-index: 4;
           background: var(--mdc-theme-header);
         }
         .main.item-opened:not(.non-global) {
@@ -227,7 +229,7 @@ class DndSelectedItem extends PolymerElement {
           height: 115px;
           display: flex;
           padding: 12px;
-          width: calc(94% + 24px);
+          width: calc(100% + 4px);
           margin-left: -13px;
           border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
           align-items: center;
