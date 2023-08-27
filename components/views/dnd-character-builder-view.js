@@ -218,7 +218,13 @@ class DndCharacterBuilderView extends PolymerElement {
   
   routeSelectionChange() {
     if (this.tabs && this.routeSelection) {
-      const newViewId = this.tabs.findIndex((tab) => tab.viewId === this.routeSelection);
+      const newViewId = this.tabs.findIndex((tab) => {
+        if (!tab) {
+          console.error("here 3");
+          return false;
+        }
+        return tab.viewId === this.routeSelection
+      });
       if (newViewId > -1) {
         this.initialSelectedTab = newViewId;
       } else {
@@ -273,6 +279,10 @@ class DndCharacterBuilderView extends PolymerElement {
   casterTabs() {
     const tabOrder = getSavedTabOrder();
     tabOrder.forEach((tab) => {
+      if (!tab) {
+        console.error("here 1");
+        return;
+      }
       if (tab.viewId === "spells") {
         tab.hidden = false;
       }
@@ -283,6 +293,10 @@ class DndCharacterBuilderView extends PolymerElement {
   nonCasterTabs() {
     const tabOrder = getSavedTabOrder();
     tabOrder.forEach((tab) => {
+      if (!tab) {
+        console.error("here 2");
+        return;
+      }
       if (tab.viewId === "spells") {
         tab.hidden = true;
       }
