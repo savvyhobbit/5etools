@@ -24,11 +24,11 @@ function spellHtml(spell) {
 	renderStack.push(`<div class="margin-bottom_med"><span class="stat-name">Duration: </span>${Parser.spDurationToFull(spell.duration)}</div>`);
 	renderStack.push(`<div class='text'>`);
 
-	renderer.recursiveEntryRender({type: "entries", entries: spell.entries}, renderStack, 1);
+	renderer.recursiveEntryRender({type: "entries", entries: spell.entries}, renderStack, 1, undefined, undefined, undefined, spell.name);
 
 	if (spell.entriesHigherLevel) {
 		const higherLevelsEntryList = {type: "entries", entries: spell.entriesHigherLevel};
-		renderer.recursiveEntryRender(higherLevelsEntryList, renderStack, 2);
+		renderer.recursiveEntryRender(higherLevelsEntryList, renderStack, 2, undefined, undefined, undefined, spell.name);
 	}
 
 	renderStack.push(`</div>`);

@@ -204,10 +204,23 @@ class DndRollResults extends PolymerElement {
           max-width: 800px;
           max-height: 255px;
           opacity: 0;
-          transition: opacity 0.2s;
         }
         .roll-results[open] .roll-results__mask {
+          animation: reveal .3s linear;
           opacity: 1;
+        }
+        @keyframes reveal {
+          0% {
+            opacity: 0;
+          }
+          
+          50% {
+            opacity: 0;
+          }
+          
+          100% {
+            opacity: 1;
+          }
         }
         .roll-results__background {
           width: 100%;

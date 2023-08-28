@@ -1068,8 +1068,8 @@ styleElement.innerHTML = `
         display: block;
         position: absolute;
         left: -2px;
-        top: 0px;
-        width: 36px;
+        top: -2px;
+        width: 42px;
       }
       .list-item--text {
         font-size: 20px;

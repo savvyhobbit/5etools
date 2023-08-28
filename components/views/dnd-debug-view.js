@@ -5,7 +5,7 @@ import "@vaadin/vaadin-grid/vaadin-grid-filter";
 import "@vaadin/vaadin-grid/vaadin-grid-filter-column"
 import "@vaadin/vaadin-grid/vaadin-grid-sorter";
 import { getLog, getLoggerChannel } from '../../util/logger';
-import { cloneDeep, escapeHTML } from '../../js/utils';
+import { cloneDeep, escapeHTML, jqEmpty } from '../../js/utils';
 import { createArrayPreview, createItem, createObjectPreview } from '../../util/consoleOutput';
 import '../styles/console-styles.js';
 
@@ -62,22 +62,21 @@ class DndDebugView extends PolymerElement {
     super.ready();
     
     this.$.grid.rowDetailsRenderer = (root, grid, model) => {
-      if (root.children.length === 0) {
-        const item = model.item;
-        root.classList.add("content")
-        root.classList.add("console-block")
-        root.classList.add("content--expanded")
-        root.classList.add(`content__${item.type}`);
-        for (let message of item.message) {
-          const wrap = document.createElement("div");
-          wrap.classList.add("content__object");
-          if (typeof message === "object" && !!message) {
-            wrap.appendChild(createItem(message, false, false));
-          } else {
-            wrap.innerHTML = escapeHTML(message);
-          }
-          root.appendChild(wrap);
+      const item = model.item;
+      root.classList.add("content")
+      root.classList.add("console-block")
+      root.classList.add("content--expanded")
+      root.classList.add(`content__${item.type}`);
+      jqEmpty(root);
+      for (let message of item.message) {
+        const wrap = document.createElement("div");
+        wrap.classList.add("content__object");
+        if (typeof message === "object" && !!message) {
+          wrap.appendChild(createItem(message, false, false));
+        } else {
+          wrap.innerHTML = escapeHTML(message);
         }
+        root.appendChild(wrap);
       }
     };
 

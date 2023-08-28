@@ -51,9 +51,9 @@ import renderList from "../util/renderList.js";
 const renderer = new EntryRenderer();
 export { onDataLoad, onClassChange, onSubChange };
 
-function renderStr(string) {
+function renderStr(string, name) {
   let renderStack = []
-  renderer.recursiveEntryRender(string, renderStack, 0);
+  renderer.recursiveEntryRender(string, renderStack, 0, undefined, undefined, undefined, name);
   return renderStack.join(" ");
 }
 
@@ -160,11 +160,11 @@ function onClassChange(curClass, rootEl) {
     const fromBackground = sEquip.additionalFromBackground
       ? "<p>You start with the following items, plus anything provided by your background.</p>"
       : "";
-    const defList = sEquip.default.length === 0 ? "" : `<ul><li>${sEquip.default.map(i => renderStr(i)).join("</li><li>")}</ul>`;
+    const defList = sEquip.default.length === 0 ? "" : `<ul><li>${sEquip.default.map(i => renderStr(i, curClass.name)).join("</li><li>")}</ul>`;
     const goldAlt =
       sEquip.goldAlternative === undefined
         ? ""
-        : `<p>Alternatively, you may start with ${renderStr(sEquip.goldAlternative)} gp to buy your own equipment.</p>`;
+        : `<p>Alternatively, you may start with ${renderStr(sEquip.goldAlternative, curClass.name)} gp to buy your own equipment.</p>`;
     rootEl.querySelector("#equipment div").innerHTML = `${fromBackground}${defList}${goldAlt}`;
   } else {
     rootEl.querySelector("#equipment").classList.add("hidden");
@@ -201,7 +201,7 @@ function onClassChange(curClass, rootEl) {
         let lbl = tGroup.colLabels[j];
         if (lbl.indexOf("@") > -1) {
           let renderStack = []
-          renderer.recursiveEntryRender(lbl, renderStack, 0);
+          renderer.recursiveEntryRender(lbl, renderStack, 0, undefined, undefined, undefined, curClass.name);
           lbl = renderStack.join(" ");
         }
         colHeaders.append(parseHTML(`<th class="centred-col table-cell" ${subclassData}>${lbl}</th>`, true, true));
@@ -215,7 +215,7 @@ function onClassChange(curClass, rootEl) {
             let entry = tGroup.rows[j][k];
             if (entry === 0) entry = "\u2014";
             const stack = [];
-            renderer.recursiveEntryRender(entry, stack, "", "");
+            renderer.recursiveEntryRender(entry, stack, "", "", undefined, undefined, curClass.name);
             tr.append(parseHTML(`<td class="centred-col" ${subclassData}>${stack.join("")}</td>`, true, true));
           }
         }
@@ -228,7 +228,7 @@ function onClassChange(curClass, rootEl) {
             let entry = tGroup.rowsSpellProgression[j][k];
             if (entry === 0) entry = "\u2014";
             const stack = [];
-            renderer.recursiveEntryRender(entry, stack, "", "");
+            renderer.recursiveEntryRender(entry, stack, "", "", undefined, undefined, curClass.name);
             tr.append(parseHTML(`<td class="centred-col" ${subclassData}>${stack.join("")}</td>`, true, true));
           }
         }
@@ -323,7 +323,8 @@ function onClassChange(curClass, rootEl) {
         0,
         `<div id="${featureId}" class="${styleClasses.join(" ")}" level="${feature.level}">`,
         `</div>`,
-        true
+        true,
+        feature.name
       );
 
       // add subclass features to render stack if appropriate
@@ -349,7 +350,8 @@ function onClassChange(curClass, rootEl) {
                   subClass.source
                 }">`,
                 `</div>`,
-                true
+                true,
+                subFeature.name
               );
             }
           }
@@ -367,9 +369,6 @@ function onClassChange(curClass, rootEl) {
     }
   }
   rootEl.querySelector("#stats").innerHTML = renderStack.join("");
-
-  // show UA/other features by default
-  toggleUAFeatures(true);
 
   // CLASS FEATURE/UA/SUBCLASS PILL BUTTONS ==========================================================================
   let subclassPillWrapper = rootEl.querySelector("div#subclasses");
@@ -433,10 +432,12 @@ function onClassChange(curClass, rootEl) {
     });
 
     // if this is a UA class, toggle the "All Sources" button
-    const showUA = readRouteSelection().indexOf(HASH_ALL_SOURCES + 'true') > -1 || readRouteSelection().indexOf(HASH_ALL_SOURCES + 'false') === -1
-    if (showUA) {
+    const showUA = readRouteSelection().indexOf(HASH_ALL_SOURCES + 'true') > -1 //|| readRouteSelection().indexOf(HASH_ALL_SOURCES + 'false') === -1
+    allSourcesToggle.click();
+    if (!showUA) {
       allSourcesToggle.click();
     }
+
   } else {
     rootEl.querySelector("#subclasses").classList.add("hidden");
   }

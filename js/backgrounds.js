@@ -40,7 +40,7 @@ function renderSelection(curbg, rootEl, allBgs) {
     for (let n = entries.length - 1; n >= 0; n--) {
       let entry = entries[n],
         outStack = [];
-      renderer.recursiveEntryRender(entry, outStack, 0);
+      renderer.recursiveEntryRender(entry, outStack, 0, undefined, undefined, undefined, curbg.name);
       let texthtml = outStack.join(' ');
 
       if (entry.name === "Suggested Characteristics") {

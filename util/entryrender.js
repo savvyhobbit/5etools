@@ -60,7 +60,7 @@ function EntryRenderer() {
 	 * @param suffix The (optional) suffix to be added to the textStack after whatever is added by the current call
 	 * @param forcePrefixSuffix force the prefix and suffix to be added (useful for the first call from external code)
 	 */
-	this.recursiveEntryRender = function(entry, textStack, depth, prefix, suffix, forcePrefixSuffix) {
+	this.recursiveEntryRender = function(entry, textStack, depth, prefix, suffix, forcePrefixSuffix, parentName) {
 		depth = depth === undefined || depth === null ? entry.type === "section" ? -1 : 0 : depth;
 		prefix = prefix === undefined || prefix === null ? null : prefix;
 		suffix = suffix === undefined || suffix === null ? null : suffix;
@@ -83,8 +83,9 @@ function EntryRenderer() {
 				case "list":
 					if (entry.items) {
 						textStack.push(`<ul ${entry.style ? `class="${entry.style}"` : ''}>`);
+						console.error("hasdffd");
 						for (let i = 0; i < entry.items.length; i++) {
-							this.recursiveEntryRender(entry.items[i], textStack, depth + 1, `<li ${isNonstandardSource(entry.items[i].source) ? `class="${CLSS_NON_STANDARD_SOURCE}"` : ""}>`, "</li>");
+							this.recursiveEntryRender(entry.items[i], textStack, depth + 1, `<li ${isNonstandardSource(entry.items[i].source) ? `class="${CLSS_NON_STANDARD_SOURCE}"` : ""}>`, "</li>", undefined, parentName);
 						}
 						textStack.push("</ul>");
 					}
@@ -115,7 +116,7 @@ function EntryRenderer() {
 				case "inline":
 					if (entry.entries) {
 						for (let i = 0; i < entry.entries.length; i++) {
-							this.recursiveEntryRender(entry.entries[i], textStack, depth);
+							this.recursiveEntryRender(entry.entries[i], textStack, depth, undefined, undefined, undefined, parentName);
 						}
 					}
 					break;
@@ -132,8 +133,14 @@ function EntryRenderer() {
 					renderLink(this, entry);
 					break;
 				case "item":
-					textStack.push(`<li><b>${entry.name}: </b>`);
-					this.recursiveEntryRender(entry.entry, textStack, depth);
+					textStack.push(`<li><b>${entry.name.endsWith(".") ? entry.name : entry.name + ":"} </b>`);
+					if (entry.entry) {
+						this.recursiveEntryRender(entry.entry || entry.entries, textStack, depth, undefined, undefined, undefined, parentName);
+					} else if (entry.entries) {
+						for (let i = 0; i < entry.entries.length; i++) {
+							this.recursiveEntryRender(entry.entries[i], textStack, depth, undefined, undefined, undefined, parentName);
+						}
+					}
 					textStack.push('</li>');
 					break;
 				case "print":
@@ -188,7 +195,7 @@ function EntryRenderer() {
 				textStack.push("<tr class='table-row'>");
 				for (let j = 0; j < entry.rows[i].length; ++j) {
 					textStack.push(`<td ${makeTableTdClassText(j)}>`);
-					self.recursiveEntryRender(entry.rows[i][j], textStack, depth + 1);
+					self.recursiveEntryRender(entry.rows[i][j], textStack, depth + 1, undefined, undefined, undefined, parentName);
 					textStack.push("</td>");
 				}
 				textStack.push("</tr>");
@@ -242,7 +249,7 @@ function EntryRenderer() {
 				textStack.push(`<${self.wrapperTag} ${dataString} ${styleString}>${headerSpan}${preReqText}`);
 				if (entry.entries) {
 					for (let i = 0; i < entry.entries.length; i++) {
-						self.recursiveEntryRender(entry.entries[i], textStack, nextDepth, "<p>", "</p>");
+						self.recursiveEntryRender(entry.entries[i], textStack, nextDepth, "<p>", "</p>", undefined, parentName);
 					}
 				}
 				textStack.push(`</${self.wrapperTag}>`);
@@ -285,14 +292,24 @@ function EntryRenderer() {
 								bubbles: true,
 								composed: true,
 								detail: {
-										decode: true,
-										selectedItem: {name: "${partMatch[2].trim()}", source: "${partMatch[3].toLowerCase().trim()}"},
-										viewId: "${partMatch[1].trim()}"
+									decode: true,
+									selectedItem: {name: "${partMatch[2].trim()}", source: "${partMatch[3].toLowerCase().trim()}"},
+									viewId: "${partMatch[1].trim()}"
+								}
+							}));
+						})();`
+					} else if (entry.href.hash.includes("/")) {
+						href = `javascript: (() => {
+							document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
+								bubbles: true,
+								composed: true,
+								detail: {
+									viewId: "${entry.href.hash.split("/")[1]}"
 								}
 							}));
 						})();`
 					} else {
-						console.error('!!!!', entry.href.hash);
+						console.error('Can\'t parse entry link!!!!', entry.href.hash);
 					}
 				} else {
 					href = `${self.baseUrl}${entry.href.path}#`;
@@ -318,13 +335,13 @@ function EntryRenderer() {
 							case "@b":
 							case "@bold":
 								textStack.push(`<b>`);
-								self.recursiveEntryRender(text, textStack, depth);
+								self.recursiveEntryRender(text, textStack, depth, undefined, undefined, undefined, parentName);
 								textStack.push(`</b>`);
 								break;
 							case "@i":
 							case "@italic":
 								textStack.push(`<i>`);
-								self.recursiveEntryRender(text, textStack, depth);
+								self.recursiveEntryRender(text, textStack, depth, undefined, undefined, undefined, parentName);
 								textStack.push(`</i>`);
 								break;
 							case "@action": // Convert this to a tag once the rules data are more navigable
@@ -351,17 +368,17 @@ function EntryRenderer() {
 							case "@spell":
 								if (!source) fauxEntry.href.hash += HASH_LIST_SEP + SRC_PHB;
 								fauxEntry.href.hash = "/spells/" + fauxEntry.href.hash;
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							case "@item":
 								if (!source) fauxEntry.href.hash += HASH_LIST_SEP + SRC_DMG;
 								fauxEntry.href.hash = "/items/" + fauxEntry.href.hash;
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							case "@condition":
 								if (!source) fauxEntry.href.hash += HASH_LIST_SEP + SRC_PHB;
 								fauxEntry.href.hash = "/conditions/" + fauxEntry.href.hash;
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							case "@class":
 								const classMatch = EntryRenderer.RE_INLINE_CLASS.exec(text);
@@ -371,12 +388,12 @@ function EntryRenderer() {
 								}
 								if (!source) fauxEntry.href.hash += HASH_LIST_SEP + SRC_PHB;
 								fauxEntry.href.hash = "/classes/" + fauxEntry.href.hash;
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							case "@creature":
 								if (!source) fauxEntry.href.hash += HASH_LIST_SEP + SRC_MM;
 								fauxEntry.href.hash = "/bestiary/" + fauxEntry.href.hash;
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							case "@filter":
 								// todo... maybe
@@ -386,8 +403,9 @@ function EntryRenderer() {
 							case "@dice":
 								// todo
 								fauxEntry.href.type = 'code';
-								fauxEntry.href.code = `javascript: (() => { window.rollDice("Link", "${name}"); })();`
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								const parentNameStr = parentName ? parentName.split('"').join('').split("'").join("") : "";
+								fauxEntry.href.code = `javascript: (() => { window.rollDice("Link", "${name}", "${parentNameStr ? `${encodeURIComponent(parentNameStr)} ` : ''}"); })();`
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							case "@book":
 								//todo
@@ -399,7 +417,7 @@ function EntryRenderer() {
 								} else {
 									fauxEntry.href.hash = "/" + source;
 								}
-								self.recursiveEntryRender(fauxEntry, textStack, depth);
+								self.recursiveEntryRender(fauxEntry, textStack, depth, undefined, undefined, undefined, parentName);
 								break;
 							default:
 								textStack.push(name);

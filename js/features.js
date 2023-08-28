@@ -42,7 +42,7 @@ function renderSelection(feature, rootEl) {
 	if (feature.entries.length) {
 		let outstack = [];
 		for (let entry of feature.entries) {
-			renderer.recursiveEntryRender(entry, outstack, 0);
+			renderer.recursiveEntryRender(entry, outstack, 0, undefined, undefined, undefined, feature.name);
 		}
 		rootEl.querySelector('.stats-wrapper .text').innerHTML = outstack.join(' ');
 	}

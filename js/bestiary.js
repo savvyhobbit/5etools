@@ -414,7 +414,7 @@ function renderSelection(mon, rootEl) {
 		rootEl.querySelector(`#${sectionClass}s`).style.display = 'block';
 		entryList = {type: "entries", entries: sectionEntries};
 		renderStack = [];
-		renderer.recursiveEntryRender(entryList, renderStack);
+		renderer.recursiveEntryRender(entryList, renderStack, undefined, undefined, undefined, undefined, mon.name);
 		const newThing = parseHTML(`<div class='${sectionClass}'><div class='legendary'>${utils_makeRoller(renderStack.join(""), mon.name)}</div></div>`)
 		jqAfter(rootEl.querySelector(`#${sectionClass}s`), newThing);
 	}

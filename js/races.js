@@ -63,7 +63,7 @@ function renderSelection(race, rootEl) {
     const faux = { type: "entries", entries: race.entries };
 
     // Grung to test with
-    new EntryRenderer().recursiveEntryRender(faux, renderStack, 1, "<div class='renderer-output'>", "</div>", true);
+    new EntryRenderer().recursiveEntryRender(faux, renderStack, 1, "<div class='renderer-output'>", "</div>", true, race.name);
 
     rootEl.querySelector(".stats-wrapper .stats").innerHTML = renderStack.join("");
   }

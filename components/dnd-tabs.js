@@ -154,14 +154,14 @@ class DndTabs extends PolymerElement {
     } else {
       this._enableScrolling();
       this.draggedItem.dragged = false;
-      console.error("draggedIndex", this.draggedIndex);
+      console.error("TAV: draggedIndex", this.draggedIndex);
       if (this.draggedIndex !== null && this.draggedIndex !== undefined) {
         this.splice("tabs", this.draggedIndex, 1);
         this.splice("tabs", this.draggedIndex, 0, cloneDeep(this.draggedItem));
         this.draggedItem = null;
         this.draggedIndex = null;
         saveTabOrder(this.tabs);
-        console.error("setting tabs", this.tabs);
+        console.error("TAB: setting tabs", this.tabs);
       }
     }
   }

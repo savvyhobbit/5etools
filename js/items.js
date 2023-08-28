@@ -99,7 +99,7 @@ function renderSelection(item, rootEl, data, makeSmall) {
 
 	const entryList = {type: "entries", entries: item.entries};
 	const renderStack = [];
-	renderer.recursiveEntryRender(entryList, renderStack, 1);
+	renderer.recursiveEntryRender(entryList, renderStack, 1, undefined, undefined, undefined, item.name);
 	let result = utils_makeRoller(renderStack.join(""), item.name);
 	if (item.name) {
 		result = result

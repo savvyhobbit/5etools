@@ -52,7 +52,8 @@ class DndClasses extends PolymerElement {
     super();
     this.loading = true;
     loadModel("class-all").then(data => {
-      this.set("classes", data);
+
+      this.set("classes", data.filter((clas) => clas.name !== "Ranger (Ambuscade)"));
       this.loading = false;
     });
   }

@@ -605,10 +605,6 @@ class DndLayout extends PolymerElement {
                 <i class="fas fa-wrench mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
                 <span class="mdc-list-item__text">Character Sheets</span>
               </a>
-              <a class="mdc-list-item mdc-theme--on-surface" href="#/dice">
-                <i class="fas fa-dice mdc-list-item__graphic mdc-theme--on-surface" aria-hidden="true"></i>
-                <span class="mdc-list-item__text">Dice Roller</span>
-              </a>
 
               <hr class="mdc-list-divider" />
               <h6 class="mdc-list-group__subheader mdc-theme--on-surface">Player Options</h6>

@@ -38,7 +38,7 @@ function renderSelection(feat, rootEl) {
 	if (feat.entries.length) {
 		let outstack = [];
 		for (let entry of feat.entries) {
-			renderer.recursiveEntryRender(entry, outstack, 0);
+			renderer.recursiveEntryRender(entry, outstack, 0, undefined, undefined, undefined, feat.name);
 		}
 		rootEl.querySelector('.stats-wrapper .text').innerHTML = outstack.join(' ');
 	}
