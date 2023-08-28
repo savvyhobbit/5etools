@@ -8,10 +8,6 @@
           <i class="fas fa-wrench mdc-theme--on-surface link-grid-item--image" aria-hidden="true"></i>
           <span class="grid-item--text">Character<br/>Sheets</span>
         </a>
-        <a class="grid-item" href="#/dice">
-          <i class="fas fa-dice mdc-theme--on-surface link-grid-item--image" aria-hidden="true"></i>
-          <span class="grid-item--text">Dice Roller</span>
-        </a>
       </div>
       
       <h2 class="mdc-typography--headline5 margin-bottom_small margin-top_med">Character Options</h2>
