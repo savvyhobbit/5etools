@@ -225,7 +225,7 @@ class DndRollResults extends PolymerElement {
         .roll-results__background {
           width: 100%;
           height: 100%;
-          background: linear-gradient(0deg, black, transparent);
+          /* background: linear-gradient(0deg, black, transparent); */
         }
         .roll-results__scroll-container {
           max-height: 198px;

@@ -139,11 +139,11 @@ class DndCharacterBuilderView extends PolymerElement {
     //     this.$.nameWrap.classList.add('fixed');
     //     this.$.nameWrapWatch.classList.add('fixed');
     //     window.document.body.children[0].shadowRoot.children[0]
-    //       .shadowRoot.getElementById("breadcrumbcontainer").style.top = '-46px';
+    //       .shadowRoot.getElementById("breadcrumbContainer").style.top = '-46px';
     //   } else {
     //     const breadcrumbAdjustment = clientRect.top * -1 + 100;
     //     window.document.body.children[0].shadowRoot.children[0]
-    //       .shadowRoot.getElementById("breadcrumbcontainer")
+    //       .shadowRoot.getElementById("breadcrumbContainer")
     //       .style.top = breadcrumbAdjustment > 0 ? `-${breadcrumbAdjustment}px` : '0px';
     //     this.$.nameWrap.classList.remove('fixed');
     //     this.$.nameWrapWatch.classList.remove('fixed');

@@ -1479,18 +1479,11 @@ styleElement.innerHTML = `
       .list.monsters .table-cell--border {
         padding-right: 18px;
       }
-      #stats.monster {
-        font-size: 13px;
-      }
-      #stats.monster strong {
-        font-size: 14px;
-      }
       #stats.monster .name {
         display: inline;
         font-weight: bold;
-        font-size: 14px;
       }
-      #stats.monster p {
+      #stats.monster p.first {
         display: inline;
       }
       #stats.monster p.spells {
@@ -1509,10 +1502,16 @@ styleElement.innerHTML = `
       }
       #stats.monster #abilitynames,
       #stats.monster #abilityscores {
-        max-width: 350px;
+        max-width: 400px;
         display: flex;
         justify-content: space-between;
         width: 100%;
+      }
+      #stats.monster #abilitynames div,
+      #stats.monster #abilityscores div {
+        width: 60px;
+        display: inline-flex;
+        justify-content: center;
       }
       #stats.monster #abilitynames,
       #stats.monster #abilityscores {
@@ -1528,6 +1527,7 @@ styleElement.innerHTML = `
         border-bottom: 1px solid var(--mdc-theme-text-primary-on-background, #000);
         padding-bottom: 4px;
         margin-bottom: 8px;
+        font-size: 14px;
       }
       #stats.monster #traits {
         border-top: 1px solid var(--mdc-theme-text-primary-on-background, #000);
@@ -1640,8 +1640,7 @@ styleElement.innerHTML = `
           top: 57px;
         }
         .container {
-          max-width: 840px;
-          padding: 0 40px;
+          padding: 0 80px;
         }
         .hidden-tablet-up {
           display: none !important;

@@ -6,7 +6,7 @@ import '../dnd-selection-list';
 class DndItemsView extends PolymerElement {
   static get properties() {
     return {
-      nonGlobal: {
+      inSidebar: {
         type: Boolean,
         reflectToAttribute: true,
         value: false
@@ -19,7 +19,7 @@ class DndItemsView extends PolymerElement {
 
       <dnd-selection-list
         enable-hash-routing
-        non-global$="[[nonGlobal]]"
+        in-sidebar$="[[inSidebar]]"
         model-id="items"
         columns='[
           {"id":"item-type","label":"Type"}, 

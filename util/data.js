@@ -452,8 +452,8 @@ function parseLegendaryMonsters(monsterData, legendaryGroupData) {
       const legendaryGroup = monster.legendaryGroup;
       if (legendaryGroup) {
         const thisGroup = legendaryGroupList[legendaryGroup];
-        if (thisGroup.lairActions) monster.lairaction = cloneDeep(thisGroup.lairActions);
-        if (thisGroup.regionalEffects) monster.regionaleffect = cloneDeep(thisGroup.regionalEffects);
+        if (thisGroup.lairActions) monster.lairActions = cloneDeep(thisGroup.lairActions);
+        if (thisGroup.regionalEffects) monster.regionalEffects = cloneDeep(thisGroup.regionalEffects);
       }
     }
   }

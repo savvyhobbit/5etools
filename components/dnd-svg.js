@@ -43,10 +43,10 @@ class DndSvg extends PolymerElement {
 	}
 	
 	transformId(id) {
-		if (id !== "Artificer" && id.includes("Artificer")) {
+		if (id === "ArtificerUA" || id === "ArtificerRevisited") {
 			return "artificerrevised";
 		}
-		if (id !== "Ranger" && id.includes("Ranger")) {
+		if (id === "RangerSpell-less" || id === "RangerRevised") {
 			return "rangerrevised";
 		}
 		return id.toLowerCase();

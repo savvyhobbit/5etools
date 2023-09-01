@@ -22,11 +22,6 @@ class DndSelectionList extends PolymerElement {
         value: false,
         reflectToAttribute: true
       },
-      disableScrollBack: {
-        type: Boolean,
-        reflectToAttribute: true,
-        value: false
-      },
       hasSelection: {
         type: Boolean,
         reflectToAttribute: true,
@@ -62,7 +57,7 @@ class DndSelectionList extends PolymerElement {
         type: Boolean,
         value: false
       },
-      nonGlobal: {
+      inSidebar: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
@@ -124,12 +119,12 @@ class DndSelectionList extends PolymerElement {
       spells: [
         { id: "level", label: "Level" },
         { id: "time", label: "Time" },
-        { id: "spell-meta", label: "Tag", cssClass: "hidden" },
-        { id: "classes", label: "Classes", cssClass: "hidden" },
-        { id: "subclasses", label: "Subclasses", cssClass: "hidden" },
         { id: "range", label: "Range" },
         { id: "school", label: "School" },
+        { id: "spell-meta", label: "Tag", cssClass: "hidden" },
         { id: "source", label: "Source" },
+        { id: "classes", label: "Classes", cssClass: "hidden" },
+        { id: "subclasses", label: "Subclasses", cssClass: "hidden" },
       ],
       variantrules: [
         { id: "source", label: "Source" },
@@ -145,9 +140,9 @@ class DndSelectionList extends PolymerElement {
   connectedCallback() {
     super.connectedCallback();
 
-    routeEventChannel().addEventListener("view-change", () => {
-      this.hasSelection = false;
-    });
+    // routeEventChannel().addEventListener("view-change", () => {
+    //   this.hasSelection = false;
+    // });
     routeEventChannel().addEventListener("preview-state-change", ({ detail : {isPreviewOpen, isDrawerOpen}}) => {
       this.previewOpen = isPreviewOpen;
       this.drawerOpen = isDrawerOpen;
@@ -159,7 +154,7 @@ class DndSelectionList extends PolymerElement {
   }
 
   _loadingChange() {
-    if (!this.nonGlobal) {
+    if (!this.inSidebar) {
       this.dispatchEvent(new CustomEvent("loading-data", {
         bubbles: true,
         composed: true,
@@ -171,20 +166,20 @@ class DndSelectionList extends PolymerElement {
   }
 
   _selectedItemChange() {
-    if (this.selectedItem) {
-      this.hasSelection = true;
-      if (!this.disableScrollBack && !this.nonGlobal) {
-        window.scrollTo(0, 0);
-      }
-    } else {
-      this.hasSelection = false;
-    }
+    console.error("_selectedItemChange", this.selectedItem);
+    this.hasSelection = !!this.selectedItem;
   }
 
-  _selectedItemKeyChange() {
+  _selectedItemKeyChange(a, b) {
     loadModel(this.modelId).then(result => {
       if (this.selectedItemKey) {
+        console.error("_selectedItemKeyChange: Selected Item", this.selectedItem)
         this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
+        this.notifyPath("selectedItem");
+        console.error("_selectedItemKeyChange: Selected Item", this.selectedItem)
+      } else {
+        this.set("selectedItem", null);
+        console.error("_selectedItemKeyChange: Selected NULL", this.selectedItem)
       }
     });
   }
@@ -232,7 +227,12 @@ class DndSelectionList extends PolymerElement {
           this.set("_filters", filters);
           this.loading = false;
           if (this.selectedItemKey) {
+            console.error("_modelChange: Selected Item");
             this.set("selectedItem", resolveHash(result, [this.selectedItemKey.name, this.selectedItemKey.source]));
+            console.error("_modelChange: Selected Item", this.selectedItem);
+          } else {
+            this.set("selectedItem", null);
+            console.error("_modelChange: Selected NULL", this.selectedItem);
           }
         })
         .catch(e => {
@@ -275,8 +275,8 @@ class DndSelectionList extends PolymerElement {
     return a && b;
   }
 
-  _toHideFooter(hideCharacterPopup, nonGlobal) {
-    return !nonGlobal && hideCharacterPopup;
+  _toHideFooter(hideCharacterPopup, inSidebar) {
+    return !inSidebar && hideCharacterPopup;
   }
 
   static get template() {
@@ -317,53 +317,53 @@ class DndSelectionList extends PolymerElement {
           overflow: hidden;
           background-color: var(--mdc-theme-surface);
         }
-        :host([non-global]) .footer-bar {
+        :host([in-sidebar]) .footer-bar {
           border-top: 1px solid var(--mdc-theme-text-divider-on-background);
         }
 
         @media(min-width: 921px) {
-          :host(:not([non-global])) dnd-list {
+          :host(:not([in-sidebar])) dnd-list {
             display: block !important;
           }
-          :host(:not([non-global])) dnd-button {
+          :host(:not([in-sidebar])) dnd-button {
             position: absolute;
             top: 22px;
             right: 0;
             display: block;
           }
-          :host(:not([non-global]):not([preview-open])) .list--sidebyside {
+          :host(:not([in-sidebar]):not([preview-open])) .list--sidebyside {
             display: flex;
             flex-direction: row-reverse;
           }
-          :host(:not([non-global]):not([preview-open])) .list--sidebyside.list--selected .list-wrap {
+          :host(:not([in-sidebar]):not([preview-open])) .list--sidebyside.list--selected .list-wrap {
             width: 50%;
             margin-right: 32px;
           }
-          :host(:not([non-global]):not([preview-open])) .list--sidebyside.list--selected dnd-selected-item {
+          :host(:not([in-sidebar]):not([preview-open])) .list--sidebyside.list--selected dnd-selected-item {
             width: 50%;
             margin-top: -24px;
           }
-          :host(:not([non-global]):not([preview-open])) .list--sidebyside dnd-button {
+          :host(:not([in-sidebar]):not([preview-open])) .list--sidebyside dnd-button {
             transform: rotate(180deg);
             z-index: 100;
           }
 
-          :host([non-global]) .footer-bar {
+          :host([in-sidebar]) .footer-bar {
             max-width: 50vw;
           }
         }
       </style>
 
       <div class$="[[_viewClass(viewSideBySide, hasSelection)]]">
-        <dnd-selected-item non-global$="[[nonGlobal]]" model-id="[[modelId]]" selected-item="{{selectedItem}}" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
+        <dnd-selected-item id="selectedItemEl" in-sidebar$="[[inSidebar]]" model-id="[[modelId]]" selected-item="{{selectedItem}}" all-items="[[_data]]" character-option="[[characterOption]]"></dnd-selected-item>
 
         <div class="list-wrap">
           <dnd-button icon="launch" on-click="_changeView"></dnd-button>
-          <dnd-list model-id$="[[modelId]]" non-global$="[[nonGlobal]]" list-title="[[listTitle]]" selected-item="{{selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
+          <dnd-list model-id$="[[modelId]]" in-sidebar$="[[inSidebar]]" list-title="[[listTitle]]" selected-item="{{selectedItem}}" half-width$="[[_and(viewSideBySide, hasSelection)]]" list-items="[[_data]]" columns="[[columns]]" filters="[[_filters]]"></dnd-list>
         </div>
 
-        <div class="footer-bar" hidden$="[[_toHideFooter(hideCharacterPopup, nonGlobal)]]" >
-          <dnd-character-popup hidden$="[[hideCharacterPopup]]" small$="[[nonGlobal]]" view-id="[[modelId]]" selected-item="[[selectedItem]]"></dnd-character-popup>
+        <div class="footer-bar" hidden$="[[_toHideFooter(hideCharacterPopup, inSidebar)]]" >
+          <dnd-character-popup hidden$="[[hideCharacterPopup]]" small$="[[inSidebar]]" view-id="[[modelId]]" selected-item="[[selectedItem]]" has-selection="[[hasSelection]]"></dnd-character-popup>
           <button class="preview-close mdc-icon-button material-icons" on-click="_closeDrawerPreview">arrow_back</button> 
         </div>
       </div>

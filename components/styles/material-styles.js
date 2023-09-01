@@ -3159,7 +3159,7 @@ styleElement.innerHTML = `
       .mdc-icon-button::before,
       .mdc-icon-button::after {
           position: absolute;
-          border-radius: 50%;
+          border-radius: 500px;
           opacity: 0;
           pointer-events: none;
           content: ""

@@ -45,7 +45,7 @@ class DndList extends PolymerElement {
       resultsCount: {
         type: Number
       },
-      nonGlobal: {
+      inSidebar: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
@@ -77,7 +77,7 @@ class DndList extends PolymerElement {
   listItemsChange() {
     this.resultsCount = this.listItems ? this.listItems.length : 0;
     
-    if (!this.hasSetFromURL && !this.nonGlobal) {
+    if (!this.hasSetFromURL && !this.inSidebar) {
       const routeSelection = readRouteSelection();
       if (routeSelection && this.listItems) {
         this.hasSetFromURL = true;
@@ -94,14 +94,16 @@ class DndList extends PolymerElement {
   }
 
   selectedItemChange() {
-    if (!this.nonGlobal) {
+    if (!this.inSidebar) {
       if (this.selectedItem) {
         const linkData = [this.selectedItem.name];
         if (this.selectedItem.source) {
           linkData.push(this.selectedItem.source);
         }
+        console.error("selectedItemChange", linkData, encodeForHash(linkData));
         setRouteSelection(encodeForHash(linkData));
       } else {
+        console.error("here?")
         clearRouteSelection();
       }
     }
@@ -152,10 +154,10 @@ class DndList extends PolymerElement {
   }
 
   _adjustHeight() {
-    if (window.innerWidth < 921 || this.nonGlobal) {
+    if (window.innerWidth < 921 || this.inSidebar) {
       const top = this.$.grid.getBoundingClientRect().top;
       if (top) {
-        this.$.grid.style.height = `${window.innerHeight - top - (this._isPopupView() || this.nonGlobal ? 84 : 0)}px`;
+        this.$.grid.style.height = `${window.innerHeight - top - (this._isPopupView() || this.inSidebar ? 84 : 0)}px`;
       }
     } else {
       this.$.grid.style.height = `600px`;
@@ -295,11 +297,45 @@ class DndList extends PolymerElement {
     return false;
   }
 
-  _nameColWidth(isMobile, halfWidth, nonGlobal) {
-    return isMobile || halfWidth || nonGlobal ? '175px' : '300px';
+  _nameColWidth(isMobile, halfWidth, inSidebar) {
+    return isMobile || halfWidth || inSidebar ? '175px' : '300px';
   }
 
-  _colWidth(index, columns) {
+  _flexGrow(colId) {
+    switch (colId) {
+      case 'cr':
+      case 'source':
+      case 'level':
+      case 'range':
+      case 'school':
+      case 'time':
+      case 'size':
+      case 'item-rarity':
+      case "prerequisite":
+        return "0";
+    }
+    return '1';
+  }
+
+  _colWidth(index, columns, colId) {
+    switch (colId) {
+      case 'level':
+      case 'range':
+        return "135px";
+
+      case 'cr':
+      case 'source':
+      case 'school':
+      case 'time':
+      case 'size':
+        return "140px";
+
+      case 'spell-meta':
+      case 'classes':
+      case 'subclasses':
+      case "feature-type":
+        return "250px";
+    }
     if (columns.length && index === columns.length - 1) {
       return '200px';
     }
@@ -336,6 +372,10 @@ class DndList extends PolymerElement {
     return columns.length && index === columns.length - 1
   }
 
+  _gridTheme(modelId) {
+    return `${modelId !== 'conditions' ? 'shaded' : ''} no-border no-row-borders hover`
+  }
+
   static get template() {
     return html`
       <style include="material-styles my-styles">
@@ -357,11 +397,11 @@ class DndList extends PolymerElement {
           height: 44px;
         }
 
-        /* :host([non-global]) .page-title {
+        /* :host([in-sidebar]) .page-title {
           font-size: 24px;
           line-height: 1.5;
         }
-        :host([non-global]) .source-text {
+        :host([in-sidebar]) .source-text {
           font-size: 16px;
         } */
 
@@ -442,6 +482,7 @@ class DndList extends PolymerElement {
           width: calc(100% + 32px);
           margin-left: -16px;
           height: calc(100 * var(--vh, 1vh) - 220px);
+          --grid-shade-spread: 40px;
         }
 
         vaadin-grid-filter {
@@ -469,8 +510,8 @@ class DndList extends PolymerElement {
         <dnd-button class="search-reset" border on-click="_clearFilters" label="Reset"></dnd-button>
       </div>
 
-      <vaadin-grid id="grid" items="[[listItems]]" theme="no-border no-row-borders hover" page-size="15">
-        <vaadin-grid-column frozen width="[[_nameColWidth(isMobile, halfWidth, nonGlobal)]]">
+      <vaadin-grid id="grid" items="[[listItems]]" theme$="[[_gridTheme(modelId)]]" first-col-width$="[[_nameColWidth(isMobile, halfWidth, inSidebar)]]" page-size="15">
+        <vaadin-grid-column frozen flex-grow="0" width="[[_nameColWidth(isMobile, halfWidth, inSidebar)]]">
           <template class="header">
             <div class="col-header-wrap col-header-wrap--name">
               <span class="name-label">Name</span>
@@ -485,7 +526,7 @@ class DndList extends PolymerElement {
         </vaadin-grid-column>
 
         <template is="dom-repeat" items="[[columns]]" as="col">
-          <vaadin-grid-column width="[[_colWidth(index, columns)]]" >
+          <vaadin-grid-column flex-grow="[[_flexGrow(col.id)]]" width="[[_colWidth(index, columns, col.id)]]" >
             <template class="header">
               <div class="col-header-wrap" last-item$="[[_isLast(index, columns)]]">
                 <vaadin-grid-filter path="[[_renderPath(col.id)]]" value="[[_filterValue(col.id, selectedFilters)]]"></vaadin-grid-filter>

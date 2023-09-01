@@ -703,6 +703,12 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
     }));
   }
 
+  _classLink(item) {
+    if (item && item.id) {
+      return `#/classes/${item.id}`;
+    }
+  }
+
   static get template() {
     return html`
       <style include="material-styles my-styles fa-styles">
@@ -805,10 +811,13 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           height: 30px;
           display: block;
           position: absolute;
-          top: -3px;
+          top: -6px;
         }
         .level-col__class {
-          font-size: 24px;
+          font-size: 28px;
+          font-weight: normal;
+          text-decoration: none;
+          color: var(--mdc-theme-on-surface);
         }
 
         .features-col {
@@ -1074,7 +1083,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                     <div class="level-col">
                       <span class="level-col__level">[[_level(index)]]</span>
                       <span class="level-col__image-wrap" ><dnd-svg class="level-col__image" default-color id="[[_svgFromClass(item.name)]]"></dnd-svg></span>
-                      <span class="level-col__class">[[item.name]]</span>
+                      <a class="level-col__class" href$="[[_classLink(item)]]">[[item.name]]</a>
                     </div>
 
                     <div class="features-col">

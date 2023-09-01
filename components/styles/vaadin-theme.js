@@ -316,4 +316,62 @@ registerStyles('vaadin-grid', css`
   :host([theme~="hover"]) [part~="row"]:hover {
     color: var(--mdc-theme-primary);
   }
+
+  :host([theme~="shaded"][overflow~='right']) #table:after {
+    content: "";
+    height: 100%;
+    width: var(--grid-shade-spread);
+    position: fixed;
+    right: 0px;
+    background: linear-gradient(90deg, rgba(0,0,0,0) 0%, var(--grid-shade-color) 90%);
+  }
+  :host([theme~="shaded"][overflow~='left']) #table:before {
+    content: "";
+    height: 100%;
+    width: var(--grid-shade-spread);
+    position: fixed;
+    left: 175px;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(270deg, rgba(0,0,0,0) 0%, var(--grid-shade-color) 90%);
+  }
+  :host([theme~="shaded"][overflow~='bottom']) #scroller:after {
+    content: "";
+    height: var(--grid-shade-spread);
+    width: 100%;
+    left: 175px;
+    position: fixed;
+    bottom: 0px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--grid-shade-color) 90%);
+  }
+  :host([theme~="shaded"][overflow~='top']) #scroller:before {
+    content: "";
+    height: var(--grid-shade-spread);
+    width: 100%;
+    position: fixed;
+    top: 56px;
+    left: 175px;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(0deg, rgba(0,0,0,0) 0%, var(--grid-shade-color) 90%);
+  }
+  :host([theme~="shaded"][overflow~='left'][first-col-width='300px']) #table:before {
+    left: 300px;
+  }
+  :host([theme~="shaded"][overflow~='top'][first-col-width='300px']) #scroller:before {
+    left: 300px;
+  }
+  :host([theme~="shaded"][overflow~='bottom'][first-col-width='300px']) #scroller:after {
+    left: 300px;
+  }
+  
+  :host([theme~="shaded"]) [part='row']:last-child [part~='header-cell'] {
+    border-bottom-color: var(--_lumo-grid-border-color) !important;
+  }
+  :host([theme~="shaded"]) [part~='cell'][last-frozen]:not([part~='details-cell']) {
+    border-right-color: var(--_lumo-grid-border-color) !important;
+  }
+  :host([theme~="shaded"]) {
+    overflow: hidden;
+  }
 `);

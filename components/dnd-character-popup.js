@@ -17,7 +17,11 @@ class DndCharacterPopup extends PolymerElement {
       },
       selectedCharacter: {
         type: Object,
-      }
+      },
+      hasSelection: {
+        type: Boolean,
+        value: false,
+      },
     }
   }
 
@@ -130,6 +134,7 @@ class DndCharacterPopup extends PolymerElement {
         }
         dnd-character-select {
           width: 100%;
+          max-width: 350px;
           --vaadin-field-default-width: some;
         }
         .char-select-wrap {
@@ -171,13 +176,13 @@ class DndCharacterPopup extends PolymerElement {
       <div class="wrapper">
         <div class="left-wrap">
           <a class="open-char-button mdc-icon-button material-icons" href="[[_charBuilderLink(viewId)]]">launch</a>
-          <div class="char-select-wrap" smaller$="[[_exists(selectedItem)]]">
+          <div class="char-select-wrap" smaller$="[[hasSelection]]">
             <dnd-character-select></dnd-character-select>
             <div class="class" hidden$="[[!_equal(viewId, 'classes')]]">[[classString(selectedCharacter)]]</div>
             <div class="feature" hidden$="[[_equal(viewId, 'classes')]]">[[featureString(viewId, selectedCharacter)]]</div>
           </div>
         </div>
-        <div class="feature-button" hidden$="[[!_exists(selectedItem)]]">
+        <div class="feature-button" hidden$="[[!hasSelection]]">
           <button class="mdc-icon-button material-icons mdc-button--raised add-character-option" on-click="addFeatureToCharacter" hidden$="[[!_exists(selectedItem)]]">person_add</button>
         </div>
       </div>

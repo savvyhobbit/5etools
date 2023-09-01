@@ -31,7 +31,14 @@ export function togglePrimarySecondary(isPrimary, el) {
 
 export function setDarkmode(isDark) {
     let root = document.documentElement;
+
+    /**
+     * 
+     *  Dark Mode
+     * 
+     */
     if (isDark) {
+        // Material
         root.style.setProperty("--mdc-theme-primary", "#bb86fc");
         root.style.setProperty("--mdc-theme-primary-darker", "#a359fc");
         root.style.setProperty("--mdc-theme-link", "#4dabf5");
@@ -47,12 +54,14 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-secondary-lighter", "rgba(1, 135, 134, .8)");
         root.style.setProperty("--mdc-theme-background", "#121212");
         root.style.setProperty("--mdc-theme-surface", "#1f1f1f");
+        root.style.setProperty("--mdc-theme-surface-surface", "#33373b");
         root.style.setProperty("--mdc-theme-header", "var(--mdc-theme-surface)");
         root.style.setProperty("--mdc-theme-header-secondary", "var(--mdc-theme-surface)");
         root.style.setProperty("--mdc-theme-error", "#cf6679");
         root.style.setProperty("--mdc-theme-on-primary", "#000");
         root.style.setProperty("--mdc-theme-on-secondary", "#000");
         root.style.setProperty("--mdc-theme-on-surface", "hsla(214, 96%, 96%, 0.9)");
+        root.style.setProperty("--mdc-theme-on-surface-surface", "var(--lumo-tint-50pct)");
         root.style.setProperty("--mdc-theme-on-header", "var(--mdc-theme-on-surface)");
         root.style.setProperty("--mdc-theme-on-error", "#000");
         root.style.setProperty("--mdc-theme-text-primary-on-background", "var(--lumo-body-text-color)"); // Body Text
@@ -69,12 +78,17 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-text-disabled-on-light", "#fff");
         root.style.setProperty("--mdc-theme-text-icon-on-light", "#fff");
 
+        // Misc.
+        root.style.setProperty("--grid-shade-color", "var(--mdc-theme-background)");
+
+        // Console
         root.style.setProperty("--console-string-color", "#39C2B6");
         root.style.setProperty("--console-number-color", "#8B71E1");
         root.style.setProperty("--console-object-color", "#5DB0D7");
         root.style.setProperty("--console-nullish-color", "#919191");
         root.style.setProperty("--console-punc-color", "#fff");
 
+        // Pulse
         root.style.setProperty("--pulse-shadow", "0 0 0 0 rgb(187, 134, 252, 1)");
         root.style.setProperty("--pulse-shadow-0", "0 0 0 0 rgb(187, 134, 252, 0.7)");
         root.style.setProperty("--pulse-shadow-70", "0 0 0 20px rgb(187, 134, 252, 0)");
@@ -89,10 +103,9 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--pulse-shadow-secondary-0", "0 0 0 0 rgb(3, 218, 198, 0.7)");
         root.style.setProperty("--pulse-shadow-secondary-70", "0 0 0 20px rgb(3, 218, 198, 0)");
         root.style.setProperty("--pulse-shadow-secondary-100", "0 0 0 0 rgb(3, 218, 198, 0)");
-        
+
         // Lumo
         root.style.setProperty("--lumo-base-color", "var(--mdc-theme-surface)");
-
         root.style.setProperty("--lumo-tint-5pct", "hsla(214, 65%, 85%, 0.06)");
         root.style.setProperty("--lumo-tint-10pct", "hsla(214, 60%, 80%, 0.14)");
         root.style.setProperty("--lumo-tint-20pct", "hsla(214, 64%, 82%, 0.23)");
@@ -129,8 +142,6 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--lumo-contrast-90pct", "var(--lumo-tint-90pct)");
         root.style.setProperty("--lumo-contrast", "var(--lumo-tint)");
 
-        root.style.setProperty("--mdc-theme-surface-surface", "#33373b");
-        root.style.setProperty("--mdc-theme-on-surface-surface", "var(--lumo-tint-50pct)");
         root.style.setProperty("--lumo-header-text-color", "var(--lumo-contrast)");
         root.style.setProperty("--lumo-body-text-color", "var(--lumo-contrast-90pct)");
         root.style.setProperty("--lumo-secondary-text-color", "var(--lumo-contrast-70pct)");
@@ -152,7 +163,14 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--lumo-success-color-50pct", "hsla(145, 65%, 42%, 0.5)");
         root.style.setProperty("--lumo-success-color-10pct", "hsla(145, 65%, 42%, 0.1)");
         root.style.setProperty("--lumo-success-text-color", "hsl(145, 85%, 47%)");
+    
+    /**
+     * 
+     *  Light Mode
+     * 
+     */
     } else {
+        // Material
         root.style.setProperty("--mdc-theme-primary", "#6200ee");
         root.style.setProperty("--mdc-theme-primary-darker", "#5000c1");
         root.style.setProperty("--mdc-theme-link", "#2196f3");
@@ -168,6 +186,8 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-secondary-lighter", "rgba(1, 135, 134, .5)");
         root.style.setProperty("--mdc-theme-background", "#fff");
         root.style.setProperty("--mdc-theme-surface", "#fff");
+        root.style.setProperty("--mdc-theme-surface-surface", "#e7ebee");
+        root.style.setProperty("--mdc-theme-on-surface-surface", "var(--lumo-shade-50pct)");
         root.style.setProperty("--mdc-theme-header", "var(--mdc-theme-primary)");
         root.style.setProperty("--mdc-theme-header-secondary", "var(--mdc-theme-secondary)");
         root.style.setProperty("--mdc-theme-error", "#b00020");
@@ -191,12 +211,17 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--mdc-theme-text-disabled-on-light", "rgba(0, 0, 0, 0.38)");
         root.style.setProperty("--mdc-theme-text-icon-on-light", "rgba(0, 0, 0, 0.38)");
 
+        // Misc.
+        root.style.setProperty("--grid-shade-color", "var(--mdc-theme-background)"); //"#e1e1e1");
+
+        // Console
         root.style.setProperty("--console-string-color", "#C80200");
         root.style.setProperty("--console-number-color", "#2221A7");
         root.style.setProperty("--console-object-color", "#881180");
         root.style.setProperty("--console-nullish-color", "#5F6367");
         root.style.setProperty("--console-punc-color", "#202124");
 
+        // Pulse
         root.style.setProperty("--pulse-shadow", "0 0 0 0 rgb(98, 0, 238, 1)");
         root.style.setProperty("--pulse-shadow-0", "0 0 0 0 rgb(98, 0, 238, 0.7)");
         root.style.setProperty("--pulse-shadow-70", "0 0 0 20px rgb(98, 0, 238, 0)");
@@ -212,9 +237,10 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--pulse-shadow-secondary-70", "0 0 0 20px rgb(1, 135, 134, 0)");
         root.style.setProperty("--pulse-shadow-secondary-100", "0 0 0 0 rgb(1, 135, 134, 0)");
 
+        
+
         // Lumo
         root.style.setProperty("--lumo-base-color", "var(--mdc-theme-surface)");
-
         root.style.setProperty("--lumo-tint-5pct", "hsla(0, 0%, 100%, 0.3)");
         root.style.setProperty("--lumo-tint-10pct", "hsla(0, 0%, 100%, 0.37)");
         root.style.setProperty("--lumo-tint-20pct", "hsla(0, 0%, 100%, 0.44)");
@@ -251,8 +277,6 @@ export function setDarkmode(isDark) {
         root.style.setProperty("--lumo-contrast-90pct", "var(--lumo-shade-90pct)");
         root.style.setProperty("--lumo-contrast", "var(--lumo-shade)");
 
-        root.style.setProperty("--mdc-theme-surface-surface", "#e7ebee");
-        root.style.setProperty("--mdc-theme-on-surface-surface", "var(--lumo-shade-50pct)");
         root.style.setProperty("--lumo-header-text-color", "var(--lumo-contrast)");
         root.style.setProperty("--lumo-body-text-color", "var(--lumo-contrast-90pct)");
         root.style.setProperty("--lumo-secondary-text-color", "var(--lumo-contrast-70pct)");

@@ -382,10 +382,11 @@ class DndCharacterBuilderSpells extends PolymerElement {
                 parentClass: casterName,
                 isWarlock: !!warlockSpellLevel
               };
-              const isExpanded = this.$.grid.expandedItems.some(item => item.id === 'level' && item.level === levelObj.level && item.parentClass === levelObj.parentClass);
-              if (isExpanded) {
-                expandedItems.push(levelObj);
-              }
+              //// Re-open previously expanded levels.
+              // const isExpanded = this.$.grid.expandedItems.some(item => item.id === 'level' && item.level === levelObj.level && item.parentClass === levelObj.parentClass);
+              // if (isExpanded) {
+              //   expandedItems.push(levelObj);
+              // }
               return levelObj;
             } else {
               return null

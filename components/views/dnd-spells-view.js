@@ -6,7 +6,7 @@ import '../dnd-selection-list';
 class DndSpellsView extends PolymerElement {
   static get properties() {
     return {
-      nonGlobal: {
+      inSidebar: {
         type: Boolean,
         reflectToAttribute: true,
         value: false
@@ -19,14 +19,14 @@ class DndSpellsView extends PolymerElement {
 
       <dnd-selection-list
         enable-hash-routing
-        non-global$="[[nonGlobal]]"
+        in-sidebar$="[[inSidebar]]"
         model-id="spells"
         columns='[
           {"id":"level","label":"Level"},
           {"id":"time","label":"Time","hideMobile":true},
           {"id":"spell-meta","label":"Tag","cssClass":"hidden"},
-          {"id":"source","label":"Source"},
           {"id":"range","label":"Range","hideMobile":true},
+          {"id":"source","label":"Source"},
           {"id":"school","label":"School","hideMobile":true},
           {"id":"classes","label":"Classes","cssClass":"hidden"},
           {"id":"subclasses","label":"Subclasses","cssClass":"hidden"}

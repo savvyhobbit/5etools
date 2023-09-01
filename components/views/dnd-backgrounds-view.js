@@ -6,7 +6,7 @@ import '../dnd-selection-list';
 class DndBackgroundsView extends PolymerElement {
   static get properties() {
     return {
-      nonGlobal: {
+      inSidebar: {
         type: Boolean,
         reflectToAttribute: true,
         value: false
@@ -20,7 +20,7 @@ class DndBackgroundsView extends PolymerElement {
 
       <dnd-selection-list
         enable-hash-routing
-        non-global$="[[nonGlobal]]"
+        in-sidebar$="[[inSidebar]]"
         model-id="backgrounds"
         columns='[
           {"id":"source","label":"Source","hideMobile":true},

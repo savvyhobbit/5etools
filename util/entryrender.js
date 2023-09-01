@@ -83,7 +83,6 @@ function EntryRenderer() {
 				case "list":
 					if (entry.items) {
 						textStack.push(`<ul ${entry.style ? `class="${entry.style}"` : ''}>`);
-						console.error("hasdffd");
 						for (let i = 0; i < entry.items.length; i++) {
 							this.recursiveEntryRender(entry.items[i], textStack, depth + 1, `<li ${isNonstandardSource(entry.items[i].source) ? `class="${CLSS_NON_STANDARD_SOURCE}"` : ""}>`, "</li>", undefined, parentName);
 						}

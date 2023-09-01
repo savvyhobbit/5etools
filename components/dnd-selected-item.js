@@ -33,7 +33,7 @@ class DndSelectedItem extends PolymerElement {
         type: Boolean,
         value: false
       },
-      nonGlobal: {
+      inSidebar: {
         type: Boolean,
         value: false,
         reflectToAttribute: true
@@ -46,7 +46,7 @@ class DndSelectedItem extends PolymerElement {
   }
 
   connectedCallback() {
-    if (!this.nonGlobal) {
+    if (!this.inSidebar) {
       routeEventChannel().addEventListener("selection-deselected", this.clearSelection.bind(this));
     }
   }
@@ -90,8 +90,9 @@ class DndSelectedItem extends PolymerElement {
 
   __renderSelection() {
     if (this._modelsRenderSelection && this.selectedItem) {
-      console.error('Selected Item:', this.selectedItem);
+      console.error('__renderSelection: Selected Item', this.selectedItem);
       this._modelsRenderSelection(this.selectedItem, this.shadowRoot, this.allItems);
+      this.$.scroll.scrollTo(0, 0);
       initCollapseToggles(this.shadowRoot);
     }
   }
@@ -105,6 +106,7 @@ class DndSelectedItem extends PolymerElement {
       import(/* webpackMode: "eager" */ `../js/${this.modelId}.js`)
         .then(module => {
           if (typeof module.renderSelection === "function") {
+            console.error('__modelsRenderSelection: Model Renderer Set');
             this._modelsRenderSelection = module.renderSelection;
             this.loading = false;
           } else {
@@ -122,7 +124,7 @@ class DndSelectedItem extends PolymerElement {
   }
 
   _adjustHeight() {
-    if (this.nonGlobal) {
+    if (this.inSidebar) {
       const top = this.$.scroll.getBoundingClientRect().top;
       if (top) {
         this.$.scroll.style.height = `${window.innerHeight - top - 85}px`;
@@ -136,9 +138,9 @@ class DndSelectedItem extends PolymerElement {
     return !!thing;
   }
 
-  _mainClass(selectedItem, nonGlobal) {
+  _mainClass(selectedItem, inSidebar) {
     let cls = selectedItem ? "main item-opened" : "main";
-    cls += nonGlobal ? " non-global": '';
+    cls += inSidebar ? " in-sidebar": '';
     return cls;
   }
 
@@ -168,10 +170,10 @@ class DndSelectedItem extends PolymerElement {
           line-height: 1.3;
           margin-top: 16px;
         }
-        .non-global .page-title {
+        .in-sidebar .page-title {
           margin: 12px 0 0;
         }
-        .non-global .source-text {
+        .in-sidebar .source-text {
           height: unset;
         }
         dnd-svg:not([hide]) + .title-text-wrap  {
@@ -201,7 +203,7 @@ class DndSelectedItem extends PolymerElement {
         .main:not(.item-opened) .selection-wrapper {
           display: none;
         }
-        .main.non-global .close-item {
+        .main.in-sidebar .close-item {
           display: none;
         }
         .main .page-title {
@@ -222,10 +224,10 @@ class DndSelectedItem extends PolymerElement {
           z-index: 4;
           background: var(--mdc-theme-header);
         }
-        .main.item-opened:not(.non-global) {
+        .main.item-opened:not(.in-sidebar) {
           margin-bottom: 120px;
         }
-        .main.item-opened.non-global .page-title {
+        .main.item-opened.in-sidebar .page-title {
           height: 115px;
           display: flex;
           padding: 12px;
@@ -234,7 +236,7 @@ class DndSelectedItem extends PolymerElement {
           border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
           align-items: center;
         }
-        .non-global #scroll {
+        .in-sidebar #scroll {
           overflow: scroll;
           height: calc(100 * var(--vh) - 246px);
         }
@@ -245,7 +247,7 @@ class DndSelectedItem extends PolymerElement {
         }
       </style>
 
-      <div class$="[[_mainClass(selectedItem, nonGlobal)]]">
+      <div class$="[[_mainClass(selectedItem, inSidebar)]]">
         <button class="mdc-icon-button close-item material-icons mdc-theme--on-header" on-click="clearSelection">close</button>
         <h1 class="page-title mdc-typography--headline2" hidden$="[[!selectedItem]]">
           <dnd-svg id$="[[selectedTitle]]"></dnd-svg>

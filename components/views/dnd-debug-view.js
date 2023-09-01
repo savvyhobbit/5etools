@@ -48,7 +48,7 @@ class DndDebugView extends PolymerElement {
   }
 
   _adjustHeight() {
-    if (window.innerWidth < 921 || this.nonGlobal) {
+    if (window.innerWidth < 921 || this.inSidebar) {
       const top = this.$.grid.getBoundingClientRect().top;
       if (top) {
         this.$.grid.style.height = `${window.innerHeight - top}px`;

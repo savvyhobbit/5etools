@@ -158,9 +158,7 @@ class DndLayout extends PolymerElement {
     this.shadowRoot.querySelector(".debugmode-control").addEventListener("change", () => {
       window.localStorage.setItem("debugMode", debugModeSwitch.checked);
       this.isDebugMode = debugModeSwitch.checked;
-      if (this.isDebugMode) {
-        window.location.reload();
-      }
+      window.location.reload();
     });
   }
 
@@ -192,6 +190,7 @@ class DndLayout extends PolymerElement {
     navButton.addEventListener("click", () => {
       if (this.drawer.open) {
         this.drawer.open = false;
+        this.drawerOpen = false;
       } else {
         this._openDrawer();
       }
@@ -215,6 +214,7 @@ class DndLayout extends PolymerElement {
     const viewId = e.detail.view;
     this.isCharacterSheetView = viewId === "character-builder";
     this.drawer.open = false;
+    this.drawerOpen = false;
 
     switch (viewId) {
       case "races":
@@ -256,14 +256,16 @@ class DndLayout extends PolymerElement {
       this._adjustPreviewWidth();
     }
     this.drawer.open = true;
+    this.drawerOpen = true;
     notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
   _closeDrawer() {
     if (this.drawer.open) {
       this.drawer.open = false;
+      this.drawerOpen = false;
       this.$.container.style['border-left'] = null;
-      this.$.breadcrumbcontainer.style['padding-left'] = null;
+      this.$.breadcrumbContainer.style['padding-left'] = null;
     }
   }
 
@@ -282,7 +284,7 @@ class DndLayout extends PolymerElement {
     this._openDrawerPreview(viewId);
   }
 
-  async _openDrawerPreview(viewId, selectedItem, decodeName) {    
+  async _openDrawerPreview(viewId, selectedItem, decodeName) {
     switch (viewId) {
       case "races":
       case "backgrounds":
@@ -296,12 +298,12 @@ class DndLayout extends PolymerElement {
     if (decodeName) {
       selectedItem.name = decodeURIComponent(selectedItem.name);
     }
-    this.previewSelectedItem = selectedItem || null;
-    this._adjustPreviewWidth();
-    console.error('_openDrawerPreview', { viewId, selectedItem });
-    await timeout(150);
+    this.previewSelectedItemKey = selectedItem || null;
+    console.error('_openDrawerPreview', { viewId, selectedItemKey: this.previewSelectedItemKey, viewIdPrevious: this.previewViewId});
     this.previewViewId = viewId;
     this.hasPreview = true;
+    this._adjustPreviewWidth();
+    await timeout(150);
     notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
 
@@ -309,7 +311,7 @@ class DndLayout extends PolymerElement {
     console.error('_closeDrawerPreview');
     this.$.drawer.style.width = `250px`;
     this.$.container.style['border-left'] = null;
-    this.$.breadcrumbcontainer.style['padding-left'] = null;
+    this.$.breadcrumbContainer.style['padding-left'] = null;
     this.hasPreview = false;
     notifyPreviewOpen(this.hasPreview, this.drawer.open);
   }
@@ -329,11 +331,11 @@ class DndLayout extends PolymerElement {
       this.$.container.style['border-left'] = `${containerWidth}px solid`;
 
       const breadcrumbWidth = isDesktop ? newWidth + 320 : newWidth;
-      this.$.breadcrumbcontainer.style['padding-left'] = `${breadcrumbWidth}px`;
+      this.$.breadcrumbContainer.style['padding-left'] = `${breadcrumbWidth}px`;
       
     } else {
       this.$.container.style['border-left'] = null;
-      this.$.breadcrumbcontainer.style['padding-left'] = null;
+      this.$.breadcrumbContainer.style['padding-left'] = null;
     }
     this.$.drawer.scrollTop = 0;
     setTimeout(() => {
@@ -412,7 +414,11 @@ class DndLayout extends PolymerElement {
         }
         .preview-link {
           margin-left: auto;
+          width: 60px;
+          height: 30px;
+          border-radius: 20px;
           color: var(--lumo-contrast-30pct);
+          background: var(--mdc-theme-surface-surface);
         }
         .preview-bar {
           display: flex;
@@ -432,7 +438,7 @@ class DndLayout extends PolymerElement {
           align-items: center;
         }
 
-        #breadcrumbcontainer {
+        #breadcrumbContainer {
           transition: padding-left 150ms ease-out;
           position: relative;
         }
@@ -456,6 +462,7 @@ class DndLayout extends PolymerElement {
           flex-direction: column-reverse;
           margin-right: auto;
           align-items: center;
+          transition: bottom 0.3s;
           width: 100px;
         }
         .thumb-menu[is-edit-mode] {
@@ -506,7 +513,7 @@ class DndLayout extends PolymerElement {
             box-shadow: var(--pulse-shadow-100);
           }
         }
-        @media(min-width: 420px) {
+        @media(min-width: 500px) {
           .thumb-menu[is-character-view]:not([higher]) {
             bottom: 24px;
           }
@@ -541,7 +548,7 @@ class DndLayout extends PolymerElement {
       <header id="header" edit-mode$="[[isEditMode]]" class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--header-bg">
         <div class="mdc-top-app-bar__row">
           <div class="breadcrumbs">
-            <div id="breadcrumbcontainer" class="container breadcrumbs__list">
+            <div id="breadcrumbContainer" class="container breadcrumbs__list">
               <div class="breadcrumbs__crumb">
                 <a class="mdc-theme--on-header" on-click="_resetHashClickHandler">[[lastTitle]]</a>
               </div>
@@ -689,7 +696,7 @@ class DndLayout extends PolymerElement {
             </div>
             <template is="dom-if" if="[[hasPreview]]" restamp>
               <div class="preview-wrap" id="previewTarget">
-                <dnd-selection-list model-id="[[previewViewId]]" selected-item-key="[[previewSelectedItem]]" non-global></dnd-selection-list>
+                <dnd-selection-list model-id="[[previewViewId]]" selected-item-key="[[previewSelectedItemKey]]" in-sidebar></dnd-selection-list>
               </div>
               <button class="hide-me"></button>
             </template>
@@ -707,7 +714,7 @@ class DndLayout extends PolymerElement {
           <slot name="default"></slot>
         </div>
 
-        <div class="thumb-menu" is-edit-mode$="[[isEditMode]]" higher$="[[viewHasPopup]]" higher-mobile$="[[previewHasPopup]]" is-character-view$="[[isCharacterSheetView]]">
+        <div class="thumb-menu" is-edit-mode$="[[isEditMode]]" higher$="[[viewHasPopup]]" higher-mobile$="[[hasPreview]]" is-character-view$="[[isCharacterSheetView]]">
           <dnd-roll-results></dnd-roll-results>
           <button hidden$="[[!isCharacterSheetView]]" class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
           <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="_toggleDrawer">logout</button>
