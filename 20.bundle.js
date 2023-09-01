@@ -1,9 +1,9 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[20],{164:function(e,t,l){"use strict";l.r(t);var s=l(2);l(19),l(20),l(44);class n extends s.a{static get properties(){return{nonGlobal:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get template(){return s.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[20],{164:function(e,t,s){"use strict";s.r(t);var i=s(2);s(19),s(20),s(44);class r extends i.a{static get properties(){return{inSidebar:{type:Boolean,reflectToAttribute:!0,value:!1}}}static get template(){return i.b`
       <style include="material-styles my-styles"></style>
 
       <dnd-selection-list
         enable-hash-routing
-        non-global$="[[nonGlobal]]"
+        in-sidebar$="[[inSidebar]]"
         model-id="rewards"
         columns='[
           {"id":"source","label":"Source"}, 
@@ -11,5 +11,5 @@
         ]'
       >
       </dnd-selection-list>
-    `}}customElements.define("dnd-rewards-view",n)}}]);
+    `}}customElements.define("dnd-rewards-view",r)}}]);
 //# sourceMappingURL=20.bundle.js.map
