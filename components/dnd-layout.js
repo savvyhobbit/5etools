@@ -357,12 +357,20 @@ class DndLayout extends PolymerElement {
     return `asource${selectedSource}`;
   }
 
+  _moveForPopup(hasPreview, drawerOpen, viewHasPopup) {
+    return (hasPreview && drawerOpen) || viewHasPopup;
+  }
+
   _exists(a) {
     return !!a;
   }
 
   _or(a, b) {
     return a || b;
+  }
+
+  _and(a, b) {
+    return a && b;
   }
 
   _same(a, b) {
@@ -443,9 +451,8 @@ class DndLayout extends PolymerElement {
           position: relative;
         }
 
-        .mdc-theme--primary-bg[edit-mode] {
-          background-color: var(--mdc-theme-secondary) !important;
-          color: var(--mdc-theme-on-secondary) !important;
+        [truly-editing] {
+          --mdc-theme-primary: var(--mdc-theme-secondary);
         }
 
         .debug-button {
@@ -465,17 +472,11 @@ class DndLayout extends PolymerElement {
           transition: bottom 0.3s;
           width: 100px;
         }
-        .thumb-menu[is-edit-mode] {
-          --mdc-theme-primary: var(--mdc-theme-secondary);
-        }
         .thumb-menu[is-character-view] {
           bottom: 88px;
         }
         .thumb-menu[higher] {
-          bottom: 108px;
-        }
-        .thumb-menu[higher-mobile] {
-          bottom: 108px;
+          bottom: 88px;
         }
         .thumb-menu__btn {
           border-radius: 50%;
@@ -545,7 +546,7 @@ class DndLayout extends PolymerElement {
         }
       </style>
 
-      <header id="header" edit-mode$="[[isEditMode]]" class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--header-bg">
+      <header id="header" truly-editing$="[[_and(isEditMode, isCharacterSheetView)]]" class="mdc-top-app-bar mdc-top-app-bar--fixed mdc-theme--header-bg">
         <div class="mdc-top-app-bar__row">
           <div class="breadcrumbs">
             <div id="breadcrumbContainer" class="container breadcrumbs__list">
@@ -714,7 +715,7 @@ class DndLayout extends PolymerElement {
           <slot name="default"></slot>
         </div>
 
-        <div class="thumb-menu" is-edit-mode$="[[isEditMode]]" higher$="[[viewHasPopup]]" higher-mobile$="[[hasPreview]]" is-character-view$="[[isCharacterSheetView]]">
+        <div class="thumb-menu" truly-editing$="[[_and(isEditMode, isCharacterSheetView)]]" higher$="[[_moveForPopup(hasPreview, drawerOpen, viewHasPopup)]]" is-character-view$="[[isCharacterSheetView]]">
           <dnd-roll-results></dnd-roll-results>
           <button hidden$="[[!isCharacterSheetView]]" class="edit-button thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" pulse$="[[pulse]]" on-click="toggleEditMode">[[_editIcon(isEditMode)]]</button>
           <button class="drawer-btn thumb-menu__btn mdc-icon-button mdc-button--raised material-icons" on-click="_toggleDrawer">logout</button>

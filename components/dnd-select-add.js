@@ -42,6 +42,11 @@ class DndSelectAdd extends PolymerElement {
         type: Boolean,
         value: false,
         reflectToAttribute: true
+      },
+      theme: {
+        reflectToAttribute: true,
+        type: String,
+        value: ""
       }
     }
   }
@@ -205,6 +210,10 @@ class DndSelectAdd extends PolymerElement {
     }
     return result;
   }
+
+  _theme(theme) {
+    return `dark add ${theme}`;
+  }
   
   static get template() {
     return html`
@@ -225,7 +234,7 @@ class DndSelectAdd extends PolymerElement {
           color: var(--lumo-body-text-color);
         }
       </style>
-      <vaadin-select add theme="dark add" id="select" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
+      <vaadin-select id="select" add theme$="[[_theme(theme)]]" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
         <div hidden$="[[!_exists(multiValue)]]" slot="prefix">
           <span class="prefix">[[multiValue]]</span>
         </div>

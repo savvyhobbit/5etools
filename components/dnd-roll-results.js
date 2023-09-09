@@ -1,7 +1,7 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import "./styles/material-styles.js";
 import "./styles/my-styles.js";
-import { rollEventChannel } from '../util/roll.js';
+import { rerollDice, rollDice, rollEventChannel } from '../util/roll.js';
 import { getEditModeChannel } from '../util/editMode.js';
 
 class DndRollResults extends PolymerElement {
@@ -95,6 +95,12 @@ class DndRollResults extends PolymerElement {
     }
   }
 
+  _rerollRoll(e) {
+    const index = parseInt(e.target.closest('.roll-result').getAttribute('index'));
+    const thisRollResult = this.rollResults[index];
+    rerollDice(thisRollResult);
+  }
+
   _toggleOpen() {
     this.isOpen = !this.isOpen;
   }
@@ -142,6 +148,7 @@ class DndRollResults extends PolymerElement {
         :host {
           position: relative;
           display: block;
+          /* --mdc-theme-primary: #ff9800; */
         }
         [hidden] {
           display: none !important;
@@ -193,7 +200,7 @@ class DndRollResults extends PolymerElement {
           transition: bottom 0.2s;
         }
         .roll-results[open] {
-          bottom: -4px;
+          bottom: 18px;
         }
         .roll-results__mask {
           position: absolute;
@@ -412,7 +419,8 @@ class DndRollResults extends PolymerElement {
           bottom: 0;
           top: unset;
         }
-        .roll-result__close {
+        .roll-result__close,
+        .roll-result__reroll {
           position: absolute;
           height: 20px;
           width: 20px;
@@ -427,6 +435,13 @@ class DndRollResults extends PolymerElement {
           justify-content: center;
           cursor: pointer;
           color: var(--mdc-theme-on-surface);
+        }
+        .roll-result[little] .roll-result__reroll {
+          display: none;
+        }
+        .roll-result__reroll {
+          right: 58px;
+          font-size: 10px;
         }
 
         .roll-result[little] {
@@ -548,6 +563,7 @@ class DndRollResults extends PolymerElement {
                 </div>
                 <div class="roll-result__total">[[item.total]]</div>
                 <button class="roll-result__close fal fa-times" on-click="_deleteRoll"></button>
+                <button class="roll-result__reroll fal fa-redo" on-click="_rerollRoll"></button>
               </div>
             </template>
           </div>

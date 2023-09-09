@@ -1053,6 +1053,37 @@ function escapeHTML(str) {
 		.replace(/'/g, "&#039;");
 }
 
+function generateSidebarJSLink(hash) {
+	let href;
+	const partMatch = hash.match(/\/([^\/]+)\/([^_]+)_(.*)/);
+	if (partMatch && partMatch.length === 4) {
+		href = `javascript: (() => {
+			document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
+				bubbles: true,
+				composed: true,
+				detail: {
+					decode: true,
+					selectedItem: {name: "${partMatch[2].trim()}", source: "${partMatch[3].toLowerCase().trim()}"},
+					viewId: "${partMatch[1].trim()}"
+				}
+			}));
+		})();`
+	} else if (hash.includes("/")) {
+		href = `javascript: (() => {
+			document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
+				bubbles: true,
+				composed: true,
+				detail: {
+					viewId: "${hash.split("/")[1]}"
+				}
+			}));
+		})();`
+	} else {
+		console.error('Can\'t parse entry link!!!!', hash);
+	}
+	return href;
+}
+
 export {
   throttle,
   debounce,
@@ -1136,4 +1167,5 @@ export {
 	isFirstCharNum,
 	camelize,
 	escapeHTML,
+	generateSidebarJSLink,
 };

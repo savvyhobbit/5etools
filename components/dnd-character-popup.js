@@ -51,7 +51,7 @@ class DndCharacterPopup extends PolymerElement {
   }
   
   addFeatureToCharacter() {
-    console.error('addFeatureToCharacter');
+    console.error('addFeatureToCharacter', this.viewId, this.selectedItem);
     addFeatureById(this.viewId, undefined, undefined, this.selectedItem);
   }
 
@@ -127,7 +127,8 @@ class DndCharacterPopup extends PolymerElement {
         .left-wrap {
           display: flex;
           align-items: center;
-          flex-grow: 1;
+          width: 300px;
+          width: 100%;
         }
         .open-char-button {
           margin-right: 10px;
@@ -146,7 +147,7 @@ class DndCharacterPopup extends PolymerElement {
         .feature-button {
           display: flex;
           align-items: center;
-          margin: 0 16px;
+          margin: 0 4px;
         }
         .class,
         .feature {
@@ -159,11 +160,17 @@ class DndCharacterPopup extends PolymerElement {
           margin-left: 10px;
           flex-grow: 0;
           flex-shrink: 0;
+          margin-right: auto;
         }
 
         @media(min-width: 420px) {
           .char-select-wrap[smaller] {
             width: auto;
+          }
+        }
+        @media(min-width: 768px) {
+          .left-wrap {
+            /* width: 400px */
           }
         }
         @media(min-width: 1321px) {

@@ -22,6 +22,8 @@ import "@vaadin/vaadin-checkbox";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle";
 import "@vaadin/vaadin-grid/vaadin-grid-column";
+import "../../styles/material-styles.js";
+import "../../styles/my-styles.js";
 import "@vaadin/vaadin-text-field/vaadin-integer-field";
 import "./dnd-character-builder-equipment-item-detail";
 import { clearRouteSubSelection, readRouteSubSelection, routeEventChannel, setRouteSubSelection } from "../../../util/routing";
@@ -501,13 +503,15 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           border-bottom: 1px solid var(--lumo-contrast-10pct);
         }
         .reference-link {
-          margin-right: auto;
+          margin-left: auto;
+          margin-right: 16px;
         }
         .mdc-icon-button:hover {
           color: var(--mdc-theme-primary);
         }
         .add-item {
           position: relative;
+          margin-right: 12px;
         }
         .add-item__tiny {
           position: absolute;
@@ -667,7 +671,7 @@ class DndCharacterBuilderEquipment extends PolymerElement {
         }
 
         .currency {
-          margin: 20px 0;
+          margin: 20px 12px 20px;
           display: flex;
           margin-left: auto;
           align-items: center;
@@ -767,15 +771,15 @@ class DndCharacterBuilderEquipment extends PolymerElement {
           .heading {
             justify-content: flex-start;
           }
-          .reference-link {
-            margin-left: 8px;
-          }
         }
 
         @media(min-width: 921px) {
           .reference-link,
           .add-item {
             display: block !important;
+          }
+          .add-item {
+            margin-right: calc(50% + 20px);
           }
           .item-wrap[active] {
             background: var(--lumo-primary-color-10pct);
@@ -803,10 +807,11 @@ class DndCharacterBuilderEquipment extends PolymerElement {
 
       <div class="heading">
         <h2>Inventory</h2>
-        <button class="mdc-icon-button reference-link material-icons" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">logout</button>
+        <button class="mdc-icon-button reference-link" hidden$="[[_hasActive(activeItem)]]" on-click="_linkClick">
+          <dnd-icon icon="logout" type="material"></dnd-icon>
+        </button>
         <button class="mdc-icon-button add-item" hidden$="[[_hasActive(activeItem)]]" on-click="_addItem">
-          <dnd-icon class="add-item__tiny" icon="plus"></dnd-icon>
-          <dnd-icon icon="sack"></dnd-icon>
+          <dnd-icon icon="sack" tiny="plus"></dnd-icon>
         </button>
         <button class="mdc-icon-button close-item material-icons mdc-theme--on-header" hidden$="[[!_hasActive(activeItem)]]" on-click="_clearSelection">close</button>
       </div>
@@ -850,7 +855,9 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                 <div class="currency-item__value">[[_getCurrencyValue("$", currency)]]</div>
               </div>
             </div>
-            <button class="currency-change mdc-icon-button" on-click="_openCurrencyModal"><dnd-icon icon="sack-dollar"></dnd-icon></button>
+            <button class="currency-change mdc-icon-button" on-click="_openCurrencyModal">
+              <dnd-icon icon="sack-dollar" tiny="plus"></dnd-icon>
+            </button>
 
             <vaadin-dialog opened="{{currencyModalOpen}}">
               <template>
@@ -878,15 +885,12 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                   .modal-footer {
                     display: flex;
                     justify-content: center;
-                    margin-top: 30px;
+                    margin-top: 20px;
                     flex-wrap: wrap;
+                    gap: 20px;
                   }
-                  .modal-footer dnd-button:last-child {
-                    /* margin: 12px auto 0; */
+                  .modal-footer dnd-button:first-child {
                     --mdc-theme-primary: var(--mdc-theme-error);
-                  }
-                  .modal-footer dnd-button:not(:last-child) {
-                    margin-right: 12px;
                   }
                   [currency="Dollars"] {
                     --mdc-theme-primary: green;
@@ -932,8 +936,8 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                   <vaadin-integer-field class="dollars" theme="mini" padded has-controls min="0" id="$" value="{{new$}}" currency="Dollars" label="Currency ($)"></vaadin-integer-field>
                 </div>
                 <div class="modal-footer">
-                  <dnd-button label="Add" currency$="[[_currencyColor(currencyIsDollars)]]" border on-click="_addCurrency"></dnd-button>
                   <dnd-button label="Remove" border on-click="_removeCurrency"></dnd-button>
+                  <dnd-button label="Add" currency$="[[_currencyColor(currencyIsDollars)]]" border on-click="_addCurrency"></dnd-button>
                   <!-- <dnd-button label="Cancel" border on-click="_closeCurrencyModal"></dnd-button> -->
                 </div>
               </template>
@@ -988,17 +992,17 @@ class DndCharacterBuilderEquipment extends PolymerElement {
                 display: flex;
                 justify-content: space-between;
                 margin-top: 20px;
+                gap: 20px;
               }
-              .modal-footer dnd-button:first-child {
-                margin-right: 40px;
+              .modal-footer dnd-button:last-child {
                 --mdc-theme-primary: var(--mdc-theme-error);
               }
             </style>
-            <div class="modal-content">Remove the item?</div>
+            <div class="modal-content">Drop the item?</div>
             <div class="modal-content modal-item">[[deleteItemName]]</div>
             <div class="modal-footer">
-              <dnd-button label="Delete" border on-click="_deleteItem"></dnd-button>
               <dnd-button label="Cancel" border on-click="_closeDeleteModal"></dnd-button>
+              <dnd-button label="Drop" border on-click="_deleteItem"></dnd-button>
             </div>
           </template>
         </vaadin-dialog>

@@ -39,6 +39,7 @@ styleElement.innerHTML = `
           text-transform: uppercase;
           padding: 0 8px 0 8px;
           display: inline-flex;
+          font-weight: bold;
           position: relative;
           align-items: center;
           justify-content: center;
@@ -55,7 +56,7 @@ styleElement.innerHTML = `
           -webkit-appearance: none;
           overflow: hidden;
           vertical-align: middle;
-          border-radius: 4px
+          border-radius: 4px;
       }
 
       .mdc-button::-moz-focus-inner {
@@ -198,7 +199,7 @@ styleElement.innerHTML = `
       .mdc-button--outlined {
           border-style: solid;
           padding: 0 15px 0 15px;
-          border-width: 1px
+          border-width: 2px;
       }
 
       .mdc-button--outlined:disabled {
@@ -3115,6 +3116,8 @@ styleElement.innerHTML = `
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          background: var(--mdc-theme-surface-surface);
+          border-radius: 60px;
       }
 
       .mdc-icon-button svg,

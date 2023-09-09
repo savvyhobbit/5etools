@@ -1170,10 +1170,16 @@ styleElement.innerHTML = `
 
       .back-to-top {
         position: fixed;
-        bottom: 84px;
-        right: 24px;
-        border-radius: 32px;
-        z-index: 2;
+        bottom: 144px;
+        right: 26px;
+        border-radius: 40px;
+        z-index: 3;
+
+        @media(min-width: 1320px) {
+          width: 80px;
+          height: 80px;
+          font-size: 36px;
+        }
       }
 
       .mobile-clone-features .centred-col {
@@ -1287,6 +1293,7 @@ styleElement.innerHTML = `
         padding-top: 24px;
         padding-bottom: 26px;
         border-top: 1px solid var(--mdc-theme-text-divider-on-background, rgba(0, 0, 0, 0.12));
+        z-index: 5;
       }
       #subclasses .title {
         text-align: center;

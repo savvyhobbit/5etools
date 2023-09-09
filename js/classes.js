@@ -20,6 +20,8 @@ const ATB_DATA_FEATURE_LINK = "data-flink";
 const ATB_DATA_FEATURE_ID = "data-flink-id";
 const ATB_DATA_SC_LIST = "data-subclass-list";
 
+const SCROLL_TO_FEATURE_OFFSET = -84;
+
 import {
   jqHeight,
   parseHTML,
@@ -293,7 +295,7 @@ function onClassChange(curClass, rootEl) {
     const lvlFeatureList = curClass.classFeatures[i];
     for (let j = 0; j < lvlFeatureList.length; j++) {
       const feature = lvlFeatureList[j];
-      console.error('feature', feature);
+      console.error('class feature', feature);
       const featureId = HASH_FEATURE + encodeForHash(feature.name) + "_" + i;
       const featureLinkPart = HASH_FEATURE + encodeForHash(feature.name) + i;
       const featureLinkClasses = [CLSS_FEATURE_LINK, feature.gainSubclassFeature ? 'subclass-feature-link' : undefined];
@@ -307,7 +309,7 @@ function onClassChange(curClass, rootEl) {
       featureLink.addEventListener("click", function(e) {
         e.preventDefault();
         rootEl.getElementById(featureId).scrollIntoView(true);
-        let offset = -84 - jqHeight(rootEl.querySelector("#subclasses"));
+        let offset = SCROLL_TO_FEATURE_OFFSET - jqHeight(rootEl.querySelector("#subclasses"));
         window.scrollBy(0, offset);
       });
       featureNames.push(featureLink);

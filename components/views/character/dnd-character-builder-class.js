@@ -87,6 +87,7 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
       this.hitDiceMaxes = hitDiceMaxes;
     } else {
       this.levels = [];
+      this.classes = {};
       this.noContentMessage = true;
       this.dispatchEvent(new CustomEvent("loadingChange", { bubbles: true, composed: true }));
     }
@@ -635,6 +636,11 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
   _editModeClass(isEditMode) {
     return isEditMode ? 'edit-mode' : 'not-edit-mode';
   }
+  
+  _addClassDropdownPlaceholder(classes) {
+    console.error(classes);
+    return classes && Object.values(classes).length ? "Add a Multiclass" : "Add a Class";
+  }
 
   _hpFieldKeyup(e) {
     console.error("_hpFieldKeyup", e);
@@ -716,10 +722,6 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           display: block;
         }
 
-        .class-grid {
-          margin-bottom: var(--tab-bottom-margin);
-        }
-
         .heading-wrap {
           display: flex;
           justify-content: space-between;
@@ -758,18 +760,21 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          padding: 10px;
+          padding: 16px 0;
           width: 100%;
+          gap: 8px;
         }
-        .button-wrap > * {
-          margin: 4px;
+        .button-wrap--bottom {
+          padding: 44px 16px;
+          margin-bottom: var(--tab-bottom-margin);
+        }
+        .class-select-wrap {
+          width: 100%;
         }
 
         .row-wrap {
           padding: 4px 16px;
-        }
-        .row-wrap:not(:first-child) {
-          border-top: 1px solid var(--mdc-theme-text-divider-on-background);
+          border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
         }
         .row {
           position: relative;
@@ -1063,12 +1068,14 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
       <div class$="[[_editModeClass(isEditMode)]]">
         <div class="heading-wrap">
           <h2>Levels <span class="class-levels">[[classLevel]]</span></h2> 
-          <dnd-select-add model="class-all" placeholder="Add a Class"></dnd-select-add>
 
           <div class="button-wrap">
             <template is="dom-repeat" items="[[_objArray(classes)]]">
               <dnd-button border icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
             </template>
+            <div class="class-select-wrap">
+              <dnd-select-add theme="outlined" model="class-all" placeholder$="[[_addClassDropdownPlaceholder(classes)]]"></dnd-select-add>
+        </div>
           </div>
         </div>
 
@@ -1181,6 +1188,18 @@ class DndCharacterBuilderClass extends MutableData(PolymerElement) {
                 </div>
               </div>
             </template>
+          </div>
+
+          <div class="button-wrap--bottom">
+              <div class="button-wrap">
+                <template is="dom-repeat" items="[[_objArray(classes)]]">
+                  <dnd-button border icon="add" label="[[item.name]]" on-click="_addClassLevel"></dnd-button>
+                </template>
+                
+                <div class="class-select-wrap">
+                  <dnd-select-add theme="outlined" model="class-all" placeholder$="[[_addClassDropdownPlaceholder(classes)]]"></dnd-select-add>
+                </div>
+              </div>
           </div>
         </div>
       </div>

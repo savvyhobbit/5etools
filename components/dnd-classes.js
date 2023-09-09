@@ -237,6 +237,34 @@ class DndClasses extends PolymerElement {
           font-size: 18px;
           color: var(--lumo-contrast-50pct);
         }
+        .statsBlockHead {
+          position: relative;
+          z-index: 2;
+        }
+        .class-feature {
+          position: relative;
+          overflow: hidden;
+        }
+        .class-feature[level]:after {
+          font-size: 70px;;
+          font-weight: bold;
+          position: absolute;
+          top: 50px;
+          z-index: 1;
+          color: var(--mdc-theme-primary);
+          opacity: .4;
+          right: 0;
+        }
+        .class-feature[level="1"]:after { content: '1'; }
+        .class-feature[level="2"]:after { content: '2'; }
+        .class-feature[level="3"]:after { content: '3'; }
+        .class-feature[level="4"]:after { content: '4'; }
+        .class-feature[level="5"]:after { content: '5'; }
+        .class-feature[level="6"]:after { content: '6'; }
+        .class-feature[level="7"]:after { content: '7'; }
+        .class-feature[level="8"]:after { content: '8'; }
+        .class-feature[level="9"]:after { content: '9'; }
+        .class-feature[level="10"]:after { content: '10'; }
       </style>
 
       <div class$="[[_mainClass(itemOpened)]]">

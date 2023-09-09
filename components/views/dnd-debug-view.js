@@ -5,7 +5,7 @@ import "@vaadin/vaadin-grid/vaadin-grid-filter";
 import "@vaadin/vaadin-grid/vaadin-grid-filter-column"
 import "@vaadin/vaadin-grid/vaadin-grid-sorter";
 import { getLog, getLoggerChannel } from '../../util/logger';
-import { cloneDeep, escapeHTML, jqEmpty } from '../../js/utils';
+import { escapeHTML, jqEmpty } from '../../js/utils';
 import { createArrayPreview, createItem, createObjectPreview } from '../../util/consoleOutput';
 import '../styles/console-styles.js';
 

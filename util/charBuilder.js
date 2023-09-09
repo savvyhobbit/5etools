@@ -5,7 +5,7 @@ import { entryTextSearch, util_capitalize, getProfBonus, entrySearch, util_capit
 import Parser from "./Parser";
 
 import droll from "../lib/droll";
-import { emitRoll } from "./roll";
+import { emitRoll, rollDice } from "./roll";
 import EntryRenderer from "./entryrender";
 
 window.saveCharacter = (char = window.character) => {
@@ -183,12 +183,6 @@ function selectCharacterFromIndex(index) {
 
 function makeDefault(char) {
   window.localStorage.setItem("defaultCharacter", char.id);
-}
-
-function addFeature(type, feature, character = selectedCharacter) {
-  if (feature && character) {
-    mergeFeature(character, feature, type);
-  }
 }
 
 async function addFeatureById(type = readRouteView(), id = readRouteSelection(), character = selectedCharacter, selectedItemIn) {
@@ -1164,10 +1158,8 @@ async function useHitDice(className, character = selectedCharacter) {
       const classRef = (await getClassReferences(character))[className];
       const hitDie = classRef.hd.faces;
       const conMod = await getAttributeModifier('con');
-      const rollForm = `1d${hitDie}+${conMod}`;
-      const roll = droll.roll(rollForm);
-      const rollTotal = roll.total;
-      emitRoll("Hit Dice", rollForm, roll);
+      const rollText = `1d${hitDie}+${conMod}`;
+      rollDice("Hit Dice", rollText);
       const newCurrentHp = character.currentHp + rollTotal;
       setCurrentHp(newCurrentHp);
       character.hitDice[className] = character.hitDice[className] - 1;
@@ -2108,7 +2100,6 @@ export {
   addCharacter,
   cloneCharacter,
   uploadCharacter,
-  addFeature,
   addFeatureById,
   updateAttr,
   updateName,

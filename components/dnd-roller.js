@@ -179,6 +179,14 @@ class DndRoller extends PolymerElement {
         .d100 i:first-child {
           margin-right: 3px;
         }
+
+        @media(min-width: 1320px) { 
+          /* .roller__btn {
+            width: 80px;
+            width: 80px;
+            font-size: 36px;
+          } */
+        }
       </style>
 
       <div class="roller__container" open$="[[isOpen]]">

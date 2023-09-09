@@ -1,4 +1,4 @@
-import { isNonstandardSource, encodeForHash, ascSort, utils_makeAttChoose } from "../js/utils.js";
+import { isNonstandardSource, encodeForHash, ascSort, utils_makeAttChoose, generateSidebarJSLink } from "../js/utils.js";
 import {
   CLSS_NON_STANDARD_SOURCE,
   HASH_LIST_SEP,
@@ -284,32 +284,7 @@ function EntryRenderer() {
 			if (entry.href.type === "internal") {
 				// baseURL is blank by default
 				if (entry.href.hash) {
-					const partMatch = entry.href.hash.match(/\/([^\/]+)\/([^_]+)_(.*)/);
-					if (partMatch && partMatch.length === 4) {
-						href = `javascript: (() => {
-							document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
-								bubbles: true,
-								composed: true,
-								detail: {
-									decode: true,
-									selectedItem: {name: "${partMatch[2].trim()}", source: "${partMatch[3].toLowerCase().trim()}"},
-									viewId: "${partMatch[1].trim()}"
-								}
-							}));
-						})();`
-					} else if (entry.href.hash.includes("/")) {
-						href = `javascript: (() => {
-							document.body.children[0].shadowRoot.children[0].dispatchEvent(new CustomEvent("open-drawer", {
-								bubbles: true,
-								composed: true,
-								detail: {
-									viewId: "${entry.href.hash.split("/")[1]}"
-								}
-							}));
-						})();`
-					} else {
-						console.error('Can\'t parse entry link!!!!', entry.href.hash);
-					}
+					href = generateSidebarJSLink(entry.href.hash);
 				} else {
 					href = `${self.baseUrl}${entry.href.path}#`;
 				}

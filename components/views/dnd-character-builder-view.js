@@ -220,7 +220,6 @@ class DndCharacterBuilderView extends PolymerElement {
     if (this.tabs && this.routeSelection) {
       const newViewId = this.tabs.findIndex((tab) => {
         if (!tab) {
-          console.error("here 3");
           return false;
         }
         return tab.viewId === this.routeSelection
@@ -280,7 +279,6 @@ class DndCharacterBuilderView extends PolymerElement {
     const tabOrder = getSavedTabOrder();
     tabOrder.forEach((tab) => {
       if (!tab) {
-        console.error("here 1");
         return;
       }
       if (tab.viewId === "spells") {
@@ -294,7 +292,6 @@ class DndCharacterBuilderView extends PolymerElement {
     const tabOrder = getSavedTabOrder();
     tabOrder.forEach((tab) => {
       if (!tab) {
-        console.error("here 2");
         return;
       }
       if (tab.viewId === "spells") {
@@ -560,16 +557,16 @@ class DndCharacterBuilderView extends PolymerElement {
                 display: flex;
                 justify-content: space-between;
                 margin-top: 20px;
+                gap: 20px;
               }
-              .modal-footer dnd-button:first-child {
-                margin-right: 40px;
+              .modal-footer dnd-button:last-child {
                 --mdc-theme-primary: var(--mdc-theme-error);
               }
             </style>
             <div class="modal-content">Delete this character?</div>
             <div class="modal-footer">
-              <dnd-button label="Delete" border on-click="removeCharacter"></dnd-button>
               <dnd-button label="Cancel" border on-click="closeDeleteModal"></dnd-button>
+              <dnd-button label="Delete" border on-click="removeCharacter"></dnd-button>
             </div>
           </template>
         </vaadin-dialog>

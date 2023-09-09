@@ -306,8 +306,10 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
           justify-content: space-between;
           border-bottom: 1px solid var(--lumo-contrast-10pct);
         }
-        .reference-link:hover {
-          color: var(--mdc-theme-secondary);
+        .heading .mdc-icon-button {
+          margin-left: 40px;
+          margin-left: auto;
+          margin-right: 10px;
         }
 
         .missing-text {
@@ -389,7 +391,9 @@ class DndCharacterBuilderBackgroundRace extends PolymerElement {
         <div class="row-wrap">
           <div class="heading">
             <h2>Race</h2>
-            <button class="mdc-icon-button material-icons" on-click="_linkClick">logout</button>
+            <button class="mdc-icon-button" on-click="_linkClick">
+              <dnd-icon type="material" icon="logout"></dnd-icon>
+            </button>
           </div>
           <div class="missing-text" hidden$="[[_exists(selectedRaceRef)]]">Enter edit mode to select a Race.</div>
           <dnd-select-add model="races" value="[[selectedRace]]" placeholder="<Choose Race>" disabled$="[[!isEditMode]]" hidden$="[[_showEmpty(isEditMode, selectedRace)]]"></dnd-select-add>

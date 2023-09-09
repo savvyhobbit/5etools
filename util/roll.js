@@ -8,7 +8,7 @@ function rollEventChannel() {
     return rollChannel;
 }
 
-function emitRoll(name, roll, result, total, type, isCrit, adv, disadv, doubleAdv) {
+function emitRoll(name, roll, result, total, type, doubleForCrit, isCrit, adv, disadv, doubleAdv, toHit, critOn, rollTextPlain, rolls) {
     const rollEvent = new CustomEvent("new-roll", {
         bubbles: true,
         composed: true,
@@ -21,7 +21,12 @@ function emitRoll(name, roll, result, total, type, isCrit, adv, disadv, doubleAd
             isCrit,
             adv,
             disadv,
-            doubleAdv
+            doubleAdv,
+            critOn,
+            rollTextPlain: rollTextPlain || roll,
+            toHit,
+            doubleForCrit,
+            rolls
         }
     });
     rollChannel.dispatchEvent(rollEvent);
@@ -41,7 +46,7 @@ function rollMultipleDice(name, rolls) {
         total += result.total;
         allRolls = allRolls.concat(result.rolls);
     }
-    emitRoll(name, rolls.join('+'), allRolls.join('+'), total);
+    emitRoll(name, rolls.join('+'), allRolls.join('+'), total, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, rolls);
 }
 
 function rollDice(name, rollText, type, doubleForCrit) {
@@ -52,6 +57,16 @@ function rollDice(name, rollText, type, doubleForCrit) {
     }
     const total = doubleForCrit ? roll.rolls.reduce((total, roll) => total + (2 * roll), 0) + roll.modifier : roll.total;
     emitRoll(name, rollText, rollResult, total, type, doubleForCrit);
+}
+
+function rerollDice(rollResult) {
+    if (rollResult.type === "To Hit") {
+        rollHit(rollResult.name, rollResult.toHit, rollResult.adv, rollResult.disadv, rollResult.doubleAdv, rollResult.critOn);
+    } else if (rollResult.rollTextPlain.split('d').length > 2){
+        rollMultipleDice(rollResult.name, rollResult.rolls);
+    } else {
+        rollDice(rollResult.name, rollResult.rollTextPlain, rollResult.type, rollResult.doubleForCrit);
+    }
 }
 
 function rollHit(name, toHit, adv, disadv, doubleAdv, critOn = 20) {
@@ -83,7 +98,7 @@ function rollHit(name, toHit, adv, disadv, doubleAdv, critOn = 20) {
 
     const rollText = `${doubleAdv ? '<span>Double Advantage</span>' : ''}${adv && !doubleAdv ? ` <span>Advantage</span>` : ''}${disadv ? `<span>Disadvantage</span>` : ''} 1d20${toHitString}`;
 
-    emitRoll(name, rollText, rollResult, total, "To Hit", isCrit, adv, disadv, doubleAdv);
+    emitRoll(name, rollText, rollResult, total, "To Hit", undefined, isCrit, adv, disadv, doubleAdv, toHit, critOn);
 
     return isCrit
 }
@@ -93,5 +108,6 @@ export {
     rollDice,
     rollMultipleDice,
     rollHit,
-    emitRoll
+    rerollDice,
+    emitRoll,
 };

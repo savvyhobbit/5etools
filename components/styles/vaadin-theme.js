@@ -69,6 +69,25 @@ registerStyles('vaadin-select', css`
       color: inherit;
       -webkit-text-fill-color: unset;
     }
+    :host([theme~="outlined"]) [part='input-field'] ::slotted(*) {
+      color: var(--mdc-theme-primary);
+      font-weight: bold;
+      font-family: Roboto, sans-serif;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      --lumo-font-size-m: 14px;
+      letter-spacing: 1.25px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    :host([theme~="outlined"]) [part="toggle-button"]::before {
+      color: var(--mdc-theme-primary);
+    }
+    :host([theme~="outlined"]) [part='input-field'] {
+      border: 2px solid var(--mdc-theme-primary);
+      background: transparent;
+      color: var(--mdc-theme-primary);
+    }
 `);
 
 registerStyles('vaadin-select-text-field', css`

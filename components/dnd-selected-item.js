@@ -70,6 +70,9 @@ class DndSelectedItem extends PolymerElement {
       this.selectedSource = source;
       this.selectedSourceFull = Parser.sourceJsonToFull(source);
       this.selectedSourceAbv = Parser.sourceJsonToAbv(source);
+      setTimeout(() => {
+        this._adjustHeight();
+      }, 200);
     } else {
       this.selectedTitle = '';
       this.selectedSource = '';

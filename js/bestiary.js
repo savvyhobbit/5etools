@@ -1,4 +1,4 @@
-import { parseHTML, utils_makeRoller, jqAfter, jqPrepend} from "../js/utils.js";
+import { parseHTML, utils_makeRoller, jqAfter, jqPrepend, generateSidebarJSLink, util_capitalizeAll} from "../js/utils.js";
 import EntryRenderer from "../util/entryrender.js";
 import Parser from "../util/Parser.js"
 import droll from "../lib/droll.js"
@@ -297,11 +297,17 @@ function renderSelection(mon, rootEl) {
 			// parse spells, make hyperlinks
 			const spellLinks = rootEl.querySelectorAll('.trait div p.spells');
 			for (let spellLink of spellLinks) {
+				if (spellLink.hasAttribute("done")) {
+					continue;
+				}
+				spellLink.setAttribute("done", true);
 				let spellslist = spellLink.innerHTML;
 				if (spellslist[0] === "*") return;
 				spellslist = spellslist.split(": ")[1].split(/\, (?!\+|\dd|appears|inside gems)/g);
 				for (let i = 0; i < spellslist.length; i++) {
-					spellslist[i] = "<a href='#/spells/" + encodeURIComponent((spellslist[i].replace(/(\*)| \(([^\)]+)\)/g, ""))).toLowerCase().replace("'", "%27") + "_" + "phb'>" + spellslist[i] + "</a>";
+					let hash = "#/spells/" + encodeURIComponent((spellslist[i].replace(/(\*)| \(([^\)]+)\)/g, ""))).toLowerCase().replace("'", "%27") + "_" + "phb";
+					let jsHref = generateSidebarJSLink(hash);
+					spellslist[i] = `<a href='${jsHref}'>${util_capitalizeAll(spellslist[i])}</a>`;
 					if (i !== spellslist.length - 1) spellslist[i] = spellslist[i] + ", ";
 				}
 
