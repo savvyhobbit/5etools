@@ -260,7 +260,7 @@ n(102).a;console.warn('WARNING: Since Vaadin 23.2, "@vaadin/vaadin-text-field" i
     :host([dir='rtl'][expanded]) [part='toggle']::before {
       content: var(--lumo-icons-angle-left);
     }
-  `,{moduleId:"lumo-grid-tree-toggle"});var a=n(2),r=n(26),s=n(109);
+  `,{moduleId:"lumo-grid-tree-toggle"});var a=n(2),r=n(25),s=n(109);
 /**
  * @license
  * Copyright (c) 2016 - 2022 Vaadin Ltd.
