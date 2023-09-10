@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{165:function(e,t,l){"use strict";l.r(t);var s=l(2),a=(l(19),l(20),l(96),l(126),l(38)),c=l(23),d=l(145),i=l(10);function o(e,t=0,l=document.scrollingElement){if(l.scrollTop===e)return;const s=(l.scrollTop-e)/2;let a=0,c=null;window.requestAnimationFrame((function d(i){if(null!==c){if(a+=Math.PI*(i-c)/t,a>=Math.PI)return l.scrollTop=e;l.scrollTop=s+e+s*Math.cos(a)}c=i,window.requestAnimationFrame(d)}))}var n=l(1),r=l(4);class b extends s.a{static get properties(){return{classes:{type:Object,observer:"_dataLoaded"},hash:{type:String,value:""},itemOpened:{value:!1},loading:{type:Boolean,value:!0,observer:"_loadingChange"},selectedTitle:{type:String,value:""},lastTitle:{type:String},selectedSource:{type:String,value:""}}}static get observers(){return["_updateClassFromHash(classes, hash)"]}constructor(){super(),this.loading=!0,Object(a.b)("class-all").then(e=>{this.set("classes",e.filter(e=>"Ranger (Ambuscade)"!==e.name)),this.loading=!1})}connectedCallback(){super.connectedCallback(),this.populateHandlers(),Object(i.h)().addEventListener("selection-change",this.selectionChangeEventHandler),Object(i.h)().addEventListener("selection-deselected",this.deselectionChangeEventHandler),this.$.backToTop.addEventListener("click",this.backToTopEventHandler),window.addEventListener("scroll",this.subclassScrollRepositionHandler),Object(i.h)().addEventListener("title-change",e=>{if(e.detail){const{title:t}=e.detail;let l,s,a=Object(i.e)();if(a){const e=a.split("_");l=decodeURIComponent(e[0]),e.length>1&&(s=e[1].split(",")[0])}t&&(this.lastTitle=t),this.selectedTitle=l||t||"",this.selectedSource=s,this.selectedSourceFull=r.a.sourceJsonToFull(s),this.selectedSourceAbv=r.a.sourceJsonToAbv(s)}}),Object(i.h)().addEventListener("selection-change",e=>{console.error("selection-change",e.detail);const t=e.detail.selection;if(t){const e=t.split("_");this.selectedTitle=decodeURIComponent(e[0]),e.length>1&&(this.selectedSource=e[1].split(",")[0],this.selectedSourceFull=r.a.sourceJsonToFull(this.selectedSource),this.selectedSourceAbv=r.a.sourceJsonToAbv(this.selectedSource))}}),Object(i.h)().addEventListener("selection-deselected",()=>{this.selectedTitle=this.lastTitle||"",this.selectedSource="",this.selectedSourceFull="",this.selectedSourceAbv=""})}disconnectedCallback(){super.disconnectedCallback(),this.deselectionChangeEventHandler(),Object(i.h)().removeEventListener("selection-change",this.selectionChangeEventHandler),Object(i.h)().removeEventListener("selection-deselected",this.deselectionChangeEventHandler),this.$.backToTop.removeEventListener("click",this.backToTopEventHandler),window.removeEventListener("scroll",this.subclassScrollRepositionHandler,{passive:!0})}populateHandlers(){this.selectionChangeEventHandler=e=>{let t=e?e.detail.selection:Object(i.e)();t&&this.set("hash",t)},this.selectionChangeEventHandler(),this.deselectionChangeEventHandler=()=>{this.set("hash","")},this.backToTopEventHandler=()=>{!function(e=0){o(0,e,document.scrollingElement)}(400)},this.subclassScrollRepositionHandler=()=>{window.scrollY>850?this.$.backToTop.classList.remove("hidden"):this.$.backToTop.classList.add("hidden");const e=this.shadowRoot.querySelector("#subclasses"),t=this.shadowRoot.querySelector("#subclassHeight");e.classList.contains("closed")&&e.classList.contains("fixed")||(this.subclassOffsetHeight=Object(n.jqHeight)(e)+55+"px"),Object(n.jqOffset)(t).top-document.body.scrollTop<64?e.classList.contains("fixed")||(e.classList.add("fixed"),t.style.height=this.subclassOffsetHeight):(e.classList.remove("fixed"),t.style.height="0")}}_loadingChange(){this.dispatchEvent(new CustomEvent("loading-data",{bubbles:!0,composed:!0,detail:{loading:this.loading}}))}_dataLoaded(){Object(d.onDataLoad)(this.classes,this.shadowRoot)}_updateClassFromHash(){if(this.classes&&this.hash){let e,t;if(this.hash.indexOf(",")>-1){let l=this.hash.split(",");e=Object(c.b)(this.classes,l[0]),t=l.slice(1)}else e=Object(c.b)(this.classes,this.hash);if(e){this.itemOpened=!0;let l=e!==this.prevClass;this.prevClass=e,l&&(window.scrollTo(0,0),Object(d.onClassChange)(e,this.shadowRoot)),t&&Object(d.onSubChange)(t,this.hash,this.shadowRoot)}else Object(i.a)(!0)}this.hash||(this.itemOpened=!1)}_clearSelectionHandler(){Object(i.a)(!0)}_mainClass(){return this.itemOpened?"main item-opened":"main"}static get template(){return s.b`
+(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{165:function(e,l,t){"use strict";t.r(l);var s=t(2),a=(t(19),t(20),t(96),t(126),t(38)),c=t(23),d=t(145),i=t(10);function o(e,l=0,t=document.scrollingElement){if(t.scrollTop===e)return;const s=(t.scrollTop-e)/2;let a=0,c=null;window.requestAnimationFrame((function d(i){if(null!==c){if(a+=Math.PI*(i-c)/l,a>=Math.PI)return t.scrollTop=e;t.scrollTop=s+e+s*Math.cos(a)}c=i,window.requestAnimationFrame(d)}))}var n=t(1),r=t(4);class b extends s.a{static get properties(){return{classes:{type:Object,observer:"_dataLoaded"},hash:{type:String,value:""},itemOpened:{value:!1},loading:{type:Boolean,value:!0,observer:"_loadingChange"},selectedTitle:{type:String,value:""},lastTitle:{type:String},selectedSource:{type:String,value:""}}}static get observers(){return["_updateClassFromHash(classes, hash)"]}constructor(){super(),this.loading=!0,Object(a.b)("class-all").then(e=>{this.set("classes",e.filter(e=>"Ranger (Ambuscade)"!==e.name)),this.loading=!1})}connectedCallback(){super.connectedCallback(),this.populateHandlers(),Object(i.h)().addEventListener("selection-change",this.selectionChangeEventHandler),Object(i.h)().addEventListener("selection-deselected",this.deselectionChangeEventHandler),this.$.backToTop.addEventListener("click",this.backToTopEventHandler),window.addEventListener("scroll",this.subclassScrollRepositionHandler),Object(i.h)().addEventListener("title-change",e=>{if(e.detail){const{title:l}=e.detail;let t,s,a=Object(i.e)();if(a){const e=a.split("_");t=decodeURIComponent(e[0]),e.length>1&&(s=e[1].split(",")[0])}l&&(this.lastTitle=l),this.selectedTitle=t||l||"",this.selectedSource=s,this.selectedSourceFull=r.a.sourceJsonToFull(s),this.selectedSourceAbv=r.a.sourceJsonToAbv(s)}}),Object(i.h)().addEventListener("selection-change",e=>{console.error("selection-change",e.detail);const l=e.detail.selection;if(l){const e=l.split("_");this.selectedTitle=decodeURIComponent(e[0]),e.length>1&&(this.selectedSource=e[1].split(",")[0],this.selectedSourceFull=r.a.sourceJsonToFull(this.selectedSource),this.selectedSourceAbv=r.a.sourceJsonToAbv(this.selectedSource))}}),Object(i.h)().addEventListener("selection-deselected",()=>{this.selectedTitle=this.lastTitle||"",this.selectedSource="",this.selectedSourceFull="",this.selectedSourceAbv=""})}disconnectedCallback(){super.disconnectedCallback(),this.deselectionChangeEventHandler(),Object(i.h)().removeEventListener("selection-change",this.selectionChangeEventHandler),Object(i.h)().removeEventListener("selection-deselected",this.deselectionChangeEventHandler),this.$.backToTop.removeEventListener("click",this.backToTopEventHandler),window.removeEventListener("scroll",this.subclassScrollRepositionHandler,{passive:!0})}populateHandlers(){this.selectionChangeEventHandler=e=>{let l=e?e.detail.selection:Object(i.e)();l&&this.set("hash",l)},this.selectionChangeEventHandler(),this.deselectionChangeEventHandler=()=>{this.set("hash","")},this.backToTopEventHandler=()=>{!function(e=0){o(0,e,document.scrollingElement)}(400)},this.subclassScrollRepositionHandler=()=>{window.scrollY>850?this.$.backToTop.classList.remove("hidden"):this.$.backToTop.classList.add("hidden");const e=this.shadowRoot.querySelector("#subclasses"),l=this.shadowRoot.querySelector("#subclassHeight");e.classList.contains("closed")&&e.classList.contains("fixed")||(this.subclassOffsetHeight=Object(n.jqHeight)(e)+55+"px"),Object(n.jqOffset)(l).top-document.body.scrollTop<64?e.classList.contains("fixed")||(e.classList.add("fixed"),l.style.height=this.subclassOffsetHeight):(e.classList.remove("fixed"),l.style.height="0")}}_loadingChange(){this.dispatchEvent(new CustomEvent("loading-data",{bubbles:!0,composed:!0,detail:{loading:this.loading}}))}_dataLoaded(){Object(d.onDataLoad)(this.classes,this.shadowRoot)}_updateClassFromHash(){if(this.classes&&this.hash){let e,l;if(this.hash.indexOf(",")>-1){let t=this.hash.split(",");e=Object(c.b)(this.classes,t[0]),l=t.slice(1)}else e=Object(c.b)(this.classes,this.hash);if(e){this.itemOpened=!0;let t=e!==this.prevClass;this.prevClass=e,t&&(window.scrollTo(0,0),Object(d.onClassChange)(e,this.shadowRoot)),l&&Object(d.onSubChange)(l,this.hash,this.shadowRoot)}else Object(i.a)(!0)}this.hash||(this.itemOpened=!1)}_clearSelectionHandler(){Object(i.a)(!0)}_mainClass(){return this.itemOpened?"main item-opened":"main"}static get template(){return s.b`
       <style include="material-styles my-styles">
         .page-title {
           display: flex;
@@ -16,30 +16,52 @@
           position: relative;
           z-index: 2;
         }
-        .class-feature {
+        .level-label {
           position: relative;
           overflow: hidden;
         }
-        .class-feature[level]:after {
-          font-size: 70px;;
-          font-weight: bold;
+        .statsBlockHead {
+          padding: 24px 0;
+          border-top: 1px solid var(--lumo-contrast-50pct);
+        }
+        .level-label[level]:after {
+          font-size: 60px;
           position: absolute;
-          top: 50px;
+          top: 60px;
           z-index: 1;
-          color: var(--mdc-theme-primary);
+          color: var(--mdc-theme-on-background);
           opacity: .4;
           right: 0;
         }
-        .class-feature[level="1"]:after { content: '1'; }
-        .class-feature[level="2"]:after { content: '2'; }
-        .class-feature[level="3"]:after { content: '3'; }
-        .class-feature[level="4"]:after { content: '4'; }
-        .class-feature[level="5"]:after { content: '5'; }
-        .class-feature[level="6"]:after { content: '6'; }
-        .class-feature[level="7"]:after { content: '7'; }
-        .class-feature[level="8"]:after { content: '8'; }
-        .class-feature[level="9"]:after { content: '9'; }
-        .class-feature[level="10"]:after { content: '10'; }
+        @media(min-width: 500px) {
+          .level-label[level]:after {
+            font-size: 60px;
+          }
+        }
+        .level-label.subclass-feature[level]:after {
+          color: var(--mdc-theme-primary);
+        }
+        
+        .level-label[level="1"]:after { content: '1'; }
+        .level-label[level="2"]:after { content: '2'; }
+        .level-label[level="3"]:after { content: '3'; }
+        .level-label[level="4"]:after { content: '4'; }
+        .level-label[level="5"]:after { content: '5'; }
+        .level-label[level="6"]:after { content: '6'; }
+        .level-label[level="7"]:after { content: '7'; }
+        .level-label[level="8"]:after { content: '8'; }
+        .level-label[level="9"]:after { content: '9'; }
+        .level-label[level="10"]:after { content: '10'; }
+        .level-label[level="11"]:after { content: '11'; }
+        .level-label[level="12"]:after { content: '12'; }
+        .level-label[level="13"]:after { content: '13'; }
+        .level-label[level="14"]:after { content: '14'; }
+        .level-label[level="15"]:after { content: '15'; }
+        .level-label[level="16"]:after { content: '16'; }
+        .level-label[level="17"]:after { content: '17'; }
+        .level-label[level="18"]:after { content: '18'; }
+        .level-label[level="19"]:after { content: '19'; }
+        .level-label[level="20"]:after { content: '20'; }
       </style>
 
       <div class$="[[_mainClass(itemOpened)]]">
@@ -228,9 +250,9 @@
           </div>
         </div>
       </div>
-    `}}customElements.define("dnd-classes",b);class h extends s.a{static get template(){return s.b`
+    `}}customElements.define("dnd-classes",b);class v extends s.a{static get template(){return s.b`
       <style include="material-styles my-styles"></style>
       
       <dnd-classes></dnd-classes>
-    `}}customElements.define("dnd-classes-view",h)}}]);
+    `}}customElements.define("dnd-classes-view",v)}}]);
 //# sourceMappingURL=15.bundle.js.map
