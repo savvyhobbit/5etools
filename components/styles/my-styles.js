@@ -1289,7 +1289,7 @@ styleElement.innerHTML = `
       }
       #subclasses {
         position: relative;
-        margin-top: 6px;
+        margin-top: 0;
         padding-top: 24px;
         padding-bottom: 26px;
         border-top: 1px solid var(--mdc-theme-text-divider-on-background, rgba(0, 0, 0, 0.12));
@@ -1321,7 +1321,7 @@ styleElement.innerHTML = `
         background: var(--mdc-theme-surface, #fff) !important;
         border-bottom: 1px solid var(--mdc-theme-text-divider-on-background);
         position: fixed;
-        top: 40px;
+        top: 50px;
         left: 0;
         overflow: hidden;
         padding: 16px 16px 24px;
@@ -1447,8 +1447,8 @@ styleElement.innerHTML = `
       }
       .stats-wrapper .subclass-feature,
       .stats-wrapper .class-feature {
-        padding: 24px 0;
-        border-top: 1px solid var(--lumo-contrast-50pct);
+        // padding: 24px 0;
+        // border-top: 1px solid var(--lumo-contrast-50pct);
       }
 
       .stats-wrapper .subclass-feature.referenced-subclass-feature {
@@ -1636,6 +1636,9 @@ styleElement.innerHTML = `
           width: 50px;
           height: 50px;
         }
+        #subclasses.fixed {
+          top: 64px;
+        }
       }
 
       /* Tablet and up */
@@ -1806,7 +1809,7 @@ styleElement.innerHTML = `
           padding-left: calc(((100vw - 320px - 1160px) / 2) + 320px);
           padding-right: 1000px;
           width: 1120px;
-          top: 48px;
+          top: 64px;
         }
         #subclasses.fixed .tab {
           padding: 0 calc(((100vw - 320px - 1160px) / 2) + 320px);

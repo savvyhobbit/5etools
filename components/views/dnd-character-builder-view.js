@@ -235,8 +235,11 @@ class DndCharacterBuilderView extends PolymerElement {
   async setStateFromCharacter(character) {
     this.characterName = character.name;
     this.classLevel = getClassString(character);
+    this.hasLevels = character && character.levels && !!character.levels.length;
     this.background = getFeatureString("backgrounds", character, true);
+    this.hasBackground = character && character.background && !!character.background.name;
     this.race = getFeatureString("races", character, true);
+    this.hasRace = character && character.race && !!character.race.name;
 
     // Set Tabs order based on tab order
     let isNonCaster = true;
@@ -460,6 +463,15 @@ class DndCharacterBuilderView extends PolymerElement {
           font-style: italic;
           margin-bottom: 4px;
         }
+        .char-detail__missing {
+          width: max-content;
+          background: var(--lumo-error-color-10pct);
+          border-radius: 6px;
+          color: var(--lumo-error-text-color);
+          padding: 4px 8px;
+          font-size: 15px;
+          border: none;1px solid var(--lumo-error-text-color);
+        }
 
         .tab-wrap {
           background-color: var(--mdc-theme-surface);
@@ -528,8 +540,14 @@ class DndCharacterBuilderView extends PolymerElement {
           </div>
           <div id="nameWrapWatch"></div>
           <div class="char-detail">
-            <span class="char-detail__class">[[classLevel]]</span>
-            <span class="char-detail__race-background">[[race]], [[background]]</span>
+            <span hidden$="[[!hasLevels]]" class="char-detail__class">[[classLevel]]</span>
+            <button class="char-detail__missing" hidden$="[[hasLevels]]">No Class</button>
+            <span class="char-detail__race-background">
+              <span hidden$="[[!hasRace]]">[[race]]</span>
+              <button class="char-detail__missing" hidden$="[[hasRace]]">No Race</button>,
+              <span hidden$="[[!hasBackground]]">[[background]]</span>
+              <button class="char-detail__missing" hidden$="[[hasBackground]]">No Background</button>
+            </span>
           </div>
         </div>
 

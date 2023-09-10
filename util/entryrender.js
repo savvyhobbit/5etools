@@ -1,4 +1,4 @@
-import { isNonstandardSource, encodeForHash, ascSort, utils_makeAttChoose, generateSidebarJSLink } from "../js/utils.js";
+import { isNonstandardSource, encodeForHash, ascSort, utils_makeAttChoose, generateSidebarJSLink, util_capitalizeAll } from "../js/utils.js";
 import {
   CLSS_NON_STANDARD_SOURCE,
   HASH_LIST_SEP,
@@ -293,7 +293,7 @@ function EntryRenderer() {
 			} else if (entry.href.type === "code") {
 				href = entry.href.code;
 			}
-			textStack.push(`<a href='${href}'>${entry.text}</a>`);
+			textStack.push(`<a href='${href}'>${util_capitalizeAll(entry.text)}</a>`);
 		}
 
 		function renderString(self) {

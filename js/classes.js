@@ -314,7 +314,7 @@ function onClassChange(curClass, rootEl) {
       });
       featureNames.push(featureLink);
 
-      const styleClasses = [CLSS_CLASS_FEATURE];
+      const styleClasses = [CLSS_CLASS_FEATURE, "level-label"];
       if (feature.gainSubclassFeature) {
         styleClasses.push(CLSS_GAIN_SUBCLASS_FEATURE);
       }
@@ -339,7 +339,7 @@ function onClassChange(curClass, rootEl) {
               const subFeature = subFeatureList[i];
               console.error('subFeature', subFeature);
 
-              const styleClasses = [CLSS_SUBCLASS_FEATURE];
+              const styleClasses = [CLSS_SUBCLASS_FEATURE, "level-label"];
               const hideSource =
                 isNonstandardSource(subClass.source) || hasBeenReprinted(subClass.shortName, subClass.source);
               if (hideSource) styleClasses.push(CLSS_NON_STANDARD_SOURCE);
@@ -348,7 +348,7 @@ function onClassChange(curClass, rootEl) {
                 subFeature,
                 renderStack,
                 0,
-                `<div class="${styleClasses.join(" ")}" ${ATB_DATA_SC}="${subClass.name}" ${ATB_DATA_SRC}="${
+                `<div class="${styleClasses.join(" ")}" level="${feature.level}" ${ATB_DATA_SC}="${subClass.name}" ${ATB_DATA_SRC}="${
                   subClass.source
                 }">`,
                 `</div>`,

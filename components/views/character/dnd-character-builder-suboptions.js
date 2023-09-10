@@ -1187,6 +1187,9 @@ class DndCharacterBuilderSuboptions extends PolymerElement {
                     font-size: 14px;
                     margin-bottom: 6px;
                 }
+                .default-selection span {
+                    color: var(--mdc-theme-primary);
+                }
                 @media(min-width: 420px) {
                     dnd-select-add {
                         

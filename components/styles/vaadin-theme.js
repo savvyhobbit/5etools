@@ -3,8 +3,12 @@ import { registerStyles, css } from '@vaadin/vaadin-themable-mixin/register-styl
 
 registerStyles('vaadin-select', css`
     [part='label'] {
-      color: var(--mdc-theme-primary) !important;
+      color: var(--mdc-theme-on-surface) !important;
       -webkit-text-fill-color: unset !important;
+    }
+    :host([disabled]) ::slotted([slot='value'][placeholder]) {
+      opacity: 1;
+      color: red;
     }
 
     :host([mini]) {

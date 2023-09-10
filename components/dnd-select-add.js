@@ -150,7 +150,13 @@ class DndSelectAdd extends PolymerElement {
               const option = this.options[i],
                 item = document.createElement('vaadin-item');
               const optionName = option.name || util_capitalizeAll(option);
-              item.innerHTML = `<span style='margin-left: 10px;'>${optionName}</span> ${option.name ? `<span style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${option.source || ''}</span>` : ''}`
+              item.style.setProperty("--lumo-primary-text-color", "var(--mdc-theme-secondary)");
+              item.style.setProperty("--lumo-primary-color-10pct", "var(--mdc-theme-secondary-10pct)");
+              // item.style.setProperty("--lumo-primary-color-50pct", "var(--mdc-theme-primary-50pct)");
+              item.innerHTML = `<span class="select-add__item-name" style='margin-left: 10px'>${optionName}</span>`;
+              if (option.source) {
+                item.innerHTML += ` <span class="select-add__item-src" style='font-size: 14px;color: var(--lumo-primary-color-50pct);'>${option.source || ''}</span>`
+              }
               item.setAttribute("value", i);
               this.listBox.appendChild(item);
             }
@@ -228,10 +234,17 @@ class DndSelectAdd extends PolymerElement {
         }
         vaadin-select {
           width: 100%;
+          --lumo-primary-text-color: var(--mdc-theme-primary);
+        }
+        vaadin-item[selected] {
+
         }
         .prefix {
           white-space: normal;
-          color: var(--lumo-body-text-color);
+          color: var(--mdc-theme-primary);
+        }
+        .select-add__item-name {
+          color: var(--mdc-theme-primary);
         }
       </style>
       <vaadin-select id="select" add theme$="[[_theme(theme)]]" label="[[_label(label, choices, paren)]]" placeholder="[[placeholder]]" disabled$="[[disabled]]">
@@ -239,7 +252,6 @@ class DndSelectAdd extends PolymerElement {
           <span class="prefix">[[multiValue]]</span>
         </div>
       </vaadin-select>
-      
     `;
   }
 }

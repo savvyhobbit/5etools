@@ -241,30 +241,52 @@ class DndClasses extends PolymerElement {
           position: relative;
           z-index: 2;
         }
-        .class-feature {
+        .level-label {
           position: relative;
           overflow: hidden;
         }
-        .class-feature[level]:after {
-          font-size: 70px;;
-          font-weight: bold;
+        .statsBlockHead {
+          padding: 24px 0;
+          border-top: 1px solid var(--lumo-contrast-50pct);
+        }
+        .level-label[level]:after {
+          font-size: 60px;
           position: absolute;
-          top: 50px;
+          top: 60px;
           z-index: 1;
-          color: var(--mdc-theme-primary);
+          color: var(--mdc-theme-on-background);
           opacity: .4;
           right: 0;
         }
-        .class-feature[level="1"]:after { content: '1'; }
-        .class-feature[level="2"]:after { content: '2'; }
-        .class-feature[level="3"]:after { content: '3'; }
-        .class-feature[level="4"]:after { content: '4'; }
-        .class-feature[level="5"]:after { content: '5'; }
-        .class-feature[level="6"]:after { content: '6'; }
-        .class-feature[level="7"]:after { content: '7'; }
-        .class-feature[level="8"]:after { content: '8'; }
-        .class-feature[level="9"]:after { content: '9'; }
-        .class-feature[level="10"]:after { content: '10'; }
+        @media(min-width: 500px) {
+          .level-label[level]:after {
+            font-size: 60px;
+          }
+        }
+        .level-label.subclass-feature[level]:after {
+          color: var(--mdc-theme-primary);
+        }
+        
+        .level-label[level="1"]:after { content: '1'; }
+        .level-label[level="2"]:after { content: '2'; }
+        .level-label[level="3"]:after { content: '3'; }
+        .level-label[level="4"]:after { content: '4'; }
+        .level-label[level="5"]:after { content: '5'; }
+        .level-label[level="6"]:after { content: '6'; }
+        .level-label[level="7"]:after { content: '7'; }
+        .level-label[level="8"]:after { content: '8'; }
+        .level-label[level="9"]:after { content: '9'; }
+        .level-label[level="10"]:after { content: '10'; }
+        .level-label[level="11"]:after { content: '11'; }
+        .level-label[level="12"]:after { content: '12'; }
+        .level-label[level="13"]:after { content: '13'; }
+        .level-label[level="14"]:after { content: '14'; }
+        .level-label[level="15"]:after { content: '15'; }
+        .level-label[level="16"]:after { content: '16'; }
+        .level-label[level="17"]:after { content: '17'; }
+        .level-label[level="18"]:after { content: '18'; }
+        .level-label[level="19"]:after { content: '19'; }
+        .level-label[level="20"]:after { content: '20'; }
       </style>
 
       <div class$="[[_mainClass(itemOpened)]]">

@@ -152,10 +152,11 @@ class DndAsiSelect extends PolymerElement {
         .disable-label {
           font-size: 14px;
           font-weight: 500;
-          color: var(--mdc-theme-primary);
+          color: var(--lumo-body-text-color);
         }
         .reference-link {
           color: var(--lumo-body-text-color);
+          background: transparent;
         }
         .reference-link:hover {
           color: var(--mdc-theme-secondary);
